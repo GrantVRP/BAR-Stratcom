@@ -86,38 +86,32 @@ export const BarIcon: React.FC<BarIconProps> = ({
     );
   }
 
-  // 3. Metal Extractor / Mex (drill-head / underground extraction node)
+  // 3. Metal Extractor / Mex (Armada or Cortex official Beyond All Reason render)
   if (cleanName.includes("extractor") || cleanName.includes("mex")) {
-    return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-      >
-        <title>{name}</title>
-        {/* Ground Surface Plate */}
-        <line x1="3" y1="7" x2="21" y2="7" stroke="#94a3b8" strokeWidth="1.6" strokeLinecap="round" />
-        {/* Surface Rig Housing */}
-        <path d="M7 7L10 3H14L17 7" stroke="#cbd5e1" strokeWidth="1.5" strokeLinejoin="round" />
-        {/* Subterranean Drill Column */}
-        <polygon
-          points="10,7 14,7 13,17 12,21 11,17"
-          fill={factionAccent}
-          fillOpacity="0.25"
-          stroke={factionAccent}
-          strokeWidth="1.4"
-          strokeLinejoin="round"
+    if (isArmada || cleanName.includes("armada")) {
+      return (
+        <img
+          src="/armada-mex.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
         />
-        {/* Subterranean Extraction Pulse Waves */}
-        <path d="M6 14C8 16 10 16.5 12 16.5C14 16.5 16 16 18 14" stroke="#64748b" strokeWidth="1.2" strokeLinecap="round" />
-        <path d="M8 18C10 19.5 11 20 12 20C13 20 14 19.5 16 18" stroke="#64748b" strokeWidth="1.2" strokeLinecap="round" />
-        <circle cx="12" cy="11" r="1.5" fill="#ffffff" />
-      </svg>
+      );
+    }
+
+    // Cortex Metal Extractor official render
+    return (
+      <img
+        src="/cortex-mex.png"
+        alt={name}
+        width={size || 32}
+        height={size || 32}
+        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+      />
     );
   }
+
 
   // 4. Vehicle Factory / Bot Lab / Air Plant / Shipyard (industrial chassis / robotic arm glyph)
   if (

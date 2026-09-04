@@ -117,7 +117,7 @@ function generateTacticalPreset(
           '[0:00] Commander: Queue 1x Solar Collector (Guarantees +20 energy baseline, avoiding stalling)',
           '[0:24] Commander: Construct 2x Metal Extractor on high-density natural deposits',
           '[0:50] Commander: Deploy Vehicle Factory angled toward primary expansion lane',
-          '[1:16] Commander: Build 2x Wind Generator (Exploit wind fluctuations for extra build power)',
+          '[1:16] Commander: Build 2x Wind Turbine (Exploit wind fluctuations for extra build power)',
           '[1:35] Vehicle Factory: Queue 2x Flash (High-Speed Raider Tank) for immediate scouting & harassment',
           '[2:00] Vehicle Factory: Queue 1x Construction Vehicle to capture perimeter metal nodes',
           '[2:25] Vehicle Factory: Continuous queue of 6x Flash + 2x Stump (Medium Assault Tank)',
@@ -136,7 +136,7 @@ function generateTacticalPreset(
 
 ### ⚡ Economy & Power Spike Management
 - **Early Grid Stability**: Starting with 1x Solar Collector guarantees your Commander and initial 2x Mexes won't energy-stall before the Vehicle Factory goes down.
-- **Wind Exploitation**: On open maps, layer 4-6 Wind Generators after the factory starts. If wind drops below 6, queue a secondary Solar Collector immediately.
+- **Wind Exploitation**: On open maps, layer 4-6 Wind Turbines after the factory starts. If wind drops below 6, queue a secondary Solar Collector immediately.
 - **Energy Conversion**: As soon as you hit 400+ excess energy, drop 1x Energy Converter to translate power surges into +5.7 metal per second.
 
 ### 🎯 Timing Attack Execution Window (02:30 - 03:45)
@@ -154,7 +154,7 @@ function generateTacticalPreset(
         openingBuildOrder: [
           '[0:00] Commander: Queue 1x Solar Collector (+20 energy to support high air plant energy drain)',
           '[0:22] Commander: Construct 2x Metal Extractor on base ore spots',
-          '[0:46] Commander: Build 1x Solar Collector + 1x Wind Generator',
+          '[0:46] Commander: Build 1x Solar Collector + 1x Wind Turbine',
           '[1:10] Commander: Construct Air Plant in safe backline pocket',
           '[1:32] Air Plant: Queue 1x Sparrow (Scout Plane) to map enemy factory type and openings',
           '[1:48] Air Plant: Queue 2x Tornado (Assault Gunship) for surgical builder snipes',
@@ -177,7 +177,7 @@ function generateTacticalPreset(
 
 ### 🎯 Timing Windows (03:15 - 04:30)
 - **03:15 Gunship Snipe**: Fly Tornados over cliffs to pick off unescorted enemy constructors.
-- **04:15 Carpet Bombing**: Coordinate 2x Shadows against clustered enemy Wind Generators or Solars for massive chain explosions!`,
+- **04:15 Carpet Bombing**: Coordinate 2x Shadows against clustered enemy Wind Turbines or Solars for massive chain explosions!`,
       };
     }
 
@@ -187,7 +187,7 @@ function generateTacticalPreset(
         '[0:00] Commander: Queue 1x Solar Collector (+20 energy guaranteed)',
         '[0:22] Commander: Construct 2x Metal Extractor on base deposits',
         '[0:45] Commander: Deploy Bot Lab on elevated terrain for short deployment paths',
-        '[1:10] Commander: Build 2x Wind Generator for extra build power',
+        '[1:10] Commander: Build 2x Wind Turbine for extra build power',
         '[1:28] Bot Lab: Queue 2x Tick (Miniature Spider Scout) for vision and early EMP annoyance',
         '[1:45] Bot Lab: Queue 4x Paw (Light Raider Bot) to raid exterior metal extractors',
         '[2:15] Bot Lab: Queue 4x Rocko (Rocket Skirmisher Bot) to outrange early defense towers',
@@ -221,7 +221,7 @@ function generateTacticalPreset(
         '[0:00] Commander: Queue 1x Solar Collector (+20 energy guaranteed)',
         '[0:20] Commander: Construct 2x Metal Extractor on primary natural ore nodes',
         '[0:45] Commander: Deploy Vehicle Factory angled directly toward the central battlefield',
-        '[1:12] Commander: Build 2x Wind Generator to power the initial vehicle production queue',
+        '[1:12] Commander: Build 2x Wind Turbine to power the initial vehicle production queue',
         '[1:30] Vehicle Factory: Queue 2x Blitz (Fast Raider Tank) to probe enemy expansion',
         '[1:55] Vehicle Factory: Construct 1x Construction Vehicle to capture perimeter metal spots',
         '[2:20] Vehicle Factory: Continuous production of 6x Blitz + 2x Raider (Medium Assault Tank)',
@@ -239,7 +239,7 @@ function generateTacticalPreset(
       strategyNotes: `# Cortex Iron Fist: Early Blitz Raider Surge
 
 ### ⚡ Heavy Chassis Power Consumption
-- Cortex tanks carry thicker armor plating and demand solid energy upkeep. Build 1x Solar Collector and supplement with 3-4 Wind Generators.
+- Cortex tanks carry thicker armor plating and demand solid energy upkeep. Build 1x Solar Collector and supplement with 3-4 Wind Turbines.
 - Keep energy above 150 at all times so your Commander can D-Gun surprise raiders without stalling the Vehicle Factory.
 
 ### 🎯 Timing Attack Windows (02:30 - 03:45)
@@ -257,7 +257,7 @@ function generateTacticalPreset(
       '[0:00] Commander: Build 1x Solar Collector (+20 energy baseline)',
       '[0:22] Commander: Construct 2x Metal Extractor on natural metal veins',
       '[0:45] Commander: Deploy Bot Lab in a defensible pocket',
-      '[1:10] Commander: Build 2x Wind Generator for continuous bot fabrication',
+      '[1:10] Commander: Build 2x Wind Turbine for continuous bot fabrication',
       '[1:28] Bot Lab: Queue 3x Grunt (Light Raider Bot) for rapid expansion and harassing',
       '[1:50] Bot Lab: Queue 3x Storm (Rocket Skirmisher Bot) to pick apart enemy LLTs',
       '[2:15] Bot Lab: Queue 2x Pyros (Flame Assault Bot) to incinerate enemy raider groups',

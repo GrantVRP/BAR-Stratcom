@@ -17,7 +17,9 @@ export interface ParsedBuildStep {
 const RESOURCE_DELTAS: Record<string, { metal: string; energy: string }> = {
   'solar collector': { metal: '-145 M', energy: '+20 E' },
   'solar': { metal: '-145 M', energy: '+20 E' },
+  'wind turbine': { metal: '-35 M', energy: '+14 E' },
   'wind generator': { metal: '-35 M', energy: '+14 E' },
+  'turbine': { metal: '-35 M', energy: '+14 E' },
   'wind': { metal: '-35 M', energy: '+14 E' },
   'metal extractor': { metal: '+2.0 M', energy: '-3 E' },
   'mex': { metal: '+2.0 M', energy: '-3 E' },
@@ -204,7 +206,7 @@ export function parseBuildStep(rawStep: string, index: number, faction: Faction)
   if (!explanation) {
     if (lowerItem.includes('solar')) explanation = 'Guarantees steady baseline grid generation';
     else if (lowerItem.includes('mex') || lowerItem.includes('metal extractor')) explanation = 'Expands metal intake to support continuous queues';
-    else if (lowerItem.includes('wind')) explanation = 'Capitalizes on map wind velocity spikes';
+    else if (lowerItem.includes('wind') || lowerItem.includes('turbine')) explanation = 'Capitalizes on map wind velocity spikes';
     else if (lowerItem.includes('factory') || lowerItem.includes('lab') || lowerItem.includes('plant')) explanation = 'Primary production facility for mobile vanguard';
     else if (lowerItem.includes('reclaim')) explanation = 'Instantly recycles local mass into army production';
     else if (lowerItem.includes('flash') || lowerItem.includes('blitz') || lowerItem.includes('paw') || lowerItem.includes('grunt')) explanation = 'High-velocity skirmish unit for flanking and node denial';

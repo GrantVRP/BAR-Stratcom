@@ -46,43 +46,29 @@ export const BarIcon: React.FC<BarIconProps> = ({
   }
 
 
-  // 2. Wind Generator (aerodynamic turbine / wind vane motif)
-  if (cleanName.includes("wind")) {
+  // 2. Wind Turbine / Generator (Armada or Cortex official Beyond All Reason render)
+  if (cleanName.includes("wind") || cleanName.includes("turbine")) {
+    if (isArmada || cleanName.includes("armada")) {
+      return (
+        <img
+          src="/armada-wind.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+        />
+      );
+    }
+
+    // Cortex Wind Turbine official render
     return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-      >
-        <title>{name}</title>
-        {/* Pylon Tower */}
-        <line x1="12" y1="12" x2="12" y2="22" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
-        <line x1="9" y1="22" x2="15" y2="22" stroke="#94a3b8" strokeWidth="1.6" strokeLinecap="round" />
-        {/* Turbine Blades in High Wind Array */}
-        <path
-          d="M12 12C12 7.5 15 4 15 4C15 4 12 7.5 12 12Z"
-          fill="#38bdf8"
-          stroke="#38bdf8"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M12 12C8 14 5 17 5 17C5 17 9 14.5 12 12Z"
-          fill="#38bdf8"
-          stroke="#38bdf8"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M12 12C14.5 15 17 18 17 18C17 18 13.5 14 12 12Z"
-          fill="#38bdf8"
-          stroke="#38bdf8"
-          strokeWidth="1.2"
-        />
-        {/* Rotor Hub */}
-        <circle cx="12" cy="12" r="2.2" fill="#ffffff" stroke="#38bdf8" strokeWidth="1" />
-      </svg>
+      <img
+        src="/cortex-wind.png"
+        alt={name}
+        width={size || 32}
+        height={size || 32}
+        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+      />
     );
   }
 

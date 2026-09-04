@@ -94,7 +94,7 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
       const count = countMatch ? parseInt(countMatch[0], 10) : 1;
 
       if (name.includes("solar")) events.push({ time: sec, type: "solar", count });
-      else if (name.includes("wind")) events.push({ time: sec, type: "wind", count });
+      else if (name.includes("wind") || name.includes("turbine")) events.push({ time: sec, type: "wind", count });
       else if (name.includes("extractor") || name.includes("mex")) events.push({ time: sec, type: "mex", count });
       else if (name.includes("factory") || name.includes("lab") || name.includes("plant")) events.push({ time: sec, type: "factory", count });
       else if (name.includes("reclaim")) events.push({ time: sec, type: "reclaim", count });

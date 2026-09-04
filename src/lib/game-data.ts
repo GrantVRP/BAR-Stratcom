@@ -135,6 +135,20 @@ export interface BuildOrderValidationResult {
   errors: string[];
 }
 
+export const buildPlanResponseSchema = z.object({
+  openingBuildOrder: z.array(z.string()).describe(
+    'Ordered step-by-step opening queue with timestamps or execution order for the Commander and initial factory'
+  ),
+  unitComposition: z.array(z.string()).describe(
+    'Target army composition and production ratios using exclusively valid faction units'
+  ),
+  strategyNotes: z.string().describe(
+    'Markdown-formatted tactical guide explaining power and metal economy spikes, energy stall prevention, wind vs solar trade-offs, commander reclaim usage, and timing attack execution windows'
+  ),
+});
+
+export type BuildPlanResponse = z.infer<typeof buildPlanResponseSchema>;
+
 // ==========================================
 // Mock Database of Valid BAR Units & Structures
 // ==========================================

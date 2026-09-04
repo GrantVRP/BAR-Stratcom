@@ -5,21 +5,9 @@ import {
   getUnitsByFaction,
   getEconomyStructures,
   FactionSchema,
+  buildPlanResponseSchema,
   type Faction,
 } from '@/lib/game-data';
-
-// Response Schema required by specification
-export const buildPlanResponseSchema = z.object({
-  openingBuildOrder: z.array(z.string()).describe(
-    'Ordered step-by-step opening queue with timestamps or execution order for the Commander and initial factory (e.g. "[0:00] Commander: Build 1x Solar Collector", "[0:30] Commander: Build 2x Metal Extractor", "[1:15] Commander: Construct Bot Lab")'
-  ),
-  unitComposition: z.array(z.string()).describe(
-    'Target army composition and production ratios using exclusively valid faction units (e.g. "8x Flash (Armada Raider Tank)", "4x Stump (Medium Assault)", "2x Samson (Mobile AA)")'
-  ),
-  strategyNotes: z.string().describe(
-    'Markdown-formatted tactical guide explaining power and metal economy spikes, energy stall prevention, wind vs solar trade-offs, commander reclaim usage, and timing attack execution windows.'
-  ),
-});
 
 // Request Body Schema
 const requestBodySchema = z.object({

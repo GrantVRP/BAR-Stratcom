@@ -1,138 +1,151 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useObject } from "@ai-sdk/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Radio,
   Clock,
   Layers,
-  ChevronRight,
-  ChevronLeft,
   Sparkles,
   Copy,
   Check,
   AlertTriangle,
   Zap,
+  Activity,
   Crosshair,
   Compass,
   Cpu,
   RefreshCw,
   SquareSquare,
-  Activity,
-  Terminal,
-  Target,
   KeyRound,
   ExternalLink,
   X,
+  Wind,
+  ShieldAlert,
+  SlidersHorizontal,
+  ChevronRight,
+  Database,
+  Flame,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildPlanResponseSchema, type Faction } from "@/lib/game-data";
+import { parseBuildStep, type ParsedBuildStep } from "@/lib/timeline-parser";
+import { BarIcon } from "@/components/tactical/BarIcon";
+import { ResourceGraph } from "@/components/tactical/ResourceGraph";
 
-// Map Presets with rich tactical data
+// Realistic Beyond All Reason Theaters with authentic wind data & tactical profiles
 const MAP_PRESETS = [
   {
-    id: "small-land",
-    name: "Small Land / Chokepoints",
-    examples: "Red Comet, Altair Crossing, Comet Catcher",
-    description: "High early conflict density. Fast raiders and skirmishers hold choke points.",
-    windType: "MODERATE (8-18)",
-    terrainTag: "CHOKE-DENSE",
+    id: "open-fields",
+    name: "Open Plains",
+    subtext: "Open Metal, Plains of Hope",
+    windRange: "12–28 m/s",
+    windAvg: 20,
+    windLabel: "HIGH WIND",
+    terrainTag: "FLANKING",
+    ecoFocus: "Wind Gen Priority",
   },
   {
-    id: "open-fields",
-    name: "Open Plains / High Wind",
-    examples: "Open Metal, SpeedMetal, Plains of Hope",
-    description: "Vast open expanses. Extremely cost-effective for Wind Generators and tank flanking.",
-    windType: "HIGH WIND (12-28)",
-    terrainTag: "OPEN-FLANK",
+    id: "small-land",
+    name: "Small Land / Chokes",
+    subtext: "Red Comet, Altair Crossing",
+    windRange: "8–18 m/s",
+    windAvg: 13,
+    windLabel: "MODERATE",
+    terrainTag: "CHOKE-DENSE",
+    ecoFocus: "Solar + 3 Mex Start",
   },
   {
     id: "mountain-hills",
-    name: "Mountain / High Altitude",
-    examples: "Supreme Strait, Tangerine, High Ground",
-    description: "Vertical sightlines. Spider bots and high-arc artillery dominate elevated terrain.",
-    windType: "LOW-MOD (4-14)",
-    terrainTag: "ELEVATION-BIAS",
+    name: "Mountain Heights",
+    subtext: "Supreme Strait, Tangerine",
+    windRange: "4–14 m/s",
+    windAvg: 9,
+    windLabel: "LOW-MOD",
+    terrainTag: "ELEVATION",
+    ecoFocus: "Solar Core / Artillery",
   },
   {
     id: "water-coastal",
-    name: "Coastal & Island Warfare",
-    examples: "DSD Shorelines, Coast to Coast, Shore to Shore",
-    description: "Dual-domain logistics. Early sea scout harassment or hovercraft air dominance.",
-    windType: "STABLE (10-20)",
+    name: "Coastal & Sea",
+    subtext: "DSD Shorelines, Shore to Shore",
+    windRange: "10–20 m/s",
+    windAvg: 15,
+    windLabel: "STEADY",
     terrainTag: "AMPHIBIOUS",
+    ecoFocus: "Tidal / Hover Logistics",
   },
   {
     id: "large-team",
-    name: "Large Team 8v8 (Frontline/Eco)",
-    examples: "All That Glitters, Ishtir, Bismuth Valley",
-    description: "Specialized roles. Lane holding raiders versus dedicated backline fusion rushers.",
-    windType: "VARIABLE (6-22)",
-    terrainTag: "SCALE-MACRO",
+    name: "Large Team 8v8",
+    subtext: "All That Glitters, Ishtir",
+    windRange: "6–22 m/s",
+    windAvg: 14,
+    windLabel: "VARIABLE",
+    terrainTag: "LANE-MACRO",
+    ecoFocus: "Backline Fusion Rush",
   },
 ];
 
-// Strategy Presets with tactical tags
+// Tournament Strategic Doctrines
 const STRATEGY_PRESETS = [
   {
     id: "early-tank-rush",
     title: "Early Tank Raider Rush",
-    tag: "AGGRESSION // T1",
-    description: "Fast Vehicle Factory at 1:15. Push 4-6 Flash/Blitz into enemy metal nodes by 2:45.",
+    tag: "T1 // AGGRESSION",
     timingWindow: "02:30 - 03:45",
+    description: "Vehicle Factory rush. Flank 4-6 Flash/Blitz into enemy metal extractors.",
     icon: Crosshair,
-  },
-  {
-    id: "fast-eco",
-    title: "Fast Eco & Tech Rush",
-    tag: "MACRO-GREED // T2",
-    description: "Wind/Solar greed, commander nanolathe assist, push T2 lab by 7:00-8:00.",
-    timingWindow: "07:00 - 08:30",
-    icon: Zap,
   },
   {
     id: "bot-swarm-choke",
     title: "Bot Skirmish & LLT Creep",
-    tag: "CONTROL // SKIRMISH",
-    description: "Rocko/Storm rocket bot poke with Light Laser Towers locking down vital chokes.",
+    tag: "T1 // SKIRMISH",
     timingWindow: "03:15 - 05:00",
+    description: "Rocko/Storm rocket bot poke with Light Laser Towers locking down vital chokes.",
     icon: Layers,
+  },
+  {
+    id: "fast-eco",
+    title: "Fast Eco & Tech Rush",
+    tag: "T2 // GREED",
+    timingWindow: "07:00 - 08:30",
+    description: "Energy farm greed, commander nanolathe assist, push T2 lab by 7:30.",
+    icon: Zap,
   },
   {
     id: "air-opening",
     title: "Air Opening & Surgical Harass",
-    tag: "SURGICAL // AIR",
-    description: "Fast Air Plant into Banshee/Tornado gunships to assassinate unescorted builders.",
+    tag: "T1 // SURGICAL AIR",
     timingWindow: "03:30 - 04:45",
+    description: "Fast Air Plant into gunships to assassinate exposed perimeter constructors.",
     icon: Compass,
   },
   {
     id: "heavy-turtle",
-    title: "Fortified Turtle into T2/T3 Armor",
-    tag: "DEFENSE // ARMOR",
-    description: "Defend early mexes with LLT, bank economy for Bulldog or Goliath heavy armor.",
+    title: "Fortified Turtle into T2/T3",
+    tag: "T2 // HEAVY ARMOR",
     timingWindow: "09:00 - 11:30",
-    icon: Target,
+    description: "Defend early mexes with LLT, bank metal for Bulldog or Goliath heavy tanks.",
+    icon: ShieldAlert,
   },
 ];
 
-export default function BeyondAllReasonDashboard() {
-  // Wizard state
-  const [currentStep, setCurrentStep] = useState<number>(1);
+export default function BeyondAllReasonConsole() {
+  // Console state
   const [faction, setFaction] = useState<Faction>("Armada");
-  const [mapType, setMapType] = useState<string>("Small Land / Chokepoints (Red Comet, Altair Crossing)");
-  const [strategyStyle, setStrategyStyle] = useState<string>("Early Tank Raider Rush (Fast Flash/Blitz raid at 2:30)");
+  const [selectedMapId, setSelectedMapId] = useState<string>("small-land");
+  const [selectedStrategyId, setSelectedStrategyId] = useState<string>("early-tank-rush");
+  const [activeTab, setActiveTab] = useState<"timeline" | "unitComp" | "notes">("timeline");
+  const [showEcoRunway, setShowEcoRunway] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<string>("buildOrder");
 
-  // API Key management state
+  // API Key modal
   const [apiKey, setApiKey] = useState<string>("");
   const [showKeyModal, setShowKeyModal] = useState<boolean>(false);
   const [keyInput, setKeyInput] = useState<string>("");
@@ -159,6 +172,16 @@ export default function BeyondAllReasonDashboard() {
     setShowKeyModal(false);
   };
 
+  // Current active selections
+  const currentMap = useMemo(
+    () => MAP_PRESETS.find((m) => m.id === selectedMapId) || MAP_PRESETS[0],
+    [selectedMapId]
+  );
+  const currentStrategy = useMemo(
+    () => STRATEGY_PRESETS.find((s) => s.id === selectedStrategyId) || STRATEGY_PRESETS[0],
+    [selectedStrategyId]
+  );
+
   // Vercel AI SDK useObject pointing to /api/generate-build
   const { object, submit, isLoading, stop, error } = useObject({
     api: "/api/generate-build",
@@ -168,105 +191,891 @@ export default function BeyondAllReasonDashboard() {
     },
   });
 
-  const handleGenerate = () => {
+  const handleGenerate = useCallback(() => {
     submit({
       faction,
-      mapType,
-      strategyStyle,
+      mapType: `${currentMap.name} (${currentMap.subtext})`,
+      strategyStyle: `${currentStrategy.title} (${currentStrategy.description})`,
       apiKey: apiKey || undefined,
     });
-    setActiveTab("buildOrder");
-  };
+    setActiveTab("timeline");
+  }, [faction, currentMap, currentStrategy, apiKey, submit]);
 
-  const handleCopy = () => {
+  // Export macro to clipboard
+  const handleCopy = useCallback(() => {
     if (!object) return;
     const text = [
-      `=== BEYOND ALL REASON STRATCOM DOSSIER: ${faction.toUpperCase()} ===`,
-      `Theater: ${mapType}`,
-      `Doctrine: ${strategyStyle}`,
+      `=== BEYOND ALL REASON TACTICAL MACRO: ${faction.toUpperCase()} ===`,
+      `Theater: ${currentMap.name} [${currentMap.windRange}]`,
+      `Doctrine: ${currentStrategy.title} [Timing: ${currentStrategy.timingWindow}]`,
       "",
-      "--- [01] OPENING BUILD QUEUE ---",
-      ...(object.openingBuildOrder || []).map((step, idx) => `[STEP ${idx + 1}] ${step}`),
+      "--- [01] OPENING BUILD TIMELINE ---",
+      ...(object.openingBuildOrder || []).map((step, idx) => `[${idx + 1}] ${step}`),
       "",
-      "--- [02] TARGET UNIT COMPOSITION ---",
+      "--- [02] FORCE REQUISITION ---",
       ...(object.unitComposition || []).map((u) => `• ${u}`),
       "",
-      "--- [03] TIMING & ECONOMY TELEMETRY ---",
+      "--- [03] OPERATIONAL TELEMETRY ---",
       object.strategyNotes || "",
     ].join("\n");
 
     navigator.clipboard.writeText(text);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    setTimeout(() => setCopied(false), 2200);
+  }, [object, faction, currentMap, currentStrategy]);
+
+  // Global Keyboard Shortcuts (Ctrl+C for Macro Copy, Enter for Generate)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept when user is typing in an input
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        return;
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c") {
+        if (object?.openingBuildOrder && object.openingBuildOrder.length > 0) {
+          e.preventDefault();
+          handleCopy();
+        }
+      } else if (e.key === "Enter" && !isLoading) {
+        e.preventDefault();
+        handleGenerate();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [object, handleCopy, handleGenerate, isLoading]);
+
+  // Parse structured timeline steps from raw string array
+  const parsedSteps: ParsedBuildStep[] = useMemo(() => {
+    if (!object?.openingBuildOrder) return [];
+    return object.openingBuildOrder
+      .filter((step): step is string => Boolean(step && step.trim()))
+      .map((step, idx) => parseBuildStep(step, idx, faction));
+  }, [object?.openingBuildOrder, faction]);
 
   const isArmada = faction === "Armada";
 
-  return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-blue-600 selection:text-white font-sans relative overflow-x-hidden">
-      {/* Background Military Grid & Scanline Ambience */}
-      <div
-        className={`fixed inset-0 pointer-events-none transition-all duration-700 ${
-          isArmada
-            ? "bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(37,99,235,0.18),transparent)]"
-            : "bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(220,38,38,0.18),transparent)]"
-        }`}
-      />
-      <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_10%,#000_60%,transparent_100%)] opacity-30" />
+  // Faction Accent Color Tokens (Armada Cyan #00f0ff vs Cortex Crimson #ff2a2a)
+  const accentColor = isArmada ? "#00f0ff" : "#ff2a2a";
 
-      {/* Top Telemetry Ticker Bar */}
-      <div className="relative z-20 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur px-4 py-1.5 text-[11px] font-mono text-zinc-400 flex items-center justify-between overflow-x-auto gap-4">
-        <div className="flex items-center gap-4 shrink-0">
-          <div className="flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-zinc-300 font-semibold">SYS.STATUS: OPERATIONAL</span>
+  return (
+    <div className="h-screen flex flex-col overflow-hidden bg-[#0a0c10] text-zinc-100 font-sans select-none antialiased">
+      {/* ========================================================================= */}
+      {/* 1. TOP BAR: PRACTICAL RTS TELEMETRY & HOTKEYS                             */}
+      {/* ========================================================================= */}
+      <header className="h-12 shrink-0 border-b border-zinc-800/60 bg-[#0d0f15] px-4 flex items-center justify-between text-xs font-mono z-30">
+        {/* Left: Brand & Faction Indicator */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 pr-3 border-r border-zinc-800/60">
+            <div className="relative size-6 flex items-center justify-center shrink-0">
+              <Image
+                src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
+                alt={faction}
+                width={22}
+                height={22}
+                priority
+                className="object-contain"
+              />
+            </div>
+            <span className="font-black tracking-widest text-zinc-100 text-[13px]">
+              BAR COMMANDER
+            </span>
           </div>
-          <span className="text-zinc-700">|</span>
-          <span className="text-zinc-500">DEFCON:</span>
-          <span className={isArmada ? "text-blue-400 font-bold" : "text-red-400 font-bold"}>ALPHA-1</span>
-          <span className="text-zinc-700">|</span>
-          <span className="text-zinc-500">GRID:</span>
-          <span className="text-zinc-300">44°12&apos;N 88°21&apos;W</span>
+
+          {/* Practical RTS Stats: Wind Profile */}
+          <div className="hidden sm:flex items-center gap-2 text-zinc-400">
+            <Wind className="size-3.5 text-zinc-400 shrink-0" />
+            <span>WIND:</span>
+            <span className="text-zinc-200 font-semibold">{currentMap.windRange}</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-400">
+              {currentMap.windLabel}
+            </span>
+          </div>
+
+          <span className="hidden md:inline text-zinc-700">|</span>
+
+          {/* Practical RTS Stats: Benchmark Estimates */}
+          <div className="hidden md:flex items-center gap-3 text-zinc-400 text-[11px]">
+            <div>
+              <span>BENCHMARK: </span>
+              <span className="text-amber-400 font-semibold">1,000 E</span>
+              <span className="text-zinc-600"> / </span>
+              <span className="text-zinc-200 font-semibold">1,000 M</span>
+            </div>
+            <span className="text-zinc-600">•</span>
+            <div className="text-zinc-400">
+              EXPANSION: <span className="text-zinc-200 font-medium">3-4 Mex @ 01:30</span>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
-          {/* API Key Status / Configuration Toggle */}
+
+        {/* Right: AI Link, Copy Macro, and Loading Status */}
+        <div className="flex items-center gap-2.5">
+          {/* AI Key Link Badge */}
           <button
             type="button"
             onClick={() => setShowKeyModal(true)}
-            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded border border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800 transition-colors text-[10px] font-mono"
+            className="flex items-center gap-1.5 px-2 py-1 rounded bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 transition-colors"
           >
-            <KeyRound className={`size-3 ${isArmada ? "text-blue-400" : "text-red-400"}`} />
-            <span>AI LINK:</span>
+            <KeyRound className="size-3 text-zinc-400" />
+            <span className="hidden lg:inline text-zinc-400">LINK:</span>
             {apiKey ? (
-              <span className="text-emerald-400 font-bold">GEMINI 1.5 PRO LINKED</span>
+              <span className="text-emerald-400 font-bold">GEMINI 1.5 PRO</span>
             ) : (
-              <span className={isArmada ? "text-blue-300 font-medium" : "text-red-300 font-medium"}>
-                TACTICAL ENGINE (ADD KEY)
-              </span>
+              <span className="text-zinc-400">TACTICAL RULES</span>
             )}
           </button>
 
-          <span className="text-zinc-700">|</span>
-          <span className="text-zinc-500">DATA GROUNDING:</span>
-          <span className="text-emerald-400 font-semibold">BAR STRICT</span>
+          {/* Copy Macro Shortcut Button */}
+          {object?.openingBuildOrder && object.openingBuildOrder.length > 0 && (
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-200 transition-colors"
+              title="Copy build macro to clipboard (Ctrl + C)"
+            >
+              {copied ? (
+                <>
+                  <Check className="size-3 text-emerald-400" />
+                  <span className="text-emerald-400 font-bold">COPIED</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="size-3 text-zinc-400" />
+                  <span>COPY MACRO</span>
+                  <kbd className="hidden sm:inline text-[9px] px-1 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                    Ctrl+C
+                  </kbd>
+                </>
+              )}
+            </button>
+          )}
+
+          {/* Abort CTA when streaming */}
+          {isLoading && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={stop}
+              className="h-7 px-2.5 text-[11px] font-mono bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800/80 gap-1.5"
+            >
+              <SquareSquare className="size-3" />
+              ABORT
+            </Button>
+          )}
         </div>
+      </header>
+
+      {/* ========================================================================= */}
+      {/* 2. MAIN CONSOLE STAGE: 2-PANEL EDGE-TO-EDGE LAYOUT                        */}
+      {/* ========================================================================= */}
+      <div className="flex-1 flex overflow-hidden">
+        
+        {/* ======================================================================= */}
+        {/* LEFT PANEL: DOCKED SIDEBAR (~360px) ALL-IN-ONE LOADOUT CONSOLE         */}
+        {/* ======================================================================= */}
+        <aside className="w-[360px] shrink-0 h-full flex flex-col border-r border-zinc-800/60 bg-[#0d0f15] overflow-y-auto scrollbar-thin">
+          
+          {/* Section: Faction Selector (Tactile Radio Tabs) */}
+          <div className="p-3.5 border-b border-zinc-800/60 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+              <span className="tracking-wider">01 // FACTION ALLEGIANCE</span>
+              <span className="text-[10px]" style={{ color: accentColor }}>
+                ACTIVE: {faction.toUpperCase()}
+              </span>
+            </div>
+
+            {/* Compact Tactile Radio Tabs */}
+            <div className="grid grid-cols-2 gap-1.5 bg-[#0a0c10] p-1 rounded border border-zinc-800/60">
+              {/* ARMADA TAB */}
+              <button
+                type="button"
+                onClick={() => setFaction("Armada")}
+                className={`relative flex items-center gap-2.5 p-2 rounded transition-all text-left ${
+                  faction === "Armada"
+                    ? "bg-zinc-900/90 text-white shadow-sm"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30"
+                }`}
+                style={
+                  faction === "Armada"
+                    ? { borderLeft: "2px solid #00f0ff" }
+                    : { borderLeft: "2px solid transparent" }
+                }
+              >
+                <div className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border border-zinc-800">
+                  <Image
+                    src="/armada-logo.png"
+                    alt="Armada"
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="font-mono text-xs font-bold leading-tight">ARMADA</div>
+                  <div className="text-[10px] text-zinc-500 font-mono">Laser & Skirmish</div>
+                </div>
+              </button>
+
+              {/* CORTEX TAB */}
+              <button
+                type="button"
+                onClick={() => setFaction("Cortex")}
+                className={`relative flex items-center gap-2.5 p-2 rounded transition-all text-left ${
+                  faction === "Cortex"
+                    ? "bg-zinc-900/90 text-white shadow-sm"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30"
+                }`}
+                style={
+                  faction === "Cortex"
+                    ? { borderLeft: "2px solid #ff2a2a" }
+                    : { borderLeft: "2px solid transparent" }
+                }
+              >
+                <div className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border border-zinc-800">
+                  <Image
+                    src="/cortex-logo.png"
+                    alt="Cortex"
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="font-mono text-xs font-bold leading-tight">CORTEX</div>
+                  <div className="text-[10px] text-zinc-500 font-mono">Heavy Armor & Riot</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Section: Theater of War (Map Preset Selector) */}
+          <div className="p-3.5 border-b border-zinc-800/60 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+              <span className="tracking-wider">02 // THEATER // TOPOGRAPHY</span>
+              <span className="text-[10px] text-zinc-500 font-mono">WIND VELOCITY</span>
+            </div>
+
+            <div className="space-y-1">
+              {MAP_PRESETS.map((preset) => {
+                const isSelected = selectedMapId === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => setSelectedMapId(preset.id)}
+                    className={`w-full text-left p-2 rounded transition-colors flex items-center justify-between ${
+                      isSelected
+                        ? "bg-zinc-900/80 text-zinc-100"
+                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40"
+                    }`}
+                    style={
+                      isSelected
+                        ? { borderLeft: `2px solid ${accentColor}` }
+                        : { borderLeft: "2px solid transparent" }
+                    }
+                  >
+                    <div>
+                      <div className="font-mono text-xs font-semibold leading-tight">
+                        {preset.name}
+                      </div>
+                      <div className="text-[10px] text-zinc-500 truncate max-w-[190px]">
+                        {preset.subtext}
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-[10px] font-mono text-zinc-300 font-medium">
+                        {preset.windRange}
+                      </div>
+                      <div className="text-[9px] font-mono text-zinc-500">
+                        {preset.terrainTag}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Section: Strategic Doctrine Selector */}
+          <div className="p-3.5 border-b border-zinc-800/60 space-y-2 flex-1">
+            <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+              <span className="tracking-wider">03 // OPERATIONAL DOCTRINE</span>
+              <span className="text-[10px] text-zinc-500 font-mono">ATTACK TIMING</span>
+            </div>
+
+            <div className="space-y-1">
+              {STRATEGY_PRESETS.map((style) => {
+                const isSelected = selectedStrategyId === style.id;
+                const Icon = style.icon;
+                return (
+                  <button
+                    key={style.id}
+                    type="button"
+                    onClick={() => setSelectedStrategyId(style.id)}
+                    className={`w-full text-left p-2 rounded transition-colors ${
+                      isSelected
+                        ? "bg-zinc-900/80 text-zinc-100"
+                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40"
+                    }`}
+                    style={
+                      isSelected
+                        ? { borderLeft: `2px solid ${accentColor}` }
+                        : { borderLeft: "2px solid transparent" }
+                    }
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Icon className="size-3.5 text-zinc-400" />
+                        <span className="font-mono text-xs font-semibold">{style.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400">
+                        {style.timingWindow.split(" - ")[0]}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-zinc-500 mt-0.5 line-clamp-1">
+                      {style.description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Sidebar Footer: Sticky CTA Button */}
+          <div className="p-3.5 border-t border-zinc-800/60 bg-[#0d0f15] space-y-2">
+            <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500">
+              <span>ACTIVE PROFILE:</span>
+              <span className="text-zinc-300 truncate max-w-[180px]">
+                {currentStrategy.title.split(" ")[0]} // {currentMap.name.split(" ")[0]}
+              </span>
+            </div>
+
+            {/* Primary Action Button */}
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={handleGenerate}
+              className={`w-full py-2.5 px-4 rounded font-mono text-xs font-black tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                isLoading
+                  ? "opacity-80 cursor-wait"
+                  : "hover:brightness-110 active:scale-[0.99]"
+              }`}
+              style={{
+                backgroundColor: accentColor,
+                color: isArmada ? "#0a0c10" : "#ffffff",
+                boxShadow: `0 0 20px ${accentColor}33`,
+              }}
+            >
+              {isLoading ? (
+                <>
+                  <RefreshCw className="size-3.5 animate-spin" />
+                  <span>CALIBRATING TIMELINE...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-3.5" />
+                  <span>GENERATE BUILD ORDER</span>
+                  <kbd
+                    className={`text-[9px] px-1 py-0.2 rounded border font-mono ml-1 ${
+                      isArmada
+                        ? "bg-[#0a0c10]/20 border-[#0a0c10]/40 text-[#0a0c10]"
+                        : "bg-white/20 border-white/40 text-white"
+                    }`}
+                  >
+                    Enter
+                  </kbd>
+                </>
+              )}
+            </button>
+          </div>
+        </aside>
+
+        {/* ======================================================================= */}
+        {/* RIGHT PANEL: MAIN STAGE (flex-1) FULL-VIEWPORT TACTICAL TIMELINE       */}
+        {/* ======================================================================= */}
+        <main className="flex-1 flex flex-col overflow-hidden bg-[#0a0c10]">
+          
+          {/* Main Stage Navigation Tabs */}
+          <div className="h-10 shrink-0 border-b border-zinc-800/60 bg-[#0c0e14] px-4 flex items-center justify-between text-xs font-mono">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setActiveTab("timeline")}
+                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                  activeTab === "timeline"
+                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+                style={
+                  activeTab === "timeline"
+                    ? { borderBottom: `2px solid ${accentColor}` }
+                    : { borderBottom: "2px solid transparent" }
+                }
+              >
+                <Clock className="size-3.5" style={{ color: activeTab === "timeline" ? accentColor : undefined }} />
+                <span>BUILD ORDER TIMELINE</span>
+                {parsedSteps.length > 0 && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300">
+                    {parsedSteps.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("unitComp")}
+                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                  activeTab === "unitComp"
+                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+                style={
+                  activeTab === "unitComp"
+                    ? { borderBottom: `2px solid ${accentColor}` }
+                    : { borderBottom: "2px solid transparent" }
+                }
+              >
+                <Layers className="size-3.5" style={{ color: activeTab === "unitComp" ? accentColor : undefined }} />
+                <span>FORCE REQUISITION</span>
+                {object?.unitComposition && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300">
+                    {object.unitComposition.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("notes")}
+                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                  activeTab === "notes"
+                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+                style={
+                  activeTab === "notes"
+                    ? { borderBottom: `2px solid ${accentColor}` }
+                    : { borderBottom: "2px solid transparent" }
+                }
+              >
+                <Cpu className="size-3.5" style={{ color: activeTab === "notes" ? accentColor : undefined }} />
+                <span>OPERATIONAL TELEMETRY</span>
+              </button>
+            </div>
+
+            {/* Faction and Doctrine Label + Eco Runway Toggle */}
+            <div className="flex items-center gap-3 text-[11px] text-zinc-400">
+              {activeTab === "timeline" && parsedSteps.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowEcoRunway((prev) => !prev)}
+                  className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[10px] font-mono text-zinc-300 transition-colors"
+                >
+                  <Activity className="size-3" style={{ color: accentColor }} />
+                  <span>{showEcoRunway ? "HIDE ECO RUNWAY" : "SHOW ECO RUNWAY"}</span>
+                </button>
+              )}
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="text-zinc-500">ENGAGEMENT:</span>
+                <span className="text-zinc-300 font-semibold">{faction.toUpperCase()}</span>
+                <span className="text-zinc-600">//</span>
+                <span className="text-zinc-400">{currentMap.name}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Stage Content Viewport with Custom Scrollbars */}
+          <div className="flex-1 overflow-y-auto scrollbar-thin p-6">
+            
+            {/* Error Banner */}
+            {error && (
+              <div className="mb-4 p-3 rounded bg-red-950/40 border border-red-800/60 text-xs font-mono text-red-300 flex items-start gap-2.5">
+                <AlertTriangle className="size-4 shrink-0 mt-0.5 text-red-400" />
+                <div>
+                  <div className="font-bold uppercase tracking-wider">Telemetry Stream Disrupted</div>
+                  <div className="text-zinc-300 mt-0.5">{error.message || "Failed to stream build."}</div>
+                </div>
+              </div>
+            )}
+
+            {/* =================================================================== */}
+            {/* TAB 1: STRUCTURED BUILD ORDER TIMELINE (DATA-FIRST GANTT STYLE)    */}
+            {/* =================================================================== */}
+            {activeTab === "timeline" && (
+              <div className="max-w-4xl mx-auto space-y-4">
+                
+                {/* Projected Resource Economy Runway Graph (Metal & Energy Curves) */}
+                {parsedSteps.length > 0 && showEcoRunway && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ResourceGraph
+                      steps={parsedSteps}
+                      mapWindAvg={currentMap.windAvg}
+                      faction={faction}
+                    />
+                  </motion.div>
+                )}
+                
+                {/* Empty State */}
+                {parsedSteps.length === 0 && !isLoading && (
+                  <div className="h-[460px] flex flex-col items-center justify-center text-center p-8">
+                    <div className="relative size-14 mb-4 opacity-40 flex items-center justify-center">
+                      <Image
+                        src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
+                        alt={faction}
+                        width={56}
+                        height={56}
+                        className="object-contain"
+                      />
+                    </div>
+                    <h3 className="font-mono text-sm font-bold text-zinc-300 tracking-wider uppercase">
+                      STANDBY // AWAITING COMMAND PROTOCOL
+                    </h3>
+                    <p className="text-xs text-zinc-500 max-w-md mt-1.5 font-mono">
+                      Configure your Faction, Theater, and Doctrine in the left panel, then hit{" "}
+                      <strong className="text-zinc-300">GENERATE BUILD ORDER</strong> (or press Enter) to synthesize
+                      an opening queue.
+                    </p>
+                  </div>
+                )}
+
+                {/* Loading Skeletons */}
+                {isLoading && parsedSteps.length === 0 && (
+                  <div className="space-y-3 py-4">
+                    <div className="flex items-center gap-2 text-xs font-mono mb-4 text-zinc-400">
+                      <RefreshCw className="size-3.5 animate-spin" style={{ color: accentColor }} />
+                      <span>SYNTHESIZING TOURNAMENT OPENING QUEUE...</span>
+                    </div>
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div
+                        key={i}
+                        className="p-3 rounded bg-zinc-900/40 border border-zinc-800/40 flex items-center gap-4"
+                      >
+                        <Skeleton className="h-4 w-14 bg-zinc-800" />
+                        <Skeleton className="h-4 w-12 bg-zinc-800" />
+                        <Skeleton className="h-4 w-44 bg-zinc-800" />
+                        <Skeleton className="h-4 w-20 bg-zinc-800 ml-auto" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Vertical Gantt-Style Timeline */}
+                {parsedSteps.length > 0 && (
+                  <div className="relative pl-6 space-y-2">
+                    {/* Vertical Guideline / Timeline Rail */}
+                    <div className="absolute left-[47px] top-4 bottom-4 w-px bg-zinc-800/80 pointer-events-none" />
+
+                    {parsedSteps.map((step, idx) => {
+                      const lowerName = step.itemName.toLowerCase();
+                      const isStructure =
+                        lowerName.includes("solar") ||
+                        lowerName.includes("wind") ||
+                        lowerName.includes("extractor") ||
+                        lowerName.includes("mex") ||
+                        lowerName.includes("factory") ||
+                        lowerName.includes("lab") ||
+                        lowerName.includes("plant") ||
+                        lowerName.includes("shipyard") ||
+                        lowerName.includes("storage") ||
+                        lowerName.includes("converter") ||
+                        lowerName.includes("tower") ||
+                        lowerName.includes("llt");
+
+                      return (
+                        <motion.div
+                          key={step.id || idx}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.18, delay: idx * 0.02 }}
+                          className="relative flex items-center gap-3.5 p-2.5 rounded hover:bg-zinc-900/60 transition-colors group border-b border-zinc-800/40 min-h-[64px]"
+                        >
+                          {/* Monospace Timestamp Pill pinned to the guideline */}
+                          <div className="relative shrink-0 flex items-center gap-2 z-10 w-[62px] justify-between">
+                            <span className="w-[48px] py-0.5 rounded font-mono text-[11px] font-bold bg-[#0d0f15] border border-zinc-800 text-zinc-300 text-center">
+                              {step.timestamp}
+                            </span>
+                            {/* Guideline Node Marker */}
+                            <span
+                              className="size-2 rounded-full ring-4 ring-[#0a0c10] shrink-0"
+                              style={{
+                                backgroundColor: idx === 0 ? accentColor : "#52525b",
+                              }}
+                            />
+                          </div>
+
+                          {/* Large Prominent RTS Unit/Structure Portrait Frame (w-12 h-12 / min-w-[48px]) */}
+                          <div
+                            className={`w-12 h-12 min-w-[48px] min-h-[48px] rounded-sm shrink-0 border flex items-center justify-center p-2 relative overflow-hidden transition-all ${
+                              isArmada
+                                ? "border-cyan-500/40 shadow-[0_0_12px_rgba(0,240,255,0.08)]"
+                                : "border-red-500/40 shadow-[0_0_12px_rgba(255,42,42,0.08)]"
+                            } ${
+                              isStructure
+                                ? "bg-amber-950/20 group-hover:bg-amber-950/30"
+                                : "bg-zinc-900/90 group-hover:bg-zinc-850/90"
+                            }`}
+                          >
+                            {/* Tactical Military Corner Accent */}
+                            <div
+                              className="absolute top-0 right-0 size-1.5 border-t border-r pointer-events-none"
+                              style={{ borderColor: accentColor }}
+                            />
+                            <BarIcon
+                              name={step.itemName}
+                              faction={faction}
+                              size={28}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+
+                          {/* Text Stack: Vertical flex column with Entity, Title, and Strategic Description */}
+                          <div className="flex flex-col justify-center gap-0.5 min-w-0 flex-1">
+                            {/* Top Line: Entity badge, count, and bold unit/building name */}
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span
+                                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${
+                                  step.entityBadge === "[CDR]"
+                                    ? "bg-zinc-800 text-zinc-200 border border-zinc-700/60"
+                                    : step.entityBadge === "[FAC]"
+                                    ? "bg-blue-950/60 text-blue-300 border border-blue-800/40"
+                                    : step.entityBadge === "[CON]"
+                                    ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800/40"
+                                    : "bg-zinc-800/80 text-zinc-400 border border-zinc-700/40"
+                                }`}
+                              >
+                                {step.entityBadge}
+                              </span>
+
+                              <span className="font-mono text-xs font-bold text-zinc-100">
+                                {step.count} {step.itemName}
+                              </span>
+                            </div>
+
+                            {/* Bottom Line: Subdued Strategic Description */}
+                            {step.explanation && (
+                              <p className="text-xs text-zinc-400 font-sans leading-normal line-clamp-2">
+                                {step.explanation}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Resource Delta Badges pushed to the far right */}
+                          <div className="ml-auto shrink-0 flex items-center gap-2 font-mono text-[10px]">
+                            {step.energyDelta && (
+                              <span
+                                className={`px-2 py-0.5 rounded border flex items-center gap-1 font-semibold ${
+                                  step.energyDelta.startsWith("+")
+                                    ? "bg-amber-500/10 text-amber-300 border-amber-500/30"
+                                    : "bg-zinc-900 text-zinc-400 border-zinc-800"
+                                }`}
+                              >
+                                <Zap className="size-3 text-amber-400" />
+                                {step.energyDelta}
+                              </span>
+                            )}
+                            {step.metalDelta && (
+                              <span
+                                className={`px-2 py-0.5 rounded border flex items-center gap-1 font-semibold ${
+                                  step.metalDelta.startsWith("+")
+                                    ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+                                    : "bg-zinc-900 text-zinc-400 border-zinc-800"
+                                }`}
+                              >
+                                <span className="text-[11px]">⛊</span>
+                                {step.metalDelta}
+                              </span>
+                            )}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+
+
+                    {/* Active streaming pulse indicator */}
+                    {isLoading && (
+                      <div className="p-3 flex items-center gap-2 text-xs font-mono text-zinc-400">
+                        <span className="size-2 rounded-full animate-ping" style={{ backgroundColor: accentColor }} />
+                        <span>Streaming factory queue from tactical advisory core...</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* =================================================================== */}
+            {/* TAB 2: FORCE REQUISITION // TARGET ARMY COMPOSITION MATRIX         */}
+            {/* =================================================================== */}
+            {activeTab === "unitComp" && (
+              <div className="max-w-4xl mx-auto space-y-4">
+                {!object?.unitComposition && !isLoading && (
+                  <div className="h-[400px] flex flex-col items-center justify-center text-center p-8">
+                    <Layers className="size-10 text-zinc-600 mb-3" />
+                    <div className="font-mono text-xs font-bold text-zinc-300 uppercase">
+                      NO FORCE REQUISITION RECORDED
+                    </div>
+                    <p className="text-xs text-zinc-500 max-w-sm mt-1 font-mono">
+                      Target unit ratios and production caps will populate here upon simulation.
+                    </p>
+                  </div>
+                )}
+
+                {isLoading && (!object?.unitComposition || object.unitComposition.length === 0) && (
+                  <div className="space-y-2 py-4">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className="p-3.5 rounded bg-zinc-900/40 border border-zinc-800/40 flex items-center justify-between"
+                      >
+                        <Skeleton className="h-4 w-48 bg-zinc-800" />
+                        <Skeleton className="h-4 w-16 bg-zinc-800" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {object?.unitComposition && object.unitComposition.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono text-zinc-400 pb-1 border-b border-zinc-800/60">
+                      <span>TARGET COMBAT SQUADRON</span>
+                      <span>FACTION: {faction.toUpperCase()}</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {object.unitComposition.map((comp, idx) => {
+                        if (!comp) return null;
+                        return (
+                          <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.15, delay: idx * 0.03 }}
+                            className="p-3 rounded bg-zinc-900/50 hover:bg-zinc-900/80 border border-zinc-800/50 transition-colors flex items-center justify-between gap-3"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className="p-0.5 rounded bg-zinc-950 border border-zinc-800 shrink-0 flex items-center justify-center">
+                                <BarIcon name={comp} faction={faction} size={15} className="size-3.5" />
+                              </div>
+                              <span className="font-mono text-xs font-bold text-zinc-100">
+                                {comp}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800/60 text-zinc-400 uppercase">
+                              {faction}
+                            </span>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* =================================================================== */}
+            {/* TAB 3: OPERATIONAL TELEMETRY // TIMING & ECONOMY NOTES             */}
+            {/* =================================================================== */}
+            {activeTab === "notes" && (
+              <div className="max-w-4xl mx-auto space-y-4">
+                {!object?.strategyNotes && !isLoading && (
+                  <div className="h-[400px] flex flex-col items-center justify-center text-center p-8">
+                    <Cpu className="size-10 text-zinc-600 mb-3" />
+                    <div className="font-mono text-xs font-bold text-zinc-300 uppercase">
+                      NO STRATEGIC TELEMETRY GENERATED
+                    </div>
+                    <p className="text-xs text-zinc-500 max-w-sm mt-1 font-mono">
+                      Economy thresholds, power spike benchmarks, and timing attack windows will stream here.
+                    </p>
+                  </div>
+                )}
+
+                {isLoading && !object?.strategyNotes && (
+                  <div className="space-y-3 py-4">
+                    <Skeleton className="h-5 w-48 bg-zinc-800" />
+                    <Skeleton className="h-4 w-full bg-zinc-800" />
+                    <Skeleton className="h-4 w-5/6 bg-zinc-800" />
+                    <Skeleton className="h-20 w-full bg-zinc-800/60" />
+                  </div>
+                )}
+
+                {object?.strategyNotes && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="p-5 rounded bg-zinc-900/40 border border-zinc-800/60 space-y-4 text-xs font-mono text-zinc-300 leading-relaxed"
+                  >
+                    {object.strategyNotes.split("\n\n").map((paragraph, pIdx) => {
+                      const isHeading = paragraph.startsWith("#");
+                      const isBulletList = paragraph.includes("- ") || paragraph.includes("* ");
+
+                      if (isHeading) {
+                        const cleanHeading = paragraph.replace(/^#+\s*/, "");
+                        return (
+                          <div
+                            key={pIdx}
+                            className="font-mono font-bold text-sm text-zinc-100 pt-2 pb-1 border-b border-zinc-800/60 flex items-center gap-2"
+                          >
+                            <span style={{ color: accentColor }}>▸</span>
+                            <span>{cleanHeading}</span>
+                          </div>
+                        );
+                      }
+
+                      if (isBulletList) {
+                        const lines = paragraph.split("\n").filter((l) => l.trim().length > 0);
+                        return (
+                          <ul key={pIdx} className="space-y-1.5 pl-2">
+                            {lines.map((l, lIdx) => (
+                              <li key={lIdx} className="flex items-start gap-2 text-zinc-300 font-sans text-xs">
+                                <span className="text-zinc-500 font-mono">▪</span>
+                                <span>{l.replace(/^[-*]\s*/, "")}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        );
+                      }
+
+                      return (
+                        <p key={pIdx} className="text-zinc-300 font-sans text-xs leading-normal">
+                          {paragraph}
+                        </p>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </div>
+            )}
+          </div>
+        </main>
       </div>
 
-      {/* API Key Modal Dialog */}
+      {/* ========================================================================= */}
+      {/* 3. API KEY MODAL DIALOG                                                   */}
+      {/* ========================================================================= */}
       <AnimatePresence>
         {showKeyModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-md rounded-lg border border-zinc-800 bg-zinc-900 p-5 shadow-2xl space-y-4"
+              exit={{ opacity: 0, scale: 0.96 }}
+              className="relative w-full max-w-md rounded bg-[#0d0f15] border border-zinc-800 p-5 shadow-2xl space-y-4"
             >
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                 <div className="flex items-center gap-2">
-                  <KeyRound className={`size-4 ${isArmada ? "text-blue-400" : "text-red-400"}`} />
-                  <h4 className="font-mono text-sm font-bold text-zinc-100 uppercase tracking-wider">
-                    Google Gemini API Key
+                  <KeyRound className="size-4" style={{ color: accentColor }} />
+                  <h4 className="font-mono text-xs font-bold text-zinc-100 uppercase tracking-wider">
+                    Google Gemini 1.5 Pro AI Link
                   </h4>
                 </div>
                 <button
@@ -278,12 +1087,14 @@ export default function BeyondAllReasonDashboard() {
                 </button>
               </div>
 
-              <div className="space-y-2 text-xs font-mono text-zinc-300">
+              <div className="space-y-2 text-xs font-mono text-zinc-400">
                 <p>
-                  Connect your Google Gemini API key to activate live reasoning with <strong>Gemini 1.5 Pro</strong>.
+                  Link your Gemini API key to activate live reasoning with{" "}
+                  <strong className="text-zinc-200">Gemini 1.5 Pro</strong>.
                 </p>
-                <p className="text-[11px] text-zinc-400">
-                  Your key is stored securely in your browser and used exclusively for streaming build order requests.
+                <p className="text-[11px] text-zinc-500">
+                  Keys are stored exclusively in your local browser storage. If empty, the console
+                  seamlessly uses the built-in Grandmaster ruleset.
                 </p>
                 <div className="pt-2">
                   <Input
@@ -291,7 +1102,7 @@ export default function BeyondAllReasonDashboard() {
                     placeholder="AIzaSy..."
                     value={keyInput}
                     onChange={(e) => setKeyInput(e.target.value)}
-                    className="font-mono text-xs bg-zinc-950 border-zinc-700 text-zinc-100 focus-visible:border-blue-500"
+                    className="font-mono text-xs bg-[#0a0c10] border-zinc-800 text-zinc-100"
                   />
                 </div>
               </div>
@@ -301,11 +1112,10 @@ export default function BeyondAllReasonDashboard() {
                   href="https://aistudio.google.com/app/apikey"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`text-[11px] font-mono hover:underline flex items-center gap-1 ${
-                    isArmada ? "text-blue-400" : "text-red-400"
-                  }`}
+                  className="text-[11px] font-mono hover:underline flex items-center gap-1"
+                  style={{ color: accentColor }}
                 >
-                  Get free key <ExternalLink className="size-3" />
+                  Get free API key <ExternalLink className="size-3" />
                 </a>
                 <div className="flex items-center gap-2">
                   {apiKey && (
@@ -314,7 +1124,7 @@ export default function BeyondAllReasonDashboard() {
                       variant="outline"
                       size="sm"
                       onClick={clearApiKey}
-                      className="font-mono text-xs border-zinc-700 text-zinc-400"
+                      className="font-mono text-xs border-zinc-800 text-zinc-400"
                     >
                       Clear
                     </Button>
@@ -323,11 +1133,11 @@ export default function BeyondAllReasonDashboard() {
                     type="button"
                     size="sm"
                     onClick={saveApiKey}
-                    className={`font-mono text-xs text-white font-bold ${
-                      isArmada
-                        ? "bg-blue-600 hover:bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.4)]"
-                        : "bg-red-600 hover:bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.4)]"
-                    }`}
+                    className="font-mono text-xs font-bold"
+                    style={{
+                      backgroundColor: accentColor,
+                      color: isArmada ? "#0a0c10" : "#ffffff",
+                    }}
                   >
                     Save Key
                   </Button>
@@ -337,958 +1147,6 @@ export default function BeyondAllReasonDashboard() {
           </div>
         )}
       </AnimatePresence>
-
-      {/* Main Tactical Command Header */}
-      <header className="relative z-10 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md px-6 py-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            {/* Faction Emblem in Header */}
-            <div className={`relative p-2 rounded-lg border transition-all size-12 flex items-center justify-center ${
-              isArmada
-                ? "border-blue-500/50 bg-blue-950/40 shadow-[0_0_20px_rgba(59,130,246,0.35)]"
-                : "border-red-500/50 bg-red-950/40 shadow-[0_0_20px_rgba(239,68,68,0.35)]"
-            }`}>
-              {isArmada ? (
-                <Image
-                  src="/armada-logo.png"
-                  alt="Armada Emblem"
-                  width={34}
-                  height={34}
-                  className="object-contain drop-shadow-[0_0_8px_rgba(59,130,246,0.7)]"
-                />
-              ) : (
-                <Image
-                  src="/cortex-logo.png"
-                  alt="Cortex Emblem"
-                  width={34}
-                  height={34}
-                  className="object-contain drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"
-                />
-              )}
-              <div className={`absolute -top-1 -right-1 size-2 rounded-full ring-2 ring-zinc-950 ${isArmada ? "bg-blue-400" : "bg-red-400"}`} />
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h1 className="text-xl font-black tracking-widest uppercase font-mono bg-clip-text text-transparent bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400">
-                  BAR STRATCOM // TACTICAL ADVISOR
-                </h1>
-                <Badge
-                  variant="outline"
-                  className={`text-[10px] tracking-wider uppercase font-mono ${
-                    isArmada
-                      ? "border-blue-500/50 text-blue-400 bg-blue-950/30"
-                      : "border-red-500/50 text-red-400 bg-red-950/30"
-                  }`}
-                >
-                  ACTIVE HUD
-                </Badge>
-              </div>
-              <p className="text-xs text-zinc-400 font-mono tracking-tight flex items-center gap-2 mt-0.5">
-                <span>BEYOND ALL REASON</span>
-                <span className="text-zinc-600">•</span>
-                <span>TOURNAMENT BUILD GENERATOR</span>
-                <span className="text-zinc-600">•</span>
-                <span className={isArmada ? "text-blue-400 font-semibold" : "text-red-400 font-semibold"}>
-                  {faction.toUpperCase()} ACTIVE
-                </span>
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {isLoading && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={stop}
-                className="font-mono text-xs gap-1.5 h-8 border border-red-500/40 bg-red-950/60 hover:bg-red-900/80 text-red-200 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
-              >
-                <SquareSquare className="size-3.5" />
-                ABORT TRANSMISSION
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content: 2-Column RTS Dashboard */}
-      <main className="relative z-10 max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
-          {/* ======================================================== */}
-          {/* LEFT COLUMN: MULTI-STEP FORM WIZARD (5 cols on lg)       */}
-          {/* ======================================================== */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="relative rounded-lg border border-zinc-800 bg-zinc-900/90 backdrop-blur-md shadow-2xl overflow-hidden">
-              {/* Tactical Corner Brackets */}
-              <div className={`absolute top-0 left-0 size-2.5 border-t-2 border-l-2 z-20 pointer-events-none ${isArmada ? "border-blue-500/90" : "border-red-500/90"}`} />
-              <div className={`absolute top-0 right-0 size-2.5 border-t-2 border-r-2 z-20 pointer-events-none ${isArmada ? "border-blue-500/90" : "border-red-500/90"}`} />
-              <div className={`absolute bottom-0 left-0 size-2.5 border-b-2 border-l-2 z-20 pointer-events-none ${isArmada ? "border-blue-500/90" : "border-red-500/90"}`} />
-              <div className={`absolute bottom-0 right-0 size-2.5 border-b-2 border-r-2 z-20 pointer-events-none ${isArmada ? "border-blue-500/90" : "border-red-500/90"}`} />
-
-              {/* Wizard Step Progression Bar */}
-              <div className="border-b border-zinc-800 bg-zinc-950/70 p-2.5 px-3">
-                <div className="grid grid-cols-3 gap-1.5 text-[11px] font-mono">
-                  {[
-                    { step: 1, label: "01 // FACTION" },
-                    { step: 2, label: "02 // THEATER" },
-                    { step: 3, label: "03 // DOCTRINE" },
-                  ].map((item) => (
-                    <button
-                      key={item.step}
-                      type="button"
-                      onClick={() => setCurrentStep(item.step)}
-                      className={`relative flex items-center justify-center gap-1.5 py-1.5 rounded transition-all font-semibold ${
-                        currentStep === item.step
-                          ? isArmada
-                            ? "bg-blue-950/80 text-blue-300 border border-blue-500/60 shadow-[0_0_12px_rgba(59,130,246,0.3)]"
-                            : "bg-red-950/80 text-red-300 border border-red-500/60 shadow-[0_0_12px_rgba(239,68,68,0.3)]"
-                          : currentStep > item.step
-                          ? "text-emerald-400 hover:text-emerald-300 bg-emerald-950/20 border border-emerald-500/30"
-                          : "text-zinc-500 hover:text-zinc-400 bg-zinc-950/40 border border-transparent"
-                      }`}
-                    >
-                      <span className="text-[10px]">{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Step Header */}
-              <div className="p-4 pb-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
-                    <Terminal className="size-3.5 text-zinc-500" />
-                    <span>COMMAND PROTOCOL // STEP {currentStep} OF 3</span>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className={`font-mono text-[9px] uppercase tracking-wider ${
-                      isArmada
-                        ? "border-blue-500/50 text-blue-400 bg-blue-950/30"
-                        : "border-red-500/50 text-red-400 bg-red-950/30"
-                    }`}
-                  >
-                    {faction}
-                  </Badge>
-                </div>
-                <h3 className="text-base font-bold text-zinc-100 font-mono tracking-wide mt-1">
-                  {currentStep === 1 && "Choose Faction Allegiance"}
-                  {currentStep === 2 && "Select Battlefield Sector"}
-                  {currentStep === 3 && "Engage Strategic Doctrine"}
-                </h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  {currentStep === 1 && "Armada relies on high agility, pulsed lasers, and EMP arrays. Cortex commands heavy armor and brute artillery."}
-                  {currentStep === 2 && "Topography dictates wind stability, choke point defense, and factory routing."}
-                  {currentStep === 3 && "Determine your opening aggression window and tech ramp velocity."}
-                </p>
-              </div>
-
-              {/* Wizard Content */}
-              <div className="p-4 pt-2 space-y-4">
-                <AnimatePresence mode="wait">
-                  {/* STEP 1: FACTION SELECTION */}
-                  {currentStep === 1 && (
-                    <motion.div
-                      key="step-1"
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 12 }}
-                      transition={{ duration: 0.2 }}
-                      className="space-y-3"
-                    >
-                      {/* ARMADA SELECTOR WITH OFFICIAL ARMADA EMBLEM */}
-                      <motion.div
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
-                        onClick={() => setFaction("Armada")}
-                        className={`group relative p-4 rounded-lg border cursor-pointer transition-all ${
-                          faction === "Armada"
-                            ? "border-blue-500 bg-blue-950/40 shadow-[0_0_25px_rgba(59,130,246,0.3)] ring-1 ring-blue-500/40"
-                            : "border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/60"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-3.5">
-                            {/* Official Armada Emblem */}
-                            <div className="relative size-12 rounded bg-blue-500/10 p-1 border border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center justify-center shrink-0">
-                              <Image
-                                src="/armada-logo.png"
-                                alt="Armada Faction Logo"
-                                width={38}
-                                height={38}
-                                priority
-                                className="object-contain drop-shadow-[0_0_8px_rgba(59,130,246,0.7)]"
-                              />
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-mono font-bold text-sm text-zinc-100 group-hover:text-blue-400 transition-colors">
-                                  ARMADA
-                                </h4>
-                                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/40 text-[9px] font-mono">
-                                  TACTICAL MOBILITY
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-zinc-400 mt-0.5">
-                                High-speed raiders, pulsed red lasers, EMP lightning weapons, and stealth radar jammers.
-                              </p>
-                            </div>
-                          </div>
-                          <div
-                            className={`size-4 rounded-full border flex items-center justify-center shrink-0 ${
-                              faction === "Armada"
-                                ? "border-blue-400 bg-blue-500 text-white shadow-[0_0_10px_rgba(59,130,246,0.9)]"
-                                : "border-zinc-700"
-                            }`}
-                          >
-                            {faction === "Armada" && <div className="size-1.5 rounded-full bg-white" />}
-                          </div>
-                        </div>
-
-                        <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex flex-wrap gap-1.5">
-                          {["Flash (Raider)", "Stump (Tank)", "Rocko (Rocket)", "Tick (EMP)", "Bulldog (T2)"].map((unit) => (
-                            <span
-                              key={unit}
-                              className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${
-                                faction === "Armada"
-                                  ? "bg-blue-950/50 text-blue-200 border-blue-500/30"
-                                  : "bg-zinc-800/80 text-zinc-300 border-zinc-700/60"
-                              }`}
-                            >
-                              {unit}
-                            </span>
-                          ))}
-                        </div>
-                      </motion.div>
-
-                      {/* CORTEX SELECTOR WITH OFFICIAL CORTEX EMBLEM */}
-                      <motion.div
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
-                        onClick={() => setFaction("Cortex")}
-                        className={`group relative p-4 rounded-lg border cursor-pointer transition-all ${
-                          faction === "Cortex"
-                            ? "border-red-500 bg-red-950/40 shadow-[0_0_25px_rgba(239,68,68,0.3)] ring-1 ring-red-500/40"
-                            : "border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/60"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-3.5">
-                            {/* Official Cortex Emblem */}
-                            <div className="relative size-12 rounded bg-red-500/10 p-1 border border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.3)] flex items-center justify-center shrink-0">
-                              <Image
-                                src="/cortex-logo.png"
-                                alt="Cortex Faction Logo"
-                                width={38}
-                                height={38}
-                                priority
-                                className="object-contain drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"
-                              />
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-mono font-bold text-sm text-zinc-100 group-hover:text-red-400 transition-colors">
-                                  CORTEX
-                                </h4>
-                                <Badge className="bg-red-500/20 text-red-300 border-red-500/40 text-[9px] font-mono">
-                                  HEAVY ORDNANCE
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-zinc-400 mt-0.5">
-                                Brute heavy armor plating, high-caliber plasma cannons, riot spread, and pyrotechnics.
-                              </p>
-                            </div>
-                          </div>
-                          <div
-                            className={`size-4 rounded-full border flex items-center justify-center shrink-0 ${
-                              faction === "Cortex"
-                                ? "border-red-400 bg-red-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.9)]"
-                                : "border-zinc-700"
-                            }`}
-                          >
-                            {faction === "Cortex" && <div className="size-1.5 rounded-full bg-white" />}
-                          </div>
-                        </div>
-
-                        <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex flex-wrap gap-1.5">
-                          {["Blitz (Tank)", "Pyros (Flame)", "Raider (Assault)", "Leveler (Riot)", "Goliath (T2)"].map((unit) => (
-                            <span
-                              key={unit}
-                              className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${
-                                faction === "Cortex"
-                                  ? "bg-red-950/50 text-red-200 border-red-500/30"
-                                  : "bg-zinc-800/80 text-zinc-300 border-zinc-700/60"
-                              }`}
-                            >
-                              {unit}
-                            </span>
-                          ))}
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  )}
-
-                  {/* STEP 2: MAP TYPE SELECTION */}
-                  {currentStep === 2 && (
-                    <motion.div
-                      key="step-2"
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 12 }}
-                      transition={{ duration: 0.2 }}
-                      className="space-y-2.5"
-                    >
-                      <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-                        <span>SELECT THEATER // TOPOGRAPHY</span>
-                        <span className="text-zinc-500">5 SECTORS IDENTIFIED</span>
-                      </div>
-                      <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
-                        {MAP_PRESETS.map((preset) => {
-                          const isSelected = mapType.startsWith(preset.name.split(" ")[0]);
-                          return (
-                            <motion.div
-                              key={preset.id}
-                              whileHover={{ x: 3 }}
-                              onClick={() => setMapType(`${preset.name} (${preset.examples})`)}
-                              className={`p-3 rounded border cursor-pointer transition-all ${
-                                isSelected
-                                  ? isArmada
-                                    ? "border-blue-500/80 bg-blue-950/40 shadow-[0_0_15px_rgba(59,130,246,0.25)]"
-                                    : "border-red-500/80 bg-red-950/40 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
-                                  : "border-zinc-800 bg-zinc-950/50 hover:border-zinc-700 hover:bg-zinc-900/50"
-                              }`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <Target className="size-3.5 text-zinc-500" />
-                                  <h4 className="font-mono text-xs font-semibold text-zinc-200">
-                                    {preset.name}
-                                  </h4>
-                                </div>
-                                <Badge variant="secondary" className="text-[9px] font-mono bg-zinc-800 text-zinc-300">
-                                  {preset.windType}
-                                </Badge>
-                              </div>
-                              <p className="text-[11px] text-zinc-400 mt-1">{preset.description}</p>
-                              <p className="text-[10px] font-mono text-zinc-500 mt-1">
-                                SAMPLES: {preset.examples}
-                              </p>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* STEP 3: STRATEGY STYLE SELECTION */}
-                  {currentStep === 3 && (
-                    <motion.div
-                      key="step-3"
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 12 }}
-                      transition={{ duration: 0.2 }}
-                      className="space-y-2.5"
-                    >
-                      <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-                        <span>SELECT DOCTRINE // ATTACK TIMING</span>
-                        <span className="text-zinc-500">5 PROFILES ARMED</span>
-                      </div>
-                      <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
-                        {STRATEGY_PRESETS.map((style) => {
-                          const Icon = style.icon;
-                          const isSelected = strategyStyle.startsWith(style.title.split(" ")[0]);
-                          return (
-                            <motion.div
-                              key={style.id}
-                              whileHover={{ x: 3 }}
-                              onClick={() => setStrategyStyle(`${style.title} (${style.description})`)}
-                              className={`p-3 rounded border cursor-pointer transition-all ${
-                                isSelected
-                                  ? isArmada
-                                    ? "border-blue-500/80 bg-blue-950/40 shadow-[0_0_15px_rgba(59,130,246,0.25)]"
-                                    : "border-red-500/80 bg-red-950/40 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
-                                  : "border-zinc-800 bg-zinc-950/50 hover:border-zinc-700 hover:bg-zinc-900/50"
-                              }`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <Icon className="size-4 text-zinc-400" />
-                                  <h4 className="font-mono text-xs font-semibold text-zinc-200">
-                                    {style.title}
-                                  </h4>
-                                </div>
-                                <Badge
-                                  variant="outline"
-                                  className="text-[9px] font-mono border-zinc-700 text-zinc-300"
-                                >
-                                  {style.timingWindow}
-                                </Badge>
-                              </div>
-                              <p className="text-[11px] text-zinc-400 mt-1">{style.description}</p>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Wizard Controls & CTA Button */}
-                <div className="pt-3 border-t border-zinc-800 flex items-center justify-between gap-3">
-                  {currentStep > 1 ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentStep((prev) => Math.max(1, prev - 1))}
-                      className="font-mono text-xs border-zinc-700 hover:bg-zinc-800"
-                    >
-                      <ChevronLeft className="size-3.5 mr-1" />
-                      PREV
-                    </Button>
-                  ) : (
-                    <div />
-                  )}
-
-                  {currentStep < 3 ? (
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => setCurrentStep((prev) => Math.min(3, prev + 1))}
-                      className={`font-mono text-xs font-semibold ${
-                        isArmada
-                          ? "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_12px_rgba(59,130,246,0.3)]"
-                          : "bg-red-600 hover:bg-red-500 text-white shadow-[0_0_12px_rgba(239,68,68,0.3)]"
-                      }`}
-                    >
-                      NEXT STEP
-                      <ChevronRight className="size-3.5 ml-1" />
-                    </Button>
-                  ) : (
-                    /* PULSING TACTICAL GLOW CTA BUTTON */
-                    <motion.button
-                      type="button"
-                      disabled={isLoading}
-                      onClick={handleGenerate}
-                      animate={
-                        isLoading
-                          ? {
-                              boxShadow: isArmada
-                                ? [
-                                    "0 0 10px rgba(59, 130, 246, 0.4)",
-                                    "0 0 35px rgba(59, 130, 246, 0.95)",
-                                    "0 0 10px rgba(59, 130, 246, 0.4)",
-                                  ]
-                                : [
-                                    "0 0 10px rgba(239, 68, 68, 0.4)",
-                                    "0 0 35px rgba(239, 68, 68, 0.95)",
-                                    "0 0 10px rgba(239, 68, 68, 0.4)",
-                                  ],
-                              scale: [1, 1.025, 1],
-                            }
-                          : {
-                              boxShadow: isArmada
-                                ? "0 0 18px rgba(59, 130, 246, 0.35)"
-                                : "0 0 18px rgba(239, 68, 68, 0.35)",
-                            }
-                      }
-                      transition={{
-                        repeat: isLoading ? Infinity : 0,
-                        duration: 1.3,
-                        ease: "easeInOut",
-                      }}
-                      whileHover={{ scale: isLoading ? 1 : 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      className={`relative overflow-hidden px-5 py-2 rounded font-mono text-xs font-black tracking-wider uppercase cursor-pointer transition-all flex items-center justify-center gap-2 ${
-                        isArmada
-                          ? "bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/80 shadow-[0_0_15px_rgba(59,130,246,0.4)]"
-                          : "bg-red-600 hover:bg-red-500 text-white border border-red-400/80 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
-                      }`}
-                    >
-                      {/* Scanning Beam Animation inside Button when Loading */}
-                      {isLoading && (
-                        <motion.div
-                          animate={{ x: ["-100%", "200%"] }}
-                          transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-                          className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
-                        />
-                      )}
-
-                      {isLoading ? (
-                        <>
-                          <RefreshCw className="size-3.5 animate-spin" />
-                          <span>CALIBRATING BUILD ORDER...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="size-3.5" />
-                          <span>GENERATE BUILD ORDER</span>
-                        </>
-                      )}
-                    </motion.button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Tactical Mission Telemetry Card */}
-            <div className="relative p-3.5 rounded border border-zinc-800 bg-zinc-900/60 backdrop-blur-md text-xs font-mono space-y-2">
-              <div className="text-[10px] text-zinc-500 font-bold tracking-wider flex items-center justify-between border-b border-zinc-800 pb-1.5">
-                <span>ACTIVE SIMULATION PARAMETERS</span>
-                <Activity className="size-3 text-emerald-400" />
-              </div>
-              <div className="flex justify-between text-zinc-400">
-                <span className="text-zinc-500">FACTION ALLIANCE:</span>
-                <span className={isArmada ? "text-blue-400 font-bold" : "text-red-400 font-bold"}>
-                  {faction.toUpperCase()}
-                </span>
-              </div>
-              <div className="flex justify-between text-zinc-400">
-                <span className="text-zinc-500">THEATER OF WAR:</span>
-                <span className="text-zinc-200 truncate ml-2 max-w-[200px]" title={mapType}>
-                  {mapType.split(" (")[0]}
-                </span>
-              </div>
-              <div className="flex justify-between text-zinc-400">
-                <span className="text-zinc-500">OPERATIONAL DOCTRINE:</span>
-                <span className="text-zinc-200 truncate ml-2 max-w-[200px]" title={strategyStyle}>
-                  {strategyStyle.split(" (")[0]}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* ======================================================== */}
-          {/* RIGHT COLUMN: GENERATED STRATEGY CARD (7 cols on lg)     */}
-          {/* ======================================================== */}
-          <div className="lg:col-span-7">
-            <motion.div
-              layout
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="relative rounded-lg border border-zinc-800 bg-zinc-900/90 backdrop-blur-md shadow-2xl min-h-[580px] flex flex-col overflow-hidden"
-            >
-              {/* Tactical Corner Reticle Accents */}
-              <div className={`absolute top-0 left-0 size-3 border-t-2 border-l-2 z-20 pointer-events-none ${isArmada ? "border-blue-500" : "border-red-500"}`} />
-              <div className={`absolute top-0 right-0 size-3 border-t-2 border-r-2 z-20 pointer-events-none ${isArmada ? "border-blue-500" : "border-red-500"}`} />
-              <div className={`absolute bottom-0 left-0 size-3 border-b-2 border-l-2 z-20 pointer-events-none ${isArmada ? "border-blue-500" : "border-red-500"}`} />
-              <div className={`absolute bottom-0 right-0 size-3 border-b-2 border-r-2 z-20 pointer-events-none ${isArmada ? "border-blue-500" : "border-red-500"}`} />
-
-              {/* Radar Sweep Scan Line while Loading */}
-              {isLoading && (
-                <motion.div
-                  animate={{ y: ["0%", "500%"] }}
-                  transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
-                  className={`absolute inset-x-0 h-1 z-30 pointer-events-none opacity-80 ${
-                    isArmada
-                      ? "bg-gradient-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_15px_rgba(59,130,246,0.9)]"
-                      : "bg-gradient-to-r from-transparent via-red-500 to-transparent shadow-[0_0_15px_rgba(239,68,68,0.9)]"
-                  }`}
-                />
-              )}
-
-              {/* Strategic Header */}
-              <div className="border-b border-zinc-800 bg-zinc-950/80 p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className={`size-2 rounded-full ${isLoading ? (isArmada ? "bg-blue-400 animate-ping" : "bg-red-400 animate-ping") : "bg-emerald-400"}`} />
-                      <span className="text-xs font-mono font-bold tracking-widest text-zinc-300 uppercase">
-                        TACTICAL ENGAGEMENT DOSSIER
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge
-                        className={`text-[10px] font-mono tracking-wide flex items-center gap-1.5 ${
-                          isArmada
-                            ? "bg-blue-500/20 text-blue-300 border-blue-500/40"
-                            : "bg-red-500/20 text-red-300 border-red-500/40"
-                        }`}
-                      >
-                        <Image
-                          src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
-                          alt={faction}
-                          width={13}
-                          height={13}
-                          className="object-contain inline-block"
-                        />
-                        <span>{faction.toUpperCase()}</span>
-                      </Badge>
-                      <Badge variant="outline" className="text-[10px] font-mono border-zinc-700 text-zinc-400">
-                        {mapType.split(" (")[0]}
-                      </Badge>
-                      <Badge variant="outline" className="text-[10px] font-mono border-zinc-700 text-zinc-400">
-                        {strategyStyle.split(" (")[0]}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {object && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleCopy}
-                        className="font-mono text-xs border-zinc-700 hover:bg-zinc-800 h-8 gap-1.5"
-                      >
-                        {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
-                        {copied ? "COPIED" : "EXPORT DOSSIER"}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Error Message if Generation Fails */}
-              {error && (
-                <div className="m-4 p-3.5 rounded border border-red-500/40 bg-red-950/30 text-red-300 text-xs font-mono flex items-start gap-2.5">
-                  <AlertTriangle className="size-4 shrink-0 mt-0.5 text-red-400" />
-                  <div className="space-y-1">
-                    <p className="font-bold uppercase tracking-wide">Telemetry Disrupted</p>
-                    <p className="text-zinc-300">{error.message || "Failed to generate strategy."}</p>
-                    <p className="text-[11px] text-zinc-400">
-                      Click the &quot;AI LINK&quot; button in the top bar to configure a valid Gemini API key.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Strategy Tabs Content */}
-              <div className="p-4 flex-1 flex flex-col">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-                  <TabsList className="grid grid-cols-3 bg-zinc-950/90 border border-zinc-800 p-1 mb-4 h-9.5">
-                    <TabsTrigger
-                      value="buildOrder"
-                      className={`font-mono text-xs data-active:bg-zinc-800 data-active:shadow-sm ${
-                        isArmada ? "data-active:text-blue-300" : "data-active:text-red-300"
-                      }`}
-                    >
-                      <Clock className={`size-3.5 mr-1.5 ${isArmada ? "text-blue-400" : "text-red-400"}`} />
-                      Build Order
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="unitComp"
-                      className={`font-mono text-xs data-active:bg-zinc-800 data-active:shadow-sm ${
-                        isArmada ? "data-active:text-blue-300" : "data-active:text-red-300"
-                      }`}
-                    >
-                      <Layers className={`size-3.5 mr-1.5 ${isArmada ? "text-blue-400" : "text-red-400"}`} />
-                      Unit Comp
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="notes"
-                      className="font-mono text-xs data-active:bg-zinc-800 data-active:text-emerald-300 data-active:shadow-sm"
-                    >
-                      <Cpu className="size-3.5 mr-1.5 text-emerald-400" />
-                      Timing & Economy
-                    </TabsTrigger>
-                  </TabsList>
-
-                  {/* ======================================================== */}
-                  {/* TAB 1: BUILD ORDER WITH ANIMATED STREAMING ITEMS          */}
-                  {/* ======================================================== */}
-                  <TabsContent value="buildOrder" className="flex-1 space-y-3 mt-0 outline-none">
-                    {/* Empty State */}
-                    {!object?.openingBuildOrder && !isLoading && !error && (
-                      <div className="h-[400px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800/80 rounded">
-                        <div className="size-12 mb-3 opacity-60 flex items-center justify-center">
-                          <Image
-                            src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
-                            alt={faction}
-                            width={48}
-                            height={48}
-                            className="object-contain"
-                          />
-                        </div>
-                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase tracking-wide">
-                          Awaiting Mission Parameters
-                        </h4>
-                        <p className="text-xs text-zinc-500 max-w-sm mt-1.5 font-mono">
-                          Select your faction, theater, and doctrine on the left, then click &quot;GENERATE BUILD ORDER&quot; to compute tournament-calibrated build sequences.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Skeletons when Loading and no items yet */}
-                    {isLoading && (!object?.openingBuildOrder || object.openingBuildOrder.length === 0) && (
-                      <div className="space-y-2.5 p-1">
-                        <div className={`flex items-center gap-2 text-xs font-mono animate-pulse mb-3 ${isArmada ? "text-blue-400" : "text-red-400"}`}>
-                          <RefreshCw className="size-3.5 animate-spin" />
-                          <span>SYNTHESIZING OPENING QUEUE & RECLAIM TIMETABLE...</span>
-                        </div>
-                        {[1, 2, 3, 4, 5].map((idx) => (
-                          <div
-                            key={idx}
-                            className="p-3 rounded border border-zinc-800/80 bg-zinc-950/40 flex items-center gap-3"
-                          >
-                            <Skeleton className="h-5 w-16 bg-zinc-800/90 rounded" />
-                            <Skeleton className="h-4 flex-1 bg-zinc-800/60 rounded" />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Streamed Build Order Items with Smooth Fade-in & Slide */}
-                    {object?.openingBuildOrder && object.openingBuildOrder.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="space-y-2 max-h-[460px] overflow-y-auto pr-2"
-                      >
-                        {object.openingBuildOrder.map((step, idx) => {
-                          if (!step) return null;
-                          const match = step.match(/^(\[[^\]]+\]|\d+[:.]\d+)\s*(.*)$/);
-                          const timestamp = match ? match[1] : `STEP ${idx + 1}`;
-                          const description = match ? match[2] : step;
-
-                          return (
-                            <motion.div
-                              key={idx}
-                              initial={{ opacity: 0, x: -14, scale: 0.98 }}
-                              animate={{ opacity: 1, x: 0, scale: 1 }}
-                              transition={{ duration: 0.2, delay: idx * 0.02 }}
-                              className={`group relative p-3 rounded border bg-zinc-950/60 hover:bg-zinc-900/60 transition-all flex items-start gap-3 ${
-                                isArmada
-                                  ? "border-zinc-800 hover:border-blue-500/50"
-                                  : "border-zinc-800 hover:border-red-500/50"
-                              }`}
-                            >
-                              <Badge
-                                variant="outline"
-                                className={`font-mono text-[10px] px-2 py-0.5 shrink-0 mt-0.5 font-bold ${
-                                  isArmada
-                                    ? "border-blue-500/40 bg-blue-950/40 text-blue-300"
-                                    : "border-red-500/40 bg-red-950/40 text-red-300"
-                                }`}
-                              >
-                                {timestamp}
-                              </Badge>
-                              <div className="text-xs text-zinc-200 font-mono leading-relaxed flex-1">
-                                {description}
-                              </div>
-                            </motion.div>
-                          );
-                        })}
-
-                        {isLoading && (
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="p-2.5 flex items-center gap-2 text-xs font-mono text-zinc-400"
-                          >
-                            <span className={`size-2 rounded-full animate-ping ${isArmada ? "bg-blue-400" : "bg-red-400"}`} />
-                            <span>Decoding incoming factory production stream...</span>
-                          </motion.div>
-                        )}
-                      </motion.div>
-                    )}
-                  </TabsContent>
-
-                  {/* ======================================================== */}
-                  {/* TAB 2: UNIT COMPOSITION WITH ANIMATED CARDS              */}
-                  {/* ======================================================== */}
-                  <TabsContent value="unitComp" className="flex-1 space-y-3 mt-0 outline-none">
-                    {/* Empty State */}
-                    {!object?.unitComposition && !isLoading && !error && (
-                      <div className="h-[400px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800/80 rounded">
-                        <Layers className="size-10 text-zinc-600 mb-3" />
-                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase tracking-wide">
-                          No Unit Requisition Loaded
-                        </h4>
-                        <p className="text-xs text-zinc-500 max-w-sm mt-1.5 font-mono">
-                          Target army quotas, unit ratios, and factory composition guidelines will appear here upon simulation.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Skeletons when Loading */}
-                    {isLoading && (!object?.unitComposition || object.unitComposition.length === 0) && (
-                      <div className="space-y-3 p-1">
-                        <div className={`flex items-center gap-2 text-xs font-mono animate-pulse mb-3 ${isArmada ? "text-blue-400" : "text-red-400"}`}>
-                          <RefreshCw className="size-3.5 animate-spin" />
-                          <span>CALIBRATING PRODUCTION RATIOS & COUNTERS...</span>
-                        </div>
-                        {[1, 2, 3, 4].map((idx) => (
-                          <div
-                            key={idx}
-                            className="p-3.5 rounded border border-zinc-800/80 bg-zinc-950/40 space-y-2"
-                          >
-                            <Skeleton className="h-4 w-48 bg-zinc-800/90 rounded" />
-                            <Skeleton className="h-3 w-full bg-zinc-800/60 rounded" />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Streamed Unit Composition Items */}
-                    {object?.unitComposition && object.unitComposition.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="space-y-2.5 max-h-[460px] overflow-y-auto pr-2"
-                      >
-                        {object.unitComposition.map((comp, idx) => {
-                          if (!comp) return null;
-                          return (
-                            <motion.div
-                              key={idx}
-                              initial={{ opacity: 0, scale: 0.96, y: 6 }}
-                              animate={{ opacity: 1, scale: 1, y: 0 }}
-                              transition={{ duration: 0.22, delay: idx * 0.03 }}
-                              className={`p-3.5 rounded border bg-zinc-950/70 hover:bg-zinc-900/60 transition-all flex items-center justify-between gap-3 ${
-                                isArmada
-                                  ? "border-zinc-800 hover:border-blue-500/50"
-                                  : "border-zinc-800 hover:border-red-500/50"
-                              }`}
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`size-2 rounded-full ${isArmada ? "bg-blue-400" : "bg-red-500"}`} />
-                                <span className="font-mono font-bold text-xs text-zinc-100">
-                                  {comp}
-                                </span>
-                              </div>
-                              <Badge
-                                variant="outline"
-                                className={`font-mono text-[9px] border-zinc-700 shrink-0 uppercase ${
-                                  isArmada ? "text-blue-300 border-blue-500/40" : "text-red-300 border-red-500/40"
-                                }`}
-                              >
-                                {faction}
-                              </Badge>
-                            </motion.div>
-                          );
-                        })}
-
-                        {isLoading && (
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="p-2.5 flex items-center gap-2 text-xs font-mono text-zinc-400"
-                          >
-                            <span className={`size-2 rounded-full animate-ping ${isArmada ? "bg-blue-400" : "bg-red-400"}`} />
-                            <span>Computing army ratios & chassis quotas...</span>
-                          </motion.div>
-                        )}
-                      </motion.div>
-                    )}
-                  </TabsContent>
-
-                  {/* ======================================================== */}
-                  {/* TAB 3: TIMING & ECONOMY NOTES WITH STREAMING TEXT        */}
-                  {/* ======================================================== */}
-                  <TabsContent value="notes" className="flex-1 space-y-3 mt-0 outline-none">
-                    {/* Empty State */}
-                    {!object?.strategyNotes && !isLoading && !error && (
-                      <div className="h-[400px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800/80 rounded">
-                        <Cpu className="size-10 text-zinc-600 mb-3" />
-                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase tracking-wide">
-                          No Strategic Telemetry Recorded
-                        </h4>
-                        <p className="text-xs text-zinc-500 max-w-sm mt-1.5 font-mono">
-                          Economy thresholds, power spikes, energy conversion rules (70E -&gt; 1M), and timing attacks will stream here.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Skeletons when Loading */}
-                    {isLoading && !object?.strategyNotes && (
-                      <div className="space-y-3 p-1">
-                        <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 animate-pulse mb-3">
-                          <RefreshCw className="size-3.5 animate-spin" />
-                          <span>DECIPHERING POWER SPIKES & TIMING ATTACKS...</span>
-                        </div>
-                        <Skeleton className="h-4 w-3/4 bg-zinc-800/90 rounded" />
-                        <Skeleton className="h-4 w-full bg-zinc-800/60 rounded" />
-                        <Skeleton className="h-4 w-5/6 bg-zinc-800/60 rounded" />
-                        <Skeleton className="h-24 w-full bg-zinc-800/40 rounded" />
-                      </div>
-                    )}
-
-                    {/* Streamed Strategy Notes with live typing effect */}
-                    {object?.strategyNotes && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="p-4 rounded border border-zinc-800 bg-zinc-950/70 max-h-[460px] overflow-y-auto pr-3 font-mono text-xs text-zinc-300 space-y-3.5 leading-relaxed"
-                      >
-                        {object.strategyNotes.split("\n\n").map((paragraph, pIdx) => {
-                          const isHeading = paragraph.startsWith("#");
-                          const isBulletList = paragraph.includes("- ") || paragraph.includes("* ");
-
-                          if (isHeading) {
-                            const cleanText = paragraph.replace(/^#+\s*/, "");
-                            return (
-                              <h5
-                                key={pIdx}
-                                className={`font-mono font-bold text-sm border-b pb-1 pt-1.5 flex items-center gap-2 ${
-                                  isArmada
-                                    ? "text-blue-300 border-blue-500/30"
-                                    : "text-red-300 border-red-500/30"
-                                }`}
-                              >
-                                <ChevronRight className="size-3 text-current" />
-                                {cleanText}
-                              </h5>
-                            );
-                          }
-
-                          if (isBulletList) {
-                            const items = paragraph.split("\n").filter((line) => line.trim().length > 0);
-                            return (
-                              <ul key={pIdx} className="space-y-1.5 pl-2 font-mono text-xs">
-                                {items.map((item, iIdx) => (
-                                  <li key={iIdx} className="flex items-start gap-2 text-zinc-200">
-                                    <span className={isArmada ? "text-blue-400" : "text-red-400"}>▸</span>
-                                    <span>{item.replace(/^[-*]\s*/, "")}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            );
-                          }
-
-                          return (
-                            <p key={pIdx} className="text-zinc-300 font-mono text-xs">
-                              {paragraph}
-                            </p>
-                          );
-                        })}
-
-                        {isLoading && (
-                          <motion.span
-                            animate={{ opacity: [0, 1, 0] }}
-                            transition={{ repeat: Infinity, duration: 0.8 }}
-                            className={`inline-block size-2 ml-1 ${isArmada ? "bg-blue-400" : "bg-red-400"}`}
-                          />
-                        )}
-                      </motion.div>
-                    )}
-                  </TabsContent>
-                </Tabs>
-              </div>
-
-              {/* Tactical Status Footer Bar */}
-              <div className="border-t border-zinc-800 bg-zinc-950/90 px-4 py-2 flex items-center justify-between text-[11px] font-mono text-zinc-500">
-                <div className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-emerald-500" />
-                  <span className="text-zinc-400">DATA GROUNDING: ARMADA/CORTEX STRICT</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-zinc-600">LINK: 100%</span>
-                  <span className={isLoading ? (isArmada ? "text-blue-400 font-bold animate-pulse" : "text-red-400 font-bold animate-pulse") : "text-emerald-400 font-bold"}>
-                    {isLoading ? "DOWNLOADING STREAM" : "STANDBY"}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-        </div>
-      </main>
     </div>
   );
 }

@@ -21,6 +21,8 @@ const RESOURCE_DELTAS: Record<string, { metal: string; energy: string }> = {
   'wind generator': { metal: '-35 M', energy: '+14 E' },
   'turbine': { metal: '-35 M', energy: '+14 E' },
   'wind': { metal: '-35 M', energy: '+14 E' },
+  'fusion reactor': { metal: '-4600 M', energy: '+1050 E' },
+  'fusion': { metal: '-4600 M', energy: '+1050 E' },
   'metal extractor': { metal: '+2.0 M', energy: '-3 E' },
   'mex': { metal: '+2.0 M', energy: '-3 E' },
   'energy converter': { metal: '+5.7 M', energy: '-70 E' },
@@ -205,6 +207,7 @@ export function parseBuildStep(rawStep: string, index: number, faction: Faction)
   // If explanation is still empty, synthesize a tactical note
   if (!explanation) {
     if (lowerItem.includes('solar')) explanation = 'Guarantees steady baseline grid generation';
+    else if (lowerItem.includes('fusion')) explanation = 'High-yield T2 thermonuclear reactor fueling late-game converter grid';
     else if (lowerItem.includes('mex') || lowerItem.includes('metal extractor')) explanation = 'Expands metal intake to support continuous queues';
     else if (lowerItem.includes('wind') || lowerItem.includes('turbine')) explanation = 'Capitalizes on map wind velocity spikes';
     else if (lowerItem.includes('factory') || lowerItem.includes('lab') || lowerItem.includes('plant')) explanation = 'Primary production facility for mobile vanguard';

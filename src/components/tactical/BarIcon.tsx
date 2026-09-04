@@ -98,6 +98,32 @@ export const BarIcon: React.FC<BarIconProps> = ({
     );
   }
 
+  // 4. Fusion Reactor (Armada or Cortex official Beyond All Reason render)
+  if (cleanName.includes("fusion")) {
+    if (isArmada || cleanName.includes("armada")) {
+      return (
+        <img
+          src="/armada-fusion.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+        />
+      );
+    }
+
+    // Cortex Fusion Reactor official render
+    return (
+      <img
+        src="/cortex-fusion.png"
+        alt={name}
+        width={size || 32}
+        height={size || 32}
+        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+      />
+    );
+  }
+
 
   // 4. Vehicle Factory / Bot Lab / Air Plant / Shipyard (industrial chassis / robotic arm glyph)
   if (

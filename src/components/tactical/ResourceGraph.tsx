@@ -83,7 +83,7 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
     // Collect step events
     const events: {
       time: number;
-      type: "solar" | "wind" | "mex" | "factory" | "reclaim" | "unit" | "other";
+      type: "solar" | "wind" | "mex" | "fusion" | "factory" | "reclaim" | "unit" | "other";
       count: number;
     }[] = [];
 
@@ -94,6 +94,7 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
       const count = countMatch ? parseInt(countMatch[0], 10) : 1;
 
       if (name.includes("solar")) events.push({ time: sec, type: "solar", count });
+      else if (name.includes("fusion")) events.push({ time: sec, type: "fusion", count });
       else if (name.includes("wind") || name.includes("turbine")) events.push({ time: sec, type: "wind", count });
       else if (name.includes("extractor") || name.includes("mex")) events.push({ time: sec, type: "mex", count });
       else if (name.includes("factory") || name.includes("lab") || name.includes("plant")) events.push({ time: sec, type: "factory", count });
@@ -117,6 +118,8 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
       events.forEach((ev) => {
         if (ev.type === "solar" && t >= ev.time + 12) {
           e += 20 * ev.count;
+        } else if (ev.type === "fusion" && t >= ev.time + 40) {
+          e += 1050 * ev.count;
         } else if (ev.type === "wind" && t >= ev.time + 8) {
           e += mapWindAvg * ev.count;
         } else if (ev.type === "mex" && t >= ev.time + 6) {
@@ -134,7 +137,7 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
       // Factor in construction drain if something is building right now
       const isBuildingStructure = events.some(
         (ev) =>
-          (ev.type === "solar" || ev.type === "wind" || ev.type === "factory") &&
+          (ev.type === "solar" || ev.type === "fusion" || ev.type === "wind" || ev.type === "factory") &&
           t >= ev.time &&
           t < ev.time + 12
       );

@@ -158,9 +158,36 @@ export const BarIcon: React.FC<BarIconProps> = ({
     );
   }
 
-  // 5. Energy Storage / Metal Storage (battery cells / vault cylinder)
+  // 5. Energy Storage / Metal Storage (Armada & Cortex 3D renders, battery cells / vault cylinder)
   if (cleanName.includes("storage")) {
     const isEnergy = cleanName.includes("energy");
+
+    if (isEnergy) {
+      if (isArmada || cleanName.includes("armada")) {
+        return (
+          <img
+            src="/armada-estorage.png"
+            alt={name}
+            width={size || 32}
+            height={size || 32}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          />
+        );
+      }
+
+      // Cortex Energy Storage official render
+      return (
+        <img
+          src="/cortex-estorage.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        />
+      );
+    }
+
+    // Metal Storage fallback vault cylinder
     return (
       <svg
         width={size}
@@ -171,23 +198,10 @@ export const BarIcon: React.FC<BarIconProps> = ({
         className={className}
       >
         <title>{name}</title>
-        {isEnergy ? (
-          <>
-            {/* Battery Cell Outline */}
-            <rect x="6" y="5" width="12" height="15" rx="2" stroke="#eab308" strokeWidth="1.6" fill="#eab308" fillOpacity="0.1" />
-            <rect x="9" y="2" width="6" height="3" rx="0.5" fill="#eab308" />
-            {/* Lightning bolt inside */}
-            <path d="M13 7L9 13H13L11 18L16 11H12L13 7Z" fill="#eab308" />
-          </>
-        ) : (
-          <>
-            {/* Vault Cylinder */}
-            <ellipse cx="12" cy="7" rx="8" ry="3" stroke="#94a3b8" strokeWidth="1.6" fill="#1e293b" />
-            <path d="M4 7V17C4 18.6 7.6 20 12 20C16.4 20 20 18.6 20 17V7" stroke="#94a3b8" strokeWidth="1.6" fill="#1e293b" fillOpacity="0.3" />
-            <ellipse cx="12" cy="12" rx="8" ry="3" stroke="#64748b" strokeWidth="1.2" strokeDasharray="2 2" />
-            <circle cx="12" cy="14" r="1.8" fill={factionAccent} />
-          </>
-        )}
+        <ellipse cx="12" cy="7" rx="8" ry="3" stroke="#94a3b8" strokeWidth="1.6" fill="#1e293b" />
+        <path d="M4 7V17C4 18.6 7.6 20 12 20C16.4 20 20 18.6 20 17V7" stroke="#94a3b8" strokeWidth="1.6" fill="#1e293b" fillOpacity="0.3" />
+        <ellipse cx="12" cy="12" rx="8" ry="3" stroke="#64748b" strokeWidth="1.2" strokeDasharray="2 2" />
+        <circle cx="12" cy="14" r="1.8" fill={factionAccent} />
       </svg>
     );
   }

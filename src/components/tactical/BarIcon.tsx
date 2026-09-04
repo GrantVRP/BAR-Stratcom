@@ -19,36 +19,32 @@ export const BarIcon: React.FC<BarIconProps> = ({
   const factionAccent = isArmada ? "#00f0ff" : "#ff2a2a";
   const cleanName = (name || "").toLowerCase().trim();
 
-  // 1. Solar Collector (hexagonal sun / solar plate motif)
+  // 1. Solar Collector (Armada or Cortex official Beyond All Reason render)
   if (cleanName.includes("solar")) {
-    return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-      >
-        <title>{name}</title>
-        {/* Outer Hexagon */}
-        <polygon
-          points="12,2 21,7.2 21,16.8 12,22 3,16.8 3,7.2"
-          stroke="#eab308"
-          strokeWidth="1.6"
-          fill="#eab308"
-          fillOpacity="0.12"
+    if (isArmada || cleanName.includes("armada")) {
+      return (
+        <img
+          src="/armada-solar.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
         />
-        {/* Photovoltaic Grid Division Lines */}
-        <line x1="12" y1="2" x2="12" y2="22" stroke="#eab308" strokeWidth="1.2" strokeOpacity="0.8" />
-        <line x1="3" y1="7.2" x2="21" y2="16.8" stroke="#eab308" strokeWidth="1.2" strokeOpacity="0.8" />
-        <line x1="3" y1="16.8" x2="21" y2="7.2" stroke="#eab308" strokeWidth="1.2" strokeOpacity="0.8" />
-        {/* Inner radiant energy core */}
-        <circle cx="12" cy="12" r="3" fill="#eab308" />
-        <circle cx="12" cy="12" r="1.5" fill="#ffffff" />
-      </svg>
+      );
+    }
+
+    // Cortex Solar Collector official render
+    return (
+      <img
+        src="/cortex-solar.png"
+        alt={name}
+        width={size || 32}
+        height={size || 32}
+        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+      />
     );
   }
+
 
   // 2. Wind Generator (aerodynamic turbine / wind vane motif)
   if (cleanName.includes("wind")) {

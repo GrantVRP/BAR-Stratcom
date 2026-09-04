@@ -21,6 +21,9 @@ import {
   Cpu,
   RefreshCw,
   SquareSquare,
+  Activity,
+  Terminal,
+  Target,
 } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -30,80 +33,90 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildPlanResponseSchema, type Faction } from "@/lib/game-data";
 
-// Map Presets
+// Map Presets with rich tactical data
 const MAP_PRESETS = [
   {
     id: "small-land",
     name: "Small Land / Chokepoints",
     examples: "Red Comet, Altair Crossing, Comet Catcher",
-    description: "Tight lanes and early conflict. Fast raiders and skirmishers dominate.",
-    windType: "Moderate (8-18)",
+    description: "High early conflict density. Fast raiders and skirmishers hold choke points.",
+    windType: "MODERATE (8-18)",
+    terrainTag: "CHOKE-DENSE",
   },
   {
     id: "open-fields",
     name: "Open Plains / High Wind",
     examples: "Open Metal, SpeedMetal, Plains of Hope",
-    description: "Vast build space. Highly lucrative for Wind Generators and vehicle flanking.",
-    windType: "High (12-28)",
+    description: "Vast open expanses. Extremely cost-effective for Wind Generators and tank flanking.",
+    windType: "HIGH WIND (12-28)",
+    terrainTag: "OPEN-FLANK",
   },
   {
     id: "mountain-hills",
     name: "Mountain / High Altitude",
     examples: "Supreme Strait, Tangerine, High Ground",
-    description: "Rough elevation. Spider bots and high-arc artillery hold key plateaus.",
-    windType: "Low-Moderate (4-14)",
+    description: "Vertical sightlines. Spider bots and high-arc artillery dominate elevated terrain.",
+    windType: "LOW-MOD (4-14)",
+    terrainTag: "ELEVATION-BIAS",
   },
   {
     id: "water-coastal",
-    name: "Coastal & Sea / Island",
+    name: "Coastal & Island Warfare",
     examples: "DSD Shorelines, Coast to Coast, Shore to Shore",
-    description: "Mixed amphibious terrain. Shipyard control or air dominance is vital.",
-    windType: "Consistent (10-20)",
+    description: "Dual-domain logistics. Early sea scout harassment or hovercraft air dominance.",
+    windType: "STABLE (10-20)",
+    terrainTag: "AMPHIBIOUS",
   },
   {
     id: "large-team",
-    name: "Large Team 8v8 (Lane / Eco Roles)",
+    name: "Large Team 8v8 (Frontline/Eco)",
     examples: "All That Glitters, Ishtir, Bismuth Valley",
-    description: "Dedicated frontline vs backline eco/tech roles. Scaled fusion timings.",
-    windType: "Variable (6-22)",
+    description: "Specialized roles. Lane holding raiders versus dedicated backline fusion rushers.",
+    windType: "VARIABLE (6-22)",
+    terrainTag: "SCALE-MACRO",
   },
 ];
 
-// Strategy Presets
+// Strategy Presets with tactical tags
 const STRATEGY_PRESETS = [
   {
     id: "early-tank-rush",
     title: "Early Tank Raider Rush",
-    tag: "High Aggression",
+    tag: "AGGRESSION // T1",
     description: "Fast Vehicle Factory at 1:15. Push 4-6 Flash/Blitz into enemy metal nodes by 2:45.",
+    timingWindow: "02:30 - 03:45",
     icon: Crosshair,
   },
   {
     id: "fast-eco",
     title: "Fast Eco & Tech Rush",
-    tag: "Greedy Macro",
-    description: "Scale Wind/Solar greed, assist Commander nanolathe, push T2 lab by 7:00-8:00.",
+    tag: "MACRO-GREED // T2",
+    description: "Wind/Solar greed, commander nanolathe assist, push T2 lab by 7:00-8:00.",
+    timingWindow: "07:00 - 08:30",
     icon: Zap,
   },
   {
     id: "bot-swarm-choke",
     title: "Bot Skirmish & LLT Creep",
-    tag: "Territory Control",
+    tag: "CONTROL // SKIRMISH",
     description: "Rocko/Storm rocket bot poke with Light Laser Towers locking down vital chokes.",
+    timingWindow: "03:15 - 05:00",
     icon: Shield,
   },
   {
     id: "air-opening",
     title: "Air Opening & Surgical Harass",
-    tag: "Surgical Strike",
+    tag: "SURGICAL // AIR",
     description: "Fast Air Plant into Banshee/Tornado gunships to assassinate unescorted builders.",
+    timingWindow: "03:30 - 04:45",
     icon: Compass,
   },
   {
     id: "heavy-turtle",
     title: "Fortified Turtle into T2/T3 Armor",
-    tag: "Heavy Armor",
+    tag: "DEFENSE // ARMOR",
     description: "Defend early mexes with LLT, bank economy for Bulldog or Goliath heavy armor.",
+    timingWindow: "09:00 - 11:30",
     icon: Layers,
   },
 ];
@@ -129,24 +142,23 @@ export default function BeyondAllReasonDashboard() {
       mapType,
       strategyStyle,
     });
-    // Auto-switch to build order tab
     setActiveTab("buildOrder");
   };
 
   const handleCopy = () => {
     if (!object) return;
     const text = [
-      `=== BEYOND ALL REASON TACTICAL BUILD: ${faction.toUpperCase()} ===`,
-      `Map: ${mapType}`,
-      `Strategy: ${strategyStyle}`,
+      `=== BEYOND ALL REASON STRATCOM DOSSIER: ${faction.toUpperCase()} ===`,
+      `Theater: ${mapType}`,
+      `Doctrine: ${strategyStyle}`,
       "",
-      "--- OPENING BUILD ORDER ---",
-      ...(object.openingBuildOrder || []).map((step, idx) => `${idx + 1}. ${step}`),
+      "--- [01] OPENING BUILD QUEUE ---",
+      ...(object.openingBuildOrder || []).map((step, idx) => `[STEP ${idx + 1}] ${step}`),
       "",
-      "--- TARGET UNIT COMPOSITION ---",
+      "--- [02] TARGET UNIT COMPOSITION ---",
       ...(object.unitComposition || []).map((u) => `• ${u}`),
       "",
-      "--- TIMING & ECONOMY NOTES ---",
+      "--- [03] TIMING & ECONOMY TELEMETRY ---",
       object.strategyNotes || "",
     ].join("\n");
 
@@ -158,61 +170,84 @@ export default function BeyondAllReasonDashboard() {
   const isArmada = faction === "Armada";
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-cyan-500 selection:text-black">
-      {/* Background RTS Grid Overlay */}
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,#1e293b_0%,transparent_70%)] opacity-30" />
-      <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,#09090b_1px,transparent_1px),linear-gradient(to_bottom,#09090b_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20" />
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-cyan-500 selection:text-black font-sans relative overflow-x-hidden">
+      {/* Background Military Grid & Scanline Ambience */}
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(14,165,233,0.15),transparent)]" />
+      <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_10%,#000_60%,transparent_100%)] opacity-30" />
 
-      {/* Main Header */}
+      {/* Top Telemetry Ticker Bar */}
+      <div className="relative z-20 border-b border-zinc-850 bg-zinc-950/90 backdrop-blur px-4 py-1.5 text-[11px] font-mono text-zinc-400 flex items-center justify-between overflow-x-auto gap-4 border-zinc-800/80">
+        <div className="flex items-center gap-4 shrink-0">
+          <div className="flex items-center gap-1.5">
+            <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-zinc-300 font-semibold">SYS.STATUS: OPERATIONAL</span>
+          </div>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">DEFCON:</span>
+          <span className="text-cyan-400 font-bold">ALPHA-1</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">GRID:</span>
+          <span className="text-zinc-300">44°12&apos;N 88°21&apos;W</span>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="text-zinc-500">ENGINE:</span>
+          <span className="text-zinc-300 font-semibold">GEMINI 1.5 PRO</span>
+          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-500">DATA GROUNDING:</span>
+          <span className="text-emerald-400 font-semibold">BAR STRICT ENFORCED</span>
+        </div>
+      </div>
+
+      {/* Main Tactical Command Header */}
       <header className="relative z-10 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="relative p-2.5 rounded-lg border border-cyan-500/30 bg-cyan-950/30 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+          <div className="flex items-center gap-3.5">
+            <div className={`relative p-2.5 rounded border transition-all ${
+              isArmada
+                ? "border-cyan-500/40 bg-cyan-950/30 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+                : "border-amber-500/40 bg-amber-950/30 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.2)]"
+            }`}>
               <Radio className="size-6 animate-pulse" />
-              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
+              <div className="absolute -top-1 -right-1 size-2 rounded-full bg-emerald-400 ring-2 ring-zinc-950" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black tracking-wider uppercase font-mono bg-clip-text text-transparent bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400">
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-xl font-black tracking-widest uppercase font-mono bg-clip-text text-transparent bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400">
                   BAR STRATCOM // TACTICAL ADVISOR
                 </h1>
-                <Badge variant="outline" className="text-xs border-emerald-500/40 text-emerald-400 bg-emerald-950/30 font-mono">
-                  LIVE GRID
+                <Badge variant="outline" className="text-[10px] tracking-wider uppercase border-emerald-500/40 text-emerald-400 bg-emerald-950/20 font-mono">
+                  ACTIVE HUD
                 </Badge>
               </div>
-              <p className="text-xs text-zinc-400 font-mono tracking-tight">
-                BEYOND ALL REASON • TOURNAMENT AI BUILD ENGINE • DATA-GROUNDED
+              <p className="text-xs text-zinc-400 font-mono tracking-tight flex items-center gap-2 mt-0.5">
+                <span>BEYOND ALL REASON</span>
+                <span className="text-zinc-600">•</span>
+                <span>TOURNAMENT BUILD GENERATOR</span>
+                <span className="text-zinc-600">•</span>
+                <span className={isArmada ? "text-cyan-400" : "text-amber-400"}>
+                  {faction.toUpperCase()} ACTIVE
+                </span>
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900/60 text-xs font-mono text-zinc-400">
-              <span className="text-zinc-500">ENGINE:</span>
-              <span className="text-cyan-400 font-semibold">GEMINI 1.5 PRO</span>
-              <span className="text-zinc-600">|</span>
-              <span className="text-zinc-500">VER:</span>
-              <span className="text-zinc-300">v4.2</span>
-            </div>
             {isLoading && (
               <Button
                 variant="destructive"
                 size="sm"
                 onClick={stop}
-                className="font-mono text-xs gap-1.5 shadow-sm"
+                className="font-mono text-xs gap-1.5 h-8 border border-red-500/40 bg-red-950/60 hover:bg-red-900/80 text-red-200 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
               >
                 <SquareSquare className="size-3.5" />
-                ABORT STREAM
+                ABORT TRANSMISSION
               </Button>
             )}
           </div>
         </div>
       </header>
 
-      {/* Main Content: 2-Column RTS Layout */}
+      {/* Main Content: 2-Column RTS Dashboard */}
       <main className="relative z-10 max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
@@ -220,110 +255,118 @@ export default function BeyondAllReasonDashboard() {
           {/* LEFT COLUMN: MULTI-STEP FORM WIZARD (5 cols on lg)       */}
           {/* ======================================================== */}
           <div className="lg:col-span-5 space-y-4">
-            <Card className="border-zinc-800 bg-zinc-900/90 backdrop-blur-md shadow-xl overflow-hidden">
-              {/* Wizard Step Navigation Bar */}
-              <div className="border-b border-zinc-800/80 bg-zinc-950/60 p-3">
-                <div className="flex items-center justify-between text-xs font-mono">
+            <div className="relative rounded-lg border border-zinc-800 bg-zinc-900/90 backdrop-blur-md shadow-2xl overflow-hidden">
+              {/* Tactical Corner Brackets */}
+              <div className="absolute top-0 left-0 size-2.5 border-t-2 border-l-2 border-cyan-400/80 z-20 pointer-events-none" />
+              <div className="absolute top-0 right-0 size-2.5 border-t-2 border-r-2 border-cyan-400/80 z-20 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 size-2.5 border-b-2 border-l-2 border-cyan-400/80 z-20 pointer-events-none" />
+              <div className="absolute bottom-0 right-0 size-2.5 border-b-2 border-r-2 border-cyan-400/80 z-20 pointer-events-none" />
+
+              {/* Wizard Step Progression Bar */}
+              <div className="border-b border-zinc-800 bg-zinc-950/70 p-2.5 px-3">
+                <div className="grid grid-cols-3 gap-1.5 text-[11px] font-mono">
                   {[
-                    { step: 1, label: "FACTION" },
-                    { step: 2, label: "MAP TYPE" },
-                    { step: 3, label: "DOCTRINE" },
+                    { step: 1, label: "01 // FACTION" },
+                    { step: 2, label: "02 // THEATER" },
+                    { step: 3, label: "03 // DOCTRINE" },
                   ].map((item) => (
                     <button
                       key={item.step}
                       type="button"
                       onClick={() => setCurrentStep(item.step)}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded transition-all ${
+                      className={`relative flex items-center justify-center gap-1.5 py-1.5 rounded transition-all font-semibold ${
                         currentStep === item.step
                           ? isArmada
-                            ? "bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 shadow-[0_0_10px_rgba(6,182,212,0.2)]"
-                            : "bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]"
+                            ? "bg-cyan-950/80 text-cyan-300 border border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.25)]"
+                            : "bg-amber-950/80 text-amber-300 border border-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
                           : currentStep > item.step
-                          ? "text-emerald-400 hover:text-emerald-300"
-                          : "text-zinc-500 hover:text-zinc-400"
+                          ? "text-emerald-400 hover:text-emerald-300 bg-emerald-950/20 border border-emerald-500/30"
+                          : "text-zinc-500 hover:text-zinc-400 bg-zinc-950/40 border border-transparent"
                       }`}
                     >
-                      <span className="size-4 rounded-full flex items-center justify-center text-[10px] font-bold border border-current">
-                        {item.step}
-                      </span>
-                      <span>{item.label}</span>
+                      <span className="text-[10px]">{item.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              <CardHeader className="pb-3">
+              {/* Step Header */}
+              <div className="p-4 pb-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-                    <Cpu className="size-3.5 text-zinc-500" />
-                    <span>MISSION PARAMETERS // STEP {currentStep} OF 3</span>
+                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
+                    <Terminal className="size-3.5 text-zinc-500" />
+                    <span>COMMAND PROTOCOL // STEP {currentStep} OF 3</span>
                   </div>
                   <Badge
                     variant="outline"
-                    className={`font-mono text-[10px] uppercase ${
+                    className={`font-mono text-[9px] uppercase tracking-wider ${
                       isArmada
-                        ? "border-cyan-500/40 text-cyan-400 bg-cyan-950/20"
-                        : "border-amber-500/40 text-amber-400 bg-amber-950/20"
+                        ? "border-cyan-500/40 text-cyan-400 bg-cyan-950/30"
+                        : "border-amber-500/40 text-amber-400 bg-amber-950/30"
                     }`}
                   >
-                    {faction} ACTIVE
+                    {faction}
                   </Badge>
                 </div>
-                <CardTitle className="text-lg font-bold text-zinc-100 font-mono tracking-wide">
-                  {currentStep === 1 && "Select Command Faction"}
-                  {currentStep === 2 && "Select Theater of War"}
-                  {currentStep === 3 && "Select Strategic Doctrine"}
-                </CardTitle>
-                <CardDescription className="text-xs text-zinc-400">
-                  {currentStep === 1 && "Choose your technological allegiance. Units are strictly faction-grounded."}
-                  {currentStep === 2 && "Terrain and wind determine energy choice (Wind vs Solar) and chassis path."}
-                  {currentStep === 3 && "Define your early-game timing attack and tech transition timetable."}
-                </CardDescription>
-              </CardHeader>
+                <h3 className="text-base font-bold text-zinc-100 font-mono tracking-wide mt-1">
+                  {currentStep === 1 && "Choose Faction Allegiance"}
+                  {currentStep === 2 && "Select Battlefield Sector"}
+                  {currentStep === 3 && "Engage Strategic Doctrine"}
+                </h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  {currentStep === 1 && "Armada relies on high agility and laser arrays. Cortex commands heavy armor and brute artillery."}
+                  {currentStep === 2 && "Topography dictates wind stability, choke point defense, and factory routing."}
+                  {currentStep === 3 && "Determine your opening aggression window and tech ramp velocity."}
+                </p>
+              </div>
 
-              <CardContent className="space-y-4 pt-1">
+              {/* Wizard Content */}
+              <div className="p-4 pt-2 space-y-4">
                 <AnimatePresence mode="wait">
                   {/* STEP 1: FACTION SELECTION */}
                   {currentStep === 1 && (
                     <motion.div
                       key="step-1"
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: -12 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 10 }}
+                      exit={{ opacity: 0, x: 12 }}
+                      transition={{ duration: 0.2 }}
                       className="space-y-3"
                     >
-                      {/* ARMADA CARD */}
-                      <div
+                      {/* ARMADA SELECTOR */}
+                      <motion.div
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
                         onClick={() => setFaction("Armada")}
                         className={`group relative p-4 rounded-lg border cursor-pointer transition-all ${
                           faction === "Armada"
-                            ? "border-cyan-500 bg-cyan-950/30 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+                            ? "border-cyan-500 bg-cyan-950/40 shadow-[0_0_25px_rgba(6,182,212,0.25)]"
                             : "border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/60"
                         }`}
                       >
                         <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="p-2 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
                               <Shield className="size-5" />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-mono font-bold text-base text-zinc-100 group-hover:text-cyan-400 transition-colors">
+                                <h4 className="font-mono font-bold text-sm text-zinc-100 group-hover:text-cyan-400 transition-colors">
                                   ARMADA
-                                </h3>
-                                <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/40 text-[10px]">
-                                  HIGH MOBILITY
+                                </h4>
+                                <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/40 text-[9px] font-mono">
+                                  TACTICAL MOBILITY
                                 </Badge>
                               </div>
                               <p className="text-xs text-zinc-400 mt-0.5">
-                                High-speed raiders, pulsed lasers, lightning/EMP generators, and stealth tech.
+                                High-speed raiders, pulsed red lasers, EMP lightning weapons, and stealth radar jammers.
                               </p>
                             </div>
                           </div>
                           <div
-                            className={`size-4 rounded-full border flex items-center justify-center ${
+                            className={`size-4 rounded-full border flex items-center justify-center shrink-0 ${
                               faction === "Armada"
-                                ? "border-cyan-400 bg-cyan-500 text-black"
+                                ? "border-cyan-400 bg-cyan-500 text-black shadow-[0_0_8px_rgba(6,182,212,0.8)]"
                                 : "border-zinc-700"
                             }`}
                           >
@@ -331,50 +374,52 @@ export default function BeyondAllReasonDashboard() {
                           </div>
                         </div>
 
-                        <div className="mt-3 pt-3 border-t border-zinc-800/60 flex flex-wrap gap-1.5">
+                        <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex flex-wrap gap-1.5">
                           {["Flash (Raider)", "Stump (Tank)", "Rocko (Rocket)", "Tick (EMP)", "Bulldog (T2)"].map((unit) => (
                             <span
                               key={unit}
-                              className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800/60 text-zinc-300 border border-zinc-700/50"
+                              className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60"
                             >
                               {unit}
                             </span>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
 
-                      {/* CORTEX CARD */}
-                      <div
+                      {/* CORTEX SELECTOR */}
+                      <motion.div
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
                         onClick={() => setFaction("Cortex")}
                         className={`group relative p-4 rounded-lg border cursor-pointer transition-all ${
                           faction === "Cortex"
-                            ? "border-amber-500 bg-amber-950/30 shadow-[0_0_20px_rgba(245,158,11,0.2)]"
+                            ? "border-amber-500 bg-amber-950/40 shadow-[0_0_25px_rgba(245,158,11,0.25)]"
                             : "border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/60"
                         }`}
                       >
                         <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="p-2 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                               <Flame className="size-5" />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-mono font-bold text-base text-zinc-100 group-hover:text-amber-400 transition-colors">
+                                <h4 className="font-mono font-bold text-sm text-zinc-100 group-hover:text-amber-400 transition-colors">
                                   CORTEX
-                                </h3>
-                                <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/40 text-[10px]">
-                                  HEAVY FIREPOWER
+                                </h4>
+                                <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/40 text-[9px] font-mono">
+                                  HEAVY ORDNANCE
                                 </Badge>
                               </div>
                               <p className="text-xs text-zinc-400 mt-0.5">
-                                Brute heavy armor, devastating plasma cannons, riot spread, and pyrotechnics.
+                                Brute heavy armor plating, high-caliber plasma cannons, riot spread, and pyrotechnics.
                               </p>
                             </div>
                           </div>
                           <div
-                            className={`size-4 rounded-full border flex items-center justify-center ${
+                            className={`size-4 rounded-full border flex items-center justify-center shrink-0 ${
                               faction === "Cortex"
-                                ? "border-amber-400 bg-amber-500 text-black"
+                                ? "border-amber-400 bg-amber-500 text-black shadow-[0_0_8px_rgba(245,158,11,0.8)]"
                                 : "border-zinc-700"
                             }`}
                           >
@@ -382,17 +427,17 @@ export default function BeyondAllReasonDashboard() {
                           </div>
                         </div>
 
-                        <div className="mt-3 pt-3 border-t border-zinc-800/60 flex flex-wrap gap-1.5">
+                        <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex flex-wrap gap-1.5">
                           {["Blitz (Tank)", "Pyros (Flame)", "Raider (Assault)", "Leveler (Riot)", "Goliath (T2)"].map((unit) => (
                             <span
                               key={unit}
-                              className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800/60 text-zinc-300 border border-zinc-700/50"
+                              className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60"
                             >
                               {unit}
                             </span>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     </motion.div>
                   )}
 
@@ -400,42 +445,48 @@ export default function BeyondAllReasonDashboard() {
                   {currentStep === 2 && (
                     <motion.div
                       key="step-2"
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: -12 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 10 }}
+                      exit={{ opacity: 0, x: 12 }}
+                      transition={{ duration: 0.2 }}
                       className="space-y-2.5"
                     >
-                      <label className="text-xs font-mono text-zinc-400 uppercase tracking-wide">
-                        Choose Battlefield Topography:
-                      </label>
-                      <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
+                      <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                        <span>SELECT THEATER // TOPOGRAPHY</span>
+                        <span className="text-zinc-500">5 SECTORS IDENTIFIED</span>
+                      </div>
+                      <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
                         {MAP_PRESETS.map((preset) => {
                           const isSelected = mapType.startsWith(preset.name.split(" ")[0]);
                           return (
-                            <div
+                            <motion.div
                               key={preset.id}
+                              whileHover={{ x: 3 }}
                               onClick={() => setMapType(`${preset.name} (${preset.examples})`)}
-                              className={`p-3 rounded-md border cursor-pointer transition-all ${
+                              className={`p-3 rounded border cursor-pointer transition-all ${
                                 isSelected
                                   ? isArmada
-                                    ? "border-cyan-500 bg-cyan-950/30"
-                                    : "border-amber-500 bg-amber-950/30"
-                                  : "border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/40"
+                                    ? "border-cyan-500/80 bg-cyan-950/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                                    : "border-amber-500/80 bg-amber-950/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+                                  : "border-zinc-800 bg-zinc-950/50 hover:border-zinc-700 hover:bg-zinc-900/50"
                               }`}
                             >
                               <div className="flex items-center justify-between">
-                                <h4 className="font-mono text-xs font-semibold text-zinc-200">
-                                  {preset.name}
-                                </h4>
-                                <Badge variant="secondary" className="text-[9px] font-mono bg-zinc-800/80">
+                                <div className="flex items-center gap-2">
+                                  <Target className="size-3.5 text-zinc-500" />
+                                  <h4 className="font-mono text-xs font-semibold text-zinc-200">
+                                    {preset.name}
+                                  </h4>
+                                </div>
+                                <Badge variant="secondary" className="text-[9px] font-mono bg-zinc-800 text-zinc-300">
                                   {preset.windType}
                                 </Badge>
                               </div>
                               <p className="text-[11px] text-zinc-400 mt-1">{preset.description}</p>
                               <p className="text-[10px] font-mono text-zinc-500 mt-1">
-                                Maps: {preset.examples}
+                                SAMPLES: {preset.examples}
                               </p>
-                            </div>
+                            </motion.div>
                           );
                         })}
                       </div>
@@ -446,28 +497,31 @@ export default function BeyondAllReasonDashboard() {
                   {currentStep === 3 && (
                     <motion.div
                       key="step-3"
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: -12 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 10 }}
+                      exit={{ opacity: 0, x: 12 }}
+                      transition={{ duration: 0.2 }}
                       className="space-y-2.5"
                     >
-                      <label className="text-xs font-mono text-zinc-400 uppercase tracking-wide">
-                        Choose Operational Doctrine:
-                      </label>
-                      <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
+                      <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                        <span>SELECT DOCTRINE // ATTACK TIMING</span>
+                        <span className="text-zinc-500">5 PROFILES ARMED</span>
+                      </div>
+                      <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
                         {STRATEGY_PRESETS.map((style) => {
                           const Icon = style.icon;
                           const isSelected = strategyStyle.startsWith(style.title.split(" ")[0]);
                           return (
-                            <div
+                            <motion.div
                               key={style.id}
+                              whileHover={{ x: 3 }}
                               onClick={() => setStrategyStyle(`${style.title} (${style.description})`)}
-                              className={`p-3 rounded-md border cursor-pointer transition-all ${
+                              className={`p-3 rounded border cursor-pointer transition-all ${
                                 isSelected
                                   ? isArmada
-                                    ? "border-cyan-500 bg-cyan-950/30"
-                                    : "border-amber-500 bg-amber-950/30"
-                                  : "border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/40"
+                                    ? "border-cyan-500/80 bg-cyan-950/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                                    : "border-amber-500/80 bg-amber-950/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+                                  : "border-zinc-800 bg-zinc-950/50 hover:border-zinc-700 hover:bg-zinc-900/50"
                               }`}
                             >
                               <div className="flex items-center justify-between">
@@ -481,11 +535,11 @@ export default function BeyondAllReasonDashboard() {
                                   variant="outline"
                                   className="text-[9px] font-mono border-zinc-700 text-zinc-300"
                                 >
-                                  {style.tag}
+                                  {style.timingWindow}
                                 </Badge>
                               </div>
                               <p className="text-[11px] text-zinc-400 mt-1">{style.description}</p>
-                            </div>
+                            </motion.div>
                           );
                         })}
                       </div>
@@ -493,8 +547,8 @@ export default function BeyondAllReasonDashboard() {
                   )}
                 </AnimatePresence>
 
-                {/* Wizard Controls */}
-                <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-between gap-3">
+                {/* Wizard Controls & CTA Button */}
+                <div className="pt-3 border-t border-zinc-800 flex items-center justify-between gap-3">
                   {currentStep > 1 ? (
                     <Button
                       type="button"
@@ -523,50 +577,92 @@ export default function BeyondAllReasonDashboard() {
                       <ChevronRight className="size-3.5 ml-1" />
                     </Button>
                   ) : (
-                    <Button
+                    /* PULSING TACTICAL GLOW CTA BUTTON */
+                    <motion.button
                       type="button"
-                      size="sm"
                       disabled={isLoading}
                       onClick={handleGenerate}
-                      className={`font-mono text-xs text-black font-bold shadow-lg transition-all ${
+                      animate={
+                        isLoading
+                          ? {
+                              boxShadow: isArmada
+                                ? [
+                                    "0 0 10px rgba(6, 182, 212, 0.4)",
+                                    "0 0 35px rgba(6, 182, 212, 0.95)",
+                                    "0 0 10px rgba(6, 182, 212, 0.4)",
+                                  ]
+                                : [
+                                    "0 0 10px rgba(245, 158, 11, 0.4)",
+                                    "0 0 35px rgba(245, 158, 11, 0.95)",
+                                    "0 0 10px rgba(245, 158, 11, 0.4)",
+                                  ],
+                              scale: [1, 1.025, 1],
+                            }
+                          : {
+                              boxShadow: isArmada
+                                ? "0 0 15px rgba(6, 182, 212, 0.3)"
+                                : "0 0 15px rgba(245, 158, 11, 0.3)",
+                            }
+                      }
+                      transition={{
+                        repeat: isLoading ? Infinity : 0,
+                        duration: 1.3,
+                        ease: "easeInOut",
+                      }}
+                      whileHover={{ scale: isLoading ? 1 : 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      className={`relative overflow-hidden px-5 py-2 rounded font-mono text-xs font-black tracking-wider uppercase text-black cursor-pointer transition-all flex items-center justify-center gap-2 ${
                         isArmada
-                          ? "bg-cyan-400 hover:bg-cyan-300 shadow-cyan-500/20"
-                          : "bg-amber-400 hover:bg-amber-300 shadow-amber-500/20"
+                          ? "bg-cyan-400 hover:bg-cyan-300 text-black border border-cyan-300"
+                          : "bg-amber-400 hover:bg-amber-300 text-black border border-amber-300"
                       }`}
                     >
+                      {/* Scanning Beam Animation inside Button when Loading */}
+                      {isLoading && (
+                        <motion.div
+                          animate={{ x: ["-100%", "200%"] }}
+                          transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
+                          className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
+                        />
+                      )}
+
                       {isLoading ? (
                         <>
-                          <RefreshCw className="size-3.5 mr-1.5 animate-spin" />
-                          COMPUTING BUILD...
+                          <RefreshCw className="size-3.5 animate-spin" />
+                          <span>CALIBRATING BUILD ORDER...</span>
                         </>
                       ) : (
                         <>
-                          <Sparkles className="size-3.5 mr-1.5" />
-                          GENERATE STRATEGY
+                          <Sparkles className="size-3.5" />
+                          <span>GENERATE BUILD ORDER</span>
                         </>
                       )}
-                    </Button>
+                    </motion.button>
                   )}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            {/* Quick Summary Card */}
-            <div className="p-3.5 rounded-lg border border-zinc-800/60 bg-zinc-900/40 text-xs font-mono space-y-1.5">
+            {/* Tactical Mission Telemetry Card */}
+            <div className="relative p-3.5 rounded border border-zinc-800 bg-zinc-900/60 backdrop-blur-md text-xs font-mono space-y-2">
+              <div className="text-[10px] text-zinc-500 font-bold tracking-wider flex items-center justify-between border-b border-zinc-800 pb-1.5">
+                <span>ACTIVE SIMULATION PARAMETERS</span>
+                <Activity className="size-3 text-emerald-400" />
+              </div>
               <div className="flex justify-between text-zinc-400">
-                <span>FACTION:</span>
+                <span className="text-zinc-500">FACTION ALLIANCE:</span>
                 <span className={isArmada ? "text-cyan-400 font-bold" : "text-amber-400 font-bold"}>
-                  {faction}
+                  {faction.toUpperCase()}
                 </span>
               </div>
-              <div className="flex justify-between text-zinc-400 truncate">
-                <span>THEATER:</span>
+              <div className="flex justify-between text-zinc-400">
+                <span className="text-zinc-500">THEATER OF WAR:</span>
                 <span className="text-zinc-200 truncate ml-2 max-w-[200px]" title={mapType}>
                   {mapType.split(" (")[0]}
                 </span>
               </div>
-              <div className="flex justify-between text-zinc-400 truncate">
-                <span>DOCTRINE:</span>
+              <div className="flex justify-between text-zinc-400">
+                <span className="text-zinc-500">OPERATIONAL DOCTRINE:</span>
                 <span className="text-zinc-200 truncate ml-2 max-w-[200px]" title={strategyStyle}>
                   {strategyStyle.split(" (")[0]}
                 </span>
@@ -578,30 +674,57 @@ export default function BeyondAllReasonDashboard() {
           {/* RIGHT COLUMN: GENERATED STRATEGY CARD (7 cols on lg)     */}
           {/* ======================================================== */}
           <div className="lg:col-span-7">
-            <Card className="border-zinc-800 bg-zinc-900/90 backdrop-blur-md shadow-2xl min-h-[580px] flex flex-col">
-              
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="relative rounded-lg border border-zinc-800 bg-zinc-900/90 backdrop-blur-md shadow-2xl min-h-[580px] flex flex-col overflow-hidden"
+            >
+              {/* Tactical Corner Reticle Accents */}
+              <div className={`absolute top-0 left-0 size-3 border-t-2 border-l-2 z-20 pointer-events-none ${isArmada ? "border-cyan-400" : "border-amber-400"}`} />
+              <div className={`absolute top-0 right-0 size-3 border-t-2 border-r-2 z-20 pointer-events-none ${isArmada ? "border-cyan-400" : "border-amber-400"}`} />
+              <div className={`absolute bottom-0 left-0 size-3 border-b-2 border-l-2 z-20 pointer-events-none ${isArmada ? "border-cyan-400" : "border-amber-400"}`} />
+              <div className={`absolute bottom-0 right-0 size-3 border-b-2 border-r-2 z-20 pointer-events-none ${isArmada ? "border-cyan-400" : "border-amber-400"}`} />
+
+              {/* Radar Sweep Scan Line while Loading */}
+              {isLoading && (
+                <motion.div
+                  animate={{ y: ["0%", "500%"] }}
+                  transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
+                  className={`absolute inset-x-0 h-1 z-30 pointer-events-none opacity-80 ${
+                    isArmada
+                      ? "bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_rgba(6,182,212,0.8)]"
+                      : "bg-gradient-to-r from-transparent via-amber-400 to-transparent shadow-[0_0_15px_rgba(245,158,11,0.8)]"
+                  }`}
+                />
+              )}
+
               {/* Strategic Header */}
-              <CardHeader className="border-b border-zinc-800/80 bg-zinc-950/70 p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="border-b border-zinc-800 bg-zinc-950/80 p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className={`size-2 rounded-full ${isLoading ? "bg-amber-400 animate-ping" : "bg-emerald-400"}`} />
-                      <span className="text-xs font-mono font-bold tracking-wider text-zinc-300 uppercase">
-                        STRATCOM SIMULATION DOSSIER
+                      <span className="text-xs font-mono font-bold tracking-widest text-zinc-300 uppercase">
+                        TACTICAL ENGAGEMENT DOSSIER
                       </span>
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge
-                        className={`text-[10px] font-mono ${
+                        className={`text-[10px] font-mono tracking-wide ${
                           isArmada
                             ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
                             : "bg-amber-500/20 text-amber-300 border-amber-500/40"
                         }`}
                       >
-                        {faction}
+                        {faction.toUpperCase()}
                       </Badge>
                       <Badge variant="outline" className="text-[10px] font-mono border-zinc-700 text-zinc-400">
                         {mapType.split(" (")[0]}
+                      </Badge>
+                      <Badge variant="outline" className="text-[10px] font-mono border-zinc-700 text-zinc-400">
+                        {strategyStyle.split(" (")[0]}
                       </Badge>
                     </div>
                   </div>
@@ -615,22 +738,22 @@ export default function BeyondAllReasonDashboard() {
                         className="font-mono text-xs border-zinc-700 hover:bg-zinc-800 h-8 gap-1.5"
                       >
                         {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
-                        {copied ? "COPIED" : "EXPORT"}
+                        {copied ? "COPIED" : "EXPORT DOSSIER"}
                       </Button>
                     )}
                   </div>
                 </div>
-              </CardHeader>
+              </div>
 
               {/* Error Message if Generation Fails */}
               {error && (
-                <div className="m-4 p-3 rounded-md bg-destructive/15 border border-destructive/40 text-destructive text-xs font-mono flex items-start gap-2.5">
-                  <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+                <div className="m-4 p-3.5 rounded border border-red-500/40 bg-red-950/30 text-red-300 text-xs font-mono flex items-start gap-2.5">
+                  <AlertTriangle className="size-4 shrink-0 mt-0.5 text-red-400" />
                   <div className="space-y-1">
-                    <p className="font-bold uppercase">Transmission Interrupted</p>
+                    <p className="font-bold uppercase tracking-wide">Telemetry Disrupted</p>
                     <p className="text-zinc-300">{error.message || "Failed to generate strategy."}</p>
-                    <p className="text-[10px] text-zinc-400">
-                      Ensure `GOOGLE_GENERATIVE_AI_API_KEY` or `GEMINI_API_KEY` is configured in your `.env.local` file.
+                    <p className="text-[11px] text-zinc-400">
+                      Verify `GOOGLE_GENERATIVE_AI_API_KEY` or `GEMINI_API_KEY` is present in `.env.local`.
                     </p>
                   </div>
                 </div>
@@ -639,70 +762,75 @@ export default function BeyondAllReasonDashboard() {
               {/* Strategy Tabs Content */}
               <div className="p-4 flex-1 flex flex-col">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-                  <TabsList className="grid grid-cols-3 bg-zinc-950/80 border border-zinc-800 p-1 mb-4 h-9">
+                  <TabsList className="grid grid-cols-3 bg-zinc-950/90 border border-zinc-800 p-1 mb-4 h-9.5">
                     <TabsTrigger
                       value="buildOrder"
-                      className="font-mono text-xs data-active:bg-zinc-800/90 data-active:text-zinc-100"
+                      className="font-mono text-xs data-active:bg-zinc-800 data-active:text-cyan-300 data-active:shadow-sm"
                     >
                       <Clock className="size-3.5 mr-1.5 text-cyan-400" />
                       Build Order
                     </TabsTrigger>
                     <TabsTrigger
                       value="unitComp"
-                      className="font-mono text-xs data-active:bg-zinc-800/90 data-active:text-zinc-100"
+                      className="font-mono text-xs data-active:bg-zinc-800 data-active:text-amber-300 data-active:shadow-sm"
                     >
                       <Layers className="size-3.5 mr-1.5 text-amber-400" />
                       Unit Comp
                     </TabsTrigger>
                     <TabsTrigger
                       value="notes"
-                      className="font-mono text-xs data-active:bg-zinc-800/90 data-active:text-zinc-100"
+                      className="font-mono text-xs data-active:bg-zinc-800 data-active:text-emerald-300 data-active:shadow-sm"
                     >
                       <Cpu className="size-3.5 mr-1.5 text-emerald-400" />
                       Timing & Economy
                     </TabsTrigger>
                   </TabsList>
 
-                  {/* TAB 1: BUILD ORDER */}
-                  <TabsContent value="buildOrder" className="flex-1 space-y-3 mt-0">
+                  {/* ======================================================== */}
+                  {/* TAB 1: BUILD ORDER WITH ANIMATED STREAMING ITEMS          */}
+                  {/* ======================================================== */}
+                  <TabsContent value="buildOrder" className="flex-1 space-y-3 mt-0 outline-none">
                     {/* Empty State */}
                     {!object?.openingBuildOrder && !isLoading && !error && (
-                      <div className="h-[380px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-lg">
+                      <div className="h-[400px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800/80 rounded">
                         <Radio className="size-10 text-zinc-600 mb-3 animate-pulse" />
-                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase">
-                          Awaiting Operational Parameters
+                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase tracking-wide">
+                          Awaiting Mission Parameters
                         </h4>
-                        <p className="text-xs text-zinc-500 max-w-sm mt-1">
-                          Configure your faction, map, and strategy on the left, then trigger `GENERATE STRATEGY` to compute tournament-calibrated build queues.
+                        <p className="text-xs text-zinc-500 max-w-sm mt-1.5 font-mono">
+                          Select your faction, theater, and doctrine on the left, then click &quot;GENERATE BUILD ORDER&quot; to compute tournament-calibrated build sequences.
                         </p>
                       </div>
                     )}
 
                     {/* Skeletons when Loading and no items yet */}
                     {isLoading && (!object?.openingBuildOrder || object.openingBuildOrder.length === 0) && (
-                      <div className="space-y-2.5 p-2">
+                      <div className="space-y-2.5 p-1">
                         <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 animate-pulse mb-3">
-                          <RefreshCw className="size-3 animate-spin" />
-                          <span>DECIPHERING OPENING QUEUE & RECLAIM TIMETABLE...</span>
+                          <RefreshCw className="size-3.5 animate-spin" />
+                          <span>SYNTHESIZING OPENING QUEUE & RECLAIM TIMETABLE...</span>
                         </div>
                         {[1, 2, 3, 4, 5].map((idx) => (
                           <div
                             key={idx}
-                            className="p-3 rounded-lg border border-zinc-800/60 bg-zinc-950/40 flex items-center gap-3"
+                            className="p-3 rounded border border-zinc-800/80 bg-zinc-950/40 flex items-center gap-3"
                           >
-                            <Skeleton className="h-5 w-16 bg-zinc-800/80 rounded" />
+                            <Skeleton className="h-5 w-16 bg-zinc-800/90 rounded" />
                             <Skeleton className="h-4 flex-1 bg-zinc-800/60 rounded" />
                           </div>
                         ))}
                       </div>
                     )}
 
-                    {/* Streamed Build Order Items */}
+                    {/* Streamed Build Order Items with Smooth Fade-in & Slide */}
                     {object?.openingBuildOrder && object.openingBuildOrder.length > 0 && (
-                      <div className="space-y-2 max-h-[460px] overflow-y-auto pr-2">
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="space-y-2 max-h-[460px] overflow-y-auto pr-2"
+                      >
                         {object.openingBuildOrder.map((step, idx) => {
                           if (!step) return null;
-                          // Extract timestamp if formatted like "[0:25] Commander: ..."
                           const match = step.match(/^(\[[^\]]+\]|\d+[:.]\d+)\s*(.*)$/);
                           const timestamp = match ? match[1] : `STEP ${idx + 1}`;
                           const description = match ? match[2] : step;
@@ -710,18 +838,26 @@ export default function BeyondAllReasonDashboard() {
                           return (
                             <motion.div
                               key={idx}
-                              initial={{ opacity: 0, y: 4 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.15 }}
-                              className="group p-3 rounded-lg border border-zinc-800/80 bg-zinc-950/60 hover:border-zinc-700/80 hover:bg-zinc-900/40 transition-all flex items-start gap-3"
+                              initial={{ opacity: 0, x: -14, scale: 0.98 }}
+                              animate={{ opacity: 1, x: 0, scale: 1 }}
+                              transition={{ duration: 0.2, delay: idx * 0.02 }}
+                              className={`group relative p-3 rounded border bg-zinc-950/60 hover:bg-zinc-900/60 transition-all flex items-start gap-3 ${
+                                isArmada
+                                  ? "border-zinc-800 hover:border-cyan-500/40"
+                                  : "border-zinc-800 hover:border-amber-500/40"
+                              }`}
                             >
                               <Badge
                                 variant="outline"
-                                className="font-mono text-[10px] px-2 py-0.5 border-zinc-700 bg-zinc-900 text-cyan-400 font-semibold shrink-0 mt-0.5"
+                                className={`font-mono text-[10px] px-2 py-0.5 shrink-0 mt-0.5 font-bold ${
+                                  isArmada
+                                    ? "border-cyan-500/40 bg-cyan-950/30 text-cyan-300"
+                                    : "border-amber-500/40 bg-amber-950/30 text-amber-300"
+                                }`}
                               >
                                 {timestamp}
                               </Badge>
-                              <div className="text-xs text-zinc-200 font-mono leading-relaxed">
+                              <div className="text-xs text-zinc-200 font-mono leading-relaxed flex-1">
                                 {description}
                               </div>
                             </motion.div>
@@ -729,44 +865,50 @@ export default function BeyondAllReasonDashboard() {
                         })}
 
                         {isLoading && (
-                          <div className="p-2 flex items-center gap-2 text-xs font-mono text-zinc-400 animate-pulse">
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="p-2.5 flex items-center gap-2 text-xs font-mono text-zinc-400"
+                          >
                             <span className="size-2 rounded-full bg-cyan-400 animate-ping" />
-                            Streaming additional queue commands...
-                          </div>
+                            <span>Decoding incoming factory production stream...</span>
+                          </motion.div>
                         )}
-                      </div>
+                      </motion.div>
                     )}
                   </TabsContent>
 
-                  {/* TAB 2: UNIT COMPOSITION */}
-                  <TabsContent value="unitComp" className="flex-1 space-y-3 mt-0">
+                  {/* ======================================================== */}
+                  {/* TAB 2: UNIT COMPOSITION WITH ANIMATED CARDS              */}
+                  {/* ======================================================== */}
+                  <TabsContent value="unitComp" className="flex-1 space-y-3 mt-0 outline-none">
                     {/* Empty State */}
                     {!object?.unitComposition && !isLoading && !error && (
-                      <div className="h-[380px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-lg">
+                      <div className="h-[400px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800/80 rounded">
                         <Layers className="size-10 text-zinc-600 mb-3" />
-                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase">
+                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase tracking-wide">
                           No Unit Requisition Loaded
                         </h4>
-                        <p className="text-xs text-zinc-500 max-w-sm mt-1">
-                          The strategic composition breakdown will show recommended army ratios and role counters once generated.
+                        <p className="text-xs text-zinc-500 max-w-sm mt-1.5 font-mono">
+                          Target army quotas, unit ratios, and factory composition guidelines will appear here upon simulation.
                         </p>
                       </div>
                     )}
 
                     {/* Skeletons when Loading */}
                     {isLoading && (!object?.unitComposition || object.unitComposition.length === 0) && (
-                      <div className="space-y-3 p-2">
+                      <div className="space-y-3 p-1">
                         <div className="flex items-center gap-2 text-xs font-mono text-amber-400 animate-pulse mb-3">
-                          <RefreshCw className="size-3 animate-spin" />
-                          <span>CALIBRATING FACTORY PRODUCTION RATIOS...</span>
+                          <RefreshCw className="size-3.5 animate-spin" />
+                          <span>CALIBRATING PRODUCTION RATIOS & COUNTERS...</span>
                         </div>
                         {[1, 2, 3, 4].map((idx) => (
                           <div
                             key={idx}
-                            className="p-3.5 rounded-lg border border-zinc-800/60 bg-zinc-950/40 space-y-2"
+                            className="p-3.5 rounded border border-zinc-800/80 bg-zinc-950/40 space-y-2"
                           >
-                            <Skeleton className="h-4 w-44 bg-zinc-800/80 rounded" />
-                            <Skeleton className="h-3 w-full bg-zinc-800/50 rounded" />
+                            <Skeleton className="h-4 w-48 bg-zinc-800/90 rounded" />
+                            <Skeleton className="h-3 w-full bg-zinc-800/60 rounded" />
                           </div>
                         ))}
                       </div>
@@ -774,25 +916,34 @@ export default function BeyondAllReasonDashboard() {
 
                     {/* Streamed Unit Composition Items */}
                     {object?.unitComposition && object.unitComposition.length > 0 && (
-                      <div className="space-y-2.5 max-h-[460px] overflow-y-auto pr-2">
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="space-y-2.5 max-h-[460px] overflow-y-auto pr-2"
+                      >
                         {object.unitComposition.map((comp, idx) => {
                           if (!comp) return null;
                           return (
                             <motion.div
                               key={idx}
-                              initial={{ opacity: 0, scale: 0.98 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              className="p-3.5 rounded-lg border border-zinc-800/80 bg-zinc-950/70 hover:border-zinc-700/80 transition-all flex items-center justify-between gap-3"
+                              initial={{ opacity: 0, scale: 0.96, y: 6 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              transition={{ duration: 0.22, delay: idx * 0.03 }}
+                              className={`p-3.5 rounded border bg-zinc-950/70 hover:bg-zinc-900/60 transition-all flex items-center justify-between gap-3 ${
+                                isArmada
+                                  ? "border-zinc-800 hover:border-cyan-500/40"
+                                  : "border-zinc-800 hover:border-amber-500/40"
+                              }`}
                             >
-                              <div className="flex items-center gap-2.5">
-                                <div className="size-2 rounded-full bg-amber-400" />
+                              <div className="flex items-center gap-3">
+                                <div className={`size-2 rounded-full ${isArmada ? "bg-cyan-400" : "bg-amber-400"}`} />
                                 <span className="font-mono font-bold text-xs text-zinc-100">
                                   {comp}
                                 </span>
                               </div>
                               <Badge
                                 variant="outline"
-                                className="font-mono text-[9px] border-zinc-700 text-zinc-400 shrink-0"
+                                className="font-mono text-[9px] border-zinc-700 text-zinc-400 shrink-0 uppercase"
                               >
                                 {faction}
                               </Badge>
@@ -801,47 +952,58 @@ export default function BeyondAllReasonDashboard() {
                         })}
 
                         {isLoading && (
-                          <div className="p-2 flex items-center gap-2 text-xs font-mono text-zinc-400 animate-pulse">
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="p-2.5 flex items-center gap-2 text-xs font-mono text-zinc-400"
+                          >
                             <span className="size-2 rounded-full bg-amber-400 animate-ping" />
-                            Calculating remaining army quotas...
-                          </div>
+                            <span>Computing army ratios & chassis quotas...</span>
+                          </motion.div>
                         )}
-                      </div>
+                      </motion.div>
                     )}
                   </TabsContent>
 
-                  {/* TAB 3: TIMING & ECONOMY NOTES */}
-                  <TabsContent value="notes" className="flex-1 space-y-3 mt-0">
+                  {/* ======================================================== */}
+                  {/* TAB 3: TIMING & ECONOMY NOTES WITH STREAMING TEXT        */}
+                  {/* ======================================================== */}
+                  <TabsContent value="notes" className="flex-1 space-y-3 mt-0 outline-none">
                     {/* Empty State */}
                     {!object?.strategyNotes && !isLoading && !error && (
-                      <div className="h-[380px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-lg">
+                      <div className="h-[400px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800/80 rounded">
                         <Cpu className="size-10 text-zinc-600 mb-3" />
-                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase">
-                          No Tactical Dossier Available
+                        <h4 className="font-mono font-bold text-sm text-zinc-300 uppercase tracking-wide">
+                          No Strategic Telemetry Recorded
                         </h4>
-                        <p className="text-xs text-zinc-500 max-w-sm mt-1">
-                          Economy thresholds, energy conversion advice (70E -&gt; 1M), and timing attack execution details will appear here.
+                        <p className="text-xs text-zinc-500 max-w-sm mt-1.5 font-mono">
+                          Economy thresholds, power spikes, energy conversion rules (70E -&gt; 1M), and timing attacks will stream here.
                         </p>
                       </div>
                     )}
 
                     {/* Skeletons when Loading */}
                     {isLoading && !object?.strategyNotes && (
-                      <div className="space-y-3 p-2">
+                      <div className="space-y-3 p-1">
                         <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 animate-pulse mb-3">
-                          <RefreshCw className="size-3 animate-spin" />
-                          <span>SYNTHESIZING TIMING ATTACKS & POWER THRESHOLDS...</span>
+                          <RefreshCw className="size-3.5 animate-spin" />
+                          <span>DECIPHERING POWER SPIKES & TIMING ATTACKS...</span>
                         </div>
-                        <Skeleton className="h-4 w-3/4 bg-zinc-800/80 rounded" />
+                        <Skeleton className="h-4 w-3/4 bg-zinc-800/90 rounded" />
                         <Skeleton className="h-4 w-full bg-zinc-800/60 rounded" />
                         <Skeleton className="h-4 w-5/6 bg-zinc-800/60 rounded" />
-                        <Skeleton className="h-20 w-full bg-zinc-800/40 rounded" />
+                        <Skeleton className="h-24 w-full bg-zinc-800/40 rounded" />
                       </div>
                     )}
 
-                    {/* Streamed Strategy Notes */}
+                    {/* Streamed Strategy Notes with live typing effect */}
                     {object?.strategyNotes && (
-                      <div className="p-4 rounded-lg border border-zinc-800/80 bg-zinc-950/70 max-h-[460px] overflow-y-auto pr-3 font-sans text-xs text-zinc-300 space-y-3 leading-relaxed">
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="p-4 rounded border border-zinc-800 bg-zinc-950/70 max-h-[460px] overflow-y-auto pr-3 font-mono text-xs text-zinc-300 space-y-3.5 leading-relaxed"
+                      >
                         {object.strategyNotes.split("\n\n").map((paragraph, pIdx) => {
                           const isHeading = paragraph.startsWith("#");
                           const isBulletList = paragraph.includes("- ") || paragraph.includes("* ");
@@ -851,9 +1013,13 @@ export default function BeyondAllReasonDashboard() {
                             return (
                               <h5
                                 key={pIdx}
-                                className="font-mono font-bold text-sm text-zinc-100 border-b border-zinc-800 pb-1 pt-2 flex items-center gap-2 text-cyan-300"
+                                className={`font-mono font-bold text-sm border-b pb-1 pt-1.5 flex items-center gap-2 ${
+                                  isArmada
+                                    ? "text-cyan-300 border-cyan-500/20"
+                                    : "text-amber-300 border-amber-500/20"
+                                }`}
                               >
-                                <ChevronRight className="size-3 text-cyan-400" />
+                                <ChevronRight className="size-3 text-current" />
                                 {cleanText}
                               </h5>
                             );
@@ -864,8 +1030,8 @@ export default function BeyondAllReasonDashboard() {
                             return (
                               <ul key={pIdx} className="space-y-1.5 pl-2 font-mono text-xs">
                                 {items.map((item, iIdx) => (
-                                  <li key={iIdx} className="flex items-start gap-2">
-                                    <span className="text-cyan-400 mt-0.5">•</span>
+                                  <li key={iIdx} className="flex items-start gap-2 text-zinc-200">
+                                    <span className={isArmada ? "text-cyan-400" : "text-amber-400"}>▸</span>
                                     <span>{item.replace(/^[-*]\s*/, "")}</span>
                                   </li>
                                 ))}
@@ -881,25 +1047,32 @@ export default function BeyondAllReasonDashboard() {
                         })}
 
                         {isLoading && (
-                          <span className="inline-block size-2 bg-cyan-400 animate-ping ml-1" />
+                          <motion.span
+                            animate={{ opacity: [0, 1, 0] }}
+                            transition={{ repeat: Infinity, duration: 0.8 }}
+                            className="inline-block size-2 bg-cyan-400 ml-1"
+                          />
                         )}
-                      </div>
+                      </motion.div>
                     )}
                   </TabsContent>
                 </Tabs>
               </div>
 
-              {/* Footer Status Bar */}
-              <div className="border-t border-zinc-800/80 bg-zinc-950/80 px-4 py-2 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+              {/* Tactical Status Footer Bar */}
+              <div className="border-t border-zinc-800 bg-zinc-950/90 px-4 py-2 flex items-center justify-between text-[11px] font-mono text-zinc-500">
                 <div className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-emerald-500" />
-                  <span>BAR DATA CONSTRAINTS ENFORCED</span>
+                  <span className="text-zinc-400">DATA GROUNDING: ARMADA/CORTEX STRICT</span>
                 </div>
-                <span>
-                  {isLoading ? "RECEIVING TELEMETRY STREAM..." : "READY FOR DEPLOYMENT"}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-zinc-600">LINK: 100%</span>
+                  <span className={isLoading ? "text-amber-400 font-bold animate-pulse" : "text-emerald-400 font-bold"}>
+                    {isLoading ? "DOWNLOADING STREAM" : "STANDBY"}
+                  </span>
+                </div>
               </div>
-            </Card>
+            </motion.div>
           </div>
 
         </div>

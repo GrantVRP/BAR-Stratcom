@@ -32,12 +32,12 @@ function buildSystemPrompt(faction: Faction): string {
     .join('\n');
 
   const vehicleUnits = factionUnits
-    .filter((u) => u.factory === 'Vehicle Factory')
+    .filter((u) => u.factory === 'Vehicle Plant')
     .map((u) => `- ${u.name} (${u.tier} ${u.role}) [Cost: ${u.cost.metal}M / ${u.cost.energy}E]: ${u.description}`)
     .join('\n');
 
   const airUnits = factionUnits
-    .filter((u) => u.factory === 'Air Plant')
+    .filter((u) => u.factory === 'Aircraft Plant')
     .map((u) => `- ${u.name} (${u.tier} ${u.role}) [Cost: ${u.cost.metal}M / ${u.cost.energy}E]: ${u.description}`)
     .join('\n');
 
@@ -78,10 +78,10 @@ ${ecoStructures}
 ### Bot Lab Units:
 ${botUnits}
 
-### Vehicle Factory Units:
+### Vehicle Plant Units:
 ${vehicleUnits}
 
-### Air Plant Units:
+### Aircraft Plant Units:
 ${airUnits}
 
 ### Shipyard Units:
@@ -116,14 +116,14 @@ function generateTacticalPreset(
         openingBuildOrder: [
           '[0:00] Commander: Queue 1x Solar Collector (Guarantees +20 energy baseline, avoiding stalling)',
           '[0:24] Commander: Construct 2x Metal Extractor on high-density natural deposits',
-          '[0:50] Commander: Deploy Vehicle Factory angled toward primary expansion lane',
+          '[0:50] Commander: Deploy Vehicle Plant angled toward primary expansion lane',
           '[1:16] Commander: Build 2x Wind Turbine (Exploit wind fluctuations for extra build power)',
-          '[1:35] Vehicle Factory: Queue 2x Flash (High-Speed Raider Tank) for immediate scouting & harassment',
-          '[2:00] Vehicle Factory: Queue 1x Construction Vehicle to capture perimeter metal nodes',
-          '[2:25] Vehicle Factory: Continuous queue of 6x Flash + 2x Stump (Medium Assault Tank)',
+          '[1:35] Vehicle Plant: Queue 2x Flash (High-Speed Raider Tank) for immediate scouting & harassment',
+          '[2:00] Vehicle Plant: Queue 1x Construction Vehicle to capture perimeter metal nodes',
+          '[2:25] Vehicle Plant: Continuous queue of 6x Flash + 2x Stump (Medium Assault Tank)',
           '[2:50] Commander: Reclaim nearby boulder clusters and trees for 250+ instant metal injection',
-          '[3:15] Vehicle Factory: Queue 1x Samson (Mobile Anti-Air) to counter enemy scout planes',
-          '[4:00] Vehicle Factory: Produce 2x Wolverine (Mobile Artillery) to siege early Light Laser Towers',
+          '[3:15] Vehicle Plant: Queue 1x Samson (Mobile Anti-Air) to counter enemy scout planes',
+          '[4:00] Vehicle Plant: Produce 2x Wolverine (Mobile Artillery) to siege early Light Laser Towers',
         ],
         unitComposition: [
           '8x Flash (Armada High-Speed Twin Laser Raider Tank)',
@@ -135,7 +135,7 @@ function generateTacticalPreset(
         strategyNotes: `# Armada Blitzkrieg: Early Vehicle Raider Strategy
 
 ### ⚡ Economy & Power Spike Management
-- **Early Grid Stability**: Starting with 1x Solar Collector guarantees your Commander and initial 2x Mexes won't energy-stall before the Vehicle Factory goes down.
+- **Early Grid Stability**: Starting with 1x Solar Collector guarantees your Commander and initial 2x Mexes won't energy-stall before the Vehicle Plant goes down.
 - **Wind Exploitation**: On open maps, layer 4-6 Wind Turbines after the factory starts. If wind drops below 6, queue a secondary Solar Collector immediately.
 - **Energy Conversion**: As soon as you hit 400+ excess energy, drop 1x Energy Converter to translate power surges into +5.7 metal per second.
 
@@ -152,15 +152,15 @@ function generateTacticalPreset(
     if (isAirOpening) {
       return {
         openingBuildOrder: [
-          '[0:00] Commander: Queue 1x Solar Collector (+20 energy to support high air plant energy drain)',
+          '[0:00] Commander: Queue 1x Solar Collector (+20 energy to support high aircraft plant energy drain)',
           '[0:22] Commander: Construct 2x Metal Extractor on base ore spots',
           '[0:46] Commander: Build 1x Solar Collector + 1x Wind Turbine',
-          '[1:10] Commander: Construct Air Plant in safe backline pocket',
-          '[1:32] Air Plant: Queue 1x Sparrow (Scout Plane) to map enemy factory type and openings',
-          '[1:48] Air Plant: Queue 2x Tornado (Assault Gunship) for surgical builder snipes',
+          '[1:10] Commander: Construct Aircraft Plant in safe backline pocket',
+          '[1:32] Aircraft Plant: Queue 1x Sparrow (Scout Plane) to map enemy factory type and openings',
+          '[1:48] Aircraft Plant: Queue 2x Tornado (Assault Gunship) for surgical builder snipes',
           '[2:20] Commander: Construct 2x Metal Extractor on secondary nodes + 1x Energy Storage',
-          '[2:50] Air Plant: Queue 1x Freedom Fighter (Interceptor) to secure air superiority',
-          '[3:20] Air Plant: Queue 2x Shadow (Bomber) for synchronized strike on enemy energy farms',
+          '[2:50] Aircraft Plant: Queue 1x Freedom Fighter (Interceptor) to secure air superiority',
+          '[3:20] Aircraft Plant: Queue 2x Shadow (Bomber) for synchronized strike on enemy energy farms',
           '[4:10] Commander: Drop 1x Light Laser Tower (LLT) at front choke against counter-raiders',
         ],
         unitComposition: [
@@ -220,14 +220,14 @@ function generateTacticalPreset(
       openingBuildOrder: [
         '[0:00] Commander: Queue 1x Solar Collector (+20 energy guaranteed)',
         '[0:20] Commander: Construct 2x Metal Extractor on primary natural ore nodes',
-        '[0:45] Commander: Deploy Vehicle Factory angled directly toward the central battlefield',
+        '[0:45] Commander: Deploy Vehicle Plant angled directly toward the central battlefield',
         '[1:12] Commander: Build 2x Wind Turbine to power the initial vehicle production queue',
-        '[1:30] Vehicle Factory: Queue 2x Blitz (Fast Raider Tank) to probe enemy expansion',
-        '[1:55] Vehicle Factory: Construct 1x Construction Vehicle to capture perimeter metal spots',
-        '[2:20] Vehicle Factory: Continuous production of 6x Blitz + 2x Raider (Medium Assault Tank)',
+        '[1:30] Vehicle Plant: Queue 2x Blitz (Fast Raider Tank) to probe enemy expansion',
+        '[1:55] Vehicle Plant: Construct 1x Construction Vehicle to capture perimeter metal spots',
+        '[2:20] Vehicle Plant: Continuous production of 6x Blitz + 2x Raider (Medium Assault Tank)',
         '[2:45] Commander: Reclaim heavy rock boulders for +300 metal injection into production',
-        '[3:10] Vehicle Factory: Queue 1x Leveler (Riot Tank) to obliterate swarming light raiders',
-        '[3:40] Vehicle Factory: Add 2x Slasher (Mobile Rocket AA) for long-range support and anti-air',
+        '[3:10] Vehicle Plant: Queue 1x Leveler (Riot Tank) to obliterate swarming light raiders',
+        '[3:40] Vehicle Plant: Add 2x Slasher (Mobile Rocket AA) for long-range support and anti-air',
       ],
       unitComposition: [
         '8x Blitz (Cortex Fast Pulse Laser Raider Tank)',
@@ -240,7 +240,7 @@ function generateTacticalPreset(
 
 ### ⚡ Heavy Chassis Power Consumption
 - Cortex tanks carry thicker armor plating and demand solid energy upkeep. Build 1x Solar Collector and supplement with 3-4 Wind Turbines.
-- Keep energy above 150 at all times so your Commander can D-Gun surprise raiders without stalling the Vehicle Factory.
+- Keep energy above 150 at all times so your Commander can D-Gun surprise raiders without stalling the Vehicle Plant.
 
 ### 🎯 Timing Attack Windows (02:30 - 03:45)
 - **Blitz Incursion (02:30)**: Group 4x Blitz raiders and dive past the front line to snipe 2-3 enemy Metal Extractors. Blitz acceleration is lethal against light bots.

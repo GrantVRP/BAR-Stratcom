@@ -125,13 +125,122 @@ export const BarIcon: React.FC<BarIconProps> = ({
   }
 
 
-  // 4. Vehicle Factory / Bot Lab / Air Plant / Shipyard (industrial chassis / robotic arm glyph)
+  // 4. Vehicle Plant / Factory / Bot Lab / Aircraft Plant / Shipyard (industrial chassis / robotic arm glyph)
   if (
     cleanName.includes("factory") ||
     cleanName.includes("lab") ||
     cleanName.includes("plant") ||
-    cleanName.includes("shipyard")
+    cleanName.includes("shipyard") ||
+    cleanName.includes("aircraft")
   ) {
+    // Vehicle Plant / Factory official 3D renders
+    if (cleanName.includes("vehicle") || cleanName.includes("vplant")) {
+      if ((isArmada || cleanName.includes("armada")) && !cleanName.includes("cortex") && !cleanName.includes("cor")) {
+        return (
+          <img
+            src="/armada-vplant.png"
+            alt={name}
+            width={size || 32}
+            height={size || 32}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          />
+        );
+      }
+
+      // Cortex Vehicle Plant official 3D render
+      return (
+        <img
+          src="/cortex-vplant.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        />
+      );
+    }
+
+    // Bot Lab official 3D render
+    if (cleanName.includes("bot lab") || cleanName.includes("botlab") || cleanName === "lab") {
+      if ((isArmada || cleanName.includes("armada")) && !cleanName.includes("cortex") && !cleanName.includes("cor")) {
+        return (
+          <img
+            src="/armada-botlab.png"
+            alt={name}
+            width={size || 32}
+            height={size || 32}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          />
+        );
+      }
+
+      // Cortex Bot Lab official 3D render
+      return (
+        <img
+          src="/cortex-botlab.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        />
+      );
+    }
+
+    // Aircraft Plant official 3D render
+    if (
+      cleanName.includes("aircraft") ||
+      cleanName.includes("air plant") ||
+      cleanName.includes("airplant")
+    ) {
+      if ((isArmada || cleanName.includes("armada")) && !cleanName.includes("cortex") && !cleanName.includes("cor")) {
+        return (
+          <img
+            src="/armada-aircraft-plant.png"
+            alt={name}
+            width={size || 32}
+            height={size || 32}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          />
+        );
+      }
+
+      // Cortex Aircraft Plant official 3D render
+      return (
+        <img
+          src="/cortex-aircraft-plant.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        />
+      );
+    }
+
+    // Shipyard official 3D render
+    if (cleanName.includes("shipyard") || cleanName.includes("naval")) {
+      if ((isArmada || cleanName.includes("armada")) && !cleanName.includes("cortex") && !cleanName.includes("cor")) {
+        return (
+          <img
+            src="/armada-shipyard.png"
+            alt={name}
+            width={size || 32}
+            height={size || 32}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          />
+        );
+      }
+
+      // Cortex Shipyard official 3D render
+      return (
+        <img
+          src="/cortex-shipyard.png"
+          alt={name}
+          width={size || 32}
+          height={size || 32}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        />
+      );
+    }
+
     return (
       <svg
         width={size}

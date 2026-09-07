@@ -99,7 +99,7 @@ const STRATEGY_PRESETS = [
     title: "Early Tank Raider Rush",
     tag: "T1 // AGGRESSION",
     timingWindow: "02:30 - 03:45",
-    description: "Vehicle Factory rush. Flank 4-6 Flash/Blitz into enemy metal extractors.",
+    description: "Vehicle Plant rush. Flank 4-6 Flash/Blitz into enemy metal extractors.",
     icon: Crosshair,
   },
   {
@@ -123,7 +123,7 @@ const STRATEGY_PRESETS = [
     title: "Air Opening & Surgical Harass",
     tag: "T1 // SURGICAL AIR",
     timingWindow: "03:30 - 04:45",
-    description: "Fast Air Plant into gunships to assassinate exposed perimeter constructors.",
+    description: "Fast Aircraft Plant into gunships to assassinate exposed perimeter constructors.",
     icon: Compass,
   },
   {

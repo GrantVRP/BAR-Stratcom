@@ -11,16 +11,16 @@ export const FactionSchema = z.enum(['Armada', 'Cortex']);
 
 export const FACTORY_TYPES = [
   'Bot Lab',
-  'Vehicle Factory',
-  'Air Plant',
+  'Vehicle Plant',
+  'Aircraft Plant',
   'Shipyard',
 ] as const;
 export type FactoryType = (typeof FACTORY_TYPES)[number];
 
 export const FactoryTypeSchema = z.enum([
   'Bot Lab',
-  'Vehicle Factory',
-  'Air Plant',
+  'Vehicle Plant',
+  'Aircraft Plant',
   'Shipyard',
 ]);
 
@@ -261,7 +261,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   },
 
   // ----------------------------------------------------
-  // Armada - T1 Vehicle Factory
+  // Armada - T1 Vehicle Plant
   // ----------------------------------------------------
   {
     id: 'armada-flash',
@@ -270,7 +270,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Raider',
     description: 'High-speed light assault tank armed with twin rapid-fire red lasers. Iconic Armada frontline raider.',
     cost: { metal: 105, energy: 850, buildTime: 20 },
@@ -287,7 +287,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'Medium battle tank with heavy armor and a reliable high-velocity plasma cannon.',
     cost: { metal: 190, energy: 1650, buildTime: 36 },
@@ -304,7 +304,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Anti-Air',
     description: 'Mobile anti-air missile launcher truck with extended detection radar.',
     cost: { metal: 115, energy: 1100, buildTime: 25 },
@@ -321,7 +321,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Artillery',
     description: 'Light mobile artillery and mine-laying vehicle for siege breaking and area denial.',
     cost: { metal: 165, energy: 1550, buildTime: 34 },
@@ -333,7 +333,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   },
 
   // ----------------------------------------------------
-  // Armada - T1 Air Plant
+  // Armada - T1 Aircraft Plant
   // ----------------------------------------------------
   {
     id: 'armada-sparrow',
@@ -342,7 +342,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Air Plant',
+    factory: 'Aircraft Plant',
     role: 'Scout',
     description: 'High-altitude, high-speed reconnaissance plane for early intel gathering.',
     cost: { metal: 35, energy: 650, buildTime: 9 },
@@ -359,7 +359,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Air Plant',
+    factory: 'Aircraft Plant',
     role: 'Fighter',
     description: 'T1 air superiority interceptor equipped with twin air-to-air missiles.',
     cost: { metal: 85, energy: 1700, buildTime: 20 },
@@ -376,7 +376,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Air Plant',
+    factory: 'Aircraft Plant',
     role: 'Bomber',
     description: 'Tactical carpet bomber designed to execute pinpoint bombing runs on economy nodes.',
     cost: { metal: 135, energy: 3200, buildTime: 32 },
@@ -393,7 +393,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Air Plant',
+    factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'Rotary assault gunship capable of hovering and precision pulse fire.',
     cost: { metal: 180, energy: 3800, buildTime: 38 },
@@ -486,7 +486,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Armada',
     category: 'Unit',
     tier: 'T2',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'Massive heavy assault tank boasting twin high-caliber plasma cannons and heavy composite armor.',
     cost: { metal: 880, energy: 9500, buildTime: 95 },
@@ -604,7 +604,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   },
 
   // ----------------------------------------------------
-  // Cortex - T1 Vehicle Factory
+  // Cortex - T1 Vehicle Plant
   // ----------------------------------------------------
   {
     id: 'cortex-blitz',
@@ -613,7 +613,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Raider',
     description: 'Nimble raider tank equipped with a fast pulse laser. Cortex answer to the Flash.',
     cost: { metal: 98, energy: 780, buildTime: 18 },
@@ -630,7 +630,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'Workhorse T1 medium tank with heavy armor and dependable cannon fire.',
     cost: { metal: 180, energy: 1500, buildTime: 34 },
@@ -647,7 +647,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Riot',
     description: 'Short-range heavy riot tank armed with a devastating spread-shot riot cannon.',
     cost: { metal: 220, energy: 1850, buildTime: 40 },
@@ -664,7 +664,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Anti-Air',
     description: 'Versatile rocket truck providing both surface-to-air and long-range light ground support.',
     cost: { metal: 120, energy: 1200, buildTime: 26 },
@@ -676,7 +676,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   },
 
   // ----------------------------------------------------
-  // Cortex - T1 Air Plant
+  // Cortex - T1 Aircraft Plant
   // ----------------------------------------------------
   {
     id: 'cortex-avenger',
@@ -685,7 +685,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Air Plant',
+    factory: 'Aircraft Plant',
     role: 'Fighter',
     description: 'T1 air superiority interceptor equipped with high-velocity air-to-air laser cannons.',
     cost: { metal: 82, energy: 1650, buildTime: 19 },
@@ -702,7 +702,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
-    factory: 'Air Plant',
+    factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'Aggressive T1 assault gunship bristling with twin light pulse lasers for surgical ground strikes.',
     cost: { metal: 175, energy: 3600, buildTime: 36 },
@@ -778,7 +778,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T2',
-    factory: 'Vehicle Factory',
+    factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'The iconic Cortex 100-ton super-heavy assault tank. Features devastating heavy twin cannons and fortress-grade armor.',
     cost: { metal: 1250, energy: 13500, buildTime: 120 },

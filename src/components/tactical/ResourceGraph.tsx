@@ -74,9 +74,8 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
   const [hoveredSecond, setHoveredSecond] = useState<number | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  // Faction color
-  const isArmada = faction === "Armada";
-  const metalColor = isArmada ? "#48a2ef" : "#94a3b8";
+  // Standard metal resource slate-silver color across all factions
+  const metalColor = "#94a3b8";
 
   // Simulate economic runway from t = 0 to 300s
   const { trajectoryData, stallIntervals } = useMemo(() => {

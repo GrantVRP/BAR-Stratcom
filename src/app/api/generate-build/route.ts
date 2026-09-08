@@ -1,11 +1,13 @@
 import { streamObject } from 'ai';
 import { createGoogleGenerativeAI, google } from '@ai-sdk/google';
 import { z } from 'zod';
+import transcriptsData from '../../../../data/transcripts.json';
 import {
   getUnitsByFaction,
   getEconomyStructures,
   FactionSchema,
   buildPlanResponseSchema,
+  ECONOMY_RULES,
   type Faction,
 } from '../../../lib/game-data';
 
@@ -18,10 +20,42 @@ const requestBodySchema = z.object({
 });
 
 /**
- * Builds a strict data-grounded system prompt embedding the official BAR unit roster
- * and strictly forbidding cross-faction or hallucinated units.
+ * Generates condensed transcript excerpts from the scraped competitive video guides
+ * to serve as few-shot caster style references in Gemini's context window.
  */
-function buildSystemPrompt(faction: Faction): string {
+function getCompetitiveFewShotExcerpts(): string {
+  // Transcripts array contains 5 guides: Hy_xebtAfr4, amWOq-lxyIk, 0QLGRwhjTpI, xCn777Cu-q4, _KSbQkz7qDM
+  const sourceGuides = transcriptsData
+    .map((t) => `• "${t.title}" (${t.video_id})`)
+    .join('\n');
+
+  return `=======================================================
+FEW-SHOT EXAMPLES: TOURNAMENT CASTER STRATEGY TONE
+(Derived from official competitive guide transcripts in data/transcripts.json:
+${sourceGuides})
+=======================================================
+Adopt the energetic, tactical, jargon-rich tone of an elite tournament caster for the 'strategyNotes' section. Study these condensed excerpts from real tournament guides:
+
+--- EXCERPT 1: "BAR Academy 1v1 Competitive Opening Breakdown" (Theta Crystals) ---
+"Ladies and gentlemen, welcome back to the BAR Academy casting desk! Look at the tempo on Theta Crystals: you cannot drop a factory without hitting that +60 Energy threshold first, otherwise your nanofabrication crawls and you're handing map control away on a silver platter. Notice how Vader manages build power—he never floats 400 metal in the bank. He immediately drops construction turrets and scales wind while cycling res bots on fallen husks. If your opponent opens vehicles, you must play greedier with your build power. Eat the perimeter crystal clusters, keep your energy-to-metal ratio locked at 10:1 (100E per 10M), and when that forward radar detects raiders slipping along the ridge, rotate your skirmish screen immediately!"
+
+--- EXCERPT 2: "Competitive Frontline Build Order & Strategy" (All That Smolders) ---
+"On All That Smolders, observe the strict discipline on the Commander opening: 2 Mexes into immediate power grid scaling. You NEVER queue your Bot Lab or Vehicle Plant before hitting +60 Energy. If the map wind gauge is fluctuating under 8, do NOT gamble on turbines—drop solid Solar Collectors for guaranteed +20 output. Once your factory finishes its first combat wing, shift the Commander to reclaiming early obsolete solars and spawn boulders to refund 100% of the metal back into heavy armor. That gives you an instant 250-300 metal injection right as the 3-minute combat skirmish erupts!"
+
+--- EXCERPT 3: "BAR Economy, Metal, Energy, & Build Power Masterclass" ---
+"In high-level BAR, your build power is completely worthless if your grid crashes. Remember the golden ratio: maintain 100 Energy generation for every 10 Metal income. If you start stalling out on energy, your laser towers stop firing and your factory build rate drops by 70%. Never queue excess constructors without the power to feed them. The moment your energy storage crosses 400+, slide on your energy converters (70E -> 1M) for a steady +5.7 metal influx, and use your Commander to guard-assist the factory during key timing attack windows!"`;
+}
+
+/**
+ * Builds a strict data-grounded system prompt embedding the official BAR unit roster,
+ * competitive meta guidelines (+60E rule, 100E:10M ratio, wind vs solar, reclaim tasks),
+ * and tournament caster few-shot excerpts.
+ */
+function buildSystemPrompt(
+  faction: Faction,
+  mapType?: string,
+  strategyStyle?: string
+): string {
   const factionUnits = getUnitsByFaction(faction);
   const opposingFaction: Faction = faction === 'Armada' ? 'Cortex' : 'Armada';
   const opposingUnits = getUnitsByFaction(opposingFaction);
@@ -54,7 +88,9 @@ function buildSystemPrompt(faction: Faction): string {
     new Set(opposingUnits.map((u) => u.name).filter((name) => !factionUnits.some((fu) => fu.name === name)))
   ).join(', ');
 
-  return `You are an elite Beyond All Reason (BAR) competitive Grandmaster strategist.
+  const fewShotExcerpts = getCompetitiveFewShotExcerpts();
+
+  return `You are an elite Beyond All Reason (BAR) competitive Grandmaster strategist and veteran tournament caster.
 Your task is to generate an optimal, tournament-grade opening build order and army strategy for the chosen faction, map type, and strategy style.
 
 =======================================================
@@ -87,12 +123,52 @@ ${airUnits}
 ### Shipyard Units:
 ${navalUnits}
 
-3. TIMING & ECONOMY GUIDELINES:
-- Commanders begin with 1000 metal and 1000 energy storage.
-- An initial Mex costs ~50M and Solars cost ~145M.
-- Keep commander build queues tight to prevent energy or metal stalling.
-- Explicitly detail when to expand to 3-4 metal extractors and when the first factory starts outputting units.
-- In 'strategyNotes', provide actionable tactical advice on timing attacks, power surges, energy converters (70E -> 1M), and commander d-gun/reclaim usage.`;
+=======================================================
+COMPETITIVE META GUIDELINES (MANDATORY ENFORCEMENT):
+=======================================================
+You MUST adhere strictly to these fundamental Beyond All Reason competitive rules in the generated 'openingBuildOrder' and 'strategyNotes':
+
+1. NEVER PLACE A FACTORY BEFORE REACHING +60 ENERGY:
+   - The Commander opening queue MUST achieve at least +${ECONOMY_RULES.minEnergyBeforeFactory} Energy income BEFORE placing any factory (Bot Lab, Vehicle Plant, Aircraft Plant, Shipyard).
+   - Standard competitive opening: 2x Metal Extractors, followed immediately by Solars or Wind Turbines that bring grid output to +60E or greater, and ONLY THEN queue the factory.
+   - Dropping a factory before +60E stalls the Commander's 300 build power, cuts nanofabrication speed in half, delays early raiders, and forfeits early lane initiative.
+
+2. MAINTAIN THE 100 ENERGY TO 10 METAL RATIO:
+   - Always balance economic expansion according to the golden competitive ratio: ${ECONOMY_RULES.energyToMetalRatio}.
+   - Every additional metal extractor or reclaimed metal flow must be backed by matching energy generation (+10E per +1M) so production queues, radar coverage, and energy-based defenses never brown out.
+
+3. MAP WIND EVALUATION (WIND TURBINES VS. SOLAR COLLECTORS):
+   - ${ECONOMY_RULES.windVsSolar.guideline}
+   - Low or fluctuating wind maps (average wind < ${ECONOMY_RULES.windVsSolar.minAvgWindForTurbines}): prioritize Solar Collectors (+20 fixed) for guaranteed grid stability.
+   - High wind maps (average wind >= ${ECONOMY_RULES.windVsSolar.minAvgWindForTurbines}): start with 1 Solar baseline, then scale Wind Turbines in spaced pairs to prevent catastrophic chain explosions.
+
+4. COMMANDER RECLAIM & OBSOLETE POWER RECYCLING:
+   - ${ECONOMY_RULES.commanderReclaim.earlyBoost}
+   - ${ECONOMY_RULES.commanderReclaim.recycleObsoletePower}
+   - The opening queue MUST explicitly include Commander reclaim tasks:
+     a) Reclaim spawn rock clusters or dense trees between 02:00-03:00 for an immediate 250-300 metal injection to fuel continuous factory unit queues.
+     b) Reclaim early obsolete Solar Collectors once wind farms or advanced power are established to recover 100% of their 145 metal cost and re-invest it into heavy combat units.
+
+5. ENERGY CONVERTER THRESHOLD:
+   - Conversion rate: ${ECONOMY_RULES.energyConversion.rate}.
+   - ${ECONOMY_RULES.energyConversion.overflowTrigger}.
+
+${fewShotExcerpts}
+
+=======================================================
+OUTPUT FORMAT & CASTER VOICE INSTRUCTIONS:
+=======================================================
+1. 'openingBuildOrder':
+   - An array of precise, timestamped build steps formatted like '[M:SS] Unit/Building: Action (Tactical Rationale)'.
+   - MUST show +60 Energy achieved BEFORE the factory drops.
+   - MUST factor map wind into turbine vs solar placement.
+   - MUST include Commander reclaim of rocks and recycling of early obsolete power.
+2. 'unitComposition':
+   - Target unit counts and roles using ONLY valid ${faction} units.
+3. 'strategyNotes':
+   - Formatted in comprehensive GitHub-flavored Markdown.
+   - Written in the energetic, analytical, high-tempo style of a veteran tournament caster (as exemplified in the few-shot excerpts above).
+   - Break down the 100E:10M macro balance, timing attack execution windows, Commander reclaim sweeps, and radar/skirmish positioning.`;
 }
 
 /**
@@ -114,16 +190,18 @@ function generateTacticalPreset(
     if (isTankRush) {
       return {
         openingBuildOrder: [
-          '[0:00] Commander: Queue 1x Solar Collector (Guarantees +20 energy baseline, avoiding stalling)',
-          '[0:24] Commander: Construct 2x Metal Extractor on high-density natural deposits',
-          '[0:50] Commander: Deploy Vehicle Plant angled toward primary expansion lane',
-          '[1:16] Commander: Build 2x Wind Turbine (Exploit wind fluctuations for extra build power)',
-          '[1:35] Vehicle Plant: Queue 2x Flash (High-Speed Raider Tank) for immediate scouting & harassment',
-          '[2:00] Vehicle Plant: Queue 1x Construction Vehicle to capture perimeter metal nodes',
-          '[2:25] Vehicle Plant: Continuous queue of 6x Flash + 2x Stump (Medium Assault Tank)',
-          '[2:50] Commander: Reclaim nearby boulder clusters and trees for 250+ instant metal injection',
-          '[3:15] Vehicle Plant: Queue 1x Samson (Mobile Anti-Air) to counter enemy scout planes',
-          '[4:00] Vehicle Plant: Produce 2x Wolverine (Mobile Artillery) to siege early Light Laser Towers',
+          '[0:00] Commander: Queue 1x Solar Collector (+20E baseline grid stability)',
+          '[0:20] Commander: Construct 2x Metal Extractor on base deposits (+4.4M/s)',
+          '[0:42] Commander: Construct 2x Solar Collector (Locks in +60E threshold required before factory placement)',
+          '[1:08] Commander: Deploy Vehicle Plant (Guaranteed zero nanofabrication stall with +60E online)',
+          '[1:32] Commander: Construct 2x Wind Turbine (Map wind average >= 8, scaling power for vehicle queue)',
+          '[1:48] Vehicle Plant: Queue 2x Flash (High-Speed Raider Tank) for immediate scouting & lane control',
+          '[2:10] Vehicle Plant: Queue 1x Construction Vehicle to capture perimeter metal nodes',
+          '[2:32] Commander: Reclaim nearby rock cluster (+280 instant metal injection to accelerate tank queue)',
+          '[2:55] Vehicle Plant: Continuous queue of 6x Flash + 2x Stump (Medium Assault Tank)',
+          '[3:25] Commander: Reclaim 1x early obsolete Solar Collector (+145 metal refunded into heavy armor)',
+          '[3:50] Vehicle Plant: Queue 1x Samson (Mobile Anti-Air) to screen against early scout planes',
+          '[4:15] Vehicle Plant: Produce 2x Wolverine (Mobile Artillery) to dismantle forward defense turrets',
         ],
         unitComposition: [
           '8x Flash (Armada High-Speed Twin Laser Raider Tank)',
@@ -132,36 +210,40 @@ function generateTacticalPreset(
           '2x Wolverine (Light Mobile Artillery / Mine Dispenser)',
           '1x Beaver / Construction Vehicle (Perimeter Mex Expansion)',
         ],
-        strategyNotes: `# Armada Blitzkrieg: Early Vehicle Raider Strategy
+        strategyNotes: `# 🎙️ Caster Desk: Armada Blitzkrieg - Early Vehicle Raider Surge
 
-### ⚡ Economy & Power Spike Management
-- **Early Grid Stability**: Starting with 1x Solar Collector guarantees your Commander and initial 2x Mexes won't energy-stall before the Vehicle Plant goes down.
-- **Wind Exploitation**: On open maps, layer 4-6 Wind Turbines after the factory starts. If wind drops below 6, queue a secondary Solar Collector immediately.
-- **Energy Conversion**: As soon as you hit 400+ excess energy, drop 1x Energy Converter to translate power surges into +5.7 metal per second.
+### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+- **The +60E Power Threshold**: Notice how we never drop the Vehicle Plant until 3 Solars lock down +60 Energy. Dropping a factory on +20E cuts Commander build power down to a crawl and delays your first Flash tank by 25 seconds—an eternity in competitive BAR!
+- **100:10 Macro Sustain**: As perimeter Mexes come online (+10M), immediately balance with Wind Turbines to maintain 100 Energy per 10 Metal. When excess power crosses 400+, slide on 1x Energy Converter (70E -> 1M) for a steady +5.7 metal influx.
+
+### 🌬️ Wind vs. Solar Tactical Adaptation
+- If map wind averages >= 8, scale spaced pairs of Wind Turbines to avoid chain explosions. If wind falls below 6, drop an extra Solar Collector immediately to keep nanofabricators running at 100% capacity.
+
+### 🛠️ Commander Reclaim & Power Recycling
+- **02:30 Rock Reclaim**: Commander vacuums up local boulder clusters for +280 instant metal, injecting pure fuel into continuous Flash and Stump production.
+- **03:25 Solar Recycling**: Once wind turbines stabilize, reclaim 1x early obsolete Solar Collector. That recovers 100% of the 145 metal investment, instantly converted into frontline armor!
 
 ### 🎯 Timing Attack Execution Window (02:30 - 03:45)
-- **Primary Raid (02:30)**: Group your first 4-6 Flash tanks. Do NOT attack the enemy Commander or early Light Laser Towers head-on. Sweep around the outer flanks to snipe isolated enemy Metal Extractors.
-- **Assault Follow-Up (04:15)**: Once the enemy pulls units to defend, push your 4x Stumps and 2x Wolverines down the middle lane to crack defensive towers and force commander D-Gun usage.
-
-### 🛠️ Commander & Reclaim Protocols
-- Reclaim heavy boulders and pine trees around the spawn at 02:45 to accelerate continuous tank production without draining your metal reserves.
-- Guard the factory with the Commander once 4 mexes are online to double factory build rate!`,
+- **Flank Harassment (02:30)**: Group 4-6 Flash tanks. Never dive the enemy Commander's D-Gun! Sweep the outer lanes to snipe unprotected Metal Extractors.
+- **Armor Push (04:15)**: Follow up with 4x Stumps and 2x Wolverines to crack static Light Laser Towers from outside their 420 range.`,
       };
     }
 
     if (isAirOpening) {
       return {
         openingBuildOrder: [
-          '[0:00] Commander: Queue 1x Solar Collector (+20 energy to support high aircraft plant energy drain)',
-          '[0:22] Commander: Construct 2x Metal Extractor on base ore spots',
-          '[0:46] Commander: Build 1x Solar Collector + 1x Wind Turbine',
-          '[1:10] Commander: Construct Aircraft Plant in safe backline pocket',
-          '[1:32] Aircraft Plant: Queue 1x Sparrow (Scout Plane) to map enemy factory type and openings',
-          '[1:48] Aircraft Plant: Queue 2x Tornado (Assault Gunship) for surgical builder snipes',
-          '[2:20] Commander: Construct 2x Metal Extractor on secondary nodes + 1x Energy Storage',
-          '[2:50] Aircraft Plant: Queue 1x Freedom Fighter (Interceptor) to secure air superiority',
-          '[3:20] Aircraft Plant: Queue 2x Shadow (Bomber) for synchronized strike on enemy energy farms',
-          '[4:10] Commander: Drop 1x Light Laser Tower (LLT) at front choke against counter-raiders',
+          '[0:00] Commander: Queue 1x Solar Collector (+20E baseline grid stability)',
+          '[0:20] Commander: Construct 2x Metal Extractor on base deposits (+4.4M/s)',
+          '[0:44] Commander: Construct 2x Solar Collector (Achieves mandatory +60E before high-drain air plant)',
+          '[1:12] Commander: Deploy Aircraft Plant in safe backline pocket',
+          '[1:36] Aircraft Plant: Queue 1x Sparrow (Scout Plane) to map enemy factory type and openings',
+          '[1:52] Aircraft Plant: Queue 2x Tornado (Assault Gunship) for surgical builder snipes',
+          '[2:20] Commander: Reclaim nearby boulder cluster (+250 instant metal injection)',
+          '[2:45] Commander: Construct 2x Metal Extractor on secondary nodes + 1x Energy Storage',
+          '[3:10] Commander: Reclaim 1x obsolete Solar once grid scales with wind turbines (+145 metal recovered)',
+          '[3:35] Aircraft Plant: Queue 1x Freedom Fighter (Air Superiority Interceptor)',
+          '[4:05] Aircraft Plant: Queue 2x Shadow (Tactical Bomber) for synchronized strike on enemy energy farms',
+          '[4:40] Commander: Establish 1x Light Laser Tower (LLT) at front choke against counter-raiders',
         ],
         unitComposition: [
           '4x Tornado (Armada Rotary Assault Gunship)',
@@ -169,31 +251,37 @@ function generateTacticalPreset(
           '2x Freedom Fighter (Air Superiority Interceptor)',
           '1x Sparrow (Reconnaissance Scout Plane)',
         ],
-        strategyNotes: `# Armada Air Supremacy: Gunship & Bomber Surgical Harass
+        strategyNotes: `# 🎙️ Caster Desk: Armada Air Supremacy - Gunship & Bomber Surgical Harass
 
-### ⚡ Air Logistics & Energy Caution
-- Air construction is notoriously energy-heavy. Running 2x Solars plus early Energy Storage is mandatory to avoid halving your factory nanofabrication speed.
-- Over-building bombers without air superiority is fatal—always keep 1-2 Freedom Fighters on patrol ahead of your bombers.
+### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+- **Air Factory Power Floor**: Air plants have brutal energy demands. Starting before +60E will brown out your base instantly. Securing 3x Solars gives the +60E bedrock needed to keep the nanofabricator spinning without choking the Commander.
+- **100:10 Ratio & Energy Storage**: Air units drink energy like water. Build early Energy Storage before your second bomber is queued to cushion high burst drain and enable Commander D-Gun defense.
+
+### 🌬️ Wind vs. Solar & Commander Power Recycling
+- Scale wind turbines in the safe backline. At 03:10, reclaim 1x early Solar Collector to refund 145 metal directly into Freedom Fighter anti-air defense.
 
 ### 🎯 Timing Windows (03:15 - 04:30)
-- **03:15 Gunship Snipe**: Fly Tornados over cliffs to pick off unescorted enemy constructors.
-- **04:15 Carpet Bombing**: Coordinate 2x Shadows against clustered enemy Wind Turbines or Solars for massive chain explosions!`,
+- **03:15 Gunship Snipe**: Fly Tornados over ridgelines to eliminate isolated constructors.
+- **04:15 Carpet Bombing**: Coordinate 2x Shadows against tightly packed enemy windmills for massive secondary chain reactions!`,
       };
     }
 
     // Default Armada Bot Skirmish / Eco
     return {
       openingBuildOrder: [
-        '[0:00] Commander: Queue 1x Solar Collector (+20 energy guaranteed)',
-        '[0:22] Commander: Construct 2x Metal Extractor on base deposits',
-        '[0:45] Commander: Deploy Bot Lab on elevated terrain for short deployment paths',
-        '[1:10] Commander: Build 2x Wind Turbine for extra build power',
-        '[1:28] Bot Lab: Queue 2x Tick (Miniature Spider Scout) for vision and early EMP annoyance',
-        '[1:45] Bot Lab: Queue 4x Paw (Light Raider Bot) to raid exterior metal extractors',
-        '[2:15] Bot Lab: Queue 4x Rocko (Rocket Skirmisher Bot) to outrange early defense towers',
-        '[2:45] Commander: Advance to choke point and establish 1x Light Laser Tower (LLT)',
-        '[3:15] Bot Lab: Queue 1x Lazarus (Rez Bot) to resurrect destroyed units and reclaim battlefield wrecks',
-        '[3:45] Bot Lab: Queue 2x Hammer (Plasma Artillery Bot) to lob shells into entrenched enemies',
+        '[0:00] Commander: Queue 1x Solar Collector (+20E baseline grid)',
+        '[0:20] Commander: Construct 2x Metal Extractor on primary deposits (+4.4M/s)',
+        '[0:42] Commander: Construct 2x Solar Collector (Achieves +60E threshold required before factory placement)',
+        '[1:06] Commander: Deploy Bot Lab on elevated terrain for rapid rally paths',
+        '[1:30] Commander: Construct 2x Wind Turbine (Capitalizing on map wind for sustained 100E:10M ratio)',
+        '[1:48] Bot Lab: Queue 2x Tick (Miniature Spider Scout) for vision and early EMP probe',
+        '[2:05] Bot Lab: Queue 4x Paw (Light Raider Bot) to raid exterior metal extractors',
+        '[2:30] Commander: Reclaim nearby large rocks (+260 instant metal boost for combat reinforcements)',
+        '[2:52] Bot Lab: Queue 4x Rocko (Rocket Skirmisher Bot) to outrange early defense towers',
+        '[3:18] Commander: Reclaim 1x early obsolete Solar Collector to recycle 145M into frontline defenses',
+        '[3:40] Commander: Advance to choke point and establish 1x Light Laser Tower (LLT)',
+        '[4:05] Bot Lab: Queue 1x Lazarus (Rez Bot) to resurrect destroyed units and sweep wrecks',
+        '[4:30] Bot Lab: Queue 2x Hammer (Plasma Artillery Bot) to lob shells into entrenched enemies',
       ],
       unitComposition: [
         '8x Paw (Armada Light Laser Raider Bot)',
@@ -202,15 +290,18 @@ function generateTacticalPreset(
         '2x Jethro (Mobile Anti-Air Missile Bot)',
         '1x Lazarus (Resurrection & Fast Reclaim Bot)',
       ],
-      strategyNotes: `# Armada Bot Skirmish & Choke Creep
+      strategyNotes: `# 🎙️ Caster Desk: Armada Bot Skirmish & Choke Creep
 
-### ⚡ Economy & Reclaim Optimization
-- Bot armies are metal-efficient but fragile. Using Lazarus to resurrect fallen Paw and Rocko wrecks effectively provides free reinforcements.
-- Keep Commander assisting the Bot Lab to pump skirmishers twice as fast during the 2:00-3:00 window.
+### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+- **The +60E Bedrock**: 3x Solars give you guaranteed +60E before the Bot Lab starts. That means the Commander can assist unit production without bleeding your energy reserves dry.
+- **100:10 Macro Sustain**: Match every 10 metal per second with 100 energy generation. Bot armies are metal-efficient, but Rockos and Lasers need constant power backing.
+
+### 🌬️ Wind vs. Solar & Commander Reclaim Tasks
+- **Boulders & Obsolete Power Reclaim**: Commander cleans out local boulders at 02:30 for +260 metal, then recycles an obsolete Solar Collector at 03:18 to recover 145 metal for forward defenses.
+- **Lazarus Recycling**: Resurrect fallen Paw wrecks to reinforce the frontline for free!
 
 ### 🎯 Tactical Range Superiority (02:45 - 04:30)
-- Rockos have a range of 420, outranging Light Laser Towers (430 sight, 420 range). Use hold-ground micro to dismantle static defenses without taking hull damage.
-- Send Ticks ahead to scout radar blind spots and trigger enemy weapon cooldowns.`,
+- Rockos boast 420 range, outranging Light Laser Towers (420 vs 400). Use hold-ground micro to pick apart static defenses without taking hull damage while Ticks provide radar spotting.`,
     };
   }
 
@@ -218,16 +309,18 @@ function generateTacticalPreset(
   if (isTankRush) {
     return {
       openingBuildOrder: [
-        '[0:00] Commander: Queue 1x Solar Collector (+20 energy guaranteed)',
-        '[0:20] Commander: Construct 2x Metal Extractor on primary natural ore nodes',
-        '[0:45] Commander: Deploy Vehicle Plant angled directly toward the central battlefield',
-        '[1:12] Commander: Build 2x Wind Turbine to power the initial vehicle production queue',
-        '[1:30] Vehicle Plant: Queue 2x Blitz (Fast Raider Tank) to probe enemy expansion',
-        '[1:55] Vehicle Plant: Construct 1x Construction Vehicle to capture perimeter metal spots',
-        '[2:20] Vehicle Plant: Continuous production of 6x Blitz + 2x Raider (Medium Assault Tank)',
-        '[2:45] Commander: Reclaim heavy rock boulders for +300 metal injection into production',
-        '[3:10] Vehicle Plant: Queue 1x Leveler (Riot Tank) to obliterate swarming light raiders',
-        '[3:40] Vehicle Plant: Add 2x Slasher (Mobile Rocket AA) for long-range support and anti-air',
+        '[0:00] Commander: Queue 1x Solar Collector (+20E guaranteed baseline)',
+        '[0:20] Commander: Construct 2x Metal Extractor on natural ore deposits (+4.4M/s)',
+        '[0:42] Commander: Construct 2x Solar Collector (Locks in +60E threshold prior to Vehicle Plant)',
+        '[1:08] Commander: Deploy Vehicle Plant angled toward central combat corridors',
+        '[1:32] Commander: Construct 2x Wind Turbine (Sustaining the 100E:10M golden macro ratio)',
+        '[1:50] Vehicle Plant: Queue 2x Blitz (Fast Raider Tank) to probe enemy expansion routes',
+        '[2:15] Vehicle Plant: Queue 1x Construction Vehicle to capture perimeter metal spots',
+        '[2:38] Commander: Reclaim heavy rock boulders (+300 instant metal injection into heavy armor)',
+        '[3:00] Vehicle Plant: Continuous production of 6x Blitz + 2x Raider (Medium Battle Tank)',
+        '[3:28] Commander: Reclaim 1x obsolete Solar Collector once wind farm is established (recovering 145M)',
+        '[3:55] Vehicle Plant: Queue 1x Leveler (Riot Tank) to obliterate swarming light raiders',
+        '[4:25] Vehicle Plant: Add 2x Slasher (Mobile Rocket AA) for long-range rocket support and anti-air',
       ],
       unitComposition: [
         '8x Blitz (Cortex Fast Pulse Laser Raider Tank)',
@@ -236,34 +329,38 @@ function generateTacticalPreset(
         '2x Slasher (Mobile Surface-to-Air & Rocket Support Truck)',
         '1x Construction Vehicle (Perimeter Expansion)',
       ],
-      strategyNotes: `# Cortex Iron Fist: Early Blitz Raider Surge
+      strategyNotes: `# 🎙️ Caster Desk: Cortex Iron Fist - Early Blitz Raider Surge
 
-### ⚡ Heavy Chassis Power Consumption
-- Cortex tanks carry thicker armor plating and demand solid energy upkeep. Build 1x Solar Collector and supplement with 3-4 Wind Turbines.
-- Keep energy above 150 at all times so your Commander can D-Gun surprise raiders without stalling the Vehicle Plant.
+### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+- **Heavy Armor Needs Heavy Power**: Cortex tanks carry thicker hulls and high energy maintenance. Never place the Vehicle Plant before reaching +60 Energy (3x Solars).
+- **100:10 Macro Sustain**: With 4 Mexes pumping 8.8M/s, your energy grid must produce 90-100E. Build spaced wind turbines and reserve 150+ energy buffer for Commander D-Guns.
 
-### 🎯 Timing Attack Windows (02:30 - 03:45)
-- **Blitz Incursion (02:30)**: Group 4x Blitz raiders and dive past the front line to snipe 2-3 enemy Metal Extractors. Blitz acceleration is lethal against light bots.
-- **Riot Breakthrough (04:00)**: Bring up your Leveler and Raiders. The Leveler's riot cannon deals devastating spread damage that vaporizes light swarms and tears through defenses.
+### 🌬️ Wind vs. Solar & Commander Reclaim Tasks
+- **Boulder Reclaim**: Commander clears heavy boulders at 02:38 for +300 metal, fueling non-stop Blitz fabrication.
+- **Power Recycling**: At 03:28, reclaim 1x obsolete Solar Collector once the wind farm is spinning to refund 145 metal directly into Leveler riot cannons.
 
-### 🛠️ Cortex Combat Tips
-- Levelers counter Flash and Paw swarms. Protect them from long-range rocket units with your Blitz screen.`,
+### 🎯 Timing Attack Windows (02:30 - 04:00)
+- **Blitz Incursion (02:30)**: Group 4x Blitz raiders and dive past the front line to snipe 2-3 enemy Metal Extractors. Blitz acceleration shreds light bots.
+- **Riot Breakthrough (04:00)**: Roll forward with Levelers and Raiders. The Leveler's riot cannon vaporizes swarms and tears open defense lines.`,
     };
   }
 
   // Cortex Default Bot Assault (Pyros / Thug / Grunt)
   return {
     openingBuildOrder: [
-      '[0:00] Commander: Build 1x Solar Collector (+20 energy baseline)',
-      '[0:22] Commander: Construct 2x Metal Extractor on natural metal veins',
-      '[0:45] Commander: Deploy Bot Lab in a defensible pocket',
-      '[1:10] Commander: Build 2x Wind Turbine for continuous bot fabrication',
-      '[1:28] Bot Lab: Queue 3x Grunt (Light Raider Bot) for rapid expansion and harassing',
-      '[1:50] Bot Lab: Queue 3x Storm (Rocket Skirmisher Bot) to pick apart enemy LLTs',
-      '[2:15] Bot Lab: Queue 2x Pyros (Flame Assault Bot) to incinerate enemy raider groups',
-      '[2:45] Commander: Advance to forward choke and build 1x Light Laser Tower (LLT)',
-      '[3:15] Bot Lab: Queue 1x Roach (Crawling Bomb) to punish tightly packed defensive nests',
-      '[3:45] Bot Lab: Queue 1x Crasher (Anti-Air Bot) to shield your bot group from gunships',
+      '[0:00] Commander: Build 1x Solar Collector (+20E baseline grid)',
+      '[0:20] Commander: Construct 2x Metal Extractor on natural metal veins (+4.4M/s)',
+      '[0:42] Commander: Construct 2x Solar Collector (Reaches vital +60E threshold before factory drops)',
+      '[1:06] Commander: Deploy Bot Lab in defensible pocket with clean deployment ramps',
+      '[1:30] Commander: Construct 2x Wind Turbine (Sustaining 100E:10M ratio for continuous bot fabrication)',
+      '[1:48] Bot Lab: Queue 3x Grunt (Light Raider Bot) for rapid expansion denial and harassing',
+      '[2:10] Bot Lab: Queue 3x Storm (Rocket Skirmisher Bot) to pick apart enemy LLTs at 430 range',
+      '[2:32] Commander: Reclaim large boulder clusters (+275 metal surge for uninterrupted production)',
+      '[2:55] Bot Lab: Queue 2x Pyros (Flame Assault Bot) to incinerate incoming raider packs',
+      '[3:20] Commander: Reclaim 1x early obsolete Solar Collector (Recycles 145M into frontline push)',
+      '[3:45] Commander: Advance to forward choke and build 1x Light Laser Tower (LLT)',
+      '[4:10] Bot Lab: Queue 1x Roach (Crawling Bomb) to punish tightly packed defensive nests',
+      '[4:35] Bot Lab: Queue 1x Crasher (Anti-Air Bot) to shield the assault group from gunships',
     ],
     unitComposition: [
       '6x Grunt (Cortex Fast Raider Bot)',
@@ -272,15 +369,18 @@ function generateTacticalPreset(
       '4x Storm (Rocket Skirmisher Bot)',
       '1x Roach (Crawling High-Explosive Suicide Bomb)',
     ],
-    strategyNotes: `# Cortex Flame & Steel: Bot Assault Doctrine
+    strategyNotes: `# 🎙️ Caster Desk: Cortex Flame & Steel - Bot Assault Doctrine
 
-### ⚡ Energy & Flame Weaponry
-- Pyros inflict unmatched AoE fire damage in close quarters. Sneak them through tree lines or narrow alleys to ambush enemy battle groups.
-- Roach crawling bombs can eliminate an entire enemy factory or commander if detonated in range—use terrain dips to mask their approach.
+### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+- **The +60E Launchpad**: Securing 3x Solars gives guaranteed +60E before the Bot Lab is queued. Cortex bots build fast—without +60E, your Commander will stall on the very first Grunt.
+- **100:10 Macro Sustain**: Keep energy generation at 10x your metal income. Scale wind turbines in spaced pairs and use 1x Energy Converter when storage exceeds 400+.
+
+### 🌬️ Wind vs. Solar & Commander Reclaim Tasks
+- **Boulder Injection & Solar Recycling**: Commander claims 275+ metal from nearby rocks at 02:32, then reclaims 1x obsolete Solar Collector at 03:20 to refund 145 metal into high-impact Pyros flamethrowers.
 
 ### 🎯 Attack Execution (03:00 - 04:30)
-- Initiate with Storm rockets from 430 range to force the enemy to charge forward.
-- Counter-charge with Pyros and Thugs as they approach, melting incoming units in seconds.`,
+- Open with Storm rockets from 430 range to force an opponent counter-charge.
+- Counter-charge with Pyros and Thugs as they commit, melting incoming raiders with terrifying AoE fire damage!`,
   };
 }
 
@@ -346,17 +446,17 @@ export async function POST(req: Request) {
     if (apiKey && apiKey.trim().length > 5) {
       try {
         const googleProvider = createGoogleGenerativeAI({ apiKey: apiKey.trim() });
-        const systemPrompt = buildSystemPrompt(faction);
+        const systemPrompt = buildSystemPrompt(faction, mapType, strategyStyle);
 
         const userPrompt = `Generate a competitive Beyond All Reason strategy:
 - Faction: ${faction}
 - Map Type: ${mapType}
 - Strategy Style: ${strategyStyle}
 
-Provide:
-1. openingBuildOrder: Timed step-by-step opening queue for the Commander and initial factory.
+Requirements:
+1. openingBuildOrder: Timed step-by-step opening queue for the Commander and initial factory. Strictly enforce reaching +60 Energy before placing the factory, evaluate map wind vs solar, and include Commander reclaim tasks for early obsolete power.
 2. unitComposition: Specific target unit composition and production ratios using only valid ${faction} units.
-3. strategyNotes: In-depth Markdown notes covering economy management (metal/energy spikes, wind vs solar), reclaim priorities, and timing attack windows.`;
+3. strategyNotes: High-energy tournament caster breakdown covering the 100E:10M macro ratio, power spikes, wind vs solar decisions, Commander reclaim sweeps, and tactical timing attack windows.`;
 
         const result = streamObject({
           model: googleProvider('gemini-1.5-pro'),

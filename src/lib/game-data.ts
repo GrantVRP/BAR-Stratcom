@@ -29,6 +29,44 @@ export type TechTier = (typeof TECH_TIERS)[number];
 
 export const TechTierSchema = z.enum(['T1', 'T2', 'T3']);
 
+// ==========================================
+// Competitive Economy & Meta Rules
+// ==========================================
+
+export const ECONOMY_RULES = {
+  /** Minimum energy income (+60E) required before dropping the first production factory */
+  minEnergyBeforeFactory: 60,
+  /** Golden macro sustain ratio: 100 Energy generation per 10 Metal income */
+  energyToMetalRatio: '100 Energy to 10 Metal (10:1 ratio)',
+  /** Starting pool given to Commander at game launch */
+  commanderStartingResources: {
+    metal: 1000,
+    energy: 1000,
+    buildPower: 300,
+  },
+  /** Map wind vs solar evaluation criteria */
+  windVsSolar: {
+    minAvgWindForTurbines: 8,
+    guideline:
+      'If map wind average >= 8, build Wind Turbines for superior cost efficiency; if wind < 8 or volatile, prioritize Solar Collectors (+20 fixed) for guaranteed grid stability.',
+  },
+  /** Commander reclaim priorities */
+  commanderReclaim: {
+    earlyBoost:
+      'Reclaim large rock clusters (250+ instant metal) or trees to fund rapid unit production without metal stalling.',
+    recycleObsoletePower:
+      'Reclaim early obsolete Solar Collectors once wind farms, advanced solars, or fusion reactors are established to recover 100% of their metal investment.',
+  },
+  /** Energy conversion specifications */
+  energyConversion: {
+    rate: '70E -> 1M (+5.7 Metal/sec per converter)',
+    overflowTrigger:
+      'Engage converters when energy storage exceeds 400+ excess to translate power surges into metal.',
+  },
+} as const;
+
+export type EconomyRules = typeof ECONOMY_RULES;
+
 export const UNIT_CATEGORIES = [
   'Unit',
   'Economy',

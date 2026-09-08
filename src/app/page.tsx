@@ -260,8 +260,8 @@ export default function BeyondAllReasonConsole() {
 
   const isArmada = faction === "Armada";
 
-  // Faction Accent Color Tokens (Armada Cyan #00f0ff vs Cortex Crimson #ff2a2a)
-  const accentColor = isArmada ? "#00f0ff" : "#ff2a2a";
+  // Faction Accent Color Tokens (Armada Blue #48a2ef vs Cortex Crimson #ff2a2a)
+  const accentColor = isArmada ? "#48a2ef" : "#ff2a2a";
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-[#0a0c10] text-zinc-100 font-sans select-none antialiased">
@@ -403,11 +403,17 @@ export default function BeyondAllReasonConsole() {
                 }`}
                 style={
                   faction === "Armada"
-                    ? { borderLeft: "2px solid #00f0ff" }
+                    ? { borderLeft: `2px solid ${accentColor}` }
                     : { borderLeft: "2px solid transparent" }
                 }
               >
-                <div className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border border-zinc-800">
+                <div
+                  className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border transition-all"
+                  style={{
+                    borderColor: faction === "Armada" ? accentColor : "#27272a",
+                    boxShadow: faction === "Armada" ? `0 0 10px ${accentColor}40` : "none",
+                  }}
+                >
                   <Image
                     src="/armada-logo.png"
                     alt="Armada"
@@ -417,7 +423,12 @@ export default function BeyondAllReasonConsole() {
                   />
                 </div>
                 <div>
-                  <div className="font-mono text-xs font-bold leading-tight">ARMADA</div>
+                  <div
+                    className="font-mono text-xs font-bold leading-tight"
+                    style={{ color: faction === "Armada" ? accentColor : undefined }}
+                  >
+                    ARMADA
+                  </div>
                   <div className="text-[10px] text-zinc-500 font-mono">Laser & Skirmish</div>
                 </div>
               </button>
@@ -437,7 +448,13 @@ export default function BeyondAllReasonConsole() {
                     : { borderLeft: "2px solid transparent" }
                 }
               >
-                <div className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border border-zinc-800">
+                <div
+                  className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border transition-all"
+                  style={{
+                    borderColor: faction === "Cortex" ? "#ff2a2a" : "#27272a",
+                    boxShadow: faction === "Cortex" ? "0 0 10px rgba(255,42,42,0.25)" : "none",
+                  }}
+                >
                   <Image
                     src="/cortex-logo.png"
                     alt="Cortex"
@@ -447,7 +464,12 @@ export default function BeyondAllReasonConsole() {
                   />
                 </div>
                 <div>
-                  <div className="font-mono text-xs font-bold leading-tight">CORTEX</div>
+                  <div
+                    className="font-mono text-xs font-bold leading-tight"
+                    style={{ color: faction === "Cortex" ? "#ff2a2a" : undefined }}
+                  >
+                    CORTEX
+                  </div>
                   <div className="text-[10px] text-zinc-500 font-mono">Heavy Armor & Riot</div>
                 </div>
               </button>
@@ -481,7 +503,10 @@ export default function BeyondAllReasonConsole() {
                     }
                   >
                     <div>
-                      <div className="font-mono text-xs font-semibold leading-tight">
+                      <div
+                        className="font-mono text-xs font-semibold leading-tight"
+                        style={{ color: isSelected ? accentColor : undefined }}
+                      >
                         {preset.name}
                       </div>
                       <div className="text-[10px] text-zinc-500 truncate max-w-[190px]">
@@ -531,8 +556,16 @@ export default function BeyondAllReasonConsole() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <Icon className="size-3.5 text-zinc-400" />
-                        <span className="font-mono text-xs font-semibold">{style.title}</span>
+                        <Icon
+                          className="size-3.5"
+                          style={{ color: isSelected ? accentColor : "#71717a" }}
+                        />
+                        <span
+                          className="font-mono text-xs font-semibold"
+                          style={{ color: isSelected ? accentColor : undefined }}
+                        >
+                          {style.title}
+                        </span>
                       </div>
                       <span className="text-[10px] font-mono text-zinc-400">
                         {style.timingWindow.split(" - ")[0]}
@@ -619,9 +652,15 @@ export default function BeyondAllReasonConsole() {
                 }
               >
                 <Clock className="size-3.5" style={{ color: activeTab === "timeline" ? accentColor : undefined }} />
-                <span>BUILD ORDER TIMELINE</span>
+                <span style={{ color: activeTab === "timeline" ? accentColor : undefined }}>BUILD ORDER TIMELINE</span>
                 {parsedSteps.length > 0 && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300">
+                  <span
+                    className="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold"
+                    style={{
+                      backgroundColor: activeTab === "timeline" ? `${accentColor}22` : "#27272a",
+                      color: activeTab === "timeline" ? accentColor : "#d4d4d8",
+                    }}
+                  >
                     {parsedSteps.length}
                   </span>
                 )}
@@ -642,9 +681,15 @@ export default function BeyondAllReasonConsole() {
                 }
               >
                 <Layers className="size-3.5" style={{ color: activeTab === "unitComp" ? accentColor : undefined }} />
-                <span>FORCE REQUISITION</span>
+                <span style={{ color: activeTab === "unitComp" ? accentColor : undefined }}>FORCE REQUISITION</span>
                 {object?.unitComposition && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300">
+                  <span
+                    className="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold"
+                    style={{
+                      backgroundColor: activeTab === "unitComp" ? `${accentColor}22` : "#27272a",
+                      color: activeTab === "unitComp" ? accentColor : "#d4d4d8",
+                    }}
+                  >
                     {object.unitComposition.length}
                   </span>
                 )}
@@ -665,7 +710,7 @@ export default function BeyondAllReasonConsole() {
                 }
               >
                 <Cpu className="size-3.5" style={{ color: activeTab === "notes" ? accentColor : undefined }} />
-                <span>OPERATIONAL TELEMETRY</span>
+                <span style={{ color: activeTab === "notes" ? accentColor : undefined }}>OPERATIONAL TELEMETRY</span>
               </button>
             </div>
 
@@ -675,7 +720,11 @@ export default function BeyondAllReasonConsole() {
                 <button
                   type="button"
                   onClick={() => setShowEcoRunway((prev) => !prev)}
-                  className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[10px] font-mono text-zinc-300 transition-colors"
+                  className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border text-[10px] font-mono transition-colors"
+                  style={{
+                    borderColor: showEcoRunway ? accentColor : "#27272a",
+                    color: showEcoRunway ? accentColor : "#d4d4d8",
+                  }}
                 >
                   <Activity className="size-3" style={{ color: accentColor }} />
                   <span>{showEcoRunway ? "HIDE ECO RUNWAY" : "SHOW ECO RUNWAY"}</span>
@@ -817,7 +866,7 @@ export default function BeyondAllReasonConsole() {
                           <div
                             className={`w-12 h-12 min-w-[48px] min-h-[48px] rounded-sm shrink-0 border flex items-center justify-center p-2 relative overflow-hidden transition-all ${
                               isArmada
-                                ? "border-cyan-500/40 shadow-[0_0_12px_rgba(0,240,255,0.08)]"
+                                ? "border-[#48a2ef]/40 shadow-[0_0_12px_rgba(72,162,239,0.15)]"
                                 : "border-red-500/40 shadow-[0_0_12px_rgba(255,42,42,0.08)]"
                             } ${
                               isStructure

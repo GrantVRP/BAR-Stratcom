@@ -16,7 +16,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
   size = 18,
 }) => {
   const isArmada = faction.toLowerCase() === "armada";
-  const factionAccent = isArmada ? "#00f0ff" : "#ff2a2a";
+  const factionAccent = isArmada ? "#48a2ef" : "#ff2a2a";
   const cleanName = (name || "").toLowerCase().trim();
 
   // 1. Solar Collector (Armada or Cortex official Beyond All Reason render)
@@ -28,7 +28,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
         />
       );
     }
@@ -55,7 +55,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
         />
       );
     }
@@ -81,7 +81,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
         />
       );
     }
@@ -107,7 +107,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
         />
       );
     }
@@ -142,7 +142,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
           />
         );
       }
@@ -168,7 +168,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
           />
         );
       }
@@ -198,7 +198,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
           />
         );
       }
@@ -224,7 +224,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
           />
         );
       }
@@ -279,7 +279,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(0,240,255,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
           />
         );
       }

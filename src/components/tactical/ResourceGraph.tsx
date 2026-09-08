@@ -76,7 +76,7 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
 
   // Faction color
   const isArmada = faction === "Armada";
-  const metalColor = isArmada ? "#00f0ff" : "#94a3b8";
+  const metalColor = isArmada ? "#48a2ef" : "#94a3b8";
 
   // Simulate economic runway from t = 0 to 300s
   const { trajectoryData, stallIntervals } = useMemo(() => {

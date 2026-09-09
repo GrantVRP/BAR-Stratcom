@@ -37,6 +37,7 @@ import { buildPlanResponseSchema, type Faction } from "@/lib/game-data";
 import { parseBuildStep, type ParsedBuildStep } from "@/lib/timeline-parser";
 import { BarIcon } from "@/components/tactical/BarIcon";
 import { ResourceGraph } from "@/components/tactical/ResourceGraph";
+import { WindmillTelemetry } from "@/components/tactical/WindmillTelemetry";
 
 // Realistic Beyond All Reason Theaters with authentic wind data & tactical profiles
 const MAP_PRESETS = [
@@ -45,6 +46,8 @@ const MAP_PRESETS = [
     name: "Open Plains",
     subtext: "Open Metal, Plains of Hope",
     windRange: "12–28 m/s",
+    windMin: 12,
+    windMax: 28,
     windAvg: 20,
     windLabel: "HIGH WIND",
     terrainTag: "FLANKING",
@@ -55,6 +58,8 @@ const MAP_PRESETS = [
     name: "Small Land / Chokes",
     subtext: "Red Comet, Altair Crossing",
     windRange: "8–18 m/s",
+    windMin: 8,
+    windMax: 18,
     windAvg: 13,
     windLabel: "MODERATE",
     terrainTag: "CHOKE-DENSE",
@@ -65,6 +70,8 @@ const MAP_PRESETS = [
     name: "Mountain Heights",
     subtext: "Supreme Strait, Tangerine",
     windRange: "4–14 m/s",
+    windMin: 4,
+    windMax: 14,
     windAvg: 9,
     windLabel: "LOW-MOD",
     terrainTag: "ELEVATION",
@@ -75,6 +82,8 @@ const MAP_PRESETS = [
     name: "Coastal & Sea",
     subtext: "DSD Shorelines, Shore to Shore",
     windRange: "10–20 m/s",
+    windMin: 10,
+    windMax: 20,
     windAvg: 15,
     windLabel: "STEADY",
     terrainTag: "AMPHIBIOUS",
@@ -85,6 +94,8 @@ const MAP_PRESETS = [
     name: "Large Team 8v8",
     subtext: "All That Glitters, Ishtir",
     windRange: "6–22 m/s",
+    windMin: 6,
+    windMax: 22,
     windAvg: 14,
     windLabel: "VARIABLE",
     terrainTag: "LANE-MACRO",
@@ -268,10 +279,10 @@ export default function BeyondAllReasonConsole() {
       {/* ========================================================================= */}
       {/* 1. TOP BAR: PRACTICAL RTS TELEMETRY & HOTKEYS                             */}
       {/* ========================================================================= */}
-      <header className="h-12 shrink-0 border-b border-zinc-800/60 bg-[#0d0f15] px-4 flex items-center justify-between text-xs font-mono z-30">
+      <header className="h-14 shrink-0 border-b border-zinc-800 bg-zinc-950 px-4 flex items-center justify-between text-xs font-mono z-30">
         {/* Left: Brand & Faction Indicator */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 pr-3 border-r border-zinc-800/60">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 pr-3 border-r border-zinc-800/60">
             <div className="relative size-6 flex items-center justify-center shrink-0">
               <Image
                 src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
@@ -282,25 +293,16 @@ export default function BeyondAllReasonConsole() {
                 className="object-contain"
               />
             </div>
-            <span className="font-black tracking-widest text-zinc-100 text-[13px]">
-              BAR COMMANDER
-            </span>
+            <div className="font-mono font-bold text-sm text-zinc-100 tracking-wider">
+              BAR STRATCOM{" "}
+              <span className={isArmada ? "text-[#48a2ef]" : "text-cyan-400"}>
+                // TACTICAL ADVISOR
+              </span>
+            </div>
           </div>
-
-          {/* Practical RTS Stats: Wind Profile */}
-          <div className="hidden sm:flex items-center gap-2 text-zinc-400">
-            <Wind className="size-3.5 text-zinc-400 shrink-0" />
-            <span>WIND:</span>
-            <span className="text-zinc-200 font-semibold">{currentMap.windRange}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-400">
-              {currentMap.windLabel}
-            </span>
-          </div>
-
-          <span className="hidden md:inline text-zinc-700">|</span>
 
           {/* Practical RTS Stats: Benchmark Estimates */}
-          <div className="hidden md:flex items-center gap-3 text-zinc-400 text-[11px]">
+          <div className="hidden xl:flex items-center gap-3 text-zinc-400 text-[11px]">
             <div>
               <span>BENCHMARK: </span>
               <span className="text-amber-400 font-semibold">1,000 E</span>
@@ -314,8 +316,14 @@ export default function BeyondAllReasonConsole() {
           </div>
         </div>
 
-        {/* Right: AI Link, Copy Macro, and Loading Status */}
-        <div className="flex items-center gap-2.5">
+        {/* Right: Dynamic Wind Widget wired to current map state, AI Link, and Actions */}
+        <div className="flex items-center gap-3">
+          {/* Dynamic Wind Widget wired to current map state */}
+          <WindmillTelemetry
+            currentWind={currentMap.windAvg}
+            minWind={currentMap.windMin}
+            maxWind={currentMap.windMax}
+          />
           {/* AI Key Link Badge */}
           <button
             type="button"

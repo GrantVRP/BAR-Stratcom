@@ -27,8 +27,6 @@ import {
   ChevronRight,
   Database,
   Flame,
-  Shield,
-  Waves,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -40,15 +38,70 @@ import { parseBuildStep, type ParsedBuildStep } from "@/lib/timeline-parser";
 import { BarIcon } from "@/components/tactical/BarIcon";
 import { ResourceGraph } from "@/components/tactical/ResourceGraph";
 import { WindmillTelemetry } from "@/components/tactical/WindmillTelemetry";
-import { MapCombobox } from "@/components/tactical/MapCombobox";
-import { useLiveGame } from "@/hooks/useLiveGame";
-import {
-  BAR_MAPS,
-  BAR_MAP_LIST,
-  findMapById,
-  matchMapByName,
-  type BarMapData,
-} from "@/lib/map-data";
+
+// Realistic Beyond All Reason Theaters with authentic wind data & tactical profiles
+const MAP_PRESETS = [
+  {
+    id: "open-fields",
+    name: "Open Plains",
+    subtext: "Open Metal, Plains of Hope",
+    windRange: "12–28 m/s",
+    windMin: 12,
+    windMax: 28,
+    windAvg: 20,
+    windLabel: "HIGH WIND",
+    terrainTag: "FLANKING",
+    ecoFocus: "Wind Gen Priority",
+  },
+  {
+    id: "small-land",
+    name: "Small Land / Chokes",
+    subtext: "Red Comet, Altair Crossing",
+    windRange: "8–18 m/s",
+    windMin: 8,
+    windMax: 18,
+    windAvg: 13,
+    windLabel: "MODERATE",
+    terrainTag: "CHOKE-DENSE",
+    ecoFocus: "Solar + 3 Mex Start",
+  },
+  {
+    id: "mountain-hills",
+    name: "Mountain Heights",
+    subtext: "Supreme Strait, Tangerine",
+    windRange: "4–14 m/s",
+    windMin: 4,
+    windMax: 14,
+    windAvg: 9,
+    windLabel: "LOW-MOD",
+    terrainTag: "ELEVATION",
+    ecoFocus: "Solar Core / Artillery",
+  },
+  {
+    id: "water-coastal",
+    name: "Coastal & Sea",
+    subtext: "DSD Shorelines, Shore to Shore",
+    windRange: "10–20 m/s",
+    windMin: 10,
+    windMax: 20,
+    windAvg: 15,
+    windLabel: "STEADY",
+    terrainTag: "AMPHIBIOUS",
+    ecoFocus: "Tidal / Hover Logistics",
+  },
+  {
+    id: "large-team",
+    name: "Large Team 8v8",
+    subtext: "All That Glitters, Ishtir",
+    windRange: "6–22 m/s",
+    windMin: 6,
+    windMax: 22,
+    windAvg: 14,
+    windLabel: "VARIABLE",
+    terrainTag: "LANE-MACRO",
+    ecoFocus: "Backline Fusion Rush",
+  },
+];
 
 // Tournament Strategic Doctrines
 const STRATEGY_PRESETS = [
@@ -97,34 +150,11 @@ const STRATEGY_PRESETS = [
 export default function BeyondAllReasonConsole() {
   // Console state
   const [faction, setFaction] = useState<Faction>("Armada");
-  const [selectedMapId, setSelectedMapId] = useState<string>("supreme-isthmus");
+  const [selectedMapId, setSelectedMapId] = useState<string>("small-land");
   const [selectedStrategyId, setSelectedStrategyId] = useState<string>("early-tank-rush");
-  const [activeTab, setActiveTab] = useState<"timeline" | "unitComp" | "notes" | "briefing">("timeline");
+  const [activeTab, setActiveTab] = useState<"timeline" | "unitComp" | "notes">("timeline");
   const [showEcoRunway, setShowEcoRunway] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
-
-  // Local Live Game & Memory Telemetry Hook
-  const {
-    isHookConnected,
-    isRunning: isGameRunning,
-    lobbyName,
-    map: liveMapName,
-    faction: liveFaction,
-    formattedGameTime,
-    isMock,
-  } = useLiveGame({
-    onMatchDetected: useCallback((status: { map: string; faction: Faction }) => {
-      // Auto-select detected map
-      const matched = matchMapByName(status.map);
-      if (matched) {
-        setSelectedMapId(matched.id);
-      }
-      // Auto-set faction
-      if (status.faction) {
-        setFaction(status.faction);
-      }
-    }, []),
-  });
 
   // API Key modal
   const [apiKey, setApiKey] = useState<string>("");
@@ -155,7 +185,7 @@ export default function BeyondAllReasonConsole() {
 
   // Current active selections
   const currentMap = useMemo(
-    () => findMapById(selectedMapId),
+    () => MAP_PRESETS.find((m) => m.id === selectedMapId) || MAP_PRESETS[0],
     [selectedMapId]
   );
   const currentStrategy = useMemo(
@@ -287,58 +317,12 @@ export default function BeyondAllReasonConsole() {
         </div>
 
         {/* Right: Dynamic Wind Widget wired to current map state, AI Link, and Actions */}
-        <div className="flex items-center gap-2.5">
-          {/* Local Live Game & Memory Telemetry Pulse */}
-          <div
-            className="flex items-center gap-2 px-2.5 py-1 rounded bg-zinc-900/90 border text-[11px] font-mono transition-all"
-            style={{
-              borderColor: isHookConnected && isGameRunning ? `${accentColor}80` : isHookConnected ? "#22d3ee40" : "#d9770640",
-            }}
-            title={
-              isHookConnected
-                ? `BAR Companion Bridge Active on http://localhost:5050 (${lobbyName})`
-                : "BAR Companion Bridge Offline. Run 'py scripts/bar_live_bridge.py' to link local game."
-            }
-          >
-            <span
-              className={`size-2 rounded-full shrink-0 ${
-                isHookConnected && isGameRunning
-                  ? "bg-cyan-400 animate-ping"
-                  : isHookConnected
-                  ? "bg-cyan-400"
-                  : "bg-amber-400 animate-pulse"
-              }`}
-            />
-            {isHookConnected && isGameRunning ? (
-              <div className="flex items-center gap-1.5 font-bold">
-                <span className="text-cyan-300">[LOCAL HOOK: LINKED]</span>
-                <span className="text-zinc-600">|</span>
-                <span className="text-zinc-200">T+{formattedGameTime}</span>
-                <span className="hidden xl:inline text-zinc-400 font-normal">
-                  ({liveMapName} • {liveFaction})
-                </span>
-                {isMock && (
-                  <span className="text-[9px] px-1 rounded bg-purple-950/80 text-purple-300 border border-purple-800/80">
-                    MOCK
-                  </span>
-                )}
-              </div>
-            ) : isHookConnected ? (
-              <span className="text-cyan-400 font-medium">
-                [LOCAL HOOK: STANDBY]
-              </span>
-            ) : (
-              <span className="text-amber-400 font-medium">
-                [LOCAL HOOK: STANDBY]
-              </span>
-            )}
-          </div>
-
+        <div className="flex items-center gap-3">
           {/* Dynamic Wind Widget wired to current map state */}
           <WindmillTelemetry
             currentWind={currentMap.windAvg}
-            minWind={currentMap.windRange[0]}
-            maxWind={currentMap.windRange[1]}
+            minWind={currentMap.windMin}
+            maxWind={currentMap.windMax}
           />
           {/* AI Key Link Badge */}
           <button
@@ -500,32 +484,54 @@ export default function BeyondAllReasonConsole() {
             </div>
           </div>
 
-          {/* Section: Theater of War (Searchable Map Selector) */}
-          <div className="p-3.5 border-b border-zinc-800/60 space-y-2.5">
+          {/* Section: Theater of War (Map Preset Selector) */}
+          <div className="p-3.5 border-b border-zinc-800/60 space-y-2">
             <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
               <span className="tracking-wider">02 // THEATER // TOPOGRAPHY</span>
-              <span className="text-[10px] text-zinc-500 font-mono">
-                {BAR_MAP_LIST.length} THEATERS
-              </span>
+              <span className="text-[10px] text-zinc-500 font-mono">WIND VELOCITY</span>
             </div>
 
-            {/* Tactical Searchable Combobox */}
-            <MapCombobox
-              selectedMap={currentMap}
-              onSelectMap={(map) => setSelectedMapId(map.id)}
-              accentColor={accentColor}
-            />
-
-            {/* Quick Map Stats Summary Pill */}
-            <div className="p-2 rounded bg-zinc-950/70 border border-zinc-800/80 text-[10px] font-mono flex items-center justify-between text-zinc-400">
-              <span className="flex items-center gap-1">
-                <Wind className="size-3 text-zinc-500" />
-                <span>{currentMap.windRange[0]}–{currentMap.windRange[1]} m/s</span>
-              </span>
-              <span className="text-zinc-600">•</span>
-              <span>TIDAL: {currentMap.tidal > 0 ? `+${currentMap.tidal} E` : "0 E"}</span>
-              <span className="text-zinc-600">•</span>
-              <span className="uppercase text-zinc-300 font-semibold">{currentMap.terrainTag}</span>
+            <div className="space-y-1">
+              {MAP_PRESETS.map((preset) => {
+                const isSelected = selectedMapId === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => setSelectedMapId(preset.id)}
+                    className={`w-full text-left p-2 rounded transition-colors flex items-center justify-between ${
+                      isSelected
+                        ? "bg-zinc-900/80 text-zinc-100"
+                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40"
+                    }`}
+                    style={
+                      isSelected
+                        ? { borderLeft: `2px solid ${accentColor}` }
+                        : { borderLeft: "2px solid transparent" }
+                    }
+                  >
+                    <div>
+                      <div
+                        className="font-mono text-xs font-semibold leading-tight"
+                        style={{ color: isSelected ? accentColor : undefined }}
+                      >
+                        {preset.name}
+                      </div>
+                      <div className="text-[10px] text-zinc-500 truncate max-w-[190px]">
+                        {preset.subtext}
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-[10px] font-mono text-zinc-300 font-medium">
+                        {preset.windRange}
+                      </div>
+                      <div className="text-[9px] font-mono text-zinc-500">
+                        {preset.terrainTag}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -713,24 +719,6 @@ export default function BeyondAllReasonConsole() {
               >
                 <Cpu className="size-3.5" style={{ color: activeTab === "notes" ? accentColor : undefined }} />
                 <span style={{ color: activeTab === "notes" ? accentColor : undefined }}>OPERATIONAL TELEMETRY</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("briefing")}
-                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
-                  activeTab === "briefing"
-                    ? "bg-zinc-900 text-zinc-100 font-bold"
-                    : "text-zinc-400 hover:text-zinc-200"
-                }`}
-                style={
-                  activeTab === "briefing"
-                    ? { borderBottom: `2px solid ${accentColor}` }
-                    : { borderBottom: "2px solid transparent" }
-                }
-              >
-                <Compass className="size-3.5" style={{ color: activeTab === "briefing" ? accentColor : undefined }} />
-                <span style={{ color: activeTab === "briefing" ? accentColor : undefined }}>THEATER INTEL</span>
               </button>
             </div>
 
@@ -1122,154 +1110,6 @@ export default function BeyondAllReasonConsole() {
                     })}
                   </motion.div>
                 )}
-              </div>
-            )}
-
-            {/* =================================================================== */}
-            {/* TAB 4: THEATER STRATEGY // MAP INTEL & CHOKEPOINTS                  */}
-            {/* =================================================================== */}
-            {activeTab === "briefing" && (
-              <div className="max-w-4xl mx-auto space-y-4 font-mono">
-                {/* Map Header Card */}
-                <div className="p-5 rounded bg-zinc-900/60 border border-zinc-800/80 relative overflow-hidden">
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <div>
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <h2 className="text-base font-bold text-zinc-100 tracking-wider">
-                          {currentMap.name}
-                        </h2>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-semibold border border-zinc-700">
-                          {currentMap.terrainTag}
-                        </span>
-                        <span
-                          className={`text-[10px] px-2 py-0.5 rounded font-semibold border ${
-                            currentMap.metalDensity === "all-metal"
-                              ? "bg-purple-950/80 text-purple-300 border-purple-800/80"
-                              : currentMap.metalDensity === "high"
-                              ? "bg-emerald-950/80 text-emerald-300 border-emerald-800/80"
-                              : currentMap.metalDensity === "medium"
-                              ? "bg-amber-950/80 text-amber-300 border-amber-800/80"
-                              : "bg-zinc-800 text-zinc-400 border-zinc-700"
-                          }`}
-                        >
-                          METAL: {currentMap.metalDensity.toUpperCase()}
-                        </span>
-                      </div>
-                      <p className="text-xs text-zinc-400 font-sans mt-1">
-                        {currentMap.subtext}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-3 text-xs">
-                      <div className="px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-right">
-                        <div className="text-[10px] text-zinc-500">WIND VELOCITY</div>
-                        <div className="text-zinc-200 font-bold flex items-center gap-1 justify-end">
-                          <Wind className="size-3 text-zinc-400" />
-                          <span>{currentMap.windRange[0]}–{currentMap.windRange[1]} m/s</span>
-                        </div>
-                      </div>
-                      {currentMap.tidal > 0 && (
-                        <div className="px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-right">
-                          <div className="text-[10px] text-zinc-500">TIDAL OUTPUT</div>
-                          <div className="text-cyan-300 font-bold flex items-center gap-1 justify-end">
-                            <Waves className="size-3" />
-                            <span>+{currentMap.tidal} E/s</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Strategic Eco Focus Banner */}
-                  <div className="mt-4 pt-3 border-t border-zinc-800/60 flex items-center justify-between gap-3 flex-wrap text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="text-zinc-500">MACRO DIRECTIVE:</span>
-                      <span className="text-amber-400 font-semibold">{currentMap.ecoFocus}</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleGenerate}
-                      disabled={isLoading}
-                      className="px-3 py-1 rounded text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
-                      style={{
-                        backgroundColor: accentColor,
-                        color: isArmada ? "#0a0c10" : "#ffffff",
-                      }}
-                    >
-                      <Sparkles className="size-3" />
-                      <span>SYNTHESIZE BUILD ORDER</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Recommended Doctrines */}
-                <div className="p-4 rounded bg-zinc-900/40 border border-zinc-800/60 space-y-2.5">
-                  <div className="text-xs font-bold text-zinc-300 flex items-center gap-2">
-                    <Crosshair className="size-3.5" style={{ color: accentColor }} />
-                    <span>RECOMMENDED THEATER DOCTRINES</span>
-                  </div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {currentMap.recommendedDoctrines.map((doctrine, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2.5 py-1 rounded bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 flex items-center gap-1.5 hover:border-zinc-700 transition-colors"
-                      >
-                        <span style={{ color: accentColor }}>▸</span>
-                        <span className="font-sans text-xs">{doctrine}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Topography & Choke Points Detailed Briefing */}
-                <div className="p-5 rounded bg-zinc-900/40 border border-zinc-800/60 space-y-3">
-                  <div className="text-xs font-bold text-zinc-200 flex items-center gap-2 pb-2.5 border-b border-zinc-800">
-                    <Shield className="size-3.5" style={{ color: accentColor }} />
-                    <span>CHOKE POINTS, GEOTHERMAL VENTS & MAIN BATTLE LINES</span>
-                  </div>
-
-                  <div className="text-xs text-zinc-300 space-y-3 leading-relaxed">
-                    {currentMap.chokePoints.split("\n\n").map((block, bIdx) => {
-                      if (block.startsWith("###")) {
-                        return null; // Heading handled above
-                      }
-                      return (
-                        <div key={bIdx} className="space-y-1.5">
-                          {block.split("\n").map((line, lIdx) => {
-                            if (line.startsWith("- **")) {
-                              const match = line.match(/- \*\*([^*]+)\*\*:\s*(.*)/);
-                              if (match) {
-                                return (
-                                  <div key={lIdx} className="pt-1.5">
-                                    <span className="text-zinc-100 font-bold">{match[1]}: </span>
-                                    <span className="text-zinc-400 font-sans">{match[2]}</span>
-                                  </div>
-                                );
-                              }
-                            }
-                            if (line.startsWith("  - ") || line.startsWith("    - ")) {
-                              return (
-                                <div key={lIdx} className="pl-4 text-zinc-400 font-sans flex items-start gap-2">
-                                  <span className="text-zinc-600 font-mono text-[10px] mt-1">▪</span>
-                                  <span className="flex-1">{line.replace(/^\s*-\s*/, "")}</span>
-                                </div>
-                              );
-                            }
-                            if (line.trim().length > 0) {
-                              return (
-                                <p key={lIdx} className="text-zinc-300 font-sans">
-                                  {line.replace(/^-\s*/, "")}
-                                </p>
-                              );
-                            }
-                            return null;
-                          })}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
               </div>
             )}
           </div>

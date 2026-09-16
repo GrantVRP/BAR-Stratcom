@@ -1,12 +1,20 @@
 {
   "name": "theory-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Tactical build order synthesizer, real-time RTS economic runway simulation, and atmospheric telemetry system for Beyond All Reason.",
+  "author": "Grant",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GrantVRP/BAR-Stratcom.git"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.63",

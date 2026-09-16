@@ -1,36 +1,179 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Beyond All Reason (BAR) StratCom // Tactical Advisory & RTS Economic Engine
+
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-61DAFB?style=flat-square&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-13.x-f08?style=flat-square&logo=framer)](https://www.framer.com/motion/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+
+A high-performance real-time tactical decision support system and economic runway simulation engine for the open-source RTS **[Beyond All Reason (BAR)](https://www.beyondallreason.info/)**.
+
+The platform combines competitive meta heuristics, continuous physics-driven telemetry, algorithmic Catmull-Rom spline resource modeling, and schema-constrained LLM generation to synthesize tournament-viable opening build orders and expansion strategies.
+
+---
+
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      BAR StratCom Tactical Console                      │
+└───────────────────┬─────────────────────────────────┬───────────────────┘
+                    │                                 │
+     ┌──────────────▼──────────────┐   ┌──────────────▼──────────────┐
+     │  Resource Economy Runway    │   │  Atmospheric Wind Telemetry │
+     │  Catmull-Rom Bezier Spline  │   │  useAnimationFrame Loop     │
+     │  t ∈ [0, 300s] Simulation   │   │  Δθ = (ω · Δt) / 1000       │
+     └──────────────┬──────────────┘   └──────────────┬──────────────┘
+                    │                                 │
+     ┌──────────────▼─────────────────────────────────▼──────────────┐
+     │           Schema-Constrained LLM Streaming Pipeline           │
+     │      Vercel AI SDK streamObject + Zod Schema Validation       │
+     │     Google Gemini 1.5 Pro with Few-Shot Meta Grounding        │
+     └──────────────────────────────┬────────────────────────────────┘
+                                    │
+                    ┌───────────────▼───────────────┐
+                    │ Competitive Knowledge Store   │
+                    │ Scraped High-ELO Transcripts  │
+                    │ JSON Ruleset & Unit Rosters   │
+                    └───────────────────────────────┘
+```
+
+---
+
+## Core Engineering Features
+
+### 1. Algorithmic Resource Runway Simulation (`ResourceGraph.tsx`)
+- **Discrete Economic Modeling**: Simulates net metal ($+M/\text{s}$) and energy ($+E/\text{s}$) deltas across the critical opening window ($t = 0$ to $300\text{s}$) by evaluating commander build power, structure construction timings, and unit queues.
+- **Catmull-Rom to Cubic Bezier Conversion**: Implements smooth $C^1$-continuous cubic spline interpolation across discrete sample intervals:
+  $$\mathbf{CP}_1 = \mathbf{P}_1 + \frac{\mathbf{P}_2 - \mathbf{P}_0}{6}, \quad \mathbf{CP}_2 = \mathbf{P}_2 - \frac{\mathbf{P}_3 - \mathbf{P}_1}{6}$$
+- **Stall Hazard Detection**: Analyzes power consumption thresholds to visually highlight grid deficit windows and alert players before queuing energy-intensive factories.
+- **Interactive Scrubber**: Synchronized SVG hairline tracker exposing instantaneous resource output, storage thresholds, and peak telemetry at cursor position.
+
+### 2. Physics-Driven Telemetry Engine (`WindmillTelemetry.tsx`)
+- **Continuous Frame Loop**: Utilizes Framer Motion's `useAnimationFrame` and `useMotionValue` to calculate angular velocity frame-by-frame:
+  $$\Delta \theta = \frac{\omega(v_{\text{wind}}) \cdot \Delta t}{1000} \pmod{360^{\circ}}$$
+- **Zero Phase Discontinuity**: Preserves angular momentum across map switching; changing wind velocity smoothly scales rotation speed without visual hitching or keyframe resets.
+- **Competitive Threshold Evaluation**: Evaluates live velocity against authentic Beyond All Reason meta heuristics:
+  - $v \ge 8.5\text{ m/s}$: `"WIND HIGHLY VIABLE"` (Cyan status, high-efficiency turbine priority)
+  - $v < 5.0\text{ m/s}$: `"SOLAR ONLY (STALL RISK)"` (Rose status, fixed solar priority)
+  - $5.0 \le v < 8.5\text{ m/s}$: `"MARGINAL VARIANCE"` (Amber status, mixed power grid)
+
+### 3. Schema-Constrained LLM Generation (`api/generate-build`)
+- **Type-Safe Structured Streaming**: Leverages `streamObject` from the Vercel AI SDK paired with `zod` schemas (`buildPlanResponseSchema`) to ensure the model outputs valid JSON conforming strictly to the frontend's timeline parser.
+- **Few-Shot Domain Grounding**: Integrates scraped competitive tournament transcripts directly into the prompt context to produce authentic tournament caster commentary and high-ELO timing analysis.
+- **Meta Rule Enforcement**: Strictly grounds the AI in fundamental RTS principles:
+  - Enforces minimum $+60\text{ E}$ grid capacity before factory placement.
+  - Maintains the $100\text{ E} : 10\text{ M}$ golden macroeconomic ratio.
+  - Generates commander reclaim queues (rock clusters, obsolete early solars).
+
+### 4. Custom Procedural RTS Iconography (`BarIcon.tsx`)
+- **Vector-Rendered Asset Pipeline**: Hand-crafted, responsive SVG representations of key BAR structures (Bot Labs, Vehicle Plants, Aircraft Plants, Shipyards, Solars, Wind Turbines, Fusion Reactors, Storages).
+- **Faction Shader Adaptation**: Dynamic theme synchronization applying faction-authentic color calibration:
+  - **Armada**: Electric Blue (`#48a2ef`) with cyan/ambient wing luminescence.
+  - **Cortex**: Industrial Crimson (`#ff2a2a`) with angular thermal accents.
+  - **Universal Metal**: Slate-silver (`#94a3b8`) for standardized resource visualization.
+
+---
+
+## Project Structure
+
+```
+Theory-App/
+├── data/
+│   └── transcripts.json            # Scraped high-ELO tournament guide transcripts
+├── public/
+│   ├── armada-logo.png             # Faction brand assets
+│   ├── cortex-logo.png
+│   └── favicon.ico
+├── scripts/
+│   └── scrape_bar_transcripts.py   # Automated YouTube transcript extraction pipeline
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── generate-build/     # AI SDK structured streaming route
+│   │   ├── globals.css             # Tailwind CSS v4 design tokens
+│   │   ├── layout.tsx              # Root application shell & metadata
+│   │   └── page.tsx                # Tactical StratCom operational console
+│   ├── components/
+│   │   ├── tactical/
+│   │   │   ├── BarIcon.tsx         # Procedural SVG RTS unit & structure renderer
+│   │   │   ├── ResourceGraph.tsx   # Catmull-Rom spline economic runway graph
+│   │   │   └── WindmillTelemetry.tsx# Physics-based rotating atmospheric telemetry
+│   │   └── ui/                     # Primitives (badge, button, input, skeleton)
+│   └── lib/
+│       ├── game-data.ts            # Unit rosters, factory tiers, and economy constants
+│       ├── timeline-parser.ts      # Monospace timestamp & resource delta parser
+│       └── utils.ts                # Class merge & utility helpers
+├── package.json                    # Project manifest & build scripts
+├── tsconfig.json                   # Strict TypeScript compiler options
+└── README.md
+```
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- **Node.js**: `v20.x` or higher
+- **npm** / **pnpm** / **yarn**
+- **Google Gemini API Key** (optional: runs with fallback tactical rules if omitted)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/GrantVRP/BAR-Stratcom.git
+   cd Theory-App
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables (optional):
+   Create a `.env.local` file in the project root:
+   ```env
+   GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key_here
+   ```
+   *(Alternatively, configure your API key directly in the web UI via the **Link Key** modal).*
+
+4. Launch development server:
+   ```bash
+   npm run dev
+   ```
+   Navigate to `http://localhost:3000`.
+
+---
+
+## Verification & Build
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Run strict TypeScript typechecking
+npm run type-check
+
+# Run production build (Turbopack)
+npm run build
+
+# Start production server
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Offline Data Extraction Pipeline
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The repository includes a standalone Python utility to extract, clean, and structure competitive Beyond All Reason tutorial transcripts for few-shot prompt injection:
 
-## Learn More
+```bash
+pip install youtube-transcript-api requests
+python scripts/scrape_bar_transcripts.py
+```
+Output is validated and stored in `data/transcripts.json`.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

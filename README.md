@@ -16,27 +16,44 @@ The platform combines competitive meta heuristics, continuous physics-driven tel
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                      BAR StratCom Tactical Console                      │
-└───────────────────┬─────────────────────────────────┬───────────────────┘
-                    │                                 │
-     ┌──────────────▼──────────────┐   ┌──────────────▼──────────────┐
-     │  Resource Economy Runway    │   │  Atmospheric Wind Telemetry │
-     │  Catmull-Rom Bezier Spline  │   │  useAnimationFrame Loop     │
-     │  t ∈ [0, 300s] Simulation   │   │  Δθ = (ω · Δt) / 1000       │
-     └──────────────┬──────────────┘   └──────────────┬──────────────┘
-                    │                                 │
-     ┌──────────────▼─────────────────────────────────▼──────────────┐
-     │           Schema-Constrained LLM Streaming Pipeline           │
-     │      Vercel AI SDK streamObject + Zod Schema Validation       │
-     │     Google Gemini 1.5 Pro with Few-Shot Meta Grounding        │
-     └──────────────────────────────┬────────────────────────────────┘
-                                    │
-                    ┌───────────────▼───────────────┐
-                    │ Competitive Knowledge Store   │
-                    │ Scraped High-ELO Transcripts  │
-                    │ JSON Ruleset & Unit Rosters   │
-                    └───────────────────────────────┘
+                                  [ Windows Host OS ]
+                       ┌──────────────────────────────────────┐
+                       │  spring.exe / Beyond-All-Reason.exe  │
+                       │  _script.txt / infolog.txt           │
+                       └──────────────────┬───────────────────┘
+                                          │ Memory handles / File inspection
+                       ┌──────────────────▼───────────────────┐
+                       │   Python Telemetry Bridge Daemon     │
+                       │   (scripts/bar_live_bridge.py)       │
+                       │   FastAPI + Uvicorn + psutil on :5050│
+                       └──────────────────┬───────────────────┘
+                                          │ GET /api/live-status (CORS)
+                                          │ (Silent 2s Polling)
+┌─────────────────────────────────────────▼────────────────────────────────────────┐
+│                      BAR StratCom Tactical Console                               │
+├─────────────────────────────────┬────────────────────────────────────────────────┤
+│  ┌───────────────────────────┐  │  ┌──────────────────────────┐                  │
+│  │     useLiveGame Hook      │  │  │   MapCombobox & Database │                  │
+│  │   (Memory Link Badge)     ├──┼──►   (Tactical Carbon)      │                  │
+│  └───────────────────────────┘  │  └────────────┬─────────────┘                  │
+│                                 │               │                                │
+│  ┌───────────────────────────┐  │  ┌────────────▼─────────────┐                  │
+│  │  Resource Economy Runway  │  │  │ Atmospheric Wind Turbine │                  │
+│  │  Catmull-Rom Bezier 300s  │  │  │ useAnimationFrame Loop  │                  │
+│  └──────────────┬────────────┘  │  └────────────┬─────────────┘                  │
+└─────────────────┼───────────────┴───────────────┼────────────────────────────────┘
+                  │                               │
+   ┌──────────────▼───────────────────────────────▼──────────────┐
+   │          Schema-Constrained LLM Streaming Pipeline          │
+   │     Vercel AI SDK streamObject + Zod Schema Validation      │
+   │    Google Gemini 1.5 Pro with Few-Shot Meta Grounding       │
+   └──────────────────────────────┬──────────────────────────────┘
+                                  │
+                  ┌───────────────▼───────────────┐
+                  │  Competitive Knowledge Store  │
+                  │  Scraped High-ELO Transcripts │
+                  │  Tournament Map Strategy Data │
+                  └───────────────────────────────┘
 ```
 
 ---
@@ -74,6 +91,19 @@ The platform combines competitive meta heuristics, continuous physics-driven tel
   - **Cortex**: Industrial Crimson (`#ff2a2a`) with angular thermal accents.
   - **Universal Metal**: Slate-silver (`#94a3b8`) for standardized resource visualization.
 
+### 5. Searchable Map Strategy System (`MapCombobox.tsx`, `map-data.ts`)
+- **Competitive Map Database**: Deep strategic schemas for premier tournament maps (*Supreme Isthmus*, *Glitter*, *Comet Catcher Redux*, *Eight Horses*, *All Metal / Speed Metal*) defining dimensions, wind velocity bands, oceanic tidal yield, metal density, tactical briefings, and choke points.
+- **Tactical Carbon Combobox**: Live search filtering across name, dimensions, metal density, and choke point names with complete keyboard navigation (`ArrowUp`/`ArrowDown`/`Enter`/`Escape`) and ARIA combobox accessibility.
+- **Dedicated Sector Briefing Stage**: Visualizes the strategic battlefield context with telemetry cards, tactical military briefing narrative, choke point defense grids, and faction-aligned doctrine recommendations (`OPTIMAL FIT`).
+
+### 6. Local Process Memory & Telemetry Bridge (`bar_live_bridge.py`, `useLiveGame.ts`)
+
+#### Architecture & Key Decisions
+- **Hybrid Memory and Log Tailing**: Reading raw byte offsets from dynamic game memory (`ReadProcessMemory`) can crash or break between game engine patches. Combining Windows process handle verification with active `_script.txt` and `infolog.txt` parsing delivers rock-solid lobby and map detection without memory offset instability.
+- **Decoupled IPC Daemon**: The Python FastAPI daemon runs locally on port 5050 with permissive localhost CORS. This bypasses browser sandboxing while ensuring the Next.js web application continues to work as a standalone theorycrafting tool even if the Python script is not running.
+- **State-Driven UI Sync**: Selecting a map manually or receiving a map update via the live bridge triggers identical state handlers, keeping the `WindmillTelemetry` widget and Gemini API payload synchronized at all times.
+- **Silent React Polling**: Frontend hook polls `/api/live-status` every 2000ms with timeout abort controllers and silent error handling, guaranteeing zero unhandled console spam or network churn when the game or daemon is offline.
+
 ---
 
 ## Project Structure
@@ -87,6 +117,7 @@ Theory-App/
 │   ├── cortex-logo.png
 │   └── favicon.ico
 ├── scripts/
+│   ├── bar_live_bridge.py          # Local process telemetry bridge daemon (FastAPI/psutil)
 │   └── scrape_bar_transcripts.py   # Automated YouTube transcript extraction pipeline
 ├── src/
 │   ├── app/
@@ -98,11 +129,15 @@ Theory-App/
 │   ├── components/
 │   │   ├── tactical/
 │   │   │   ├── BarIcon.tsx         # Procedural SVG RTS unit & structure renderer
+│   │   │   ├── MapCombobox.tsx     # Accessible tactical map selector combobox
 │   │   │   ├── ResourceGraph.tsx   # Catmull-Rom spline economic runway graph
 │   │   │   └── WindmillTelemetry.tsx# Physics-based rotating atmospheric telemetry
 │   │   └── ui/                     # Primitives (badge, button, input, skeleton)
+│   ├── hooks/
+│   │   └── useLiveGame.ts          # Silent React polling hook for process telemetry
 │   └── lib/
 │       ├── game-data.ts            # Unit rosters, factory tiers, and economy constants
+│       ├── map-data.ts             # Competitive tournament map database & doctrines
 │       ├── timeline-parser.ts      # Monospace timestamp & resource delta parser
 │       └── utils.ts                # Class merge & utility helpers
 ├── package.json                    # Project manifest & build scripts
@@ -144,6 +179,29 @@ Theory-App/
    npm run dev
    ```
    Navigate to `http://localhost:3000`.
+
+---
+
+## Testing and Integration Steps
+
+1. **Install Python bridge dependencies:**
+   ```bash
+   pip install fastapi uvicorn psutil
+   ```
+
+2. **Start the telemetry daemon:**
+   ```bash
+   python scripts/bar_live_bridge.py
+   ```
+   *(Optional: pass `--mock` for offline synthetic match progression without launching the game).*
+
+3. **Run the Next.js development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Observe Live Synchronization:**
+   Launch Beyond All Reason, join a lobby or start a skirmish, and observe the top telemetry bar transition from `[MEMORY LINK: STANDBY]` to `[MEMORY LINK: IN-GAME]` while auto-populating the active map.
 
 ---
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { motion, useAnimationFrame, useMotionValue } from "framer-motion";
 
 export interface WindmillTelemetryProps {
@@ -37,7 +37,9 @@ export function WindmillTelemetry({
   // Continuous frame-by-frame rotation
   const rotateAngle = useMotionValue(0);
   const windRef = useRef(currentWind);
-  windRef.current = currentWind;
+  useEffect(() => {
+    windRef.current = currentWind;
+  }, [currentWind]);
 
   useAnimationFrame((_, delta) => {
     // Math: Speed in degrees per millisecond.

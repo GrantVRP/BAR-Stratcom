@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useCallback } from "react";
-import { Zap, AlertTriangle, Activity, TrendingUp, Info } from "lucide-react";
+import { Zap, AlertTriangle, Activity } from "lucide-react";
 import { type ParsedBuildStep } from "@/lib/timeline-parser";
 import { type Faction } from "@/lib/game-data";
 
@@ -68,7 +68,7 @@ function createSmoothPath(points: { x: number; y: number }[]): string {
 export const ResourceGraph: React.FC<ResourceGraphProps> = ({
   steps,
   mapWindAvg = 14,
-  faction = "Armada",
+  faction: _faction = "Armada",
   className = "",
 }) => {
   const [hoveredSecond, setHoveredSecond] = useState<number | null>(null);

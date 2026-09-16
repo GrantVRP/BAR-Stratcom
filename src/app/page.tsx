@@ -23,10 +23,8 @@ import {
   X,
   Wind,
   ShieldAlert,
-  SlidersHorizontal,
-  ChevronRight,
   Database,
-  Flame,
+  Waves,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -38,70 +36,9 @@ import { parseBuildStep, type ParsedBuildStep } from "@/lib/timeline-parser";
 import { BarIcon } from "@/components/tactical/BarIcon";
 import { ResourceGraph } from "@/components/tactical/ResourceGraph";
 import { WindmillTelemetry } from "@/components/tactical/WindmillTelemetry";
-
-// Realistic Beyond All Reason Theaters with authentic wind data & tactical profiles
-const MAP_PRESETS = [
-  {
-    id: "open-fields",
-    name: "Open Plains",
-    subtext: "Open Metal, Plains of Hope",
-    windRange: "12–28 m/s",
-    windMin: 12,
-    windMax: 28,
-    windAvg: 20,
-    windLabel: "HIGH WIND",
-    terrainTag: "FLANKING",
-    ecoFocus: "Wind Gen Priority",
-  },
-  {
-    id: "small-land",
-    name: "Small Land / Chokes",
-    subtext: "Red Comet, Altair Crossing",
-    windRange: "8–18 m/s",
-    windMin: 8,
-    windMax: 18,
-    windAvg: 13,
-    windLabel: "MODERATE",
-    terrainTag: "CHOKE-DENSE",
-    ecoFocus: "Solar + 3 Mex Start",
-  },
-  {
-    id: "mountain-hills",
-    name: "Mountain Heights",
-    subtext: "Supreme Strait, Tangerine",
-    windRange: "4–14 m/s",
-    windMin: 4,
-    windMax: 14,
-    windAvg: 9,
-    windLabel: "LOW-MOD",
-    terrainTag: "ELEVATION",
-    ecoFocus: "Solar Core / Artillery",
-  },
-  {
-    id: "water-coastal",
-    name: "Coastal & Sea",
-    subtext: "DSD Shorelines, Shore to Shore",
-    windRange: "10–20 m/s",
-    windMin: 10,
-    windMax: 20,
-    windAvg: 15,
-    windLabel: "STEADY",
-    terrainTag: "AMPHIBIOUS",
-    ecoFocus: "Tidal / Hover Logistics",
-  },
-  {
-    id: "large-team",
-    name: "Large Team 8v8",
-    subtext: "All That Glitters, Ishtir",
-    windRange: "6–22 m/s",
-    windMin: 6,
-    windMax: 22,
-    windAvg: 14,
-    windLabel: "VARIABLE",
-    terrainTag: "LANE-MACRO",
-    ecoFocus: "Backline Fusion Rush",
-  },
-];
+import { MapCombobox } from "@/components/tactical/MapCombobox";
+import { type MapData, MAP_DATABASE } from "@/lib/map-data";
+import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
 
 // Tournament Strategic Doctrines
 const STRATEGY_PRESETS = [
@@ -150,24 +87,51 @@ const STRATEGY_PRESETS = [
 export default function BeyondAllReasonConsole() {
   // Console state
   const [faction, setFaction] = useState<Faction>("Armada");
-  const [selectedMapId, setSelectedMapId] = useState<string>("small-land");
+  const [selectedMap, setSelectedMap] = useState<MapData>(MAP_DATABASE[0]);
   const [selectedStrategyId, setSelectedStrategyId] = useState<string>("early-tank-rush");
-  const [activeTab, setActiveTab] = useState<"timeline" | "unitComp" | "notes">("timeline");
+  const [activeTab, setActiveTab] = useState<"timeline" | "unitComp" | "notes" | "briefing">("timeline");
   const [showEcoRunway, setShowEcoRunway] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
 
-  // API Key modal
-  const [apiKey, setApiKey] = useState<string>("");
-  const [showKeyModal, setShowKeyModal] = useState<boolean>(false);
-  const [keyInput, setKeyInput] = useState<string>("");
+  // Auto-sync detected match / lobby state into console from external daemon
+  const handleLiveStateChange = useCallback((state: LiveGameState) => {
+    if (!state.isRunning) return;
+    if (state.mapName) {
+      const query = state.mapName.toLowerCase();
+      const matched = MAP_DATABASE.find(
+        (m) =>
+          m.name.toLowerCase().includes(query) ||
+          query.includes(m.name.toLowerCase()) ||
+          query.includes(m.id)
+      );
+      if (matched) {
+        setSelectedMap((prev) => (prev.id !== matched.id ? matched : prev));
+      }
+    }
 
-  useEffect(() => {
-    const saved = localStorage.getItem("bar_gemini_api_key");
-    if (saved) {
-      setApiKey(saved);
-      setKeyInput(saved);
+    if (state.faction === "Armada" || state.faction === "Cortex") {
+      const detectedFaction: Faction = state.faction;
+      setFaction((prev) => (prev !== detectedFaction ? detectedFaction : prev));
     }
   }, []);
+
+  // Live game telemetry bridge hook
+  const { liveState } = useLiveGame({ onStateChange: handleLiveStateChange });
+
+  // API Key modal (lazy initialize from localStorage to eliminate mount-time effect)
+  const [apiKey, setApiKey] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("bar_gemini_api_key") || "";
+    }
+    return "";
+  });
+  const [showKeyModal, setShowKeyModal] = useState<boolean>(false);
+  const [keyInput, setKeyInput] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("bar_gemini_api_key") || "";
+    }
+    return "";
+  });
 
   const saveApiKey = () => {
     const trimmed = keyInput.trim();
@@ -183,11 +147,6 @@ export default function BeyondAllReasonConsole() {
     setShowKeyModal(false);
   };
 
-  // Current active selections
-  const currentMap = useMemo(
-    () => MAP_PRESETS.find((m) => m.id === selectedMapId) || MAP_PRESETS[0],
-    [selectedMapId]
-  );
   const currentStrategy = useMemo(
     () => STRATEGY_PRESETS.find((s) => s.id === selectedStrategyId) || STRATEGY_PRESETS[0],
     [selectedStrategyId]
@@ -205,19 +164,20 @@ export default function BeyondAllReasonConsole() {
   const handleGenerate = useCallback(() => {
     submit({
       faction,
-      mapType: `${currentMap.name} (${currentMap.subtext})`,
+      mapType: `${selectedMap.name} (${selectedMap.dimensions}) - Metal: ${selectedMap.metalDensity.toUpperCase()}, Wind: ${selectedMap.wind.min}-${selectedMap.wind.max} m/s (avg ${selectedMap.wind.avg}), Tidal: +${selectedMap.tidal}E, Chokes: ${selectedMap.chokePoints.join("; ")}`,
       strategyStyle: `${currentStrategy.title} (${currentStrategy.description})`,
       apiKey: apiKey || undefined,
     });
     setActiveTab("timeline");
-  }, [faction, currentMap, currentStrategy, apiKey, submit]);
+  }, [faction, selectedMap, currentStrategy, apiKey, submit]);
 
   // Export macro to clipboard
   const handleCopy = useCallback(() => {
     if (!object) return;
     const text = [
       `=== BEYOND ALL REASON TACTICAL MACRO: ${faction.toUpperCase()} ===`,
-      `Theater: ${currentMap.name} [${currentMap.windRange}]`,
+      `Theater: ${selectedMap.name} [${selectedMap.dimensions}, Wind: ${selectedMap.wind.min}–${selectedMap.wind.max} m/s, Metal: ${selectedMap.metalDensity.toUpperCase()}]`,
+      `Choke Points: ${selectedMap.chokePoints.join(" | ")}`,
       `Doctrine: ${currentStrategy.title} [Timing: ${currentStrategy.timingWindow}]`,
       "",
       "--- [01] OPENING BUILD TIMELINE ---",
@@ -233,7 +193,7 @@ export default function BeyondAllReasonConsole() {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
-  }, [object, faction, currentMap, currentStrategy]);
+  }, [object, faction, selectedMap, currentStrategy]);
 
   // Global Keyboard Shortcuts (Ctrl+C for Macro Copy, Enter for Generate)
   useEffect(() => {
@@ -267,7 +227,7 @@ export default function BeyondAllReasonConsole() {
     return object.openingBuildOrder
       .filter((step): step is string => Boolean(step && step.trim()))
       .map((step, idx) => parseBuildStep(step, idx, faction));
-  }, [object?.openingBuildOrder, faction]);
+  }, [object, faction]);
 
   const isArmada = faction === "Armada";
 
@@ -296,7 +256,7 @@ export default function BeyondAllReasonConsole() {
             <div className="font-mono font-bold text-sm text-zinc-100 tracking-wider">
               BAR STRATCOM{" "}
               <span className={isArmada ? "text-[#48a2ef]" : "text-cyan-400"}>
-                // TACTICAL ADVISOR
+                {"// TACTICAL ADVISOR"}
               </span>
             </div>
           </div>
@@ -316,13 +276,48 @@ export default function BeyondAllReasonConsole() {
           </div>
         </div>
 
-        {/* Right: Dynamic Wind Widget wired to current map state, AI Link, and Actions */}
+        {/* Right: Dynamic Wind Widget wired to current map state, Live Memory Bridge, and Actions */}
         <div className="flex items-center gap-3">
+          {/* Live Game Memory Bridge Status Indicator */}
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono">
+            {liveState?.gameStatus === "IN_GAME" ? (
+              <>
+                <span className="size-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
+                <span className="text-cyan-400 font-bold tracking-tight">
+                  [MEMORY LINK: IN-GAME]
+                </span>
+                <span className="text-zinc-500">•</span>
+                <span className="text-zinc-200 font-semibold">
+                  {Math.floor(liveState.gameTimeSeconds / 60)}:
+                  {String(liveState.gameTimeSeconds % 60).padStart(2, "0")}
+                </span>
+              </>
+            ) : liveState?.gameStatus === "IN_LOBBY" ? (
+              <>
+                <span className="size-2 rounded-full bg-amber-400 shrink-0" />
+                <span className="text-amber-400 font-bold tracking-tight">
+                  [MEMORY LINK: LOBBY]
+                </span>
+                <span className="text-zinc-500">•</span>
+                <span className="text-zinc-300 truncate max-w-[120px]">
+                  {liveState.lobbyName || "Lobby Active"}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="size-1.5 rounded-full bg-zinc-600 shrink-0" />
+                <span className="text-zinc-500 font-medium tracking-tight">
+                  [MEMORY LINK: STANDBY]
+                </span>
+              </>
+            )}
+          </div>
+
           {/* Dynamic Wind Widget wired to current map state */}
           <WindmillTelemetry
-            currentWind={currentMap.windAvg}
-            minWind={currentMap.windMin}
-            maxWind={currentMap.windMax}
+            currentWind={selectedMap.wind.avg}
+            minWind={selectedMap.wind.min}
+            maxWind={selectedMap.wind.max}
           />
           {/* AI Key Link Badge */}
           <button
@@ -484,54 +479,38 @@ export default function BeyondAllReasonConsole() {
             </div>
           </div>
 
-          {/* Section: Theater of War (Map Preset Selector) */}
-          <div className="p-3.5 border-b border-zinc-800/60 space-y-2">
+          {/* Section: Theater of War (Map Combobox & Tactical Topography) */}
+          <div className="p-3.5 border-b border-zinc-800/60 space-y-2.5">
             <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
               <span className="tracking-wider">02 // THEATER // TOPOGRAPHY</span>
-              <span className="text-[10px] text-zinc-500 font-mono">WIND VELOCITY</span>
+              <span className="text-[10px] text-zinc-500 font-mono">SEARCH DATABASE</span>
             </div>
 
-            <div className="space-y-1">
-              {MAP_PRESETS.map((preset) => {
-                const isSelected = selectedMapId === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    onClick={() => setSelectedMapId(preset.id)}
-                    className={`w-full text-left p-2 rounded transition-colors flex items-center justify-between ${
-                      isSelected
-                        ? "bg-zinc-900/80 text-zinc-100"
-                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40"
-                    }`}
-                    style={
-                      isSelected
-                        ? { borderLeft: `2px solid ${accentColor}` }
-                        : { borderLeft: "2px solid transparent" }
-                    }
-                  >
-                    <div>
-                      <div
-                        className="font-mono text-xs font-semibold leading-tight"
-                        style={{ color: isSelected ? accentColor : undefined }}
-                      >
-                        {preset.name}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 truncate max-w-[190px]">
-                        {preset.subtext}
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="text-[10px] font-mono text-zinc-300 font-medium">
-                        {preset.windRange}
-                      </div>
-                      <div className="text-[9px] font-mono text-zinc-500">
-                        {preset.terrainTag}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
+            <MapCombobox
+              selectedMap={selectedMap}
+              onSelectMap={setSelectedMap}
+            />
+
+            {/* Quick Choke Points & Tactical Preview */}
+            <div className="p-2.5 rounded bg-zinc-950/80 border border-zinc-800/80 space-y-1.5 font-mono text-[11px]">
+              <div className="flex items-center justify-between text-[10px] text-zinc-400">
+                <span className="text-zinc-500">PRIMARY CHOKES ({selectedMap.chokePoints.length})</span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("briefing")}
+                  className="text-cyan-400 hover:underline flex items-center gap-0.5 text-[10px] font-bold"
+                >
+                  FULL BRIEFING →
+                </button>
+              </div>
+              <ul className="space-y-1">
+                {selectedMap.chokePoints.slice(0, 3).map((cp, idx) => (
+                  <li key={idx} className="text-[10px] text-zinc-400 flex items-start gap-1.5 leading-tight">
+                    <span className="text-cyan-400 text-[9px] shrink-0 mt-0.5">▸</span>
+                    <span className="line-clamp-1">{cp}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
@@ -593,7 +572,7 @@ export default function BeyondAllReasonConsole() {
             <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500">
               <span>ACTIVE PROFILE:</span>
               <span className="text-zinc-300 truncate max-w-[180px]">
-                {currentStrategy.title.split(" ")[0]} // {currentMap.name.split(" ")[0]}
+                {currentStrategy.title.split(" ")[0]} {"//"} {selectedMap.name.split(" ")[0]}
               </span>
             </div>
 
@@ -720,6 +699,24 @@ export default function BeyondAllReasonConsole() {
                 <Cpu className="size-3.5" style={{ color: activeTab === "notes" ? accentColor : undefined }} />
                 <span style={{ color: activeTab === "notes" ? accentColor : undefined }}>OPERATIONAL TELEMETRY</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("briefing")}
+                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                  activeTab === "briefing"
+                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+                style={
+                  activeTab === "briefing"
+                    ? { borderBottom: `2px solid ${accentColor}` }
+                    : { borderBottom: "2px solid transparent" }
+                }
+              >
+                <Compass className="size-3.5" style={{ color: activeTab === "briefing" ? accentColor : undefined }} />
+                <span style={{ color: activeTab === "briefing" ? accentColor : undefined }}>MAP BRIEFING</span>
+              </button>
             </div>
 
             {/* Faction and Doctrine Label + Eco Runway Toggle */}
@@ -741,8 +738,8 @@ export default function BeyondAllReasonConsole() {
               <div className="hidden sm:flex items-center gap-2">
                 <span className="text-zinc-500">ENGAGEMENT:</span>
                 <span className="text-zinc-300 font-semibold">{faction.toUpperCase()}</span>
-                <span className="text-zinc-600">//</span>
-                <span className="text-zinc-400">{currentMap.name}</span>
+                <span className="text-zinc-600">{"//"}</span>
+                <span className="text-zinc-400">{selectedMap.name}</span>
               </div>
             </div>
           </div>
@@ -776,7 +773,7 @@ export default function BeyondAllReasonConsole() {
                   >
                     <ResourceGraph
                       steps={parsedSteps}
-                      mapWindAvg={currentMap.windAvg}
+                      mapWindAvg={selectedMap.wind.avg}
                       faction={faction}
                     />
                   </motion.div>
@@ -1111,6 +1108,228 @@ export default function BeyondAllReasonConsole() {
                   </motion.div>
                 )}
               </div>
+            )}
+
+            {/* View 4: MAP BRIEFING */}
+            {activeTab === "briefing" && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-6 max-w-5xl"
+              >
+                {/* Header Card */}
+                <div className="p-6 rounded-lg bg-[#0d0f15]/90 border border-zinc-800 shadow-xl relative overflow-hidden backdrop-blur-md">
+                  <div
+                    className="absolute top-0 left-0 right-0 h-1"
+                    style={{ backgroundColor: accentColor }}
+                  />
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1 text-[11px] font-mono uppercase tracking-widest text-zinc-500">
+                        <Compass className="size-3.5" style={{ color: accentColor }} />
+                        <span>TACTICAL THEATER INTEL // SECTOR BRIEFING</span>
+                      </div>
+                      <h2 className="text-2xl font-bold font-mono text-zinc-100 tracking-tight flex items-center gap-3">
+                        {selectedMap.name}
+                        <Badge
+                          variant="outline"
+                          className="font-mono text-[10px] tracking-wider uppercase border-zinc-700 bg-zinc-900/80 text-zinc-300"
+                        >
+                          {selectedMap.dimensions}
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          className={`font-mono text-[10px] tracking-wider uppercase ${
+                            selectedMap.metalDensity === "all-metal"
+                              ? "border-amber-500/50 bg-amber-500/10 text-amber-300"
+                              : selectedMap.metalDensity === "high"
+                              ? "border-cyan-500/50 bg-cyan-500/10 text-cyan-300"
+                              : "border-zinc-700 bg-zinc-900/80 text-zinc-300"
+                          }`}
+                        >
+                          {selectedMap.metalDensity.toUpperCase()} METAL
+                        </Badge>
+                      </h2>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="px-3 py-1.5 rounded bg-zinc-950/80 border border-zinc-800 font-mono text-xs flex items-center gap-2">
+                        <span className="text-zinc-500">CURRENT FACTION:</span>
+                        <span
+                          className="font-bold uppercase"
+                          style={{ color: accentColor }}
+                        >
+                          {faction}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Telemetry Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
+                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                        <SquareSquare className="size-3 text-zinc-400" />
+                        Dimensions
+                      </div>
+                      <div className="text-sm font-bold font-mono text-zinc-200 mt-1">
+                        {selectedMap.dimensions}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-500">Standard Grid</div>
+                    </div>
+
+                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
+                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                        <Wind className="size-3 text-cyan-400" />
+                        Wind Velocity
+                      </div>
+                      <div className="text-sm font-bold font-mono text-cyan-300 mt-1">
+                        {selectedMap.wind.min} – {selectedMap.wind.max} <span className="text-xs text-zinc-500 font-normal">m/s</span>
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-500">Avg: {selectedMap.wind.avg} m/s</div>
+                    </div>
+
+                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
+                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                        <Waves className="size-3 text-blue-400" />
+                        Tidal Energy
+                      </div>
+                      <div className="text-sm font-bold font-mono text-zinc-200 mt-1">
+                        {selectedMap.tidal > 0 ? `+${selectedMap.tidal} E/s` : "0 E/s"}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-500">
+                        {selectedMap.tidal > 0 ? "Oceanic tidal yield" : "Landlocked / Dry"}
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
+                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                        <Database className="size-3 text-amber-400" />
+                        Metal Extraction
+                      </div>
+                      <div className="text-sm font-bold font-mono text-amber-300 mt-1 capitalize">
+                        {selectedMap.metalDensity}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-500">Deposit density</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tactical Briefing Narrative */}
+                <div className="p-5 rounded-lg bg-[#0d0f15]/70 border border-zinc-800/80 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-zinc-200 uppercase">
+                    <span style={{ color: accentColor }}>▸</span>
+                    <span>THEATER NARRATIVE & OPERATIONAL ENVIRONMENT</span>
+                  </div>
+                  <p className="text-sm text-zinc-300 leading-relaxed font-sans pl-4 border-l-2 border-zinc-800">
+                    {selectedMap.tacticalBriefing}
+                  </p>
+                </div>
+
+                {/* Choke Points Grid */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-zinc-300 uppercase">
+                    <ShieldAlert className="size-3.5 text-amber-400" />
+                    <span>CRITICAL CHOKE POINTS & TERRAIN ANOMALIES ({selectedMap.chokePoints.length})</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedMap.chokePoints.map((choke, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded bg-zinc-900/50 border border-zinc-800/80 hover:border-amber-500/40 transition-colors flex items-start gap-2.5"
+                      >
+                        <div className="size-5 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-[10px] font-mono font-bold text-amber-400">
+                            {idx + 1}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="text-xs font-mono font-semibold text-zinc-200">
+                            {choke}
+                          </div>
+                          <div className="text-[11px] font-mono text-zinc-500 mt-0.5">
+                            Priority radar coverage & early warning boundary
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recommended Doctrines */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-zinc-300 uppercase">
+                      <Crosshair className="size-3.5" style={{ color: accentColor }} />
+                      <span>RECOMMENDED STRATEGIC DOCTRINES</span>
+                    </div>
+                    <span className="text-[11px] font-mono text-zinc-500">
+                      Tailored for competitive play
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3">
+                    {selectedMap.recommendedDoctrines.map((doc, idx) => {
+                      const isFactionMatch =
+                        doc.faction === "both" ||
+                        doc.faction.toLowerCase() === faction.toLowerCase();
+
+                      return (
+                        <div
+                          key={idx}
+                          className={`p-4 rounded border transition-all ${
+                            isFactionMatch
+                              ? "bg-zinc-900/60 border-zinc-700/80 shadow-md"
+                              : "bg-zinc-950/40 border-zinc-800/40 opacity-70"
+                          }`}
+                          style={
+                            isFactionMatch
+                              ? { borderLeft: `3px solid ${accentColor}` }
+                              : undefined
+                          }
+                        >
+                          <div className="flex items-center justify-between gap-2 mb-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-mono font-bold text-zinc-100">
+                                {doc.name}
+                              </span>
+                              {isFactionMatch && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-[9px] font-mono uppercase tracking-wider py-0 px-1.5"
+                                  style={{
+                                    borderColor: `${accentColor}50`,
+                                    backgroundColor: `${accentColor}15`,
+                                    color: accentColor,
+                                  }}
+                                >
+                                  OPTIMAL FIT
+                                </Badge>
+                              )}
+                            </div>
+
+                            <span
+                              className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border font-semibold ${
+                                doc.faction === "armada"
+                                  ? "text-sky-400 bg-sky-950/30 border-sky-800/50"
+                                  : doc.faction === "cortex"
+                                  ? "text-red-400 bg-red-950/30 border-red-800/50"
+                                  : "text-zinc-300 bg-zinc-800/50 border-zinc-700/50"
+                              }`}
+                            >
+                              {doc.faction.toUpperCase()}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                            {doc.description}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
             )}
           </div>
         </main>

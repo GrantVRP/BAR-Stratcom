@@ -90,7 +90,7 @@ function normalizeTimestamp(rawTime: string, index: number): string {
  * Parses an individual build step string from the LLM or rules engine
  * into an authoritative, structured Gantt-style timeline step.
  */
-export function parseBuildStep(rawStep: string, index: number, faction: Faction): ParsedBuildStep {
+export function parseBuildStep(rawStep: string, index: number, _faction: Faction): ParsedBuildStep {
   if (!rawStep) {
     return {
       id: `step-${index}`,

@@ -1,5 +1,5 @@
 import { streamObject } from 'ai';
-import { createGoogleGenerativeAI, google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 import transcriptsData from '../../../../data/transcripts.json';
 import {
@@ -53,8 +53,8 @@ Adopt the energetic, tactical, jargon-rich tone of an elite tournament caster fo
  */
 function buildSystemPrompt(
   faction: Faction,
-  mapType?: string,
-  strategyStyle?: string
+  _mapType?: string,
+  _strategyStyle?: string
 ): string {
   const factionUnits = getUnitsByFaction(faction);
   const opposingFaction: Faction = faction === 'Armada' ? 'Cortex' : 'Armada';
@@ -183,8 +183,8 @@ function generateTacticalPreset(
   const isArmada = faction === 'Armada';
   const isTankRush = strategyStyle.toLowerCase().includes('tank');
   const isAirOpening = strategyStyle.toLowerCase().includes('air');
-  const isEcoRush = strategyStyle.toLowerCase().includes('eco');
-  const isTurtle = strategyStyle.toLowerCase().includes('turtle') || strategyStyle.toLowerCase().includes('defense');
+  const _isEcoRush = strategyStyle.toLowerCase().includes('eco');
+  const _isTurtle = strategyStyle.toLowerCase().includes('turtle') || strategyStyle.toLowerCase().includes('defense');
 
   if (isArmada) {
     if (isTankRush) {

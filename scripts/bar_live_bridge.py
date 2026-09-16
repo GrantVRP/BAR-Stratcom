@@ -222,15 +222,16 @@ class BarTelemetryScanner:
                 except Exception:
                     pass
 
-            active_map = bar_data.get("mapName", "Supreme Isthmus")
-            lobby_label = f"Live Match [{bar_data.get('rawMapName', active_map)}]"
+            active_map = bar_data.get("mapName", "")
+            raw_map = bar_data.get("rawMapName", active_map)
+            lobby_label = f"Live Match [{raw_map}]" if raw_map else "Live Match"
 
             state = {
                 "isRunning": True,
                 "gameStatus": "IN_GAME",
                 "lobbyName": lobby_label,
                 "mapName": active_map,
-                "faction": bar_data.get("faction", "Armada"),
+                "faction": bar_data.get("faction", "Spectator"),
                 "gameTimeSeconds": max(0, game_time),
             }
         else:
@@ -240,8 +241,8 @@ class BarTelemetryScanner:
                 "isRunning": True,
                 "gameStatus": "IN_LOBBY",
                 "lobbyName": "Beyond All Reason Battle Lobby",
-                "mapName": bar_data.get("mapName", "Supreme Isthmus"),
-                "faction": bar_data.get("faction", "Armada"),
+                "mapName": bar_data.get("mapName", ""),
+                "faction": bar_data.get("faction", "Spectator"),
                 "gameTimeSeconds": 0,
             }
 

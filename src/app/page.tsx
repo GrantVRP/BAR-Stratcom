@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Image from "next/image";
 import { useObject } from "@ai-sdk/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -93,10 +93,45 @@ export default function BeyondAllReasonConsole() {
   const [showEcoRunway, setShowEcoRunway] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
 
+  // Track last detected match state from daemon to prevent recurring overwrite of manual user selections
+  const lastDetectedRef = useRef<{
+    mapName?: string;
+    faction?: string;
+    isInitialized: boolean;
+  }>({
+    isInitialized: false,
+  });
+
   // Auto-sync detected match / lobby state into console from external daemon
   const handleLiveStateChange = useCallback((state: LiveGameState) => {
     if (!state.isRunning) return;
-    if (state.mapName) {
+
+    // Initial match link: sync map and faction once on game discovery
+    if (!lastDetectedRef.current.isInitialized) {
+      lastDetectedRef.current.isInitialized = true;
+      lastDetectedRef.current.mapName = state.mapName;
+      lastDetectedRef.current.faction = state.faction;
+
+      if (state.mapName) {
+        const query = state.mapName.toLowerCase();
+        const matched = MAP_DATABASE.find(
+          (m) =>
+            m.name.toLowerCase().includes(query) ||
+            query.includes(m.name.toLowerCase()) ||
+            query.includes(m.id)
+        );
+        if (matched) setSelectedMap(matched);
+      }
+
+      if (state.faction === "Armada" || state.faction === "Cortex") {
+        setFaction(state.faction);
+      }
+      return;
+    }
+
+    // Subsequent updates: ONLY change console selection if the game's detected map or faction changed externally
+    if (state.mapName && state.mapName !== lastDetectedRef.current.mapName) {
+      lastDetectedRef.current.mapName = state.mapName;
       const query = state.mapName.toLowerCase();
       const matched = MAP_DATABASE.find(
         (m) =>
@@ -104,19 +139,39 @@ export default function BeyondAllReasonConsole() {
           query.includes(m.name.toLowerCase()) ||
           query.includes(m.id)
       );
-      if (matched) {
-        setSelectedMap((prev) => (prev.id !== matched.id ? matched : prev));
-      }
+      if (matched) setSelectedMap(matched);
     }
 
-    if (state.faction === "Armada" || state.faction === "Cortex") {
-      const detectedFaction: Faction = state.faction;
-      setFaction((prev) => (prev !== detectedFaction ? detectedFaction : prev));
+    if (
+      (state.faction === "Armada" || state.faction === "Cortex") &&
+      state.faction !== lastDetectedRef.current.faction
+    ) {
+      lastDetectedRef.current.faction = state.faction;
+      setFaction(state.faction);
     }
   }, []);
 
   // Live game telemetry bridge hook
   const { liveState } = useLiveGame({ onStateChange: handleLiveStateChange });
+
+  // Explicit sync action to pull active match state on demand
+  const syncWithLiveMatch = useCallback(() => {
+    if (!liveState?.isRunning) return;
+    if (liveState.mapName) {
+      const query = liveState.mapName.toLowerCase();
+      const matched = MAP_DATABASE.find(
+        (m) =>
+          m.name.toLowerCase().includes(query) ||
+          query.includes(m.name.toLowerCase()) ||
+          query.includes(m.id)
+      );
+      if (matched) setSelectedMap(matched);
+    }
+    if (liveState.faction === "Armada" || liveState.faction === "Cortex") {
+      setFaction(liveState.faction);
+      lastDetectedRef.current.faction = liveState.faction;
+    }
+  }, [liveState]);
 
   // API Key modal (lazy initialize from localStorage to eliminate mount-time effect)
   const [apiKey, setApiKey] = useState<string>(() => {
@@ -255,7 +310,7 @@ export default function BeyondAllReasonConsole() {
             </div>
             <div className="font-mono font-bold text-sm text-zinc-100 tracking-wider">
               BAR STRATCOM{" "}
-              <span className={isArmada ? "text-[#48a2ef]" : "text-cyan-400"}>
+              <span style={{ color: accentColor }}>
                 {"// TACTICAL ADVISOR"}
               </span>
             </div>
@@ -279,7 +334,17 @@ export default function BeyondAllReasonConsole() {
         {/* Right: Dynamic Wind Widget wired to current map state, Live Memory Bridge, and Actions */}
         <div className="flex items-center gap-3">
           {/* Live Game Memory Bridge Status Indicator */}
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono">
+          <div
+            onClick={syncWithLiveMatch}
+            title={
+              liveState?.isRunning
+                ? "Live game link active. Click to sync console with live game."
+                : "Live game link standby. Start Beyond All Reason to link."
+            }
+            className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono transition-colors ${
+              liveState?.isRunning ? "cursor-pointer hover:border-zinc-700 hover:bg-zinc-800/80" : ""
+            }`}
+          >
             {liveState?.gameStatus === "IN_GAME" ? (
               <>
                 <span className="size-2 rounded-full bg-cyan-400 animate-ping shrink-0" />

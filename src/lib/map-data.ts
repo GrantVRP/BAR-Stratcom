@@ -180,6 +180,39 @@ export const MAP_DATABASE: MapData[] = [
     tacticalBriefing:
       'Ultra-fast macro battlefield with a 100% metal surface. Metal extractors can be constructed anywhere. The economy bottleneck is exclusively energy and build power; immediate energy scaling and non-stop combat queues decide matches in under five minutes.',
   },
+  {
+    id: 'eye-of-horus',
+    name: 'Eye of Horus',
+    dimensions: '16x16',
+    wind: { min: 4, max: 18, avg: 11 },
+    tidal: 0,
+    metalDensity: 'high',
+    chokePoints: [
+      'Central Eye Plateau (High-Yield Metal Core)',
+      'Outer Radial Dune Corridors (Maneuver & Raiding)',
+      'Perimeter Ridge Bluffs (Artillery & Radar Elevation)',
+      'Basin Access Ramps (Key Bottlenecks)',
+    ],
+    recommendedDoctrines: [
+      {
+        faction: 'both',
+        name: 'Eye Core Fortification & Wind Turbine Scaling',
+        description: 'Establish early dominance over the central metal nexus while scaling wind turbines (+11 avg m/s).',
+      },
+      {
+        faction: 'armada',
+        name: 'Fast Hover / Rover Dune Encirclement',
+        description: 'Deploy agile mobile screens across outer sands to cut off reinforcements marching toward the center.',
+      },
+      {
+        faction: 'cortex',
+        name: 'Heavy Plasma Ramp Lockdown',
+        description: 'Anchor heavy bot constructions on ridge ramps to deny enemy ascent to the eye with overlapping fire.',
+      },
+    ],
+    tacticalBriefing:
+      'A contested desert theater centered on the famous elevated "Eye" plateau. The central elevation holds a dense cluster of high-yield metal extractors and affords immense radar range. Controlling the ramps leading to the Eye determines the pace of the entire match.',
+  },
 ];
 
 /**

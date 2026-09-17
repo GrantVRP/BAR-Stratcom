@@ -38,7 +38,7 @@ import { MapCombobox } from "@/components/tactical/MapCombobox";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
 import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
 
-// Tournament Strategic Doctrines
+// Tournament Strategic Strategies & Playbooks
 const STRATEGY_PRESETS = [
   {
     id: "early-tank-rush",
@@ -53,31 +53,55 @@ const STRATEGY_PRESETS = [
     title: "Bot Skirmish & LLT Creep",
     tag: "T1 // SKIRMISH",
     timingWindow: "03:15 - 05:00",
-    description: "Rocko/Storm rocket bot poke with Light Laser Towers locking down vital chokes.",
+    description: "Rocko/Storm rocket bot poke outranging LLTs, locking down choke points.",
     icon: Layers,
   },
   {
-    id: "fast-eco",
-    title: "Fast Eco & Tech Rush",
-    tag: "T2 // GREED",
-    timingWindow: "07:00 - 08:30",
-    description: "Energy farm greed, commander nanolathe assist, push T2 lab by 7:30.",
+    id: "solar-reclaim-eco",
+    title: "Anti-Chain Solars & Reclaim Rush",
+    tag: "T1-T2 // RECLAIM META",
+    timingWindow: "04:00 - 06:30",
+    description: "Spaced solars avoid chain explosions; 100% metal reclaim fuels instant T2 transition.",
+    icon: RefreshCw,
+  },
+  {
+    id: "flank-rez-micro",
+    title: "Flank Assault & Rez-Bot Scavenge",
+    tag: "T1 // FLANK & REZ",
+    timingWindow: "03:00 - 05:30",
+    description: "Pin frontline while flanking rear (+100% dmg). Lazarus/Necro resurrect battlefield wrecks.",
+    icon: Cpu,
+  },
+  {
+    id: "dedicated-eco-afus",
+    title: "Dedicated Backline Eco & AFUS",
+    tag: "T2-T3 // ECO SLINGSHOT",
+    timingWindow: "07:30 - 11:00",
+    description: "Fast T2 lab into Advanced Fusion (+1050E/s), 70E:1M converters, dumping metal to frontline.",
     icon: Zap,
   },
   {
-    id: "air-opening",
-    title: "Air Opening & Surgical Harass",
-    tag: "T1 // SURGICAL AIR",
-    timingWindow: "03:30 - 04:45",
-    description: "Fast Aircraft Plant into gunships to assassinate exposed perimeter constructors.",
+    id: "air-superiority-strike",
+    title: "Air Superiority & Surgical Gunships",
+    tag: "T1-T2 // AIR DOMINANCE",
+    timingWindow: "03:30 - 06:00",
+    description: "Sparrow/Swift scouts into fighter screen; Brawler/Blade gunships snipe exposed constructors.",
     icon: Compass,
+  },
+  {
+    id: "airdrop-heavy-armor",
+    title: "Automated Air-Drop Heavy Siege",
+    tag: "T2 // AIR-FERRY SIEGE",
+    timingWindow: "09:00 - 12:30",
+    description: "Automated Atlas/Valkyrie ferry routes drop slow heavy armor (Can, Sumo, Bulldog) over cliffs.",
+    icon: Waves,
   },
   {
     id: "heavy-turtle",
     title: "Fortified Turtle into T2/T3",
     tag: "T2 // HEAVY ARMOR",
     timingWindow: "09:00 - 11:30",
-    description: "Defend early mexes with LLT, bank metal for Bulldog or Goliath heavy tanks.",
+    description: "Defend early mexes with LLT, bank metal for Bulldog, Goliath, or T3 Behemoths.",
     icon: ShieldAlert,
   },
 ];
@@ -231,7 +255,7 @@ export default function BeyondAllReasonConsole() {
       `=== BEYOND ALL REASON TACTICAL MACRO: ${faction.toUpperCase()} ===`,
       `Theater: ${selectedMap.name} [${selectedMap.dimensions}, Wind: ${selectedMap.wind.min}–${selectedMap.wind.max} m/s, Metal: ${selectedMap.metalDensity.toUpperCase()}]`,
       `Choke Points: ${selectedMap.chokePoints.join(" | ")}`,
-      `Doctrine: ${currentStrategy.title} [Timing: ${currentStrategy.timingWindow}]`,
+      `Strategy: ${currentStrategy.title} [Timing: ${currentStrategy.timingWindow}]`,
       "",
       "--- [01] OPENING BUILD TIMELINE ---",
       ...(object.openingBuildOrder || []).map((step, idx) => `[${idx + 1}] ${step}`),
@@ -567,10 +591,10 @@ export default function BeyondAllReasonConsole() {
             </div>
           </div>
 
-          {/* Section: Strategic Doctrine Selector */}
+          {/* Section: Strategic Strategy Selector */}
           <div className="p-3.5 border-b-2 border-black space-y-2 flex-1 bg-[#101118]">
             <div className="flex items-center justify-between text-[10px] font-pixel-heading text-zinc-400">
-              <span className="tracking-wider">03 // DOCTRINE</span>
+              <span className="tracking-wider">03 // STRATEGIES</span>
               <span className="text-zinc-500 font-pixel-body text-xs">ATTACK TIMING</span>
             </div>
 
@@ -736,7 +760,7 @@ export default function BeyondAllReasonConsole() {
               </button>
             </div>
 
-            {/* Faction and Doctrine Label + Eco Runway Toggle */}
+            {/* Faction and Strategy Label + Eco Runway Toggle */}
             <div className="flex items-center gap-3 text-[9px] font-pixel-heading text-zinc-400">
               {activeTab === "timeline" && parsedSteps.length > 0 && (
                 <button
@@ -810,7 +834,7 @@ export default function BeyondAllReasonConsole() {
                       STANDBY // AWAITING COMMAND PROTOCOL
                     </h3>
                     <p className="text-sm text-zinc-400 max-w-md mt-2 font-pixel-body">
-                      Configure your Faction, Theater, and Doctrine in the left console, then hit{" "}
+                      Configure your Faction, Theater, and Strategy in the left console, then hit{" "}
                       <strong className="text-white font-pixel-heading text-[10px]">GENERATE BUILD ORDER</strong> (or press Enter) to synthesize
                       an opening queue.
                     </p>
@@ -1267,12 +1291,12 @@ export default function BeyondAllReasonConsole() {
                   </div>
                 </div>
 
-                {/* Recommended Doctrines */}
+                {/* Recommended Strategies */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-[10px] font-pixel-heading text-zinc-300 uppercase">
                       <Crosshair className="size-3.5" style={{ color: accentColor }} />
-                      <span>RECOMMENDED STRATEGIC DOCTRINES</span>
+                      <span>RECOMMENDED STRATEGIES</span>
                     </div>
                     <span className="text-xs font-pixel-body text-zinc-500">
                       Competitive meta analysis
@@ -1280,10 +1304,10 @@ export default function BeyondAllReasonConsole() {
                   </div>
 
                   <div className="grid grid-cols-1 gap-3">
-                    {selectedMap.recommendedDoctrines.map((doc, idx) => {
+                    {(selectedMap.recommendedStrategies || selectedMap.recommendedDoctrines).map((strategyItem, idx) => {
                       const isFactionMatch =
-                        doc.faction === "both" ||
-                        doc.faction.toLowerCase() === faction.toLowerCase();
+                        strategyItem.faction === "both" ||
+                        strategyItem.faction.toLowerCase() === faction.toLowerCase();
 
                       return (
                         <div
@@ -1297,7 +1321,7 @@ export default function BeyondAllReasonConsole() {
                           <div className="flex items-center justify-between gap-2 mb-1.5">
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-pixel-heading text-white">
-                                {doc.name}
+                                {strategyItem.name}
                               </span>
                               {isFactionMatch && (
                                 <span className="pixel-box-inset px-2 py-0.5 text-[8px] font-pixel-heading" style={{ color: accentColor }}>
@@ -1308,18 +1332,18 @@ export default function BeyondAllReasonConsole() {
 
                             <span
                               className={`text-[8px] font-pixel-heading uppercase px-2 py-0.5 pixel-box-inset ${
-                                doc.faction === "armada"
+                                strategyItem.faction === "armada"
                                   ? "text-[#449bed]"
-                                  : doc.faction === "cortex"
+                                  : strategyItem.faction === "cortex"
                                   ? "text-[#ff2244]"
                                   : "text-zinc-300"
                               }`}
                             >
-                              {doc.faction.toUpperCase()}
+                              {strategyItem.faction.toUpperCase()}
                             </span>
                           </div>
                           <p className="text-base text-zinc-300 leading-relaxed font-pixel-body">
-                            {doc.description}
+                            {strategyItem.description}
                           </p>
                         </div>
                       );

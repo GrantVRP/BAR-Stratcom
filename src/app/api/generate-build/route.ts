@@ -103,8 +103,8 @@ CRITICAL DATA-GROUNDING AND ANTI-HALLUCINATION RULES:
    [${forbiddenNames}]
 
    Common Hallucination Pitfalls to Avoid:
-   - If generating for ARMADA: NEVER use Cortex units like Blitz, Pyros, Leveler, Thug, Grunt, Crasher, Roach, Banshee, Can, Goliath. Use Flash, Stump, Paw, Rocko, Hammer, Samson, Wolverine, Tornado instead.
-   - If generating for CORTEX: NEVER use Armada units like Flash, Stump, Samson, Wolverine, Paw, Tick, Rocko, Hammer, Jethro, Tornado, Zeus, Bulldog. Use Blitz, Raider, Grunt, Thug, Pyros, Slasher, Banshee, Goliath instead.
+   - If generating for ARMADA: NEVER use Cortex units like Blitz, Pyros, Leveler, Thug, Grunt, Crasher, Roach, Banshee, Can, Goliath, Necro, Sheldon, Sumo, Freaker, Rapier, Liche, Valkyrie. Use Flash, Stump, Paw, Rocko, Hammer, Samson, Wolverine, Tornado, Brawler, Blade, Atlas, Lazarus, Hound, Sharpshooter, Centurion, Phoenix, Kestrel, Zeus, Bulldog instead.
+   - If generating for CORTEX: NEVER use Armada units like Flash, Stump, Samson, Wolverine, Paw, Tick, Rocko, Hammer, Jethro, Tornado, Zeus, Bulldog, Lazarus, Brawler, Blade, Atlas, Hound, Sharpshooter, Centurion, Phoenix, Kestrel. Use Blitz, Raider, Grunt, Thug, Pyros, Slasher, Banshee, Goliath, Can, Necro, Valkyrie, Sheldon, Sumo, Freaker, Rapier, Liche instead.
 
 2. ALLOWED UNIT & STRUCTURE ROSTER FOR ${faction.toUpperCase()}:
 ### Economy & Base Structures:
@@ -181,12 +181,149 @@ function generateTacticalPreset(
   strategyStyle: string
 ): z.infer<typeof buildPlanResponseSchema> {
   const isArmada = faction === 'Armada';
-  const isTankRush = strategyStyle.toLowerCase().includes('tank');
-  const isAirOpening = strategyStyle.toLowerCase().includes('air');
-  const _isEcoRush = strategyStyle.toLowerCase().includes('eco');
-  const _isTurtle = strategyStyle.toLowerCase().includes('turtle') || strategyStyle.toLowerCase().includes('defense');
+  const styleLower = strategyStyle.toLowerCase();
+  const isTankRush = styleLower.includes('tank');
+  const isAirOpening = styleLower.includes('air') || styleLower.includes('gunship');
+  const isSolarReclaim = styleLower.includes('solar') || styleLower.includes('reclaim');
+  const isFlankRez = styleLower.includes('flank') || styleLower.includes('rez');
+  const isDedicatedEco = styleLower.includes('afus') || (styleLower.includes('eco') && !isSolarReclaim);
+  const isAirDrop = styleLower.includes('drop') || styleLower.includes('ferry') || styleLower.includes('turtle');
 
   if (isArmada) {
+    if (isSolarReclaim) {
+      return {
+        openingBuildOrder: [
+          '[0:00] Commander: Queue 1x Solar Collector (+20E baseline grid stability)',
+          '[0:20] Commander: Construct 2x Metal Extractor on base deposits (+4.4M/s)',
+          '[0:42] Commander: Construct 3x Solar Collector (Spaced 4 tiles apart to prevent chain explosion - locks in +80E)',
+          '[1:10] Commander: Deploy Bot Lab in defensible cliff alcove',
+          '[1:32] Bot Lab: Queue 2x Paw (Raider Bot) for lane scout and expansion denial',
+          '[1:50] Bot Lab: Queue 2x Construction Bot for perimeter metal capture',
+          '[2:15] Commander: Reclaim nearby boulder cluster (+300 instant metal injection)',
+          '[2:45] Construction Bot: Capture 2x expansion Mexes and construct 1x Light Laser Tower (LLT)',
+          '[3:15] Commander: Reclaim all 4 early Solar Collectors (+580 metal recovered for instant tech slingshot)',
+          '[3:45] Commander: Deploy T2 Bot Lab foundation powered by reclaimed metal pool',
+          '[4:30] Bot Lab: Queue 1x Lazarus to resurrect fallen units and scavenge wreckage',
+        ],
+        unitComposition: [
+          '4x Paw (Armada Light Laser Raider Bot)',
+          '2x Rocko (Armada Rocket Skirmisher Bot)',
+          '1x Lazarus (Resurrection & High-Speed Reclaim Bot)',
+          '2x Construction Bot (Perimeter Expansion)',
+          '1x Advanced Construction Bot (T2 Infrastructure)',
+        ],
+        strategyNotes: `# 🎙️ Caster Desk: Armada Anti-Chain Solars & 100% Reclaim Slingshot
+
+### ⚡ Macro Discipline: The Solar Reclaim Advantage
+- **Zero Wind RNG Stalls**: Unlike Wind Turbines which fluctuate wildly between 0 and 25+, Solar Collectors provide a rigid, guaranteed +20 Energy baseline.
+- **Anti-Chain Spacing**: Solars explode violently when destroyed. Always space them at least 3-4 tiles apart so an enemy artillery shell or stray raider cannot trigger a cascading chain reaction.
+- **100% Metal Recycling Slingshot**: At 03:15, your Commander reclaims all early Solars, recovering 100% of the 145 metal cost per unit (+580 metal total!). This massive burst liquidates dead capital directly into an immediate T2 Lab or Advanced Solar without stalling!
+
+### 🎯 Transition & Combat Execution (04:00 - 06:30)
+- Maintain lane control with 4x Paws and 2x Rockos.
+- As the reclaimed metal floods your bank, drop the T2 Bot Lab by 04:30 and transition directly into Hounds and Sharpshooters!`,
+      };
+    }
+
+    if (isFlankRez) {
+      return {
+        openingBuildOrder: [
+          '[0:00] Commander: Queue 1x Solar Collector (+20E baseline grid)',
+          '[0:20] Commander: Construct 2x Metal Extractor on natural deposits (+4.4M/s)',
+          '[0:42] Commander: Construct 2x Solar Collector (+60E threshold reached)',
+          '[1:06] Commander: Deploy Bot Lab oriented toward primary lane corridor',
+          '[1:30] Commander: Construct 2x Wind Turbine (Scaling power for bot production)',
+          '[1:48] Bot Lab: Queue 4x Paw (Light Raider Bot) to establish flank routes',
+          '[2:10] Bot Lab: Queue 4x Rocko (Rocket Skirmisher) to pin the enemy front',
+          '[2:32] Commander: Reclaim spawn rock clusters (+260 instant metal surge)',
+          '[2:55] Bot Lab: Queue 2x Lazarus (Resurrection Bot) set to follow behind combat bots',
+          '[3:20] Commander: Reclaim 1x early Solar Collector (+145M into combat reinforcements)',
+          '[3:45] Commander: Advance to forward choke and build 1x Light Laser Tower (LLT)',
+          '[4:10] Bot Lab: Queue 2x Hammer (Plasma Artillery Bot) to pound stalled defenses',
+        ],
+        unitComposition: [
+          '8x Paw (Armada Light Laser Raider Bot)',
+          '6x Rocko (Armada Rocket Skirmisher Bot)',
+          '2x Lazarus (Resurrection & Field Salvage Bot)',
+          '2x Hammer (Mobile Plasma Artillery Bot)',
+          '2x Jethro (Anti-Air Escort Bot)',
+        ],
+        strategyNotes: `# 🎙️ Caster Desk: Armada Flank Assault & Lazarus Reanimation Protocol
+
+### ⚡ The Flanking Engine (+100% to +150% Rear Damage)
+- **Directional Armor Penetration**: In Beyond All Reason, units take massive bonus damage when struck from behind or sideways (+100% to +150% extra damage).
+- **The Hammer & Anvil Pin**: Use 6x Rockos and Hammers to hold the opponent's main force in place from 420 range, then sprint 6-8 Paws around their flanks to assassinate heavy units from the rear in seconds!
+
+### 🧬 Lazarus Resurrection Loop
+- Set 2x Lazarus bots to 'Fight' or 'Patrol' commands directly behind your skirmish line.
+- The moment an enemy unit dies, Lazarus reanimates the metallic husk back into a living Armada fighter under your control! You steal their metal and double your army size on the fly!`,
+      };
+    }
+
+    if (isDedicatedEco) {
+      return {
+        openingBuildOrder: [
+          '[0:00] Commander: Queue 1x Solar Collector (+20E baseline)',
+          '[0:20] Commander: Construct 2x Metal Extractor on natural veins (+4.4M/s)',
+          '[0:44] Commander: Construct 3x Solar Collector (Spaced grid, locking in +80E)',
+          '[1:12] Commander: Deploy Bot Lab in safe rear base quadrant',
+          '[1:35] Bot Lab: Queue 2x Construction Bot to expand energy farms and perimeter mexes',
+          '[2:00] Commander: Reclaim dense boulder field (+320 instant metal injection)',
+          '[2:30] Construction Bot: Build 6x Wind Turbines in paired clusters',
+          '[3:15] Commander: Assist Bot Lab to rapid-queue T2 transition at 06:45',
+          '[4:00] Construction Bot: Build 1x Energy Storage + 1x Energy Converter (70E -> 1M)',
+          '[5:30] Commander: Deploy Advanced Solar Generator (+75E / +150 storage)',
+          '[7:30] T2 Lab: Deploy Advanced Fusion Reactor (AFUS) (+1050 E/s)',
+          '[9:00] Base: Construct 4x Advanced Energy Converters, dumping +25 Metal/s to frontline allies',
+        ],
+        unitComposition: [
+          '2x Construction Bot (Energy Grid Expansion)',
+          '1x Lazarus (Base Repair & Reclaim Assistant)',
+          '1x Advanced Construction Bot (AFUS & T2 Converter Deployment)',
+          '1x Advanced Fusion Reactor (+1050 Energy/s)',
+          '4x Advanced Energy Converter (70E:1M Conversion Grid)',
+        ],
+        strategyNotes: `# 🎙️ Caster Desk: Armada Dedicated Backline Eco & AFUS Slingshot
+
+### ⚡ Macro Discipline: 70E:1M Conversion & AFUS Dominance
+- **The Golden Ratio**: Energy is metal in high-level BAR! Once your Advanced Fusion Reactor (+1050 E/s) is completed, each Energy Converter converts 70 excess Energy into 1 Metal.
+- **Frontline Feeding**: A dedicated backline eco player does not build combat units early; your sole purpose is to hit AFUS by 07:30 - 09:00, convert 1000+ Energy into 15-25 Metal/sec, and send metal streams directly to your frontline players to crush their lanes!`,
+      };
+    }
+
+    if (isAirDrop) {
+      return {
+        openingBuildOrder: [
+          '[0:00] Commander: Queue 1x Solar Collector (+20E baseline)',
+          '[0:20] Commander: Construct 2x Metal Extractor (+4.4M/s)',
+          '[0:42] Commander: Construct 2x Solar Collector (+60E threshold reached)',
+          '[1:08] Commander: Deploy Vehicle Plant on low ground',
+          '[1:32] Commander: Construct Aircraft Plant in adjacent pocket',
+          '[1:55] Vehicle Plant: Queue 2x Flash for scouting + 2x Stump (Medium Assault Tank)',
+          '[2:25] Aircraft Plant: Queue 2x Atlas (Air Transport) + 1x Sparrow (Recon Scout)',
+          '[2:50] Commander: Reclaim nearby heavy boulders (+280 instant metal)',
+          '[3:20] Aircraft Plant: Set Atlas on automated Ferry Route (\'F\' key) from base to enemy rear plateau',
+          '[3:55] Vehicle Plant: Produce 2x Bulldog (Heavy Assault Tank) or 2x Wolverine',
+          '[4:30] Atlas Transports: Air-drop Bulldogs directly behind enemy Light Laser Towers to crush eco!',
+        ],
+        unitComposition: [
+          '2x Atlas (Armada Air Transport)',
+          '2x Bulldog / Stump (Heavy Assault Frontline Armor)',
+          '4x Flash (High-Speed Raider Tank)',
+          '2x Samson (Mobile Anti-Air Screen)',
+          '1x Sparrow (Scout Plane)',
+        ],
+        strategyNotes: `# 🎙️ Caster Desk: Armada Automated Air-Drop & Cliff Bypass Siege
+
+### ✈️ Automated Ferry Lanes (\'F\' Command)
+- In competitive BAR, ground armies often get bottlenecked in narrow mountain passes or choke points guarded by dozens of Light Laser Towers.
+- Use the Atlas transport\'s automated Ferry command (\'F\'): set pickup and drop-off beacons. Any unit that moves into the beacon is automatically airlifted over mountains directly into the enemy\'s unfortified backline!
+
+### 🎯 Tactical Execution
+- Fly heavy Bulldogs and Stumps over impassable terrain to crush vulnerable Solars and Advanced Mexes from behind!`,
+      };
+    }
+
     if (isTankRush) {
       return {
         openingBuildOrder: [
@@ -237,7 +374,7 @@ function generateTacticalPreset(
           '[0:44] Commander: Construct 2x Solar Collector (Achieves mandatory +60E before high-drain air plant)',
           '[1:12] Commander: Deploy Aircraft Plant in safe backline pocket',
           '[1:36] Aircraft Plant: Queue 1x Sparrow (Scout Plane) to map enemy factory type and openings',
-          '[1:52] Aircraft Plant: Queue 2x Tornado (Assault Gunship) for surgical builder snipes',
+          '[1:52] Aircraft Plant: Queue 2x Brawler (Heavy Rotary Gunship) for surgical builder snipes',
           '[2:20] Commander: Reclaim nearby boulder cluster (+250 instant metal injection)',
           '[2:45] Commander: Construct 2x Metal Extractor on secondary nodes + 1x Energy Storage',
           '[3:10] Commander: Reclaim 1x obsolete Solar once grid scales with wind turbines (+145 metal recovered)',
@@ -246,7 +383,7 @@ function generateTacticalPreset(
           '[4:40] Commander: Establish 1x Light Laser Tower (LLT) at front choke against counter-raiders',
         ],
         unitComposition: [
-          '4x Tornado (Armada Rotary Assault Gunship)',
+          '4x Brawler (Armada Heavy Rotary Assault Gunship)',
           '2x Shadow (Armada Tactical Carpet Bomber)',
           '2x Freedom Fighter (Air Superiority Interceptor)',
           '1x Sparrow (Reconnaissance Scout Plane)',
@@ -261,12 +398,12 @@ function generateTacticalPreset(
 - Scale wind turbines in the safe backline. At 03:10, reclaim 1x early Solar Collector to refund 145 metal directly into Freedom Fighter anti-air defense.
 
 ### 🎯 Timing Windows (03:15 - 04:30)
-- **03:15 Gunship Snipe**: Fly Tornados over ridgelines to eliminate isolated constructors.
+- **03:15 Gunship Snipe**: Fly Brawlers over ridgelines to eliminate isolated constructors.
 - **04:15 Carpet Bombing**: Coordinate 2x Shadows against tightly packed enemy windmills for massive secondary chain reactions!`,
       };
     }
 
-    // Default Armada Bot Skirmish / Eco
+    // Default Armada Bot Skirmish / Choke Creep
     return {
       openingBuildOrder: [
         '[0:00] Commander: Queue 1x Solar Collector (+20E baseline grid)',
@@ -306,6 +443,129 @@ function generateTacticalPreset(
   }
 
   // Cortex Faction Builds
+  if (isSolarReclaim) {
+    return {
+      openingBuildOrder: [
+        '[0:00] Commander: Queue 1x Solar Collector (+20E guaranteed baseline)',
+        '[0:20] Commander: Construct 2x Metal Extractor on natural deposits (+4.4M/s)',
+        '[0:42] Commander: Construct 3x Solar Collector (Spaced 4 tiles apart to prevent chain explosion - locks +80E)',
+        '[1:10] Commander: Deploy Bot Lab in safe depression',
+        '[1:32] Bot Lab: Queue 2x Grunt (Fast Raider Bot) for scouting',
+        '[1:50] Bot Lab: Queue 2x Construction Bot for perimeter metal capture',
+        '[2:15] Commander: Reclaim nearby large boulders (+320 instant metal boost)',
+        '[2:45] Construction Bot: Capture 2x perimeter Mexes and construct 1x Light Laser Tower (LLT)',
+        '[3:15] Commander: Reclaim 100% of all 4 early Solar Collectors (+580 metal instant tech refund)',
+        '[3:45] Commander: Drop T2 Bot Lab / Advanced Solar foundation powered by refunded metal',
+        '[4:30] Bot Lab: Queue 1x Necro to vacuum battlefield wrecks and reanimate frontline casualties',
+      ],
+      unitComposition: [
+        '4x Grunt (Cortex Fast Raider Bot)',
+        '2x Storm (Rocket Skirmisher Bot)',
+        '1x Necro (Resurrection & Rapid Salvage Bot)',
+        '2x Construction Bot (Perimeter Expansion)',
+        '1x Advanced Construction Bot (T2 Infrastructure)',
+      ],
+      strategyNotes: `# 🎙️ Caster Desk: Cortex Anti-Chain Solars & 100% Metal Reclaim Slingshot
+
+### ⚡ Macro Discipline: The Solar Reclaim Slingshot
+- **Eliminating Volatility**: Wind turbines on fluctuating maps risk crippling power stalls. Solar Collectors give an unyielding +20 Energy baseline.
+- **Anti-Chain Grid**: Cortex solars explode with heavy area damage. Spacing them by 4 tiles ensures zero cascading base destruction.
+- **100% Metal Reclaim at 03:15**: By reclaiming 4 solars, you get +580 metal back on the spot—funding an instant T2 Lab transition while competitors are still building T1 wind farms!`,
+    };
+  }
+
+  if (isFlankRez) {
+    return {
+      openingBuildOrder: [
+        '[0:00] Commander: Queue 1x Solar Collector (+20E baseline)',
+        '[0:20] Commander: Construct 2x Metal Extractor (+4.4M/s)',
+        '[0:42] Commander: Construct 2x Solar Collector (+60E threshold reached)',
+        '[1:06] Commander: Deploy Bot Lab in primary attack lane',
+        '[1:30] Commander: Construct 2x Wind Turbine (Sustaining 100E:10M ratio)',
+        '[1:48] Bot Lab: Queue 4x Grunt (Fast Raider Bot) to probe enemy flanks',
+        '[2:10] Bot Lab: Queue 4x Storm (Rocket Skirmisher) to pin the frontline',
+        '[2:32] Commander: Reclaim large boulder clusters (+280 instant metal injection)',
+        '[2:55] Bot Lab: Queue 2x Necro (Resurrection Bot) following directly behind combat units',
+        '[3:20] Commander: Reclaim 1x early Solar Collector (+145 metal refunded into heavy armor)',
+        '[3:45] Commander: Advance to forward choke and establish 1x Light Laser Tower (LLT)',
+        '[4:10] Bot Lab: Queue 2x Pyros (Flame Assault Bot) to incinerate pinned enemies',
+      ],
+      unitComposition: [
+        '8x Grunt (Cortex Fast Raider Bot)',
+        '6x Storm (Rocket Skirmisher Bot)',
+        '2x Necro (Resurrection & Rapid Salvage Bot)',
+        '2x Pyros (Close-Quarters Flamethrower Assault Bot)',
+        '2x Crasher (Anti-Air Support Bot)',
+      ],
+      strategyNotes: `# 🎙️ Caster Desk: Cortex Flank Assault & Necro Reanimation Swarm
+
+### ⚡ The Flanking Engine (+100% to +150% Rear Damage)
+- **Flank Multipliers**: BAR's combat engine rewards encircling the enemy. Strike enemy heavy armor from behind with Grunts for +150% damage bonus!
+- **Necro Field Reanimation**: Necro bots salvage metal at insane speed and reanimate husks on the fly. Turn fallen enemy tanks into Cortex shock troops right in their own territory!`,
+      };
+    }
+
+  if (isDedicatedEco) {
+    return {
+      openingBuildOrder: [
+        '[0:00] Commander: Queue 1x Solar Collector (+20E baseline)',
+        '[0:20] Commander: Construct 2x Metal Extractor (+4.4M/s)',
+        '[0:44] Commander: Construct 3x Solar Collector (Spaced grid, locking in +80E)',
+        '[1:12] Commander: Deploy Bot Lab in rear pocket',
+        '[1:35] Bot Lab: Queue 2x Construction Bot to expand energy grid and perimeter mexes',
+        '[2:00] Commander: Reclaim boulder field (+320 instant metal injection)',
+        '[2:30] Construction Bot: Build 6x Wind Turbines in paired clusters',
+        '[3:15] Commander: Assist Bot Lab to rapid-queue T2 transition at 07:00',
+        '[4:00] Construction Bot: Build 1x Energy Storage + 1x Energy Converter (70E -> 1M)',
+        '[5:30] Commander: Deploy Advanced Solar Generator (+75E / +150 storage)',
+        '[7:30] T2 Lab: Deploy Advanced Fusion Reactor (AFUS) (+1050 E/s)',
+        '[9:00] Base: Construct 4x Advanced Energy Converters, dumping +25 Metal/s to frontline allies',
+      ],
+      unitComposition: [
+        '2x Construction Bot (Energy Grid Expansion)',
+        '1x Necro (Base Repair & Reclaim Assistant)',
+        '1x Advanced Construction Bot (AFUS & T2 Converter Deployment)',
+        '1x Advanced Fusion Reactor (+1050 Energy/s)',
+        '4x Advanced Energy Converter (70E:1M Conversion Grid)',
+      ],
+      strategyNotes: `# 🎙️ Caster Desk: Cortex Dedicated Backline Eco & AFUS Powerhouse
+
+### ⚡ Macro Discipline: 70E:1M Ratio & Slingshotting the Team
+- Fast T2 into Advanced Fusion (+1050 E/s) is the premier win condition in 8v8 competitive BAR.
+- Convert power with 4x Advanced Converters and funnel surplus metal into frontline teammate factories or tech directly into T3 Titans (Sumo / Goliath / Nukes)!`,
+    };
+  }
+
+  if (isAirDrop) {
+    return {
+      openingBuildOrder: [
+        '[0:00] Commander: Queue 1x Solar Collector (+20E baseline)',
+        '[0:20] Commander: Construct 2x Metal Extractor (+4.4M/s)',
+        '[0:42] Commander: Construct 2x Solar Collector (+60E threshold reached)',
+        '[1:08] Commander: Deploy Bot Lab in defensible pocket',
+        '[1:32] Commander: Construct Aircraft Plant in adjacent pocket',
+        '[1:55] Bot Lab: Queue 2x Grunt for scouting + 2x Thug (Armored Assault Bot)',
+        '[2:25] Aircraft Plant: Queue 2x Valkyrie (Air Transport) + 1x Avenger (Interceptor)',
+        '[2:50] Commander: Reclaim nearby heavy boulders (+280 instant metal)',
+        '[3:20] Aircraft Plant: Set Valkyrie on automated Ferry Route (\'F\' key) from base to enemy rear cliffs',
+        '[3:55] Bot Lab: Produce 2x Can or Sumo (Heavy Walking Fortress)',
+        '[4:30] Valkyrie Transports: Air-drop Can / Sumo walking fortresses directly behind enemy defenses!',
+      ],
+      unitComposition: [
+        '2x Valkyrie (Cortex Air Transport)',
+        '2x Can / Sumo (Super-Heavy Walking Fortress Bot)',
+        '4x Grunt (Cortex Fast Raider Bot)',
+        '2x Crasher (Mobile Anti-Air Screen)',
+        '1x Avenger (Air Superiority Interceptor)',
+      ],
+      strategyNotes: `# 🎙️ Caster Desk: Cortex Automated Valkyrie Air-Drop Siege
+
+### ✈️ Automated Ferry Lanes & Heavy Armor Cliff Drops
+- Heavy Cortex fortresses like the Can and Sumo have terrifying armor and DPS, but move at a crawl.
+- Use automated Valkyrie ferry lines to lift them over cliffs and waterways, dropping unkillable laser fortresses straight into the enemy rear economy!`,
+    };
+  }
+
   if (isTankRush) {
     return {
       openingBuildOrder: [
@@ -369,7 +629,7 @@ function generateTacticalPreset(
       '4x Storm (Rocket Skirmisher Bot)',
       '1x Roach (Crawling High-Explosive Suicide Bomb)',
     ],
-    strategyNotes: `# 🎙️ Caster Desk: Cortex Flame & Steel - Bot Assault Doctrine
+    strategyNotes: `# 🎙️ Caster Desk: Cortex Flame & Steel - Bot Assault Strategy
 
 ### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
 - **The +60E Launchpad**: Securing 3x Solars gives guaranteed +60E before the Bot Lab is queued. Cortex bots build fast—without +60E, your Commander will stall on the very first Grunt.

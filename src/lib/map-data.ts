@@ -1,3 +1,9 @@
+export interface StrategyRecommendation {
+  faction: 'armada' | 'cortex' | 'both';
+  name: string;
+  description: string;
+}
+
 export interface MapData {
   id: string;
   name: string;
@@ -10,11 +16,9 @@ export interface MapData {
   tidal: number;
   metalDensity: 'low' | 'medium' | 'high' | 'all-metal';
   chokePoints: string[];
-  recommendedDoctrines: {
-    faction: 'armada' | 'cortex' | 'both';
-    name: string;
-    description: string;
-  }[];
+  recommendedDoctrines: StrategyRecommendation[];
+  /** Alias for recommended strategies */
+  recommendedStrategies?: StrategyRecommendation[];
   tacticalBriefing: string;
   author?: string;
   playerCount?: number;

@@ -23,7 +23,7 @@ export function MapCombobox({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
 
-  // Filter maps by name, dimensions, or metal density
+  // Filter maps by name, dimensions, metal density, chokepoints, author, or terrains
   const filteredMaps = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return MAP_DATABASE;
@@ -32,7 +32,9 @@ export function MapCombobox({
         map.name.toLowerCase().includes(query) ||
         map.dimensions.toLowerCase().includes(query) ||
         map.metalDensity.toLowerCase().includes(query) ||
-        map.chokePoints.some((cp) => cp.toLowerCase().includes(query))
+        map.chokePoints.some((cp) => cp.toLowerCase().includes(query)) ||
+        (map.author && map.author.toLowerCase().includes(query)) ||
+        (map.terrains && map.terrains.some((t) => t.toLowerCase().includes(query)))
     );
   }, [searchQuery]);
 
@@ -209,9 +211,12 @@ export function MapCombobox({
                 setSearchQuery(e.target.value);
                 setHighlightedIndex(0);
               }}
-              placeholder="Filter by name, size, or metal..."
+              placeholder="Filter 228 maps by name, size, biome, or metal..."
               className="w-full bg-transparent text-xs font-mono text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
             />
+            <span className="text-[10px] text-zinc-500 font-mono shrink-0 px-1">
+              {filteredMaps.length}
+            </span>
             {searchQuery && (
               <button
                 type="button"
@@ -232,7 +237,7 @@ export function MapCombobox({
             ref={listRef}
             role="listbox"
             aria-labelledby="map-combobox-trigger"
-            className="max-h-60 overflow-y-auto py-1 divide-y divide-zinc-900/60 focus:outline-none"
+            className="max-h-72 overflow-y-auto py-1 divide-y divide-zinc-900/60 focus:outline-none"
           >
             {filteredMaps.length === 0 ? (
               <li className="p-3 text-center text-xs text-zinc-500 font-mono">

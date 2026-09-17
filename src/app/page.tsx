@@ -385,8 +385,9 @@ export default function BeyondAllReasonConsole() {
             )}
           </div>
 
-          {/* Dynamic Wind Widget wired to current map state */}
+          {/* Dynamic Wind Widget wired to current map and faction state */}
           <WindmillTelemetry
+            faction={faction}
             currentWind={selectedMap.wind.avg}
             minWind={selectedMap.wind.min}
             maxWind={selectedMap.wind.max}

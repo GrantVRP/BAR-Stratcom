@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from "react";
 import { motion, useAnimationFrame, useMotionValue } from "framer-motion";
 
 export interface WindmillTelemetryProps {
+  faction?: "Armada" | "Cortex" | "both" | "Spectator";
   currentWind?: number; // Wind speed in m/s
   minWind?: number;     // Map minimum wind
   maxWind?: number;     // Map maximum wind
@@ -11,6 +12,7 @@ export interface WindmillTelemetryProps {
 }
 
 export function WindmillTelemetry({
+  faction = "Armada",
   currentWind = 9.0,
   minWind = 4,
   maxWind = 14,
@@ -20,10 +22,14 @@ export function WindmillTelemetry({
   const isViable = currentWind >= 8.5;
   const isHighRisk = currentWind < 5.0;
 
+  const isCortex = faction === "Cortex";
+
   const statusColor = isHighRisk
     ? "text-rose-400 border-rose-500/30 bg-rose-500/10"
     : isViable
-    ? "text-cyan-400 border-cyan-500/30 bg-cyan-500/10"
+    ? isCortex
+      ? "text-rose-400 border-rose-500/30 bg-rose-500/10"
+      : "text-cyan-400 border-cyan-500/30 bg-cyan-500/10"
     : "text-amber-400 border-amber-500/30 bg-amber-500/10";
 
   const statusLabel = isHighRisk
@@ -32,9 +38,7 @@ export function WindmillTelemetry({
     ? "WIND HIGHLY VIABLE"
     : "MARGINAL VARIANCE";
 
-  const bladeColor = isHighRisk ? "#fb7185" : isViable ? "#22d3ee" : "#f59e0b";
-
-  // Continuous frame-by-frame rotation
+  // Continuous physics-based rotation
   const rotateAngle = useMotionValue(0);
   const windRef = useRef(currentWind);
   useEffect(() => {
@@ -42,8 +46,7 @@ export function WindmillTelemetry({
   }, [currentWind]);
 
   useAnimationFrame((_, delta) => {
-    // Math: Speed in degrees per millisecond.
-    // 10 m/s yields ~360 deg/sec (1 full rotation per second).
+    // 10 m/s yields ~360 deg/sec (1 full rotation per second)
     const degreesPerSecond = Math.max(0, windRef.current) * 36;
     const increment = (degreesPerSecond * delta) / 1000;
     rotateAngle.set((rotateAngle.get() + increment) % 360);
@@ -51,39 +54,208 @@ export function WindmillTelemetry({
 
   return (
     <div
-      className={`flex items-center gap-3 px-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded-sm font-mono text-xs ${className}`}
+      className={`flex items-center gap-3 px-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded-sm font-mono text-xs select-none transition-colors ${className}`}
     >
-      {/* Turbine Frame */}
-      <div className="relative w-8 h-8 shrink-0 flex items-center justify-center bg-zinc-900/80 border border-zinc-800/80 rounded-sm overflow-hidden">
-        {/* Static Tower & Nacelle Mount */}
-        <svg
-          viewBox="0 0 32 32"
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          fill="none"
-        >
-          <line x1="10" y1="28" x2="22" y2="28" stroke="#52525b" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M14.5 28 L15.5 11 L16.5 11 L17.5 28 Z" fill="#3f3f46" />
-          <circle cx="16" cy="11" r="2" fill="#71717a" />
-        </svg>
+      {/* Turbine Frame Viewport */}
+      <div
+        className={`relative w-[44px] h-[48px] shrink-0 bg-zinc-900/90 border rounded-xs overflow-hidden transition-colors ${
+          isCortex
+            ? "border-red-500/30 shadow-[inset_0_0_12px_rgba(220,38,38,0.1)]"
+            : "border-cyan-500/30 shadow-[inset_0_0_12px_rgba(37,99,235,0.12)]"
+        }`}
+      >
+        {isCortex ? (
+          /* ========================================================
+             CORTEX WIND TURBINE (corwin)
+             - Rugged monolithic obelisk pylon
+             - Industrial cooling vent louvers
+             - Heavy bunker foundation with crimson red armor slabs
+             - Mechanical nacelle housing with top rear sensor vane
+             - Distinctive RED hexagonal gear hub + heavy steel girder blades
+             ======================================================== */
+          <>
+            {/* Static Cortex Tower */}
+            <svg viewBox="0 0 48 54" className="absolute inset-0 w-full h-full pointer-events-none" fill="none">
+              <defs>
+                <linearGradient id="cortexTowerGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#27272a" />
+                  <stop offset="50%" stopColor="#52525b" />
+                  <stop offset="100%" stopColor="#18181b" />
+                </linearGradient>
+              </defs>
 
-        {/* Dynamic Continuous Spinner */}
-        <motion.div
-          className="absolute top-[3px] left-1/2 -translate-x-1/2 w-4 h-4 flex items-center justify-center pointer-events-none"
-          style={{
-            rotate: rotateAngle,
-            transformOrigin: "center center",
-          }}
-        >
-          <svg viewBox="0 0 24 24" className="w-6 h-6 shrink-0 overflow-visible" fill="none">
-            <circle cx="12" cy="12" r="2" fill="#e4e4e7" />
-            {/* North Blade */}
-            <path d="M12 12 L13 2.5 C13 1.5 11 1.5 11 2.5 L12 12 Z" fill={bladeColor} />
-            {/* Blade 2 (120 deg) */}
-            <path d="M12 12 L13 2.5 C13 1.5 11 1.5 11 2.5 L12 12 Z" fill={bladeColor} transform="rotate(120 12 12)" />
-            {/* Blade 3 (240 deg) */}
-            <path d="M12 12 L13 2.5 C13 1.5 11 1.5 11 2.5 L12 12 Z" fill={bladeColor} transform="rotate(240 12 12)" />
-          </svg>
-        </motion.div>
+              {/* Heavy Bunker Foundation */}
+              <polygon points="14,50 34,50 36,52 12,52" fill="#09090b" />
+              <polygon points="16,46 32,46 34,50 14,50" fill="#27272a" />
+              
+              {/* Red Armor Plates on Base */}
+              <polygon points="14,48 18,47 18,51 13,51" fill="#dc2626" />
+              <polygon points="30,47 34,48 35,51 30,51" fill="#dc2626" />
+              <polygon points="22,46 26,46 26,51 22,51" fill="#ef4444" />
+              <line x1="22" y1="48.5" x2="26" y2="48.5" stroke="#7f1d1d" strokeWidth="0.6" />
+
+              {/* Cooling Vent Section with Horizontal Louvers */}
+              <rect x="20" y="41" width="8" height="5" fill="#18181b" stroke="#27272a" strokeWidth="0.5" />
+              <line x1="22" y1="42.5" x2="26" y2="42.5" stroke="#71717a" strokeWidth="0.6" />
+              <line x1="22" y1="44" x2="26" y2="44" stroke="#71717a" strokeWidth="0.6" />
+              <line x1="22" y1="45.5" x2="26" y2="45.5" stroke="#71717a" strokeWidth="0.6" />
+
+              {/* Tapered Monolithic Obelisk Pylon */}
+              <polygon points="21.5,19 26.5,19 28,41 20,41" fill="url(#cortexTowerGrad)" stroke="#27272a" strokeWidth="0.4" />
+
+              {/* Nacelle Mechanical Head & Sensor Vane */}
+              <polygon points="20.5,16 27.5,16 27.5,20 20.5,20" fill="#27272a" stroke="#3f3f46" strokeWidth="0.5" />
+              <polygon points="23.5,11 24.5,11 24.5,16 23.5,16" fill="#71717a" />
+            </svg>
+
+            {/* Dynamic Rotating Cortex Rotor */}
+            <motion.div
+              className="absolute pointer-events-none w-[36px] h-[36px]"
+              style={{
+                top: "34%",
+                left: "50%",
+                x: "-50%",
+                y: "-50%",
+                rotate: rotateAngle,
+              }}
+            >
+              <svg viewBox="-18 -18 36 36" className="w-full h-full" fill="none">
+                <defs>
+                  <linearGradient id="cortexBladeGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#3f3f46" />
+                    <stop offset="50%" stopColor="#27272a" />
+                    <stop offset="100%" stopColor="#18181b" />
+                  </linearGradient>
+                </defs>
+
+                {/* Blade 1 (North) */}
+                <g>
+                  <polygon points="-1.5,0 -1.9,-13 -0.5,-16.5 1.5,-15 1.9,-12 1.2,0" fill="url(#cortexBladeGrad)" stroke="#18181b" strokeWidth="0.4" />
+                  <line x1="0" y1="0" x2="0.5" y2="-15.5" stroke="#71717a" strokeWidth="0.6" />
+                  <line x1="-0.5" y1="-16.5" x2="1.5" y2="-15" stroke="#e4e4e7" strokeWidth="0.7" />
+                </g>
+
+                {/* Blade 2 (120 deg) */}
+                <g transform="rotate(120)">
+                  <polygon points="-1.5,0 -1.9,-13 -0.5,-16.5 1.5,-15 1.9,-12 1.2,0" fill="url(#cortexBladeGrad)" stroke="#18181b" strokeWidth="0.4" />
+                  <line x1="0" y1="0" x2="0.5" y2="-15.5" stroke="#71717a" strokeWidth="0.6" />
+                  <line x1="-0.5" y1="-16.5" x2="1.5" y2="-15" stroke="#e4e4e7" strokeWidth="0.7" />
+                </g>
+
+                {/* Blade 3 (240 deg) */}
+                <g transform="rotate(240)">
+                  <polygon points="-1.5,0 -1.9,-13 -0.5,-16.5 1.5,-15 1.9,-12 1.2,0" fill="url(#cortexBladeGrad)" stroke="#18181b" strokeWidth="0.4" />
+                  <line x1="0" y1="0" x2="0.5" y2="-15.5" stroke="#71717a" strokeWidth="0.6" />
+                  <line x1="-0.5" y1="-16.5" x2="1.5" y2="-15" stroke="#e4e4e7" strokeWidth="0.7" />
+                </g>
+
+                {/* Iconic Cortex RED Hexagonal Gear Hub */}
+                <polygon points="0,-3.2 2.8,-1.6 2.8,1.6 0,3.2 -2.8,1.6 -2.8,-1.6" fill="#dc2626" stroke="#991b1b" strokeWidth="0.5" />
+                <polygon points="0,-2.0 1.7,-1.0 1.7,1.0 0,2.0 -1.7,1.0 -1.7,-1.0" fill="#ef4444" />
+                <circle cx="0" cy="0" r="0.8" fill="#18181b" />
+              </svg>
+            </motion.div>
+          </>
+        ) : (
+          /* ========================================================
+             ARMADA WIND TURBINE (armwin)
+             - Sleek dark cylindrical pillar with flared fluted base
+             - Cobalt blue pedestal armor pads
+             - Glowing yellow/amber power indicator light
+             - Neon blue team-color stripe
+             - Aero-composite segmented blades (ceramic tiles + carbon leading edge)
+             ======================================================== */
+          <>
+            {/* Static Armada Tower */}
+            <svg viewBox="0 0 48 54" className="absolute inset-0 w-full h-full pointer-events-none" fill="none">
+              <defs>
+                <linearGradient id="armadaMastGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#18181b" />
+                  <stop offset="50%" stopColor="#3f3f46" />
+                  <stop offset="100%" stopColor="#09090b" />
+                </linearGradient>
+                <filter id="armadaLightGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="1" floodColor="#fde047" floodOpacity="0.8" />
+                </filter>
+              </defs>
+
+              {/* Pedestal Base */}
+              <polygon points="17,50 31,50 34,52 14,52" fill="#09090b" />
+              <polygon points="18,48 30,48 33,50 15,50" fill="#27272a" />
+              
+              {/* Blue Base Armor Pads */}
+              <polygon points="15,49 20,49 19,52 14,52" fill="#2563eb" />
+              <polygon points="28,49 33,49 34,52 29,52" fill="#2563eb" />
+              <polygon points="22,48 26,48 26,52 22,52" fill="#1d4ed8" />
+
+              {/* Flared Lower Mast with Vertical Panel Flutes */}
+              <polygon points="21,38 27,38 29,48 19,48" fill="url(#armadaMastGrad)" />
+              <line x1="22.5" y1="39" x2="21" y2="47" stroke="#09090b" strokeWidth="0.8" />
+              <line x1="25.5" y1="39" x2="27" y2="47" stroke="#09090b" strokeWidth="0.8" />
+
+              {/* Mid Mast Column */}
+              <rect x="22.5" y="18" width="3" height="20" fill="url(#armadaMastGrad)" />
+
+              {/* Glowing Yellow Energy Light Ring */}
+              <rect x="22" y="32" width="4" height="2" fill="#fde047" rx="0.5" filter="url(#armadaLightGlow)" />
+              {/* Neon Blue Team Stripe */}
+              <rect x="22" y="29.5" width="4" height="1.6" fill="#3b82f6" rx="0.3" />
+
+              {/* Nacelle Swivel Joint */}
+              <polygon points="21.5,15 26.5,15 26.5,20 21.5,20" fill="#27272a" stroke="#3f3f46" strokeWidth="0.6" />
+            </svg>
+
+            {/* Dynamic Rotating Armada Rotor */}
+            <motion.div
+              className="absolute pointer-events-none w-[36px] h-[36px]"
+              style={{
+                top: "34%",
+                left: "50%",
+                x: "-50%",
+                y: "-50%",
+                rotate: rotateAngle,
+              }}
+            >
+              <svg viewBox="-18 -18 36 36" className="w-full h-full" fill="none">
+                <defs>
+                  <linearGradient id="armadaBladeGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f8fafc" />
+                    <stop offset="60%" stopColor="#cbd5e1" />
+                    <stop offset="100%" stopColor="#64748b" />
+                  </linearGradient>
+                </defs>
+
+                {/* Blade 1 (North) */}
+                <g>
+                  <polygon points="0,0 -1.8,-4 -2.2,-13 0,-16 1.8,-13 1,-4" fill="url(#armadaBladeGrad)" />
+                  <path d="M0,0 L-2.2,-13 L0,-16 L-0.6,-5 Z" fill="#09090b" opacity="0.6" />
+                  <line x1="-1.6" y1="-7" x2="1.3" y2="-7" stroke="#475569" strokeWidth="0.5" />
+                  <line x1="-2.0" y1="-10.5" x2="1.6" y2="-10.5" stroke="#475569" strokeWidth="0.5" />
+                </g>
+
+                {/* Blade 2 (120 deg) */}
+                <g transform="rotate(120)">
+                  <polygon points="0,0 -1.8,-4 -2.2,-13 0,-16 1.8,-13 1,-4" fill="url(#armadaBladeGrad)" />
+                  <path d="M0,0 L-2.2,-13 L0,-16 L-0.6,-5 Z" fill="#09090b" opacity="0.6" />
+                  <line x1="-1.6" y1="-7" x2="1.3" y2="-7" stroke="#475569" strokeWidth="0.5" />
+                  <line x1="-2.0" y1="-10.5" x2="1.6" y2="-10.5" stroke="#475569" strokeWidth="0.5" />
+                </g>
+
+                {/* Blade 3 (240 deg) */}
+                <g transform="rotate(240)">
+                  <polygon points="0,0 -1.8,-4 -2.2,-13 0,-16 1.8,-13 1,-4" fill="url(#armadaBladeGrad)" />
+                  <path d="M0,0 L-2.2,-13 L0,-16 L-0.6,-5 Z" fill="#09090b" opacity="0.6" />
+                  <line x1="-1.6" y1="-7" x2="1.3" y2="-7" stroke="#475569" strokeWidth="0.5" />
+                  <line x1="-2.0" y1="-10.5" x2="1.6" y2="-10.5" stroke="#475569" strokeWidth="0.5" />
+                </g>
+
+                {/* Central Hub Cap with Cyan Core */}
+                <circle cx="0" cy="0" r="2.2" fill="#18181b" stroke="#38bdf8" strokeWidth="0.6" />
+                <circle cx="0" cy="0" r="0.9" fill="#60a5fa" />
+              </svg>
+            </motion.div>
+          </>
+        )}
       </div>
 
       {/* Telemetry Display */}

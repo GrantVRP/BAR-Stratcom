@@ -16,7 +16,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
   size = 18,
 }) => {
   const isArmada = faction.toLowerCase() === "armada";
-  const factionAccent = isArmada ? "#48a2ef" : "#ff2a2a";
+  const factionAccent = isArmada ? "#00f0ff" : "#ff2244";
   const cleanName = (name || "").toLowerCase().trim();
 
   // 1. Solar Collector (Armada or Cortex official Beyond All Reason render)

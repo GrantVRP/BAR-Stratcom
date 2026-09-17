@@ -201,7 +201,7 @@ export function MapCombobox({
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 z-50 pixel-box shadow-[6px_6px_0px_#000] overflow-hidden">
           {/* Tactical Search Input Bar */}
-          <div className="p-2 border-b-2 border-zinc-800 flex items-center gap-2 bg-[#09090f]">
+          <div className="p-2 border-b-2 border-black flex items-center gap-2 bg-[#09090f]">
             <Search className="size-3.5 text-zinc-400 shrink-0" />
             <input
               ref={inputRef}
@@ -211,10 +211,10 @@ export function MapCombobox({
                 setSearchQuery(e.target.value);
                 setHighlightedIndex(0);
               }}
-              placeholder="Filter 228 maps by name, size, biome, or metal..."
-              className="w-full bg-transparent text-xs font-mono text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+              placeholder="Filter theaters by name, dimensions, or metal..."
+              className="w-full bg-transparent text-sm font-pixel-body text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
             />
-            <span className="text-[10px] text-zinc-500 font-mono shrink-0 px-1">
+            <span className="text-[9px] text-zinc-400 font-pixel-heading shrink-0 px-1">
               {filteredMaps.length}
             </span>
             {searchQuery && (
@@ -224,7 +224,7 @@ export function MapCombobox({
                   setSearchQuery("");
                   setHighlightedIndex(0);
                 }}
-                className="text-[10px] text-zinc-500 hover:text-zinc-300 px-1"
+                className="text-[8px] font-pixel-heading text-zinc-400 hover:text-white px-1 cursor-pointer"
               >
                 CLEAR
               </button>
@@ -237,11 +237,11 @@ export function MapCombobox({
             ref={listRef}
             role="listbox"
             aria-labelledby="map-combobox-trigger"
-            className="max-h-72 overflow-y-auto py-1 divide-y divide-zinc-900/60 focus:outline-none"
+            className="max-h-72 overflow-y-auto py-1 divide-y divide-black/60 focus:outline-none"
           >
             {filteredMaps.length === 0 ? (
-              <li className="p-3 text-center text-xs text-zinc-500 font-mono">
-                No tactical theaters match &quot;{searchQuery}&quot;
+              <li className="p-4 text-center text-sm text-zinc-500 font-pixel-body">
+                NO THEATERS MATCH &quot;{searchQuery}&quot;
               </li>
             ) : (
               filteredMaps.map((map, index) => {
@@ -255,29 +255,31 @@ export function MapCombobox({
                     aria-selected={isSelected}
                     onClick={() => handleSelect(map)}
                     onMouseEnter={() => setHighlightedIndex(index)}
-                    className={`p-2.5 cursor-pointer transition-colors flex items-center justify-between gap-3 ${
-                      isHighlighted
-                        ? "bg-zinc-900 text-zinc-100"
-                        : "hover:bg-zinc-900/60 text-zinc-300"
-                    } ${isSelected ? "border-l-2 border-cyan-400 bg-zinc-900/40" : "border-l-2 border-transparent"}`}
+                    className={`p-2.5 cursor-pointer transition-none flex items-center justify-between gap-3 ${
+                      isSelected
+                        ? "bg-[#072a38] text-[#00f0ff]"
+                        : isHighlighted
+                        ? "bg-[#161926] text-white"
+                        : "hover:bg-[#12131a] text-zinc-300"
+                    }`}
                   >
                     <div className="flex flex-col gap-0.5 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-zinc-100 truncate">
+                        <span className="font-pixel-heading text-[10px] truncate" style={{ color: isSelected ? "#00f0ff" : undefined }}>
                           {map.name}
                         </span>
-                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800/80 text-zinc-400 border border-zinc-700/60">
+                        <span className="text-[8px] font-pixel-heading px-1.5 py-0.5 pixel-box-inset text-zinc-300">
                           {map.dimensions}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] text-zinc-400">
+                      <div className="flex items-center gap-2 text-xs font-pixel-body text-zinc-400">
                         <span className="flex items-center gap-1">
                           <Wind className="size-2.5 text-zinc-500" />
                           {map.wind.min}–{map.wind.max} m/s (avg {map.wind.avg})
                         </span>
                         <span>•</span>
                         <span
-                          className={`px-1 py-0.2 rounded text-[9px] uppercase border ${getMetalBadgeColor(
+                          className={`px-1 py-0.2 text-[8px] font-pixel-heading uppercase border ${getMetalBadgeColor(
                             map.metalDensity
                           )}`}
                         >
@@ -288,7 +290,7 @@ export function MapCombobox({
 
                     <div className="flex items-center gap-2 shrink-0">
                       {isSelected && (
-                        <Check className="size-3.5 text-cyan-400" />
+                        <Check className="size-3.5 text-[#00f0ff]" />
                       )}
                     </div>
                   </li>
@@ -298,9 +300,9 @@ export function MapCombobox({
           </ul>
 
           {/* Quick Footer Summary */}
-          <div className="px-2.5 py-1.5 bg-zinc-900/90 border-t border-zinc-800/80 text-[10px] text-zinc-500 flex items-center justify-between">
-            <span>{filteredMaps.length} THEATERS REGISTERED</span>
-            <span>USE ↑↓ TO NAVIGATE • ↵ TO SELECT</span>
+          <div className="px-2.5 py-1.5 bg-[#09090f] border-t-2 border-black text-[8px] font-pixel-heading text-zinc-500 flex items-center justify-between">
+            <span>{filteredMaps.length} THEATERS</span>
+            <span>↑↓ NAVIGATE • ↵ SELECT</span>
           </div>
         </div>
       )}

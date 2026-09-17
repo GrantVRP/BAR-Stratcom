@@ -25,7 +25,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${pressStart.variable} ${vt323.variable} dark h-full`}
     >
-      <body className="min-h-full flex flex-col font-pixel-body bg-[#0c0c14] text-zinc-100 selection:bg-cyan-500 selection:text-black">
+      <body className="min-h-full flex flex-col font-pixel-body bg-[#0c0c14] text-zinc-100">
         {children}
       </body>
     </html>

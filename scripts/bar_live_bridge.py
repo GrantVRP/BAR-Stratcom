@@ -74,7 +74,7 @@ class BarTelemetryScanner:
             return {
                 "isRunning": True,
                 "gameStatus": "IN_LOBBY",
-                "lobbyName": "Chobby Battle Lobby",
+                "lobbyName": "Chobby Active",
                 "mapName": "Supreme Isthmus",
                 "faction": "Armada",
                 "gameTimeSeconds": 0,
@@ -90,14 +90,66 @@ class BarTelemetryScanner:
                 "gameTimeSeconds": game_seconds * 15,
             }
 
+    def _resolve_data_dir(self, proc: Any) -> Optional[str]:
+        """Dynamically extracts write directory from process arguments or path."""
+        try:
+            cmdline = proc.cmdline()
+            for i, arg in enumerate(cmdline):
+                if arg.lower() == "--write-dir" and i + 1 < len(cmdline):
+                    cand = cmdline[i + 1].strip('"\'')
+                    if os.path.isdir(cand):
+                        return cand
+        except Exception:
+            pass
+
+        try:
+            cwd = proc.cwd()
+            if os.path.isdir(cwd):
+                return cwd
+        except Exception:
+            pass
+
+        try:
+            exe = proc.exe()
+            curr = os.path.dirname(exe)
+            for _ in range(4):
+                curr = os.path.dirname(curr)
+                if os.path.isdir(curr) and os.path.isfile(os.path.join(curr, "infolog.txt")):
+                    return curr
+        except Exception:
+            pass
+
+        for p in BAR_DATA_PATHS:
+            if os.path.isdir(p):
+                return p
+        return None
+
+    def _check_infolog_match_state(self, data_dir: str) -> bool:
+        """Inspects the tail of infolog.txt to determine if an active match is in progress."""
+        infolog_path = os.path.join(data_dir, "infolog.txt")
+        if not os.path.isfile(infolog_path):
+            return False
+        try:
+            with open(infolog_path, "r", encoding="utf-8", errors="ignore") as f:
+                lines = f.readlines()[-400:]
+            for line in reversed(lines):
+                if "TotalHideLobbyInterface, false" in line or "HandleLobbyOverlay SetMainInterfaceVisibley" in line:
+                    return False
+                if "TotalHideLobbyInterface, true" in line or "finished loading and is now ingame" in line or "[Initial Spawn]" in line:
+                    return True
+        except Exception:
+            pass
+        return False
+
     def _find_processes(self) -> Dict[str, Any]:
-        """Scans process tree with minimal CPU footprint."""
+        """Scans process tree with minimal CPU footprint and accurate in-engine match detection."""
         engine_found = False
         lobby_found = False
         launcher_found = False
         engine_proc = None
         lobby_proc = None
         launcher_proc = None
+        active_data_dir = None
 
         if not psutil:
             return {
@@ -107,25 +159,41 @@ class BarTelemetryScanner:
                 "engine_proc": None,
                 "lobby_proc": None,
                 "launcher_proc": None,
+                "data_dir": None,
             }
 
         for proc in psutil.process_iter(["pid", "name", "create_time"]):
             try:
                 name = (proc.info.get("name") or "").lower()
                 if name in TARGET_ENGINE:
-                    # Check cmdline to differentiate Chobby (battle lobby) from an active game match
+                    data_dir = self._resolve_data_dir(proc)
                     try:
                         cmdline = [arg.lower() for arg in proc.cmdline()]
                     except (psutil.AccessDenied, psutil.NoSuchProcess):
                         cmdline = []
 
                     is_menu = any("--menu" in arg or "luamenu" in arg for arg in cmdline)
-                    if is_menu:
-                        lobby_found = True
-                        lobby_proc = proc
-                    else:
+                    
+                    if not is_menu:
+                        # Process launched directly without --menu is an active match
                         engine_found = True
                         engine_proc = proc
+                        active_data_dir = data_dir
+                    else:
+                        # Process with --menu (Chobby): check whether it loaded a match in-place
+                        is_in_match = False
+                        if data_dir:
+                            is_in_match = self._check_infolog_match_state(data_dir)
+
+                        if is_in_match:
+                            engine_found = True
+                            engine_proc = proc
+                            active_data_dir = data_dir
+                        else:
+                            lobby_found = True
+                            lobby_proc = proc
+                            if not active_data_dir:
+                                active_data_dir = data_dir
 
                 elif name in TARGET_LAUNCHER:
                     launcher_found = True
@@ -141,99 +209,70 @@ class BarTelemetryScanner:
             "engine_proc": engine_proc,
             "lobby_proc": lobby_proc,
             "launcher_proc": launcher_proc,
+            "data_dir": active_data_dir,
         }
 
-    def _inspect_bar_data(self, proc: Optional[Any] = None, is_lobby: bool = False) -> Dict[str, str]:
-        """Inspects _script.txt and infolog.txt for active map and faction."""
-        extracted: Dict[str, str] = {}
-        search_paths = list(BAR_DATA_PATHS)
-
-        # If a process handle is passed, dynamically extract its write directory and cwd
-        if proc:
-            try:
-                cmdline = proc.cmdline()
-                for i, arg in enumerate(cmdline):
-                    if arg.lower() == "--write-dir" and i + 1 < len(cmdline):
-                        wdir = cmdline[i + 1].strip('"\'')
-                        if os.path.isdir(wdir) and wdir not in search_paths:
-                            search_paths.insert(0, wdir)
-            except Exception:
-                pass
-
-            try:
-                cwd = proc.cwd()
-                if os.path.isdir(cwd) and cwd not in search_paths:
-                    search_paths.insert(0, cwd)
-            except Exception:
-                pass
-
-            try:
-                exe = proc.exe()
-                # Walk up from .../data/engine/recoil_.../spring.exe to .../data
-                curr = os.path.dirname(exe)
-                for _ in range(4):
-                    curr = os.path.dirname(curr)
-                    if os.path.isdir(curr) and curr not in search_paths:
-                        search_paths.append(curr)
-            except Exception:
-                pass
+    def _inspect_bar_data(self, proc: Optional[Any] = None, data_dir: Optional[str] = None, is_lobby: bool = False) -> Dict[str, Any]:
+        """Inspects _script.txt and infolog.txt for active map, faction, and match timestamp."""
+        extracted: Dict[str, Any] = {}
+        search_paths = []
+        if data_dir and os.path.isdir(data_dir):
+            search_paths.append(data_dir)
+        for p in BAR_DATA_PATHS:
+            if p not in search_paths and os.path.isdir(p):
+                search_paths.append(p)
 
         for base_path in search_paths:
-            # 1. First check _script.txt (generated directly for the running match)
+            # 1. First check _script.txt (generated directly for the match)
             script_file = os.path.join(base_path, "_script.txt")
             if os.path.isfile(script_file):
-                # If we are in lobby mode, verify _script.txt was modified after this lobby started
-                is_stale = False
-                if is_lobby and proc:
-                    try:
-                        script_mtime = os.path.getmtime(script_file)
-                        proc_start = proc.info.get("create_time", proc.create_time())
-                        if script_mtime < (proc_start - 2.0):
-                            is_stale = True
-                    except Exception:
-                        pass
-
-                if not is_stale:
-                    try:
+                try:
+                    script_mtime = os.path.getmtime(script_file)
+                    extracted["script_mtime"] = script_mtime
+                    proc_start = proc.info.get("create_time", 0) if proc else 0
+                    
+                    # If in lobby, only trust script if created after lobby start
+                    is_stale = is_lobby and proc_start and (script_mtime < proc_start - 2.0)
+                    if not is_stale:
                         with open(script_file, "r", encoding="utf-8", errors="ignore") as f:
                             script_content = f.read()
-                            map_m = re.search(r"mapname\s*=\s*([^;\r\n]+)", script_content, re.IGNORECASE)
-                            if map_m:
-                                raw_map = map_m.group(1).strip()
-                                clean_map = re.sub(r"\s+v?\d+(\.\d+)*.*$", "", raw_map, flags=re.IGNORECASE)
-                                extracted["mapName"] = clean_map
-                                extracted["rawMapName"] = raw_map
+                        map_m = re.search(r"mapname\s*=\s*([^;\r\n]+)", script_content, re.IGNORECASE)
+                        if map_m:
+                            raw_map = map_m.group(1).strip()
+                            clean_map = re.sub(r"\s+v?\d+(\.\d+)*.*$", "", raw_map, flags=re.IGNORECASE)
+                            extracted["mapName"] = clean_map
+                            extracted["rawMapName"] = raw_map
 
-                            player_m = re.search(r"myplayername\s*=\s*([^;\r\n]+)", script_content, re.IGNORECASE)
-                            my_player = player_m.group(1).strip() if player_m else None
-                            
-                            team_num = None
-                            if my_player:
-                                p_block = re.search(
-                                    r"\[player\d*\]\s*\{[^}]*name=" + re.escape(my_player) + r";[^}]*team=(\d+);",
-                                    script_content,
-                                    re.IGNORECASE | re.DOTALL,
-                                )
-                                if p_block:
-                                    team_num = p_block.group(1)
+                        player_m = re.search(r"myplayername\s*=\s*([^;\r\n]+)", script_content, re.IGNORECASE)
+                        my_player = player_m.group(1).strip() if player_m else None
+                        
+                        team_num = None
+                        if my_player:
+                            p_block = re.search(
+                                r"\[player\d*\]\s*\{[^}]*name=" + re.escape(my_player) + r";[^}]*team=(\d+);",
+                                script_content,
+                                re.IGNORECASE | re.DOTALL,
+                            )
+                            if p_block:
+                                team_num = p_block.group(1)
 
-                            if team_num is not None:
-                                t_block = re.search(
-                                    r"\[team" + re.escape(team_num) + r"\]\s*\{[^}]*side=([a-zA-Z]+);",
-                                    script_content,
-                                    re.IGNORECASE,
-                                )
-                                if t_block:
-                                    side_val = t_block.group(1).capitalize()
-                                    if side_val in ("Armada", "Cortex"):
-                                        extracted["faction"] = side_val
+                        if team_num is not None:
+                            t_block = re.search(
+                                r"\[team" + re.escape(team_num) + r"\]\s*\{[^}]*side=([a-zA-Z]+);",
+                                script_content,
+                                re.IGNORECASE,
+                            )
+                            if t_block:
+                                side_val = t_block.group(1).capitalize()
+                                if side_val in ("Armada", "Cortex"):
+                                    extracted["faction"] = side_val
 
-                            if "faction" not in extracted:
-                                all_sides = re.findall(r"side\s*=\s*(armada|cortex)", script_content, re.IGNORECASE)
-                                if all_sides:
-                                    extracted["faction"] = all_sides[0].capitalize()
-                    except Exception:
-                        pass
+                        if "faction" not in extracted:
+                            all_sides = re.findall(r"side\s*=\s*(armada|cortex)", script_content, re.IGNORECASE)
+                            if all_sides:
+                                extracted["faction"] = all_sides[0].capitalize()
+                except Exception:
+                    pass
 
             # 2. Also inspect infolog.txt if needed (only for active matches)
             if not is_lobby:
@@ -279,13 +318,16 @@ class BarTelemetryScanner:
 
         if engine_alive:
             # Active in-engine match
-            bar_data = self._inspect_bar_data(proc=procs["engine_proc"], is_lobby=False)
+            data_dir = procs.get("data_dir")
+            bar_data = self._inspect_bar_data(proc=procs["engine_proc"], data_dir=data_dir, is_lobby=False)
             game_time = 0
             if procs["engine_proc"]:
-                try:
-                    game_time = int(time.time() - procs["engine_proc"].info["create_time"])
-                except Exception:
-                    pass
+                proc_time = procs["engine_proc"].info.get("create_time", 0)
+                script_time = bar_data.get("script_mtime", 0)
+                if script_time and script_time > proc_time:
+                    game_time = int(time.time() - script_time)
+                else:
+                    game_time = int(time.time() - proc_time) if proc_time else 0
 
             active_map = bar_data.get("mapName", "")
             raw_map = bar_data.get("rawMapName", active_map)
@@ -301,11 +343,12 @@ class BarTelemetryScanner:
             }
         elif lobby_alive:
             # Chobby battle lobby client is open
-            bar_data = self._inspect_bar_data(proc=procs["lobby_proc"], is_lobby=True)
+            data_dir = procs.get("data_dir")
+            bar_data = self._inspect_bar_data(proc=procs["lobby_proc"], data_dir=data_dir, is_lobby=True)
             state = {
                 "isRunning": True,
                 "gameStatus": "IN_LOBBY",
-                "lobbyName": "Chobby Battle Lobby",
+                "lobbyName": "Chobby Active",
                 "mapName": bar_data.get("mapName", ""),
                 "faction": bar_data.get("faction", "Spectator"),
                 "gameTimeSeconds": 0,

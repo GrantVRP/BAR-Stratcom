@@ -341,37 +341,44 @@ export default function BeyondAllReasonConsole() {
                 ? "Live game link active. Click to sync console with live game."
                 : "Live game link standby. Start Beyond All Reason to link."
             }
-            className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono transition-colors ${
-              liveState?.isRunning ? "cursor-pointer hover:border-zinc-700 hover:bg-zinc-800/80" : ""
+            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-sm border font-mono text-xs transition-all select-none ${
+              liveState?.gameStatus === "IN_GAME"
+                ? "bg-cyan-950/20 border-cyan-500/40 text-cyan-200 cursor-pointer hover:bg-cyan-900/30 hover:border-cyan-400/60"
+                : liveState?.gameStatus === "IN_LOBBY"
+                ? "bg-amber-950/20 border-amber-500/40 text-amber-200 cursor-pointer hover:bg-amber-900/30 hover:border-amber-400/60"
+                : "bg-zinc-950 border-zinc-800 text-zinc-500"
             }`}
           >
             {liveState?.gameStatus === "IN_GAME" ? (
               <>
-                <span className="size-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
-                <span className="text-cyan-400 font-bold tracking-tight">
+                <span className="relative flex size-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full size-2 bg-cyan-400" />
+                </span>
+                <span className="text-cyan-400 font-bold tracking-tight whitespace-nowrap">
                   [MEMORY LINK: IN-GAME]
                 </span>
-                <span className="text-zinc-500">•</span>
-                <span className="text-zinc-200 font-semibold">
+                <span className="text-cyan-600">•</span>
+                <span className="text-cyan-100 font-semibold tracking-wider tabular-nums whitespace-nowrap">
                   {Math.floor(liveState.gameTimeSeconds / 60)}:
                   {String(liveState.gameTimeSeconds % 60).padStart(2, "0")}
                 </span>
               </>
             ) : liveState?.gameStatus === "IN_LOBBY" ? (
               <>
-                <span className="size-2 rounded-full bg-amber-400 shrink-0" />
-                <span className="text-amber-400 font-bold tracking-tight">
+                <span className="size-2 rounded-full bg-amber-400 shrink-0 shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+                <span className="text-amber-400 font-bold tracking-tight whitespace-nowrap">
                   [MEMORY LINK: LOBBY]
                 </span>
-                <span className="text-zinc-500">•</span>
-                <span className="text-zinc-300 truncate max-w-[120px]">
-                  {liveState.lobbyName || "Lobby Active"}
+                <span className="text-amber-600">•</span>
+                <span className="text-amber-200/90 font-medium whitespace-nowrap">
+                  {liveState.lobbyName || "Chobby Active"}
                 </span>
               </>
             ) : (
               <>
                 <span className="size-1.5 rounded-full bg-zinc-600 shrink-0" />
-                <span className="text-zinc-500 font-medium tracking-tight">
+                <span className="text-zinc-500 font-medium tracking-tight whitespace-nowrap">
                   [MEMORY LINK: STANDBY]
                 </span>
               </>

@@ -28,7 +28,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }
@@ -40,7 +40,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
         alt={name}
         width={size || 32}
         height={size || 32}
-        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
       />
     );
   }
@@ -55,7 +55,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }
@@ -67,7 +67,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
         alt={name}
         width={size || 32}
         height={size || 32}
-        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
       />
     );
   }
@@ -81,7 +81,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }
@@ -93,7 +93,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
         alt={name}
         width={size || 32}
         height={size || 32}
-        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
       />
     );
   }
@@ -107,7 +107,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }
@@ -119,7 +119,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
         alt={name}
         width={size || 32}
         height={size || 32}
-        className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+        className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
       />
     );
   }
@@ -142,7 +142,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
           />
         );
       }
@@ -154,7 +154,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }
@@ -168,7 +168,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
           />
         );
       }
@@ -180,7 +180,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }
@@ -198,7 +198,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
           />
         );
       }
@@ -210,7 +210,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }
@@ -224,7 +224,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
             alt={name}
             width={size || 32}
             height={size || 32}
-            className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(72,162,239,0.25)]`}
+            className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
           />
         );
       }
@@ -236,7 +236,7 @@ export const BarIcon: React.FC<BarIconProps> = ({
           alt={name}
           width={size || 32}
           height={size || 32}
-          className={`${className || "w-full h-full"} object-contain drop-shadow-[0_0_6px_rgba(255,42,42,0.25)]`}
+          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
         />
       );
     }

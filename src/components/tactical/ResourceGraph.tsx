@@ -39,27 +39,20 @@ function timeToSeconds(ts: string): number {
 }
 
 /**
- * Generates an SVG path using smooth monotonic cubic bezier curves
+ * Generates an SVG path using stepped digital raster segments (horizontal & vertical L steps)
+ * simulating a retro 16-bit hardware oscilloscope / logic analyzer.
  */
-function createSmoothPath(points: { x: number; y: number }[]): string {
+function createSteppedPath(points: { x: number; y: number }[]): string {
   if (points.length === 0) return "";
-  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+  if (points.length === 1) return `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
 
   let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
 
   for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[Math.max(0, i - 1)];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[Math.min(points.length - 1, i + 2)];
-
-    // Catmull-Rom to Cubic Bezier conversion
-    const cp1x = p1.x + (p2.x - p0.x) / 6;
-    const cp1y = p1.y + (p2.y - p0.y) / 6;
-    const cp2x = p2.x - (p3.x - p1.x) / 6;
-    const cp2y = p2.y - (p3.y - p1.y) / 6;
-
-    d += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    const current = points[i];
+    const next = points[i + 1];
+    // Stepped horizontal line to next X, then vertical line to next Y
+    d += ` L ${next.x.toFixed(1)} ${current.y.toFixed(1)} L ${next.x.toFixed(1)} ${next.y.toFixed(1)}`;
   }
 
   return d;
@@ -219,8 +212,8 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
     [trajectoryData, getX, getY]
   );
 
-  const energyPath = useMemo(() => createSmoothPath(energyPoints), [energyPoints]);
-  const metalPath = useMemo(() => createSmoothPath(metalPoints), [metalPoints]);
+  const energyPath = useMemo(() => createSteppedPath(energyPoints), [energyPoints]);
+  const metalPath = useMemo(() => createSteppedPath(metalPoints), [metalPoints]);
 
   const energyArea = useMemo(() => {
     if (energyPoints.length === 0) return "";
@@ -259,39 +252,39 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
     const closest = trajectoryData.reduce((prev, curr) =>
       Math.abs(curr.time - hoveredSecond) < Math.abs(prev.time - hoveredSecond) ? curr : prev
     );
-    const min = Math.floor(hoveredSecond / 60);
-    const sec = hoveredSecond % 60;
+    const min = Math.floor(closest.time / 60);
+    const sec = closest.time % 60;
     const ts = `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
     return {
+      ...closest,
       timeStr: ts,
       energy: closest.netEnergy,
       metal: closest.netMetal,
-      isStall: closest.isStall,
     };
   }, [hoveredSecond, trajectoryData]);
 
-  // Peak and average stats
+  // Max Stats for HUD readout
   const stats = useMemo(() => {
     let maxE = 0;
     let maxM = 0;
     trajectoryData.forEach((d) => {
-      if (d.netEnergy > maxE) maxE = d.netEnergy;
-      if (d.netMetal > maxM) maxM = d.netMetal;
+      if (d.netEnergy > maxE) maxE = Math.round(d.netEnergy);
+      if (d.netMetal > maxM) maxM = parseFloat(d.netMetal.toFixed(1));
     });
     return { maxE, maxM };
   }, [trajectoryData]);
 
   return (
-    <div className={`rounded bg-[#0d0f15] border border-zinc-800/60 p-3 space-y-2.5 ${className}`}>
+    <div className={`pixel-box p-3 space-y-2.5 font-pixel-body ${className}`}>
       {/* Top Telemetry Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
-        <div className="flex items-center gap-2">
-          <Activity className="size-3.5 text-zinc-400" />
-          <span className="font-bold text-zinc-200 uppercase tracking-wider text-[11px]">
-            PROJECTED ECONOMIC RUNWAY (0:00 - 5:00)
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-2 font-pixel-heading text-[9px]">
+          <Activity className="size-3 text-cyan-400" />
+          <span className="font-bold text-zinc-100 uppercase tracking-wider">
+            OSCILLOSCOPE ECO RUNWAY [0:00 - 5:00]
           </span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800/80 text-zinc-400">
-            WIND: {mapWindAvg} m/s
+          <span className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-pixel-body text-xs">
+            WIND: {mapWindAvg} M/S
           </span>
         </div>
 
@@ -456,15 +449,17 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
           {energyArea && <path d={energyArea} fill="url(#energyGrad)" pointerEvents="none" />}
           {metalArea && <path d={metalArea} fill="url(#metalGrad)" pointerEvents="none" />}
 
-          {/* Smooth Bezier Path Lines */}
+          {/* Stepped Digital Oscilloscope Raster Lines */}
           {energyPath && (
             <path
               d={energyPath}
               fill="none"
-              stroke="#eab308"
+              stroke="#fbbf24"
               strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              strokeLinecap="square"
+              strokeLinejoin="miter"
+              shapeRendering="crispEdges"
+              pointerEvents="none"
             />
           )}
           {metalPath && (
@@ -473,12 +468,12 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
               fill="none"
               stroke={metalColor}
               strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              strokeLinecap="square"
+              strokeLinejoin="miter"
+              shapeRendering="crispEdges"
+              pointerEvents="none"
             />
-          )}
-
-          {/* Interactive Scrub Hairline & Intersections */}
+          )}{/* Interactive Scrub Hairline & Intersections */}
           {hoveredSecond !== null && (
             <g pointerEvents="none">
               <line

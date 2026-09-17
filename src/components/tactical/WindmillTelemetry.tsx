@@ -1,45 +1,46 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import { motion, useAnimationFrame, useMotionValue } from "framer-motion";
+import { motion, useAnimationFrame, useMotionValue, useTransform } from "framer-motion";
 
 export interface WindmillTelemetryProps {
   faction?: "Armada" | "Cortex" | "both" | "Spectator";
   currentWind?: number; // Wind speed in m/s
   minWind?: number;     // Map minimum wind
   maxWind?: number;     // Map maximum wind
+  avgWind?: number;     // Map average wind
   className?: string;
 }
 
 export function WindmillTelemetry({
-  faction = "Armada",
-  currentWind = 9.0,
   minWind = 4,
-  maxWind = 14,
+  maxWind = 18,
+  avgWind = 11,
+  currentWind = 11,
+  faction = "Armada",
   className = "",
 }: WindmillTelemetryProps) {
-  // Beyond All Reason viability benchmarks
-  const isViable = currentWind >= 8.5;
-  const isHighRisk = currentWind < 5.0;
-
   const isCortex = faction === "Cortex";
+  const isHighRisk = minWind <= 2 && avgWind < 10;
+  const isViable = avgWind >= 10;
 
   const statusColor = isHighRisk
-    ? "text-rose-400 border-rose-500/30 bg-rose-500/10"
+    ? "text-amber-400 border-amber-500/50 bg-amber-500/20"
     : isViable
     ? isCortex
-      ? "text-rose-400 border-rose-500/30 bg-rose-500/10"
-      : "text-cyan-400 border-cyan-500/30 bg-cyan-500/10"
-    : "text-amber-400 border-amber-500/30 bg-amber-500/10";
+      ? "text-[#ff2244] border-[#ff2244]/50 bg-[#ff2244]/20"
+      : "text-[#00f0ff] border-[#00f0ff]/50 bg-[#00f0ff]/20"
+    : "text-amber-400 border-amber-500/50 bg-amber-500/20";
 
   const statusLabel = isHighRisk
-    ? "SOLAR ONLY (STALL RISK)"
+    ? "SOLAR ONLY [STALL RISK]"
     : isViable
     ? "WIND HIGHLY VIABLE"
     : "MARGINAL VARIANCE";
 
-  // Continuous physics-based rotation
-  const rotateAngle = useMotionValue(0);
+  // Stepped 8-direction retro sprite rotation (45-degree steps)
+  const continuousAngle = useMotionValue(0);
+  const rotateAngle = useTransform(continuousAngle, (val: number) => Math.floor(val / 45) * 45);
   const windRef = useRef(currentWind);
   useEffect(() => {
     windRef.current = currentWind;
@@ -49,19 +50,19 @@ export function WindmillTelemetry({
     // 10 m/s yields ~360 deg/sec (1 full rotation per second)
     const degreesPerSecond = Math.max(0, windRef.current) * 36;
     const increment = (degreesPerSecond * delta) / 1000;
-    rotateAngle.set((rotateAngle.get() + increment) % 360);
+    continuousAngle.set((continuousAngle.get() + increment) % 360);
   });
 
   return (
     <div
-      className={`flex items-center gap-3 px-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded-sm font-mono text-xs select-none transition-colors ${className}`}
+      className={`flex items-center gap-3 px-3 py-1.5 pixel-box select-none ${className}`}
     >
       {/* Turbine Frame Viewport */}
       <div
-        className={`relative w-[44px] h-[48px] shrink-0 bg-zinc-900/90 border rounded-xs overflow-hidden transition-colors ${
+        className={`relative w-[44px] h-[48px] shrink-0 pixel-box-inset overflow-hidden ${
           isCortex
-            ? "border-red-500/30 shadow-[inset_0_0_12px_rgba(220,38,38,0.1)]"
-            : "border-cyan-500/30 shadow-[inset_0_0_12px_rgba(37,99,235,0.12)]"
+            ? "border-[#ff2244]/50"
+            : "border-[#00f0ff]/50"
         }`}
       >
         {isCortex ? (
@@ -259,22 +260,22 @@ export function WindmillTelemetry({
       </div>
 
       {/* Telemetry Display */}
-      <div className="flex flex-col gap-0.5 min-w-0">
+      <div className="flex flex-col gap-1 min-w-0 font-pixel-body">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 uppercase tracking-wider text-[10px]">
-            Atmospheric Velocity
+          <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-pixel-heading">
+            WIND VELOCITY:
           </span>
-          <span className="text-zinc-100 font-bold text-xs">
-            {currentWind.toFixed(1)} <span className="text-zinc-500 font-normal">m/s</span>
+          <span className="text-zinc-100 font-bold text-sm tracking-wider font-pixel-heading">
+            {currentWind.toFixed(1)} <span className="text-zinc-500 text-[9px]">M/S</span>
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className={`px-1.5 py-0.2 rounded-xs border text-[9px] font-semibold uppercase tracking-tight ${statusColor}`}>
+          <span className={`px-1.5 py-0.5 text-[8px] font-pixel-heading uppercase border shadow-[1px_1px_0px_#000] ${statusColor}`}>
             {statusLabel}
           </span>
-          <span className="text-zinc-500 text-[10px]">
-            Range: [{minWind}–{maxWind}]
+          <span className="text-zinc-400 text-xs tracking-wider font-pixel-body">
+            RANGE: [{minWind}–{maxWind} M/S]
           </span>
         </div>
       </div>

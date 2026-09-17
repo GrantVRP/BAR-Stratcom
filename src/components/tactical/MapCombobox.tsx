@@ -127,7 +127,7 @@ export function MapCombobox({
   return (
     <div
       ref={containerRef}
-      className={`relative font-mono text-xs ${className}`}
+      className={`relative font-pixel-body text-xs ${className}`}
       onKeyDown={handleKeyDown}
     >
       {/* Combobox Trigger Button */}
@@ -145,33 +145,33 @@ export function MapCombobox({
             setIsOpen(true);
           }
         }}
-        className={`w-full p-2.5 rounded bg-zinc-950 border transition-all text-left flex items-center justify-between gap-2.5 group ${
+        className={`w-full p-2.5 pixel-box text-left flex items-center justify-between gap-2.5 group cursor-pointer transition-none ${
           isOpen
-            ? "border-cyan-500/70 ring-1 ring-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.15)]"
-            : "border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/60"
+            ? "border-[#00f0ff] shadow-[0_0_12px_rgba(0,240,255,0.25)]"
+            : "hover:border-zinc-500"
         }`}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="size-7 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-cyan-400 group-hover:border-cyan-500/40 transition-colors">
+          <div className="size-7 pixel-box-inset flex items-center justify-center shrink-0 text-[#00f0ff] group-hover:border-[#00f0ff]/40">
             <Compass className="size-4" />
           </div>
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-zinc-100 text-xs truncate">
+              <span className="font-pixel-heading text-[10px] text-zinc-100 truncate">
                 {selectedMap.name}
               </span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300 border border-zinc-700 shrink-0">
+              <span className="text-[9px] font-pixel-heading px-1.5 py-0.5 bg-zinc-900 text-zinc-300 border border-zinc-700 shrink-0">
                 {selectedMap.dimensions}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[10px] text-zinc-400 mt-0.5">
+            <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5 font-pixel-body">
               <span className="flex items-center gap-1">
-                <Wind className="size-2.5 text-zinc-500" />
-                {selectedMap.wind.min}–{selectedMap.wind.max} m/s
+                <Wind className="size-3 text-zinc-500" />
+                {selectedMap.wind.min}–{selectedMap.wind.max} M/S
               </span>
               <span>•</span>
               <span
-                className={`px-1 py-0.2 rounded text-[9px] font-semibold uppercase border ${getMetalBadgeColor(
+                className={`px-1 py-0.2 text-[9px] font-pixel-heading uppercase border ${getMetalBadgeColor(
                   selectedMap.metalDensity
                 )}`}
               >
@@ -180,8 +180,8 @@ export function MapCombobox({
               {selectedMap.tidal > 0 && (
                 <>
                   <span>•</span>
-                  <span className="text-cyan-400 flex items-center gap-0.5">
-                    <Waves className="size-2.5" />
+                  <span className="text-[#00f0ff] flex items-center gap-0.5">
+                    <Waves className="size-3" />
                     +{selectedMap.tidal}E
                   </span>
                 </>
@@ -191,17 +191,17 @@ export function MapCombobox({
         </div>
 
         <ChevronDown
-          className={`size-4 text-zinc-400 shrink-0 transition-transform duration-200 ${
-            isOpen ? "rotate-180 text-cyan-400" : "group-hover:text-zinc-200"
+          className={`size-4 text-zinc-400 shrink-0 transition-none ${
+            isOpen ? "rotate-180 text-[#00f0ff]" : "group-hover:text-zinc-200"
           }`}
         />
       </button>
 
       {/* Floating Tactical Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 z-50 bg-zinc-950 border border-zinc-800 rounded-sm shadow-2xl overflow-hidden backdrop-blur-md">
+        <div className="absolute top-full left-0 right-0 mt-2 z-50 pixel-box shadow-[6px_6px_0px_#000] overflow-hidden">
           {/* Tactical Search Input Bar */}
-          <div className="p-2 border-b border-zinc-800/80 flex items-center gap-2 bg-zinc-900/90">
+          <div className="p-2 border-b-2 border-zinc-800 flex items-center gap-2 bg-[#09090f]">
             <Search className="size-3.5 text-zinc-400 shrink-0" />
             <input
               ref={inputRef}

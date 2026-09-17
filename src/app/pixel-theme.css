@@ -1,0 +1,260 @@
+/* ==========================================================================
+   Beyond All Reason: 16-Bit Retro Arcade / Tactical Pixel Art Commander Theme
+   Inspired by Advance Wars, Metal Slug, and Dune II
+   ========================================================================== */
+
+:root {
+  --arcade-obsidian: #0c0c14;
+  --battle-slate: #181a20;
+  --arcade-panel: #12131a;
+  --arcade-surface: #1a1c26;
+
+  /* 16-Bit Faction Colors */
+  --armada-cyan: #00f0ff;
+  --armada-cyan-dim: #0284c7;
+  --armada-cobalt: #1d4ed8;
+  --armada-dark: #083344;
+
+  --cortex-flame: #ff2244;
+  --cortex-flame-dim: #e11d48;
+  --cortex-rust: #b91c1c;
+  --cortex-dark: #450a0a;
+
+  /* Resource Indicators */
+  --energy-gold: #fbbf24;
+  --metal-chrome: #94a3b8;
+
+  /* Typography Variables */
+  --font-pixel-heading: 'Press Start 2P', monospace;
+  --font-pixel-body: 'VT323', monospace;
+}
+
+/* --------------------------------------------------------------------------
+   Typography Utility Classes
+   -------------------------------------------------------------------------- */
+.font-pixel-heading {
+  font-family: var(--font-pixel-heading), "Press Start 2P", monospace;
+  letter-spacing: 0.05em;
+}
+
+.font-pixel-body {
+  font-family: var(--font-pixel-body), "VT323", monospace;
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+/* --------------------------------------------------------------------------
+   Full-Screen CRT Scanlines & Tube Vignette
+   -------------------------------------------------------------------------- */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  background: 
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.015), rgba(0, 0, 255, 0.03));
+  background-size: 100% 4px, 6px 100%;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.75), inset 0 0 40px rgba(0, 0, 0, 0.5);
+  opacity: 0.9;
+}
+
+/* --------------------------------------------------------------------------
+   Stepped Pixel Art Containers (.pixel-box)
+   -------------------------------------------------------------------------- */
+.pixel-box {
+  background-color: #12131a;
+  border: 2px solid #2a2e42;
+  box-shadow: 
+    inset -2px -2px 0px 0px #09090f,
+    inset 2px 2px 0px 0px #222638,
+    3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+}
+
+.pixel-box-armada {
+  background-color: #0c121e;
+  border: 2px solid #00f0ff;
+  box-shadow: 
+    inset -2px -2px 0px 0px #1d4ed8,
+    inset 2px 2px 0px 0px #38bdf8,
+    3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+}
+
+.pixel-box-cortex {
+  background-color: #160d10;
+  border: 2px solid #ff2244;
+  box-shadow: 
+    inset -2px -2px 0px 0px #b91c1c,
+    inset 2px 2px 0px 0px #f87171,
+    3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+}
+
+.pixel-box-inset {
+  background-color: #0a0b10;
+  border: 2px solid #1a1c28;
+  box-shadow: 
+    inset 2px 2px 0px 0px #000000,
+    inset -2px -2px 0px 0px #24283b;
+  border-radius: 0px !important;
+}
+
+/* --------------------------------------------------------------------------
+   Chunky Tactile Arcade Controls (.pixel-btn)
+   -------------------------------------------------------------------------- */
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1c28;
+  color: #e2e8f0;
+  border: 2px solid #3b425b;
+  box-shadow: 3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+  font-family: var(--font-pixel-heading), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  user-select: none;
+  transition: none !important;
+}
+
+.pixel-btn:hover {
+  background-color: #24293d;
+  color: #ffffff;
+  border-color: #4f587a;
+}
+
+.pixel-btn:active,
+.pixel-btn.active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.pixel-btn-armada {
+  background-color: #072a38;
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.pixel-btn-armada:hover {
+  background-color: #00f0ff;
+  color: #0c0c14;
+  border-color: #00f0ff;
+}
+
+.pixel-btn-armada:active,
+.pixel-btn-armada.active {
+  background-color: #00f0ff;
+  color: #0c0c14;
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.pixel-btn-cortex {
+  background-color: #380b12;
+  border-color: #ff2244;
+  color: #ff2244;
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.pixel-btn-cortex:hover {
+  background-color: #ff2244;
+  color: #0c0c14;
+  border-color: #ff2244;
+}
+
+.pixel-btn-cortex:active,
+.pixel-btn-cortex.active {
+  background-color: #ff2244;
+  color: #0c0c14;
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+/* --------------------------------------------------------------------------
+   Arcade Cartridge Tabs (.pixel-tab)
+   -------------------------------------------------------------------------- */
+.pixel-tab {
+  background-color: #12131a;
+  border: 2px solid #222536;
+  border-bottom: none;
+  box-shadow: 2px -2px 0px 0px #000000;
+  border-radius: 0px !important;
+  font-family: var(--font-pixel-heading), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: none !important;
+}
+
+.pixel-tab:hover {
+  background-color: #1a1c28;
+}
+
+.pixel-tab.active-armada {
+  background-color: #072a38;
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: inset 0px 3px 0px 0px #00f0ff, 2px -2px 0px 0px #000000;
+}
+
+.pixel-tab.active-cortex {
+  background-color: #380b12;
+  border-color: #ff2244;
+  color: #ff2244;
+  box-shadow: inset 0px 3px 0px 0px #ff2244, 2px -2px 0px 0px #000000;
+}
+
+/* --------------------------------------------------------------------------
+   Sprite & Icon Pixelation (.pixelated)
+   -------------------------------------------------------------------------- */
+.pixelated,
+img.pixelated,
+svg.pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* --------------------------------------------------------------------------
+   Chunky Retro Arcade Scrollbar
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090e;
+  border: 1px solid #1a1c28;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2e42;
+  border: 2px solid #000000;
+  box-shadow: inset 1px 1px 0px 0px #4f587a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b425b;
+}
+
+/* --------------------------------------------------------------------------
+   Retro Header Flasher / Insert Coin Blink
+   -------------------------------------------------------------------------- */
+@keyframes arcade-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.arcade-blink {
+  animation: arcade-blink 1s infinite steps(1);
+}

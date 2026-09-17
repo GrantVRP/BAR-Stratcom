@@ -1,29 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Press_Start_2P, VT323 } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const pressStart = Press_Start_2P({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-pixel-heading",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const vt323 = VT323({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-pixel-body",
 });
 
 export const metadata: Metadata = {
-  title: "Beyond All Reason — AI Tactical Strategy Hub",
-  description: "AI-powered tournament build orders and timing attack strategies for Beyond All Reason",
+  title: "Beyond All Reason — StratCom 16-Bit Tactical Console",
+  description: "16-bit retro tactical arcade build order generator and telemetry console for Beyond All Reason",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      className={`${pressStart.variable} ${vt323.variable} dark h-full`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col font-pixel-body bg-[#0c0c14] text-zinc-100 selection:bg-cyan-500 selection:text-black">
+        {children}
+      </body>
     </html>
   );
 }

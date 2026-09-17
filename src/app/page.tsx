@@ -286,18 +286,21 @@ export default function BeyondAllReasonConsole() {
 
   const isArmada = faction === "Armada";
 
-  // Faction Accent Color Tokens (Armada Blue #48a2ef vs Cortex Crimson #ff2a2a)
-  const accentColor = isArmada ? "#48a2ef" : "#ff2a2a";
+  // Faction Accent Color Tokens (16-Bit Armada Cyan #00f0ff vs Cortex Flame #ff2244)
+  const accentColor = isArmada ? "#00f0ff" : "#ff2244";
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-[#0a0c10] text-zinc-100 font-sans select-none antialiased">
+    <div className="h-screen flex flex-col overflow-hidden bg-[#0c0c14] text-zinc-100 font-pixel-body select-none relative">
+      {/* Full-Screen 16-bit CRT Scanline Overlay & Tube Vignette */}
+      <div className="crt-scanlines pointer-events-none" />
+
       {/* ========================================================================= */}
       {/* 1. TOP BAR: PRACTICAL RTS TELEMETRY & HOTKEYS                             */}
       {/* ========================================================================= */}
-      <header className="h-14 shrink-0 border-b border-zinc-800 bg-zinc-950 px-4 flex items-center justify-between text-xs font-mono z-30">
+      <header className="h-14 shrink-0 border-b-2 border-black bg-[#12131a] px-4 flex items-center justify-between text-xs z-30 shadow-[0_3px_0_0_#000]">
         {/* Left: Brand & Faction Indicator */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2.5 pr-3 border-r border-zinc-800/60">
+          <div className="flex items-center gap-2.5 pr-3 border-r-2 border-[#222638]">
             <div className="relative size-6 flex items-center justify-center shrink-0">
               <Image
                 src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
@@ -305,10 +308,10 @@ export default function BeyondAllReasonConsole() {
                 width={22}
                 height={22}
                 priority
-                className="object-contain"
+                className="object-contain pixelated drop-shadow-[2px_2px_0px_#000]"
               />
             </div>
-            <div className="font-mono font-bold text-sm text-zinc-100 tracking-wider">
+            <div className="font-pixel-heading text-xs text-white tracking-wider">
               BAR STRATCOM{" "}
               <span style={{ color: accentColor }}>
                 {"// TACTICAL ADVISOR"}
@@ -317,16 +320,16 @@ export default function BeyondAllReasonConsole() {
           </div>
 
           {/* Practical RTS Stats: Benchmark Estimates */}
-          <div className="hidden xl:flex items-center gap-3 text-zinc-400 text-[11px]">
+          <div className="hidden xl:flex items-center gap-3 text-zinc-400 font-pixel-body text-base">
             <div>
               <span>BENCHMARK: </span>
-              <span className="text-amber-400 font-semibold">1,000 E</span>
+              <span className="text-amber-400 font-bold">1,000 E</span>
               <span className="text-zinc-600"> / </span>
-              <span className="text-zinc-200 font-semibold">1,000 M</span>
+              <span className="text-zinc-200 font-bold">1,000 M</span>
             </div>
             <span className="text-zinc-600">•</span>
             <div className="text-zinc-400">
-              EXPANSION: <span className="text-zinc-200 font-medium">3-4 Mex @ 01:30</span>
+              EXPANSION: <span className="text-zinc-200 font-bold">3-4 Mex @ 01:30</span>
             </div>
           </div>
         </div>
@@ -341,45 +344,42 @@ export default function BeyondAllReasonConsole() {
                 ? "Live game link active. Click to sync console with live game."
                 : "Live game link standby. Start Beyond All Reason to link."
             }
-            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-sm border font-mono text-xs transition-all select-none ${
+            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 border-2 text-[10px] font-pixel-heading transition-none select-none ${
               liveState?.gameStatus === "IN_GAME"
-                ? "bg-cyan-950/20 border-cyan-500/40 text-cyan-200 cursor-pointer hover:bg-cyan-900/30 hover:border-cyan-400/60"
+                ? "bg-[#072a38] border-[#00f0ff] text-[#00f0ff] shadow-[2px_2px_0px_#000] cursor-pointer"
                 : liveState?.gameStatus === "IN_LOBBY"
-                ? "bg-amber-950/20 border-amber-500/40 text-amber-200 cursor-pointer hover:bg-amber-900/30 hover:border-amber-400/60"
-                : "bg-zinc-950 border-zinc-800 text-zinc-500"
+                ? "bg-[#332205] border-[#fbbf24] text-[#fbbf24] shadow-[2px_2px_0px_#000] cursor-pointer"
+                : "bg-[#10121a] border-[#2a2e42] text-zinc-500 shadow-[2px_2px_0px_#000]"
             }`}
           >
             {liveState?.gameStatus === "IN_GAME" ? (
               <>
-                <span className="relative flex size-2 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full size-2 bg-cyan-400" />
+                <span className="size-2 bg-[#00f0ff] shrink-0 arcade-blink" />
+                <span className="text-[#00f0ff] font-bold tracking-tight whitespace-nowrap">
+                  [LINK: IN-GAME]
                 </span>
-                <span className="text-cyan-400 font-bold tracking-tight whitespace-nowrap">
-                  [MEMORY LINK: IN-GAME]
-                </span>
-                <span className="text-cyan-600">•</span>
-                <span className="text-cyan-100 font-semibold tracking-wider tabular-nums whitespace-nowrap">
+                <span className="text-[#0284c7]">•</span>
+                <span className="text-white font-bold tracking-wider tabular-nums whitespace-nowrap font-pixel-body text-base">
                   {Math.floor(liveState.gameTimeSeconds / 60)}:
                   {String(liveState.gameTimeSeconds % 60).padStart(2, "0")}
                 </span>
               </>
             ) : liveState?.gameStatus === "IN_LOBBY" ? (
               <>
-                <span className="size-2 rounded-full bg-amber-400 shrink-0 shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
-                <span className="text-amber-400 font-bold tracking-tight whitespace-nowrap">
-                  [MEMORY LINK: LOBBY]
+                <span className="size-2 bg-[#fbbf24] shrink-0 arcade-blink" />
+                <span className="text-[#fbbf24] font-bold tracking-tight whitespace-nowrap">
+                  [LINK: LOBBY]
                 </span>
                 <span className="text-amber-600">•</span>
-                <span className="text-amber-200/90 font-medium whitespace-nowrap">
+                <span className="text-amber-200 font-medium whitespace-nowrap font-pixel-body text-base">
                   {liveState.lobbyName || "Chobby Active"}
                 </span>
               </>
             ) : (
               <>
-                <span className="size-1.5 rounded-full bg-zinc-600 shrink-0" />
+                <span className="size-2 bg-zinc-600 shrink-0" />
                 <span className="text-zinc-500 font-medium tracking-tight whitespace-nowrap">
-                  [MEMORY LINK: STANDBY]
+                  [LINK: STANDBY]
                 </span>
               </>
             )}
@@ -392,18 +392,19 @@ export default function BeyondAllReasonConsole() {
             minWind={selectedMap.wind.min}
             maxWind={selectedMap.wind.max}
           />
+
           {/* AI Key Link Badge */}
           <button
             type="button"
             onClick={() => setShowKeyModal(true)}
-            className="flex items-center gap-1.5 px-2 py-1 rounded bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 transition-colors"
+            className="pixel-btn text-[9px] py-1.5 px-2.5 gap-1.5"
           >
             <KeyRound className="size-3 text-zinc-400" />
-            <span className="hidden lg:inline text-zinc-400">LINK:</span>
+            <span className="hidden lg:inline text-zinc-400">AI:</span>
             {apiKey ? (
-              <span className="text-emerald-400 font-bold">GEMINI 1.5 PRO</span>
+              <span className="text-[#00f0ff] font-bold">GEMINI 1.5</span>
             ) : (
-              <span className="text-zinc-400">TACTICAL RULES</span>
+              <span className="text-zinc-400">RULES</span>
             )}
           </button>
 
@@ -412,7 +413,7 @@ export default function BeyondAllReasonConsole() {
             <button
               type="button"
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-200 transition-colors"
+              className="pixel-btn text-[9px] py-1.5 px-2.5 gap-1.5"
               title="Copy build macro to clipboard (Ctrl + C)"
             >
               {copied ? (
@@ -424,7 +425,7 @@ export default function BeyondAllReasonConsole() {
                 <>
                   <Copy className="size-3 text-zinc-400" />
                   <span>COPY MACRO</span>
-                  <kbd className="hidden sm:inline text-[9px] px-1 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                  <kbd className="hidden sm:inline text-[8px] px-1 py-0.5 bg-[#0a0b10] text-zinc-400 border border-zinc-700 font-pixel-heading">
                     Ctrl+C
                   </kbd>
                 </>
@@ -434,15 +435,14 @@ export default function BeyondAllReasonConsole() {
 
           {/* Abort CTA when streaming */}
           {isLoading && (
-            <Button
-              variant="destructive"
-              size="sm"
+            <button
+              type="button"
               onClick={stop}
-              className="h-7 px-2.5 text-[11px] font-mono bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800/80 gap-1.5"
+              className="pixel-btn pixel-btn-cortex text-[9px] py-1.5 px-2.5 gap-1.5"
             >
               <SquareSquare className="size-3" />
               ABORT
-            </Button>
+            </button>
           )}
         </div>
       </header>
@@ -455,57 +455,47 @@ export default function BeyondAllReasonConsole() {
         {/* ======================================================================= */}
         {/* LEFT PANEL: DOCKED SIDEBAR (~360px) ALL-IN-ONE LOADOUT CONSOLE         */}
         {/* ======================================================================= */}
-        <aside className="w-[360px] shrink-0 h-full flex flex-col border-r border-zinc-800/60 bg-[#0d0f15] overflow-y-auto scrollbar-thin">
+        <aside className="w-[360px] shrink-0 h-full flex flex-col border-r-2 border-black bg-[#101118] overflow-y-auto scrollbar-thin z-10 shadow-[3px_0_0_0_#000]">
           
           {/* Section: Faction Selector (Tactile Radio Tabs) */}
-          <div className="p-3.5 border-b border-zinc-800/60 space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-              <span className="tracking-wider">01 // FACTION ALLEGIANCE</span>
-              <span className="text-[10px]" style={{ color: accentColor }}>
-                ACTIVE: {faction.toUpperCase()}
+          <div className="p-3.5 border-b-2 border-black space-y-2 bg-[#12131a]">
+            <div className="flex items-center justify-between text-[10px] font-pixel-heading text-zinc-400">
+              <span className="tracking-wider">01 // FACTION</span>
+              <span style={{ color: accentColor }}>
+                [{faction.toUpperCase()}]
               </span>
             </div>
 
             {/* Compact Tactile Radio Tabs */}
-            <div className="grid grid-cols-2 gap-1.5 bg-[#0a0c10] p-1 rounded border border-zinc-800/60">
+            <div className="grid grid-cols-2 gap-2 pixel-box-inset p-1.5">
               {/* ARMADA TAB */}
               <button
                 type="button"
                 onClick={() => setFaction("Armada")}
-                className={`relative flex items-center gap-2.5 p-2 rounded transition-all text-left ${
+                className={`flex items-center gap-2 p-2 border-2 transition-none text-left cursor-pointer ${
                   faction === "Armada"
-                    ? "bg-zinc-900/90 text-white shadow-sm"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30"
+                    ? "bg-[#072a38] border-[#00f0ff] text-[#00f0ff] shadow-[2px_2px_0px_#000]"
+                    : "bg-[#0f1118] border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-800"
                 }`}
-                style={
-                  faction === "Armada"
-                    ? { borderLeft: `2px solid ${accentColor}` }
-                    : { borderLeft: "2px solid transparent" }
-                }
               >
                 <div
-                  className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border transition-all"
-                  style={{
-                    borderColor: faction === "Armada" ? accentColor : "#27272a",
-                    boxShadow: faction === "Armada" ? `0 0 10px ${accentColor}40` : "none",
-                  }}
+                  className={`size-7 bg-black flex items-center justify-center shrink-0 border ${
+                    faction === "Armada" ? "border-[#00f0ff]" : "border-zinc-800"
+                  }`}
                 >
                   <Image
                     src="/armada-logo.png"
                     alt="Armada"
                     width={20}
                     height={20}
-                    className="object-contain"
+                    className="object-contain pixelated"
                   />
                 </div>
                 <div>
-                  <div
-                    className="font-mono text-xs font-bold leading-tight"
-                    style={{ color: faction === "Armada" ? accentColor : undefined }}
-                  >
+                  <div className="font-pixel-heading text-[10px] font-bold leading-tight">
                     ARMADA
                   </div>
-                  <div className="text-[10px] text-zinc-500 font-mono">Laser & Skirmish</div>
+                  <div className="text-xs text-zinc-400 font-pixel-body">Laser / Skirmish</div>
                 </div>
               </button>
 
@@ -513,50 +503,40 @@ export default function BeyondAllReasonConsole() {
               <button
                 type="button"
                 onClick={() => setFaction("Cortex")}
-                className={`relative flex items-center gap-2.5 p-2 rounded transition-all text-left ${
+                className={`flex items-center gap-2 p-2 border-2 transition-none text-left cursor-pointer ${
                   faction === "Cortex"
-                    ? "bg-zinc-900/90 text-white shadow-sm"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30"
+                    ? "bg-[#380b12] border-[#ff2244] text-[#ff2244] shadow-[2px_2px_0px_#000]"
+                    : "bg-[#0f1118] border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-800"
                 }`}
-                style={
-                  faction === "Cortex"
-                    ? { borderLeft: "2px solid #ff2a2a" }
-                    : { borderLeft: "2px solid transparent" }
-                }
               >
                 <div
-                  className="size-7 rounded bg-zinc-950 flex items-center justify-center shrink-0 border transition-all"
-                  style={{
-                    borderColor: faction === "Cortex" ? "#ff2a2a" : "#27272a",
-                    boxShadow: faction === "Cortex" ? "0 0 10px rgba(255,42,42,0.25)" : "none",
-                  }}
+                  className={`size-7 bg-black flex items-center justify-center shrink-0 border ${
+                    faction === "Cortex" ? "border-[#ff2244]" : "border-zinc-800"
+                  }`}
                 >
                   <Image
                     src="/cortex-logo.png"
                     alt="Cortex"
                     width={20}
                     height={20}
-                    className="object-contain"
+                    className="object-contain pixelated"
                   />
                 </div>
                 <div>
-                  <div
-                    className="font-mono text-xs font-bold leading-tight"
-                    style={{ color: faction === "Cortex" ? "#ff2a2a" : undefined }}
-                  >
+                  <div className="font-pixel-heading text-[10px] font-bold leading-tight">
                     CORTEX
                   </div>
-                  <div className="text-[10px] text-zinc-500 font-mono">Heavy Armor & Riot</div>
+                  <div className="text-xs text-zinc-400 font-pixel-body">Armor / Riot</div>
                 </div>
               </button>
             </div>
           </div>
 
           {/* Section: Theater of War (Map Combobox & Tactical Topography) */}
-          <div className="p-3.5 border-b border-zinc-800/60 space-y-2.5">
-            <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-              <span className="tracking-wider">02 // THEATER // TOPOGRAPHY</span>
-              <span className="text-[10px] text-zinc-500 font-mono">SEARCH DATABASE</span>
+          <div className="p-3.5 border-b-2 border-black space-y-2.5 bg-[#12131a]">
+            <div className="flex items-center justify-between text-[10px] font-pixel-heading text-zinc-400">
+              <span className="tracking-wider">02 // THEATER</span>
+              <span className="text-zinc-500 font-pixel-body text-xs">DATABASE</span>
             </div>
 
             <MapCombobox
@@ -565,21 +545,21 @@ export default function BeyondAllReasonConsole() {
             />
 
             {/* Quick Choke Points & Tactical Preview */}
-            <div className="p-2.5 rounded bg-zinc-950/80 border border-zinc-800/80 space-y-1.5 font-mono text-[11px]">
-              <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                <span className="text-zinc-500">PRIMARY CHOKES ({selectedMap.chokePoints.length})</span>
+            <div className="p-2.5 pixel-box-inset space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-[9px] font-pixel-heading text-zinc-400">
+                <span className="text-zinc-500">CHOKES ({selectedMap.chokePoints.length})</span>
                 <button
                   type="button"
                   onClick={() => setActiveTab("briefing")}
-                  className="text-cyan-400 hover:underline flex items-center gap-0.5 text-[10px] font-bold"
+                  className="text-[#00f0ff] hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
                 >
-                  FULL BRIEFING →
+                  BRIEFING →
                 </button>
               </div>
               <ul className="space-y-1">
                 {selectedMap.chokePoints.slice(0, 3).map((cp, idx) => (
-                  <li key={idx} className="text-[10px] text-zinc-400 flex items-start gap-1.5 leading-tight">
-                    <span className="text-cyan-400 text-[9px] shrink-0 mt-0.5">▸</span>
+                  <li key={idx} className="text-sm font-pixel-body text-zinc-300 flex items-start gap-1.5 leading-tight">
+                    <span className="text-[#00f0ff] font-pixel-heading text-[8px] shrink-0 mt-0.5">▸</span>
                     <span className="line-clamp-1">{cp}</span>
                   </li>
                 ))}
@@ -588,13 +568,13 @@ export default function BeyondAllReasonConsole() {
           </div>
 
           {/* Section: Strategic Doctrine Selector */}
-          <div className="p-3.5 border-b border-zinc-800/60 space-y-2 flex-1">
-            <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-              <span className="tracking-wider">03 // OPERATIONAL DOCTRINE</span>
-              <span className="text-[10px] text-zinc-500 font-mono">ATTACK TIMING</span>
+          <div className="p-3.5 border-b-2 border-black space-y-2 flex-1 bg-[#101118]">
+            <div className="flex items-center justify-between text-[10px] font-pixel-heading text-zinc-400">
+              <span className="tracking-wider">03 // DOCTRINE</span>
+              <span className="text-zinc-500 font-pixel-body text-xs">ATTACK TIMING</span>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {STRATEGY_PRESETS.map((style) => {
                 const isSelected = selectedStrategyId === style.id;
                 const Icon = style.icon;
@@ -603,16 +583,13 @@ export default function BeyondAllReasonConsole() {
                     key={style.id}
                     type="button"
                     onClick={() => setSelectedStrategyId(style.id)}
-                    className={`w-full text-left p-2 rounded transition-colors ${
+                    className={`w-full text-left p-2.5 border-2 transition-none cursor-pointer ${
                       isSelected
-                        ? "bg-zinc-900/80 text-zinc-100"
-                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40"
+                        ? isArmada
+                          ? "pixel-box-armada"
+                          : "pixel-box-cortex"
+                        : "bg-[#12131a] border-[#222536] text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 shadow-[2px_2px_0px_#000]"
                     }`}
-                    style={
-                      isSelected
-                        ? { borderLeft: `2px solid ${accentColor}` }
-                        : { borderLeft: "2px solid transparent" }
-                    }
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
@@ -621,17 +598,17 @@ export default function BeyondAllReasonConsole() {
                           style={{ color: isSelected ? accentColor : "#71717a" }}
                         />
                         <span
-                          className="font-mono text-xs font-semibold"
+                          className="font-pixel-heading text-[10px] font-bold"
                           style={{ color: isSelected ? accentColor : undefined }}
                         >
                           {style.title}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-zinc-400">
+                      <span className="text-[9px] font-pixel-heading text-zinc-400">
                         {style.timingWindow.split(" - ")[0]}
                       </span>
                     </div>
-                    <p className="text-[10px] text-zinc-500 mt-0.5 line-clamp-1">
+                    <p className="text-sm font-pixel-body text-zinc-400 mt-1 line-clamp-1">
                       {style.description}
                     </p>
                   </button>
@@ -641,9 +618,9 @@ export default function BeyondAllReasonConsole() {
           </div>
 
           {/* Sidebar Footer: Sticky CTA Button */}
-          <div className="p-3.5 border-t border-zinc-800/60 bg-[#0d0f15] space-y-2">
-            <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500">
-              <span>ACTIVE PROFILE:</span>
+          <div className="p-3.5 border-t-2 border-black bg-[#12131a] space-y-2 shadow-[0_-3px_0_0_#000]">
+            <div className="flex items-center justify-between text-[9px] font-pixel-heading text-zinc-500">
+              <span>PROFILE:</span>
               <span className="text-zinc-300 truncate max-w-[180px]">
                 {currentStrategy.title.split(" ")[0]} {"//"} {selectedMap.name.split(" ")[0]}
               </span>
@@ -654,34 +631,25 @@ export default function BeyondAllReasonConsole() {
               type="button"
               disabled={isLoading}
               onClick={handleGenerate}
-              className={`w-full py-2.5 px-4 rounded font-mono text-xs font-black tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                isLoading
-                  ? "opacity-80 cursor-wait"
-                  : "hover:brightness-110 active:scale-[0.99]"
-              }`}
+              className={`pixel-btn w-full py-3 px-4 text-xs font-pixel-heading tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer ${
+                isArmada ? "pixel-btn-armada" : "pixel-btn-cortex"
+              } ${isLoading ? "opacity-75 cursor-wait" : ""}`}
               style={{
                 backgroundColor: accentColor,
-                color: isArmada ? "#0a0c10" : "#ffffff",
-                boxShadow: `0 0 20px ${accentColor}33`,
+                color: "#0c0c14",
               }}
             >
               {isLoading ? (
                 <>
                   <RefreshCw className="size-3.5 animate-spin" />
-                  <span>CALIBRATING TIMELINE...</span>
+                  <span>CALIBRATING...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="size-3.5" />
                   <span>GENERATE BUILD ORDER</span>
-                  <kbd
-                    className={`text-[9px] px-1 py-0.2 rounded border font-mono ml-1 ${
-                      isArmada
-                        ? "bg-[#0a0c10]/20 border-[#0a0c10]/40 text-[#0a0c10]"
-                        : "bg-white/20 border-white/40 text-white"
-                    }`}
-                  >
-                    Enter
+                  <kbd className="text-[8px] px-1 py-0.5 bg-black/30 border border-black/50 text-black font-pixel-heading ml-1">
+                    ENTER
                   </kbd>
                 </>
               )}
@@ -692,35 +660,26 @@ export default function BeyondAllReasonConsole() {
         {/* ======================================================================= */}
         {/* RIGHT PANEL: MAIN STAGE (flex-1) FULL-VIEWPORT TACTICAL TIMELINE       */}
         {/* ======================================================================= */}
-        <main className="flex-1 flex flex-col overflow-hidden bg-[#0a0c10]">
+        <main className="flex-1 flex flex-col overflow-hidden bg-[#0a0c14]">
           
-          {/* Main Stage Navigation Tabs */}
-          <div className="h-10 shrink-0 border-b border-zinc-800/60 bg-[#0c0e14] px-4 flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-1">
+          {/* Main Stage Navigation Tabs (Arcade Cartridges) */}
+          <div className="h-11 shrink-0 border-b-2 border-black bg-[#0d0e14] px-4 flex items-center justify-between text-xs font-pixel-heading">
+            <div className="flex items-center gap-1.5 h-full pt-1">
               <button
                 type="button"
                 onClick={() => setActiveTab("timeline")}
-                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                className={`pixel-tab h-full flex items-center gap-2 cursor-pointer ${
                   activeTab === "timeline"
-                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    ? isArmada
+                      ? "active-armada"
+                      : "active-cortex"
                     : "text-zinc-400 hover:text-zinc-200"
                 }`}
-                style={
-                  activeTab === "timeline"
-                    ? { borderBottom: `2px solid ${accentColor}` }
-                    : { borderBottom: "2px solid transparent" }
-                }
               >
-                <Clock className="size-3.5" style={{ color: activeTab === "timeline" ? accentColor : undefined }} />
-                <span style={{ color: activeTab === "timeline" ? accentColor : undefined }}>BUILD ORDER TIMELINE</span>
+                <Clock className="size-3.5" />
+                <span>TIMELINE</span>
                 {parsedSteps.length > 0 && (
-                  <span
-                    className="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold"
-                    style={{
-                      backgroundColor: activeTab === "timeline" ? `${accentColor}22` : "#27272a",
-                      color: activeTab === "timeline" ? accentColor : "#d4d4d8",
-                    }}
-                  >
+                  <span className="pixel-box-inset px-1.5 py-0.5 text-[8px] font-pixel-heading text-zinc-300">
                     {parsedSteps.length}
                   </span>
                 )}
@@ -729,27 +688,18 @@ export default function BeyondAllReasonConsole() {
               <button
                 type="button"
                 onClick={() => setActiveTab("unitComp")}
-                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                className={`pixel-tab h-full flex items-center gap-2 cursor-pointer ${
                   activeTab === "unitComp"
-                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    ? isArmada
+                      ? "active-armada"
+                      : "active-cortex"
                     : "text-zinc-400 hover:text-zinc-200"
                 }`}
-                style={
-                  activeTab === "unitComp"
-                    ? { borderBottom: `2px solid ${accentColor}` }
-                    : { borderBottom: "2px solid transparent" }
-                }
               >
-                <Layers className="size-3.5" style={{ color: activeTab === "unitComp" ? accentColor : undefined }} />
-                <span style={{ color: activeTab === "unitComp" ? accentColor : undefined }}>FORCE REQUISITION</span>
+                <Layers className="size-3.5" />
+                <span>UNITS</span>
                 {object?.unitComposition && (
-                  <span
-                    className="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold"
-                    style={{
-                      backgroundColor: activeTab === "unitComp" ? `${accentColor}22` : "#27272a",
-                      color: activeTab === "unitComp" ? accentColor : "#d4d4d8",
-                    }}
-                  >
+                  <span className="pixel-box-inset px-1.5 py-0.5 text-[8px] font-pixel-heading text-zinc-300">
                     {object.unitComposition.length}
                   </span>
                 )}
@@ -758,59 +708,51 @@ export default function BeyondAllReasonConsole() {
               <button
                 type="button"
                 onClick={() => setActiveTab("notes")}
-                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                className={`pixel-tab h-full flex items-center gap-2 cursor-pointer ${
                   activeTab === "notes"
-                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    ? isArmada
+                      ? "active-armada"
+                      : "active-cortex"
                     : "text-zinc-400 hover:text-zinc-200"
                 }`}
-                style={
-                  activeTab === "notes"
-                    ? { borderBottom: `2px solid ${accentColor}` }
-                    : { borderBottom: "2px solid transparent" }
-                }
               >
-                <Cpu className="size-3.5" style={{ color: activeTab === "notes" ? accentColor : undefined }} />
-                <span style={{ color: activeTab === "notes" ? accentColor : undefined }}>OPERATIONAL TELEMETRY</span>
+                <Cpu className="size-3.5" />
+                <span>TELEMETRY</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab("briefing")}
-                className={`px-3 py-1.5 rounded transition-colors flex items-center gap-2 ${
+                className={`pixel-tab h-full flex items-center gap-2 cursor-pointer ${
                   activeTab === "briefing"
-                    ? "bg-zinc-900 text-zinc-100 font-bold"
+                    ? isArmada
+                      ? "active-armada"
+                      : "active-cortex"
                     : "text-zinc-400 hover:text-zinc-200"
                 }`}
-                style={
-                  activeTab === "briefing"
-                    ? { borderBottom: `2px solid ${accentColor}` }
-                    : { borderBottom: "2px solid transparent" }
-                }
               >
-                <Compass className="size-3.5" style={{ color: activeTab === "briefing" ? accentColor : undefined }} />
-                <span style={{ color: activeTab === "briefing" ? accentColor : undefined }}>MAP BRIEFING</span>
+                <Compass className="size-3.5" />
+                <span>BRIEFING</span>
               </button>
             </div>
 
             {/* Faction and Doctrine Label + Eco Runway Toggle */}
-            <div className="flex items-center gap-3 text-[11px] text-zinc-400">
+            <div className="flex items-center gap-3 text-[9px] font-pixel-heading text-zinc-400">
               {activeTab === "timeline" && parsedSteps.length > 0 && (
                 <button
                   type="button"
                   onClick={() => setShowEcoRunway((prev) => !prev)}
-                  className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 border text-[10px] font-mono transition-colors"
-                  style={{
-                    borderColor: showEcoRunway ? accentColor : "#27272a",
-                    color: showEcoRunway ? accentColor : "#d4d4d8",
-                  }}
+                  className={`pixel-btn py-1 px-2.5 text-[8px] gap-1.5 ${
+                    showEcoRunway ? (isArmada ? "pixel-btn-armada active" : "pixel-btn-cortex active") : ""
+                  }`}
                 >
-                  <Activity className="size-3" style={{ color: accentColor }} />
+                  <Activity className="size-3" />
                   <span>{showEcoRunway ? "HIDE ECO RUNWAY" : "SHOW ECO RUNWAY"}</span>
                 </button>
               )}
               <div className="hidden sm:flex items-center gap-2">
-                <span className="text-zinc-500">ENGAGEMENT:</span>
-                <span className="text-zinc-300 font-semibold">{faction.toUpperCase()}</span>
+                <span className="text-zinc-500">WARZONE:</span>
+                <span className="text-zinc-200 font-bold">{faction.toUpperCase()}</span>
                 <span className="text-zinc-600">{"//"}</span>
                 <span className="text-zinc-400">{selectedMap.name}</span>
               </div>
@@ -854,22 +796,22 @@ export default function BeyondAllReasonConsole() {
                 
                 {/* Empty State */}
                 {parsedSteps.length === 0 && !isLoading && (
-                  <div className="h-[460px] flex flex-col items-center justify-center text-center p-8">
-                    <div className="relative size-14 mb-4 opacity-40 flex items-center justify-center">
+                  <div className="h-[460px] flex flex-col items-center justify-center text-center p-8 pixel-box-inset">
+                    <div className="relative size-16 mb-4 opacity-50 flex items-center justify-center">
                       <Image
                         src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
                         alt={faction}
-                        width={56}
-                        height={56}
-                        className="object-contain"
+                        width={64}
+                        height={64}
+                        className="object-contain pixelated drop-shadow-[2px_2px_0px_#000]"
                       />
                     </div>
-                    <h3 className="font-mono text-sm font-bold text-zinc-300 tracking-wider uppercase">
+                    <h3 className="font-pixel-heading text-xs text-zinc-300 tracking-wider uppercase">
                       STANDBY // AWAITING COMMAND PROTOCOL
                     </h3>
-                    <p className="text-xs text-zinc-500 max-w-md mt-1.5 font-mono">
-                      Configure your Faction, Theater, and Doctrine in the left panel, then hit{" "}
-                      <strong className="text-zinc-300">GENERATE BUILD ORDER</strong> (or press Enter) to synthesize
+                    <p className="text-sm text-zinc-400 max-w-md mt-2 font-pixel-body">
+                      Configure your Faction, Theater, and Doctrine in the left console, then hit{" "}
+                      <strong className="text-white font-pixel-heading text-[10px]">GENERATE BUILD ORDER</strong> (or press Enter) to synthesize
                       an opening queue.
                     </p>
                   </div>
@@ -878,14 +820,14 @@ export default function BeyondAllReasonConsole() {
                 {/* Loading Skeletons */}
                 {isLoading && parsedSteps.length === 0 && (
                   <div className="space-y-3 py-4">
-                    <div className="flex items-center gap-2 text-xs font-mono mb-4 text-zinc-400">
+                    <div className="flex items-center gap-2 text-xs font-pixel-heading mb-4 text-zinc-400">
                       <RefreshCw className="size-3.5 animate-spin" style={{ color: accentColor }} />
                       <span>SYNTHESIZING TOURNAMENT OPENING QUEUE...</span>
                     </div>
                     {[1, 2, 3, 4, 5, 6].map((i) => (
                       <div
                         key={i}
-                        className="p-3 rounded bg-zinc-900/40 border border-zinc-800/40 flex items-center gap-4"
+                        className="p-3 pixel-box-inset flex items-center gap-4"
                       >
                         <Skeleton className="h-4 w-14 bg-zinc-800" />
                         <Skeleton className="h-4 w-12 bg-zinc-800" />
@@ -898,9 +840,9 @@ export default function BeyondAllReasonConsole() {
 
                 {/* Vertical Gantt-Style Timeline */}
                 {parsedSteps.length > 0 && (
-                  <div className="relative pl-6 space-y-2">
+                  <div className="relative pl-6 space-y-2.5">
                     {/* Vertical Guideline / Timeline Rail */}
-                    <div className="absolute left-[47px] top-4 bottom-4 w-px bg-zinc-800/80 pointer-events-none" />
+                    <div className="absolute left-[47px] top-4 bottom-4 w-[2px] bg-black shadow-[1px_0_0_0_#222536] pointer-events-none" />
 
                     {parsedSteps.map((step, idx) => {
                       const lowerName = step.itemName.toLowerCase();
@@ -924,101 +866,101 @@ export default function BeyondAllReasonConsole() {
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.18, delay: idx * 0.02 }}
-                          className="relative flex items-center gap-3.5 p-2.5 rounded hover:bg-zinc-900/60 transition-colors group border-b border-zinc-800/40 min-h-[64px]"
+                          className="relative flex items-center gap-3.5 p-3 pixel-box hover:bg-[#161822] transition-none group min-h-[64px]"
                         >
                           {/* Monospace Timestamp Pill pinned to the guideline */}
                           <div className="relative shrink-0 flex items-center gap-2 z-10 w-[62px] justify-between">
-                            <span className="w-[48px] py-0.5 rounded font-mono text-[11px] font-bold bg-[#0d0f15] border border-zinc-800 text-zinc-300 text-center">
+                            <span className="w-[48px] py-1 pixel-box-inset font-pixel-heading text-[9px] text-zinc-300 text-center tracking-tighter">
                               {step.timestamp}
                             </span>
-                            {/* Guideline Node Marker */}
+                            {/* Guideline Node Marker (Chunky Square Pixel) */}
                             <span
-                              className="size-2 rounded-full ring-4 ring-[#0a0c10] shrink-0"
+                              className="size-2.5 border-2 border-black shrink-0"
                               style={{
                                 backgroundColor: idx === 0 ? accentColor : "#52525b",
                               }}
                             />
                           </div>
 
-                          {/* Large Prominent RTS Unit/Structure Portrait Frame (w-12 h-12 / min-w-[48px]) */}
+                          {/* Large Prominent RTS Unit/Structure Portrait Frame */}
                           <div
-                            className={`w-12 h-12 min-w-[48px] min-h-[48px] rounded-sm shrink-0 border flex items-center justify-center p-2 relative overflow-hidden transition-all ${
+                            className={`w-12 h-12 min-w-[48px] min-h-[48px] pixel-box-inset shrink-0 flex items-center justify-center p-1.5 relative overflow-hidden ${
                               isArmada
-                                ? "border-[#48a2ef]/40 shadow-[0_0_12px_rgba(72,162,239,0.15)]"
-                                : "border-red-500/40 shadow-[0_0_12px_rgba(255,42,42,0.08)]"
+                                ? "border-[#00f0ff]/40 shadow-[2px_2px_0px_#000]"
+                                : "border-[#ff2244]/40 shadow-[2px_2px_0px_#000]"
                             } ${
                               isStructure
-                                ? "bg-amber-950/20 group-hover:bg-amber-950/30"
-                                : "bg-zinc-900/90 group-hover:bg-zinc-850/90"
+                                ? "bg-[#18120a]"
+                                : "bg-[#0f1118]"
                             }`}
                           >
-                            {/* Tactical Military Corner Accent */}
+                            {/* Tactical Military Pixel Corner Accent */}
                             <div
-                              className="absolute top-0 right-0 size-1.5 border-t border-r pointer-events-none"
-                              style={{ borderColor: accentColor }}
+                              className="absolute top-0 right-0 size-2"
+                              style={{ backgroundColor: accentColor }}
                             />
                             <BarIcon
                               name={step.itemName}
                               faction={faction}
                               size={28}
-                              className="w-full h-full object-contain"
+                              className="w-full h-full object-contain pixelated"
                             />
                           </div>
 
                           {/* Text Stack: Vertical flex column with Entity, Title, and Strategic Description */}
-                          <div className="flex flex-col justify-center gap-0.5 min-w-0 flex-1">
+                          <div className="flex flex-col justify-center gap-1 min-w-0 flex-1">
                             {/* Top Line: Entity badge, count, and bold unit/building name */}
                             <div className="flex items-center gap-2 flex-wrap">
                               <span
-                                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${
+                                className={`px-1.5 py-0.5 text-[8px] font-pixel-heading border ${
                                   step.entityBadge === "[CDR]"
-                                    ? "bg-zinc-800 text-zinc-200 border border-zinc-700/60"
+                                    ? "bg-[#271d05] text-amber-300 border-amber-600"
                                     : step.entityBadge === "[FAC]"
-                                    ? "bg-blue-950/60 text-blue-300 border border-blue-800/40"
+                                    ? "bg-[#072a38] text-[#00f0ff] border-[#0284c7]"
                                     : step.entityBadge === "[CON]"
-                                    ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800/40"
-                                    : "bg-zinc-800/80 text-zinc-400 border border-zinc-700/40"
+                                    ? "bg-[#062c19] text-emerald-300 border-emerald-600"
+                                    : "bg-[#181a20] text-zinc-400 border-zinc-700"
                                 }`}
                               >
                                 {step.entityBadge}
                               </span>
 
-                              <span className="font-mono text-xs font-bold text-zinc-100">
+                              <span className="font-pixel-heading text-xs text-white">
                                 {step.count} {step.itemName}
                               </span>
                             </div>
 
                             {/* Bottom Line: Subdued Strategic Description */}
                             {step.explanation && (
-                              <p className="text-xs text-zinc-400 font-sans leading-normal line-clamp-2">
+                              <p className="text-sm text-zinc-300 font-pixel-body leading-tight line-clamp-2">
                                 {step.explanation}
                               </p>
                             )}
                           </div>
 
                           {/* Resource Delta Badges pushed to the far right */}
-                          <div className="ml-auto shrink-0 flex items-center gap-2 font-mono text-[10px]">
+                          <div className="ml-auto shrink-0 flex items-center gap-2 font-pixel-heading text-[8px]">
                             {step.energyDelta && (
                               <span
-                                className={`px-2 py-0.5 rounded border flex items-center gap-1 font-semibold ${
+                                className={`px-2 py-1 pixel-box-inset flex items-center gap-1 font-bold ${
                                   step.energyDelta.startsWith("+")
-                                    ? "bg-amber-500/10 text-amber-300 border-amber-500/30"
-                                    : "bg-zinc-900 text-zinc-400 border-zinc-800"
+                                    ? "text-[#fbbf24] border-[#fbbf24]/50"
+                                    : "text-zinc-400"
                                 }`}
                               >
-                                <Zap className="size-3 text-amber-400" />
+                                <Zap className="size-2.5 text-[#fbbf24]" />
                                 {step.energyDelta}
                               </span>
                             )}
                             {step.metalDelta && (
                               <span
-                                className={`px-2 py-0.5 rounded border flex items-center gap-1 font-semibold ${
+                                className={`px-2 py-1 pixel-box-inset flex items-center gap-1 font-bold ${
                                   step.metalDelta.startsWith("+")
-                                    ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
-                                    : "bg-zinc-900 text-zinc-400 border-zinc-800"
+                                    ? "text-[#94a3b8] border-[#94a3b8]/50"
+                                    : "text-zinc-400"
                                 }`}
                               >
-                                <span className="text-[11px]">⛊</span>
+                                <span className="text-[9px]">⛊</span>
                                 {step.metalDelta}
                               </span>
                             )}
@@ -1027,11 +969,10 @@ export default function BeyondAllReasonConsole() {
                       );
                     })}
 
-
                     {/* Active streaming pulse indicator */}
                     {isLoading && (
-                      <div className="p-3 flex items-center gap-2 text-xs font-mono text-zinc-400">
-                        <span className="size-2 rounded-full animate-ping" style={{ backgroundColor: accentColor }} />
+                      <div className="p-3 flex items-center gap-2 text-xs font-pixel-heading text-zinc-400">
+                        <span className="size-2 arcade-blink" style={{ backgroundColor: accentColor }} />
                         <span>Streaming factory queue from tactical advisory core...</span>
                       </div>
                     )}
@@ -1046,12 +987,12 @@ export default function BeyondAllReasonConsole() {
             {activeTab === "unitComp" && (
               <div className="max-w-4xl mx-auto space-y-4">
                 {!object?.unitComposition && !isLoading && (
-                  <div className="h-[400px] flex flex-col items-center justify-center text-center p-8">
+                  <div className="h-[400px] flex flex-col items-center justify-center text-center p-8 pixel-box-inset">
                     <Layers className="size-10 text-zinc-600 mb-3" />
-                    <div className="font-mono text-xs font-bold text-zinc-300 uppercase">
+                    <div className="font-pixel-heading text-xs text-zinc-300 uppercase">
                       NO FORCE REQUISITION RECORDED
                     </div>
-                    <p className="text-xs text-zinc-500 max-w-sm mt-1 font-mono">
+                    <p className="text-sm text-zinc-500 max-w-sm mt-2 font-pixel-body">
                       Target unit ratios and production caps will populate here upon simulation.
                     </p>
                   </div>
@@ -1062,7 +1003,7 @@ export default function BeyondAllReasonConsole() {
                     {[1, 2, 3, 4].map((i) => (
                       <div
                         key={i}
-                        className="p-3.5 rounded bg-zinc-900/40 border border-zinc-800/40 flex items-center justify-between"
+                        className="p-3.5 pixel-box-inset flex items-center justify-between"
                       >
                         <Skeleton className="h-4 w-48 bg-zinc-800" />
                         <Skeleton className="h-4 w-16 bg-zinc-800" />
@@ -1072,13 +1013,13 @@ export default function BeyondAllReasonConsole() {
                 )}
 
                 {object?.unitComposition && object.unitComposition.length > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs font-mono text-zinc-400 pb-1 border-b border-zinc-800/60">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs font-pixel-heading text-zinc-400 pb-2 border-b-2 border-black">
                       <span>TARGET COMBAT SQUADRON</span>
                       <span>FACTION: {faction.toUpperCase()}</span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                       {object.unitComposition.map((comp, idx) => {
                         if (!comp) return null;
                         return (
@@ -1087,17 +1028,17 @@ export default function BeyondAllReasonConsole() {
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.15, delay: idx * 0.03 }}
-                            className="p-3 rounded bg-zinc-900/50 hover:bg-zinc-900/80 border border-zinc-800/50 transition-colors flex items-center justify-between gap-3"
+                            className="p-3 pixel-box flex items-center justify-between gap-3"
                           >
                             <div className="flex items-center gap-2.5">
-                              <div className="p-0.5 rounded bg-zinc-950 border border-zinc-800 shrink-0 flex items-center justify-center">
-                                <BarIcon name={comp} faction={faction} size={15} className="size-3.5" />
+                              <div className="size-8 pixel-box-inset shrink-0 flex items-center justify-center p-1">
+                                <BarIcon name={comp} faction={faction} size={20} className="w-full h-full object-contain pixelated" />
                               </div>
-                              <span className="font-mono text-xs font-bold text-zinc-100">
+                              <span className="font-pixel-heading text-[11px] text-white">
                                 {comp}
                               </span>
                             </div>
-                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800/60 text-zinc-400 uppercase">
+                            <span className="text-[8px] font-pixel-heading px-2 py-1 pixel-box-inset text-zinc-400 uppercase">
                               {faction}
                             </span>
                           </motion.div>
@@ -1115,12 +1056,12 @@ export default function BeyondAllReasonConsole() {
             {activeTab === "notes" && (
               <div className="max-w-4xl mx-auto space-y-4">
                 {!object?.strategyNotes && !isLoading && (
-                  <div className="h-[400px] flex flex-col items-center justify-center text-center p-8">
+                  <div className="h-[400px] flex flex-col items-center justify-center text-center p-8 pixel-box-inset">
                     <Cpu className="size-10 text-zinc-600 mb-3" />
-                    <div className="font-mono text-xs font-bold text-zinc-300 uppercase">
+                    <div className="font-pixel-heading text-xs text-zinc-300 uppercase">
                       NO STRATEGIC TELEMETRY GENERATED
                     </div>
-                    <p className="text-xs text-zinc-500 max-w-sm mt-1 font-mono">
+                    <p className="text-sm text-zinc-500 max-w-sm mt-2 font-pixel-body">
                       Economy thresholds, power spike benchmarks, and timing attack windows will stream here.
                     </p>
                   </div>
@@ -1139,7 +1080,7 @@ export default function BeyondAllReasonConsole() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="p-5 rounded bg-zinc-900/40 border border-zinc-800/60 space-y-4 text-xs font-mono text-zinc-300 leading-relaxed"
+                    className="p-5 pixel-box space-y-4 font-pixel-body text-base text-zinc-200 leading-relaxed"
                   >
                     {object.strategyNotes.split("\n\n").map((paragraph, pIdx) => {
                       const isHeading = paragraph.startsWith("#");
@@ -1150,7 +1091,7 @@ export default function BeyondAllReasonConsole() {
                         return (
                           <div
                             key={pIdx}
-                            className="font-mono font-bold text-sm text-zinc-100 pt-2 pb-1 border-b border-zinc-800/60 flex items-center gap-2"
+                            className="font-pixel-heading text-xs text-white pt-2 pb-1 border-b-2 border-black flex items-center gap-2"
                           >
                             <span style={{ color: accentColor }}>▸</span>
                             <span>{cleanHeading}</span>
@@ -1163,8 +1104,8 @@ export default function BeyondAllReasonConsole() {
                         return (
                           <ul key={pIdx} className="space-y-1.5 pl-2">
                             {lines.map((l, lIdx) => (
-                              <li key={lIdx} className="flex items-start gap-2 text-zinc-300 font-sans text-xs">
-                                <span className="text-zinc-500 font-mono">▪</span>
+                              <li key={lIdx} className="flex items-start gap-2 text-zinc-300 font-pixel-body text-base">
+                                <span className="text-[#00f0ff] font-pixel-heading text-[8px] mt-1">▪</span>
                                 <span>{l.replace(/^[-*]\s*/, "")}</span>
                               </li>
                             ))}
@@ -1173,7 +1114,7 @@ export default function BeyondAllReasonConsole() {
                       }
 
                       return (
-                        <p key={pIdx} className="text-zinc-300 font-sans text-xs leading-normal">
+                        <p key={pIdx} className="text-zinc-300 font-pixel-body text-base leading-normal">
                           {paragraph}
                         </p>
                       );
@@ -1189,46 +1130,42 @@ export default function BeyondAllReasonConsole() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
-                className="space-y-6 max-w-5xl"
+                className="space-y-6 max-w-5xl mx-auto"
               >
                 {/* Header Card */}
-                <div className="p-6 rounded-lg bg-[#0d0f15]/90 border border-zinc-800 shadow-xl relative overflow-hidden backdrop-blur-md">
+                <div className="p-6 pixel-box relative overflow-hidden">
                   <div
                     className="absolute top-0 left-0 right-0 h-1"
                     style={{ backgroundColor: accentColor }}
                   />
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <div className="flex items-center gap-2 mb-1 text-[11px] font-mono uppercase tracking-widest text-zinc-500">
+                      <div className="flex items-center gap-2 mb-1.5 text-[9px] font-pixel-heading uppercase tracking-widest text-zinc-400">
                         <Compass className="size-3.5" style={{ color: accentColor }} />
-                        <span>TACTICAL THEATER INTEL // SECTOR BRIEFING</span>
+                        <span>THEATER INTEL // SECTOR BRIEFING</span>
                       </div>
-                      <h2 className="text-2xl font-bold font-mono text-zinc-100 tracking-tight flex items-center gap-3">
+                      <h2 className="text-lg font-pixel-heading text-white tracking-tight flex items-center gap-3">
                         {selectedMap.name}
-                        <Badge
-                          variant="outline"
-                          className="font-mono text-[10px] tracking-wider uppercase border-zinc-700 bg-zinc-900/80 text-zinc-300"
-                        >
+                        <span className="pixel-box-inset px-2 py-0.5 text-[9px] font-pixel-heading text-zinc-300">
                           {selectedMap.dimensions}
-                        </Badge>
-                        <Badge
-                          variant="outline"
-                          className={`font-mono text-[10px] tracking-wider uppercase ${
+                        </span>
+                        <span
+                          className={`pixel-box-inset px-2 py-0.5 text-[9px] font-pixel-heading uppercase ${
                             selectedMap.metalDensity === "all-metal"
-                              ? "border-amber-500/50 bg-amber-500/10 text-amber-300"
+                              ? "text-amber-400 border-amber-600"
                               : selectedMap.metalDensity === "high"
-                              ? "border-cyan-500/50 bg-cyan-500/10 text-cyan-300"
-                              : "border-zinc-700 bg-zinc-900/80 text-zinc-300"
+                              ? "text-[#00f0ff] border-cyan-600"
+                              : "text-zinc-300"
                           }`}
                         >
                           {selectedMap.metalDensity.toUpperCase()} METAL
-                        </Badge>
+                        </span>
                       </h2>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="px-3 py-1.5 rounded bg-zinc-950/80 border border-zinc-800 font-mono text-xs flex items-center gap-2">
-                        <span className="text-zinc-500">CURRENT FACTION:</span>
+                      <div className="px-3 py-1.5 pixel-box-inset font-pixel-heading text-[10px] flex items-center gap-2">
+                        <span className="text-zinc-500">FACTION:</span>
                         <span
                           className="font-bold uppercase"
                           style={{ color: accentColor }}
@@ -1241,87 +1178,87 @@ export default function BeyondAllReasonConsole() {
 
                   {/* Telemetry Grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
-                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                    <div className="p-3 pixel-box-inset">
+                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
                         <SquareSquare className="size-3 text-zinc-400" />
                         Dimensions
                       </div>
-                      <div className="text-sm font-bold font-mono text-zinc-200 mt-1">
+                      <div className="text-xs font-pixel-heading text-zinc-200 mt-1">
                         {selectedMap.dimensions}
                       </div>
-                      <div className="text-[10px] font-mono text-zinc-500">Standard Grid</div>
+                      <div className="text-xs font-pixel-body text-zinc-500">Standard Grid</div>
                     </div>
 
-                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
-                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                    <div className="p-3 pixel-box-inset">
+                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
                         <Wind className="size-3 text-cyan-400" />
                         Wind Velocity
                       </div>
-                      <div className="text-sm font-bold font-mono text-cyan-300 mt-1">
-                        {selectedMap.wind.min} – {selectedMap.wind.max} <span className="text-xs text-zinc-500 font-normal">m/s</span>
+                      <div className="text-xs font-pixel-heading text-[#00f0ff] mt-1">
+                        {selectedMap.wind.min}–{selectedMap.wind.max} <span className="text-[9px] font-pixel-body text-zinc-500">m/s</span>
                       </div>
-                      <div className="text-[10px] font-mono text-zinc-500">Avg: {selectedMap.wind.avg} m/s</div>
+                      <div className="text-xs font-pixel-body text-zinc-500">Avg: {selectedMap.wind.avg} m/s</div>
                     </div>
 
-                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
-                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                    <div className="p-3 pixel-box-inset">
+                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
                         <Waves className="size-3 text-blue-400" />
                         Tidal Energy
                       </div>
-                      <div className="text-sm font-bold font-mono text-zinc-200 mt-1">
+                      <div className="text-xs font-pixel-heading text-zinc-200 mt-1">
                         {selectedMap.tidal > 0 ? `+${selectedMap.tidal} E/s` : "0 E/s"}
                       </div>
-                      <div className="text-[10px] font-mono text-zinc-500">
-                        {selectedMap.tidal > 0 ? "Oceanic tidal yield" : "Landlocked / Dry"}
+                      <div className="text-xs font-pixel-body text-zinc-500">
+                        {selectedMap.tidal > 0 ? "Oceanic tidal" : "Landlocked"}
                       </div>
                     </div>
 
-                    <div className="p-3 rounded bg-zinc-950/60 border border-zinc-800/80">
-                      <div className="text-[10px] font-mono uppercase text-zinc-500 flex items-center gap-1.5">
+                    <div className="p-3 pixel-box-inset">
+                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
                         <Database className="size-3 text-amber-400" />
-                        Metal Extraction
+                        Metal Yield
                       </div>
-                      <div className="text-sm font-bold font-mono text-amber-300 mt-1 capitalize">
+                      <div className="text-xs font-pixel-heading text-amber-300 mt-1 uppercase">
                         {selectedMap.metalDensity}
                       </div>
-                      <div className="text-[10px] font-mono text-zinc-500">Deposit density</div>
+                      <div className="text-xs font-pixel-body text-zinc-500">Deposit density</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Tactical Briefing Narrative */}
-                <div className="p-5 rounded-lg bg-[#0d0f15]/70 border border-zinc-800/80 space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-zinc-200 uppercase">
+                <div className="p-5 pixel-box space-y-3">
+                  <div className="flex items-center gap-2 text-[10px] font-pixel-heading text-zinc-200 uppercase">
                     <span style={{ color: accentColor }}>▸</span>
-                    <span>THEATER NARRATIVE & OPERATIONAL ENVIRONMENT</span>
+                    <span>THEATER NARRATIVE & ENVIRONMENT</span>
                   </div>
-                  <p className="text-sm text-zinc-300 leading-relaxed font-sans pl-4 border-l-2 border-zinc-800">
+                  <p className="text-base text-zinc-300 leading-relaxed font-pixel-body pl-3 border-l-2 border-zinc-700">
                     {selectedMap.tacticalBriefing}
                   </p>
                 </div>
 
                 {/* Choke Points Grid */}
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-zinc-300 uppercase">
+                  <div className="flex items-center gap-2 text-[10px] font-pixel-heading text-zinc-300 uppercase">
                     <ShieldAlert className="size-3.5 text-amber-400" />
-                    <span>CRITICAL CHOKE POINTS & TERRAIN ANOMALIES ({selectedMap.chokePoints.length})</span>
+                    <span>CRITICAL CHOKES & TERRAIN ({selectedMap.chokePoints.length})</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {selectedMap.chokePoints.map((choke, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded bg-zinc-900/50 border border-zinc-800/80 hover:border-amber-500/40 transition-colors flex items-start gap-2.5"
+                        className="p-3 pixel-box flex items-start gap-2.5"
                       >
-                        <div className="size-5 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                          <span className="text-[10px] font-mono font-bold text-amber-400">
+                        <div className="size-5 pixel-box-inset flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-[9px] font-pixel-heading text-amber-400">
                             {idx + 1}
                           </span>
                         </div>
                         <div>
-                          <div className="text-xs font-mono font-semibold text-zinc-200">
+                          <div className="text-[10px] font-pixel-heading text-white">
                             {choke}
                           </div>
-                          <div className="text-[11px] font-mono text-zinc-500 mt-0.5">
+                          <div className="text-xs font-pixel-body text-zinc-400 mt-0.5">
                             Priority radar coverage & early warning boundary
                           </div>
                         </div>
@@ -1333,12 +1270,12 @@ export default function BeyondAllReasonConsole() {
                 {/* Recommended Doctrines */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-zinc-300 uppercase">
+                    <div className="flex items-center gap-2 text-[10px] font-pixel-heading text-zinc-300 uppercase">
                       <Crosshair className="size-3.5" style={{ color: accentColor }} />
                       <span>RECOMMENDED STRATEGIC DOCTRINES</span>
                     </div>
-                    <span className="text-[11px] font-mono text-zinc-500">
-                      Tailored for competitive play
+                    <span className="text-xs font-pixel-body text-zinc-500">
+                      Competitive meta analysis
                     </span>
                   </div>
 
@@ -1351,50 +1288,37 @@ export default function BeyondAllReasonConsole() {
                       return (
                         <div
                           key={idx}
-                          className={`p-4 rounded border transition-all ${
+                          className={`p-4 pixel-box transition-none ${
                             isFactionMatch
-                              ? "bg-zinc-900/60 border-zinc-700/80 shadow-md"
-                              : "bg-zinc-950/40 border-zinc-800/40 opacity-70"
+                              ? isArmada ? "pixel-box-armada" : "pixel-box-cortex"
+                              : "opacity-70"
                           }`}
-                          style={
-                            isFactionMatch
-                              ? { borderLeft: `3px solid ${accentColor}` }
-                              : undefined
-                          }
                         >
                           <div className="flex items-center justify-between gap-2 mb-1.5">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-mono font-bold text-zinc-100">
+                              <span className="text-xs font-pixel-heading text-white">
                                 {doc.name}
                               </span>
                               {isFactionMatch && (
-                                <Badge
-                                  variant="outline"
-                                  className="text-[9px] font-mono uppercase tracking-wider py-0 px-1.5"
-                                  style={{
-                                    borderColor: `${accentColor}50`,
-                                    backgroundColor: `${accentColor}15`,
-                                    color: accentColor,
-                                  }}
-                                >
-                                  OPTIMAL FIT
-                                </Badge>
+                                <span className="pixel-box-inset px-2 py-0.5 text-[8px] font-pixel-heading text-[#00f0ff]">
+                                  OPTIMAL
+                                </span>
                               )}
                             </div>
 
                             <span
-                              className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border font-semibold ${
+                              className={`text-[8px] font-pixel-heading uppercase px-2 py-0.5 pixel-box-inset ${
                                 doc.faction === "armada"
-                                  ? "text-sky-400 bg-sky-950/30 border-sky-800/50"
+                                  ? "text-[#00f0ff]"
                                   : doc.faction === "cortex"
-                                  ? "text-red-400 bg-red-950/30 border-red-800/50"
-                                  : "text-zinc-300 bg-zinc-800/50 border-zinc-700/50"
+                                  ? "text-[#ff2244]"
+                                  : "text-zinc-300"
                               }`}
                             >
                               {doc.faction.toUpperCase()}
                             </span>
                           </div>
-                          <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                          <p className="text-base text-zinc-300 leading-relaxed font-pixel-body">
                             {doc.description}
                           </p>
                         </div>
@@ -1413,35 +1337,35 @@ export default function BeyondAllReasonConsole() {
       {/* ========================================================================= */}
       <AnimatePresence>
         {showKeyModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              className="relative w-full max-w-md rounded bg-[#0d0f15] border border-zinc-800 p-5 shadow-2xl space-y-4"
+              className="relative w-full max-w-md pixel-box p-5 shadow-[6px_6px_0px_#000] space-y-4"
             >
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex items-center justify-between border-b-2 border-black pb-3">
                 <div className="flex items-center gap-2">
                   <KeyRound className="size-4" style={{ color: accentColor }} />
-                  <h4 className="font-mono text-xs font-bold text-zinc-100 uppercase tracking-wider">
-                    Google Gemini 1.5 Pro AI Link
+                  <h4 className="font-pixel-heading text-xs text-white uppercase tracking-wider">
+                    GEMINI 1.5 PRO AI LINK
                   </h4>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowKeyModal(false)}
-                  className="text-zinc-400 hover:text-zinc-100"
+                  className="text-zinc-400 hover:text-white cursor-pointer"
                 >
                   <X className="size-4" />
                 </button>
               </div>
 
-              <div className="space-y-2 text-xs font-mono text-zinc-400">
+              <div className="space-y-2 text-base font-pixel-body text-zinc-300">
                 <p>
                   Link your Gemini API key to activate live reasoning with{" "}
-                  <strong className="text-zinc-200">Gemini 1.5 Pro</strong>.
+                  <strong className="text-white font-pixel-heading text-[10px]">Gemini 1.5 Pro</strong>.
                 </p>
-                <p className="text-[11px] text-zinc-500">
+                <p className="text-sm text-zinc-500">
                   Keys are stored exclusively in your local browser storage. If empty, the console
                   seamlessly uses the built-in Grandmaster ruleset.
                 </p>
@@ -1451,45 +1375,40 @@ export default function BeyondAllReasonConsole() {
                     placeholder="AIzaSy..."
                     value={keyInput}
                     onChange={(e) => setKeyInput(e.target.value)}
-                    className="font-mono text-xs bg-[#0a0c10] border-zinc-800 text-zinc-100"
+                    className="font-pixel-body text-base pixel-box-inset text-white h-10"
                   />
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-between border-t border-zinc-800">
+              <div className="pt-2 flex items-center justify-between border-t-2 border-black">
                 <a
                   href="https://aistudio.google.com/app/apikey"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] font-mono hover:underline flex items-center gap-1"
+                  className="text-xs font-pixel-body hover:underline flex items-center gap-1"
                   style={{ color: accentColor }}
                 >
                   Get free API key <ExternalLink className="size-3" />
                 </a>
                 <div className="flex items-center gap-2">
                   {apiKey && (
-                    <Button
+                    <button
                       type="button"
-                      variant="outline"
-                      size="sm"
                       onClick={clearApiKey}
-                      className="font-mono text-xs border-zinc-800 text-zinc-400"
+                      className="pixel-btn text-[9px] py-1 px-3"
                     >
                       Clear
-                    </Button>
+                    </button>
                   )}
-                  <Button
+                  <button
                     type="button"
-                    size="sm"
                     onClick={saveApiKey}
-                    className="font-mono text-xs font-bold"
-                    style={{
-                      backgroundColor: accentColor,
-                      color: isArmada ? "#0a0c10" : "#ffffff",
-                    }}
+                    className={`pixel-btn text-[9px] py-1 px-3 ${
+                      isArmada ? "pixel-btn-armada" : "pixel-btn-cortex"
+                    }`}
                   >
                     Save Key
-                  </Button>
+                  </button>
                 </div>
               </div>
             </motion.div>

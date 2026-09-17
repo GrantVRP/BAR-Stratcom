@@ -171,10 +171,15 @@ export function MapCombobox({
               </span>
               <span>•</span>
               <span
-                className={`px-1 py-0.2 text-[9px] font-pixel-heading uppercase border ${getMetalBadgeColor(
+                className={`px-1 py-0.2 text-[9px] font-pixel-heading uppercase border flex items-center gap-1 ${getMetalBadgeColor(
                   selectedMap.metalDensity
                 )}`}
               >
+                <img
+                  src="/metal.png"
+                  alt="Metal"
+                  className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                />
                 {selectedMap.metalDensity}
               </span>
               {selectedMap.tidal > 0 && (
@@ -279,10 +284,15 @@ export function MapCombobox({
                         </span>
                         <span>•</span>
                         <span
-                          className={`px-1 py-0.2 text-[8px] font-pixel-heading uppercase border ${getMetalBadgeColor(
+                          className={`px-1 py-0.2 text-[8px] font-pixel-heading uppercase border flex items-center gap-1 ${getMetalBadgeColor(
                             map.metalDensity
                           )}`}
                         >
+                          <img
+                            src="/metal.png"
+                            alt="Metal"
+                            className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                          />
                           {map.metalDensity}
                         </span>
                       </div>

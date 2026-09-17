@@ -303,7 +303,11 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
                 {currentScrub.energy >= 0 ? `+${currentScrub.energy}` : currentScrub.energy} E/s
               </span>
               <span className="text-zinc-300 font-bold flex items-center gap-1" style={{ color: metalColor }}>
-                <span>⛊</span>
+                <img
+                  src="/metal.png"
+                  alt="M"
+                  className="size-3 object-contain pixelated shrink-0 inline-block"
+                />
                 {currentScrub.metal >= 0 ? `+${currentScrub.metal}` : currentScrub.metal} M/s
               </span>
               {currentScrub.isStall && (
@@ -320,7 +324,11 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
                 <span>ENERGY (+E/s) [PEAK: +{stats.maxE}]</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="size-2 rounded-full" style={{ backgroundColor: metalColor }} />
+                <img
+                  src="/metal.png"
+                  alt="Metal"
+                  className="size-3 object-contain pixelated shrink-0 inline-block"
+                />
                 <span>METAL (+M/s) [PEAK: +{stats.maxM}]</span>
               </div>
               {stallIntervals.length > 0 && (

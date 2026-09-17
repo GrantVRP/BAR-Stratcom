@@ -23,7 +23,6 @@ import {
   X,
   Wind,
   ShieldAlert,
-  Database,
   Waves,
 } from "lucide-react";
 
@@ -984,7 +983,11 @@ export default function BeyondAllReasonConsole() {
                                     : "text-zinc-400"
                                 }`}
                               >
-                                <span className="text-[9px]">⛊</span>
+                                <img
+                                  src="/metal.png"
+                                  alt="Metal"
+                                  className="size-3 object-contain pixelated shrink-0 inline-block"
+                                />
                                 {step.metalDelta}
                               </span>
                             )}
@@ -1174,7 +1177,7 @@ export default function BeyondAllReasonConsole() {
                           {selectedMap.dimensions}
                         </span>
                         <span
-                          className={`pixel-box-inset px-2 py-0.5 text-[9px] font-pixel-heading uppercase ${
+                          className={`pixel-box-inset px-2 py-0.5 text-[9px] font-pixel-heading uppercase flex items-center gap-1.5 ${
                             selectedMap.metalDensity === "all-metal"
                               ? "text-amber-400 border-amber-600"
                               : selectedMap.metalDensity === "high"
@@ -1182,6 +1185,11 @@ export default function BeyondAllReasonConsole() {
                               : "text-zinc-300"
                           }`}
                         >
+                          <img
+                            src="/metal.png"
+                            alt="Metal"
+                            className="size-3 object-contain pixelated shrink-0"
+                          />
                           {selectedMap.metalDensity.toUpperCase()} METAL
                         </span>
                       </h2>
@@ -1239,7 +1247,11 @@ export default function BeyondAllReasonConsole() {
 
                     <div className="p-3 pixel-box-inset">
                       <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
-                        <Database className="size-3 text-amber-400" />
+                        <img
+                          src="/metal.png"
+                          alt="Metal"
+                          className="size-3 object-contain pixelated shrink-0"
+                        />
                         Metal Yield
                       </div>
                       <div className="text-xs font-pixel-heading text-amber-300 mt-1 uppercase">

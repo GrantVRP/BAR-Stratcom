@@ -19,6 +19,25 @@ export const BarIcon: React.FC<BarIconProps> = ({
   const factionAccent = isArmada ? "#449bed" : "#ff2244";
   const cleanName = (name || "").toLowerCase().trim();
 
+  // 0. Metal Resource Icon (Official Beyond All Reason Metal Plate)
+  if (
+    cleanName === "metal" ||
+    cleanName === "metal resource" ||
+    cleanName === "metal icon" ||
+    cleanName === "metal yield" ||
+    cleanName === "m"
+  ) {
+    return (
+      <img
+        src="/metal.png"
+        alt={name}
+        width={size || 18}
+        height={size || 18}
+        className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[1px_1px_0px_#000000]`}
+      />
+    );
+  }
+
   // 1. Solar Collector (Armada or Cortex official Beyond All Reason render)
   if (cleanName.includes("solar")) {
     if (isArmada || cleanName.includes("armada")) {

@@ -147,12 +147,12 @@ export function MapCombobox({
         }}
         className={`w-full p-2.5 pixel-box text-left flex items-center justify-between gap-2.5 group cursor-pointer transition-none ${
           isOpen
-            ? "border-[#00f0ff] shadow-[0_0_12px_rgba(0,240,255,0.25)]"
+            ? "border-[#449bed] shadow-[0_0_12px_rgba(68,155,237,0.25)]"
             : "hover:border-zinc-500"
         }`}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="size-7 pixel-box-inset flex items-center justify-center shrink-0 text-[#00f0ff] group-hover:border-[#00f0ff]/40">
+          <div className="size-7 pixel-box-inset flex items-center justify-center shrink-0 text-[#449bed] group-hover:border-[#449bed]/40">
             <Compass className="size-4" />
           </div>
           <div className="flex flex-col min-w-0">
@@ -180,7 +180,7 @@ export function MapCombobox({
               {selectedMap.tidal > 0 && (
                 <>
                   <span>•</span>
-                  <span className="text-[#00f0ff] flex items-center gap-0.5">
+                  <span className="text-[#449bed] flex items-center gap-0.5">
                     <Waves className="size-3" />
                     +{selectedMap.tidal}E
                   </span>
@@ -192,7 +192,7 @@ export function MapCombobox({
 
         <ChevronDown
           className={`size-4 text-zinc-400 shrink-0 transition-none ${
-            isOpen ? "rotate-180 text-[#00f0ff]" : "group-hover:text-zinc-200"
+            isOpen ? "rotate-180 text-[#449bed]" : "group-hover:text-zinc-200"
           }`}
         />
       </button>
@@ -257,7 +257,7 @@ export function MapCombobox({
                     onMouseEnter={() => setHighlightedIndex(index)}
                     className={`p-2.5 cursor-pointer transition-none flex items-center justify-between gap-3 ${
                       isSelected
-                        ? "bg-[#072a38] text-[#00f0ff]"
+                        ? "bg-[#0a1c32] text-[#449bed]"
                         : isHighlighted
                         ? "bg-[#161926] text-white"
                         : "hover:bg-[#12131a] text-zinc-300"
@@ -265,7 +265,7 @@ export function MapCombobox({
                   >
                     <div className="flex flex-col gap-0.5 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-pixel-heading text-[10px] truncate" style={{ color: isSelected ? "#00f0ff" : undefined }}>
+                        <span className="font-pixel-heading text-[10px] truncate" style={{ color: isSelected ? "#449bed" : undefined }}>
                           {map.name}
                         </span>
                         <span className="text-[8px] font-pixel-heading px-1.5 py-0.5 pixel-box-inset text-zinc-300">
@@ -290,7 +290,7 @@ export function MapCombobox({
 
                     <div className="flex items-center gap-2 shrink-0">
                       {isSelected && (
-                        <Check className="size-3.5 text-[#00f0ff]" />
+                        <Check className="size-3.5 text-[#449bed]" />
                       )}
                     </div>
                   </li>

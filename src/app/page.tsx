@@ -284,8 +284,8 @@ export default function BeyondAllReasonConsole() {
 
   const isArmada = faction === "Armada";
 
-  // Faction Accent Color Tokens (16-Bit Armada Cyan #00f0ff vs Cortex Flame #ff2244)
-  const accentColor = isArmada ? "#00f0ff" : "#ff2244";
+  // Faction Accent Color Tokens (16-Bit Armada Cerulean #449bed vs Cortex Flame #ff2244)
+  const accentColor = isArmada ? "#449bed" : "#ff2244";
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-[#0c0c14] text-zinc-100 font-pixel-body select-none relative">
@@ -295,45 +295,45 @@ export default function BeyondAllReasonConsole() {
       {/* ========================================================================= */}
       {/* 1. TOP BAR: PRACTICAL RTS TELEMETRY & HOTKEYS                             */}
       {/* ========================================================================= */}
-      <header className="h-14 shrink-0 border-b-2 border-black bg-[#12131a] px-4 flex items-center justify-between text-xs z-30 shadow-[0_3px_0_0_#000]">
+      <header className="h-16 shrink-0 border-b-2 border-black bg-[#12131a] px-4 flex items-center justify-between text-xs z-30 shadow-[0_3px_0_0_#000]">
         {/* Left: Brand & Faction Indicator */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2.5 pr-3 border-r-2 border-[#222638]">
-            <div className="relative size-6 flex items-center justify-center shrink-0">
-              <Image
-                src={isArmada ? "/armada-logo.png" : "/cortex-logo.png"}
-                alt={faction}
-                width={22}
-                height={22}
-                priority
-                className="object-contain pixelated drop-shadow-[2px_2px_0px_#000]"
-              />
-            </div>
-            <div className="font-pixel-heading text-xs text-white tracking-wider">
-              BAR STRATCOM{" "}
-              <span style={{ color: accentColor }}>
-                {"// TACTICAL ADVISOR"}
-              </span>
+          <div className="flex items-center gap-3">
+            {/* 16-bit CRT Screen Title */}
+            <div className="relative">
+              <h1 className="text-sm font-pixel-heading tracking-wider flex items-center gap-2">
+                <span className="text-white drop-shadow-[2px_2px_0px_#000]">BAR</span>
+                <span
+                  className="drop-shadow-[2px_2px_0px_#000]"
+                  style={{ color: accentColor }}
+                >
+                  STRATCOM
+                </span>
+                <span className="text-[9px] px-1.5 py-0.5 bg-[#1a1c26] text-zinc-400 border border-[#2a2e42]">
+                  v2.5
+                </span>
+              </h1>
             </div>
           </div>
 
-          {/* Practical RTS Stats: Benchmark Estimates */}
-          <div className="hidden xl:flex items-center gap-3 text-zinc-400 font-pixel-body text-base">
+          {/* Quick Telemetry Strip */}
+          <div className="hidden xl:flex items-center gap-3 text-sm font-pixel-body text-zinc-400 border-l-2 border-zinc-800 pl-4 whitespace-nowrap">
             <div>
-              <span>BENCHMARK: </span>
-              <span className="text-amber-400 font-bold">1,000 E</span>
-              <span className="text-zinc-600"> / </span>
-              <span className="text-zinc-200 font-bold">1,000 M</span>
+              ROLE: <span className="text-zinc-200 font-bold">FRONT-LINE COMBAT</span>
             </div>
-            <span className="text-zinc-600">•</span>
-            <div className="text-zinc-400">
+            <span className="text-zinc-700">•</span>
+            <div>
+              TIMING: <span className="text-zinc-200 font-bold">T2 @ 05:30</span>
+            </div>
+            <span className="text-zinc-700">•</span>
+            <div>
               EXPANSION: <span className="text-zinc-200 font-bold">3-4 Mex @ 01:30</span>
             </div>
           </div>
         </div>
 
         {/* Right: Dynamic Wind Widget wired to current map state, Live Memory Bridge, and Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           {/* Live Game Memory Bridge Status Indicator */}
           <div
             onClick={syncWithLiveMatch}
@@ -344,7 +344,7 @@ export default function BeyondAllReasonConsole() {
             }
             className={`hidden sm:flex items-center gap-2 px-3 py-1.5 border-2 text-[10px] font-pixel-heading transition-none select-none ${
               liveState?.gameStatus === "IN_GAME"
-                ? "bg-[#072a38] border-[#00f0ff] text-[#00f0ff] shadow-[2px_2px_0px_#000] cursor-pointer"
+                ? "bg-[#0a1c32] border-[#449bed] text-[#449bed] shadow-[2px_2px_0px_#000] cursor-pointer"
                 : liveState?.gameStatus === "IN_LOBBY"
                 ? "bg-[#332205] border-[#fbbf24] text-[#fbbf24] shadow-[2px_2px_0px_#000] cursor-pointer"
                 : "bg-[#10121a] border-[#2a2e42] text-zinc-500 shadow-[2px_2px_0px_#000]"
@@ -352,11 +352,11 @@ export default function BeyondAllReasonConsole() {
           >
             {liveState?.gameStatus === "IN_GAME" ? (
               <>
-                <span className="size-2 bg-[#00f0ff] shrink-0 arcade-blink" />
-                <span className="text-[#00f0ff] font-bold tracking-tight whitespace-nowrap">
+                <span className="size-2 bg-[#449bed] shrink-0 arcade-blink" />
+                <span className="text-[#449bed] font-bold tracking-tight whitespace-nowrap">
                   [LINK: IN-GAME]
                 </span>
-                <span className="text-[#0284c7]">•</span>
+                <span className="text-[#3b8fe8]">•</span>
                 <span className="text-white font-bold tracking-wider tabular-nums whitespace-nowrap font-pixel-body text-base">
                   {Math.floor(liveState.gameTimeSeconds / 60)}:
                   {String(liveState.gameTimeSeconds % 60).padStart(2, "0")}
@@ -400,7 +400,7 @@ export default function BeyondAllReasonConsole() {
             <KeyRound className="size-3 text-zinc-400" />
             <span className="hidden lg:inline text-zinc-400">AI:</span>
             {apiKey ? (
-              <span className="text-[#00f0ff] font-bold">GEMINI 1.5</span>
+              <span className="text-[#449bed] font-bold">GEMINI 1.5</span>
             ) : (
               <span className="text-zinc-400">RULES</span>
             )}
@@ -472,13 +472,13 @@ export default function BeyondAllReasonConsole() {
                 onClick={() => setFaction("Armada")}
                 className={`flex items-center gap-2 p-2 border-2 transition-none text-left cursor-pointer ${
                   faction === "Armada"
-                    ? "bg-[#072a38] border-[#00f0ff] text-[#00f0ff] shadow-[2px_2px_0px_#000]"
+                    ? "bg-[#0a1c32] border-[#449bed] text-[#449bed] shadow-[2px_2px_0px_#000]"
                     : "bg-[#0f1118] border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-800"
                 }`}
               >
                 <div
                   className={`size-7 bg-black flex items-center justify-center shrink-0 border ${
-                    faction === "Armada" ? "border-[#00f0ff]" : "border-zinc-800"
+                    faction === "Armada" ? "border-[#449bed]" : "border-zinc-800"
                   }`}
                 >
                   <Image
@@ -537,6 +537,7 @@ export default function BeyondAllReasonConsole() {
               <span className="text-zinc-500 font-pixel-body text-xs">DATABASE</span>
             </div>
 
+            {/* Custom Pixel Art Combobox with Search Filter */}
             <MapCombobox
               selectedMap={selectedMap}
               onSelectMap={setSelectedMap}
@@ -549,7 +550,8 @@ export default function BeyondAllReasonConsole() {
                 <button
                   type="button"
                   onClick={() => setActiveTab("briefing")}
-                  className="text-[#00f0ff] hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
+                  className="hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
+                  style={{ color: accentColor }}
                 >
                   BRIEFING →
                 </button>
@@ -557,7 +559,7 @@ export default function BeyondAllReasonConsole() {
               <ul className="space-y-1">
                 {selectedMap.chokePoints.slice(0, 3).map((cp, idx) => (
                   <li key={idx} className="text-sm font-pixel-body text-zinc-300 flex items-start gap-1.5 leading-tight">
-                    <span className="text-[#00f0ff] font-pixel-heading text-[8px] shrink-0 mt-0.5">▸</span>
+                    <span className="font-pixel-heading text-[8px] shrink-0 mt-0.5" style={{ color: accentColor }}>▸</span>
                     <span className="line-clamp-1">{cp}</span>
                   </li>
                 ))}
@@ -884,7 +886,7 @@ export default function BeyondAllReasonConsole() {
                           <div
                             className={`w-12 h-12 min-w-[48px] min-h-[48px] pixel-box-inset shrink-0 flex items-center justify-center p-1.5 relative overflow-hidden ${
                               isArmada
-                                ? "border-[#00f0ff]/40 shadow-[2px_2px_0px_#000]"
+                                ? "border-[#449bed]/40 shadow-[2px_2px_0px_#000]"
                                 : "border-[#ff2244]/40 shadow-[2px_2px_0px_#000]"
                             } ${
                               isStructure
@@ -914,7 +916,7 @@ export default function BeyondAllReasonConsole() {
                                   step.entityBadge === "[CDR]"
                                     ? "bg-[#271d05] text-amber-300 border-amber-600"
                                     : step.entityBadge === "[FAC]"
-                                    ? "bg-[#072a38] text-[#00f0ff] border-[#0284c7]"
+                                    ? "bg-[#0a1c32] text-[#449bed] border-[#2563eb]"
                                     : step.entityBadge === "[CON]"
                                     ? "bg-[#062c19] text-emerald-300 border-emerald-600"
                                     : "bg-[#181a20] text-zinc-400 border-zinc-700"
@@ -1103,7 +1105,7 @@ export default function BeyondAllReasonConsole() {
                           <ul key={pIdx} className="space-y-1.5 pl-2">
                             {lines.map((l, lIdx) => (
                               <li key={lIdx} className="flex items-start gap-2 text-zinc-300 font-pixel-body text-base">
-                                <span className="text-[#00f0ff] font-pixel-heading text-[8px] mt-1">▪</span>
+                                <span className="font-pixel-heading text-[8px] mt-1" style={{ color: accentColor }}>▪</span>
                                 <span>{l.replace(/^[-*]\s*/, "")}</span>
                               </li>
                             ))}
@@ -1152,7 +1154,7 @@ export default function BeyondAllReasonConsole() {
                             selectedMap.metalDensity === "all-metal"
                               ? "text-amber-400 border-amber-600"
                               : selectedMap.metalDensity === "high"
-                              ? "text-[#00f0ff] border-cyan-600"
+                              ? "text-[#449bed] border-[#2563eb]"
                               : "text-zinc-300"
                           }`}
                         >
@@ -1189,10 +1191,10 @@ export default function BeyondAllReasonConsole() {
 
                     <div className="p-3 pixel-box-inset">
                       <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
-                        <Wind className="size-3 text-cyan-400" />
+                        <Wind className="size-3 text-[#449bed]" />
                         Wind Velocity
                       </div>
-                      <div className="text-xs font-pixel-heading text-[#00f0ff] mt-1">
+                      <div className="text-xs font-pixel-heading text-[#449bed] mt-1">
                         {selectedMap.wind.min}–{selectedMap.wind.max} <span className="text-[9px] font-pixel-body text-zinc-500">m/s</span>
                       </div>
                       <div className="text-xs font-pixel-body text-zinc-500">Avg: {selectedMap.wind.avg} m/s</div>
@@ -1298,7 +1300,7 @@ export default function BeyondAllReasonConsole() {
                                 {doc.name}
                               </span>
                               {isFactionMatch && (
-                                <span className="pixel-box-inset px-2 py-0.5 text-[8px] font-pixel-heading text-[#00f0ff]">
+                                <span className="pixel-box-inset px-2 py-0.5 text-[8px] font-pixel-heading" style={{ color: accentColor }}>
                                   OPTIMAL
                                 </span>
                               )}
@@ -1307,7 +1309,7 @@ export default function BeyondAllReasonConsole() {
                             <span
                               className={`text-[8px] font-pixel-heading uppercase px-2 py-0.5 pixel-box-inset ${
                                 doc.faction === "armada"
-                                  ? "text-[#00f0ff]"
+                                  ? "text-[#449bed]"
                                   : doc.faction === "cortex"
                                   ? "text-[#ff2244]"
                                   : "text-zinc-300"

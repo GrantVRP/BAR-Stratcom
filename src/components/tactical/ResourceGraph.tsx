@@ -61,7 +61,7 @@ function createSteppedPath(points: { x: number; y: number }[]): string {
 export const ResourceGraph: React.FC<ResourceGraphProps> = ({
   steps,
   mapWindAvg = 14,
-  faction: _faction = "Armada",
+  faction = "Armada",
   className = "",
 }) => {
   const [hoveredSecond, setHoveredSecond] = useState<number | null>(null);
@@ -279,7 +279,12 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
       {/* Top Telemetry Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
         <div className="flex items-center gap-2 font-pixel-heading text-[9px]">
-          <Activity className="size-3 text-cyan-400" />
+          <Activity
+            className="size-3"
+            style={{
+              color: faction?.toLowerCase() === "cortex" ? "#ff2244" : "#449bed",
+            }}
+          />
           <span className="font-bold text-zinc-100 uppercase tracking-wider">
             OSCILLOSCOPE ECO RUNWAY [0:00 - 5:00]
           </span>

@@ -29,7 +29,7 @@ export function WindmillTelemetry({
     : isViable
     ? isCortex
       ? "text-[#ff2244] border-[#ff2244]/50 bg-[#ff2244]/20"
-      : "text-[#00f0ff] border-[#00f0ff]/50 bg-[#00f0ff]/20"
+      : "text-[#449bed] border-[#449bed]/50 bg-[#449bed]/20"
     : "text-amber-400 border-amber-500/50 bg-amber-500/20";
 
   const statusLabel = isHighRisk
@@ -55,14 +55,14 @@ export function WindmillTelemetry({
 
   return (
     <div
-      className={`flex items-center gap-3 px-3 py-1.5 pixel-box select-none ${className}`}
+      className={`flex items-center gap-2.5 px-2.5 py-1 pixel-box select-none shrink-0 ${className}`}
     >
       {/* Turbine Frame Viewport */}
       <div
-        className={`relative w-[44px] h-[48px] shrink-0 pixel-box-inset overflow-hidden ${
+        className={`relative w-[36px] h-[38px] shrink-0 pixel-box-inset overflow-hidden ${
           isCortex
             ? "border-[#ff2244]/50"
-            : "border-[#00f0ff]/50"
+            : "border-[#449bed]/50"
         }`}
       >
         {isCortex ? (
@@ -111,7 +111,7 @@ export function WindmillTelemetry({
 
             {/* Dynamic Rotating Cortex Rotor */}
             <motion.div
-              className="absolute pointer-events-none w-[36px] h-[36px]"
+              className="absolute pointer-events-none w-[30px] h-[30px]"
               style={{
                 top: "34%",
                 left: "50%",
@@ -208,7 +208,7 @@ export function WindmillTelemetry({
 
             {/* Dynamic Rotating Armada Rotor */}
             <motion.div
-              className="absolute pointer-events-none w-[36px] h-[36px]"
+              className="absolute pointer-events-none w-[30px] h-[30px]"
               style={{
                 top: "34%",
                 left: "50%",
@@ -250,9 +250,9 @@ export function WindmillTelemetry({
                   <line x1="-2.0" y1="-10.5" x2="1.6" y2="-10.5" stroke="#475569" strokeWidth="0.5" />
                 </g>
 
-                {/* Central Hub Cap with Cyan Core */}
-                <circle cx="0" cy="0" r="2.2" fill="#18181b" stroke="#38bdf8" strokeWidth="0.6" />
-                <circle cx="0" cy="0" r="0.9" fill="#60a5fa" />
+                {/* Central Hub Cap with Cerulean Core */}
+                <circle cx="0" cy="0" r="2.2" fill="#18181b" stroke="#449bed" strokeWidth="0.6" />
+                <circle cx="0" cy="0" r="0.9" fill="#449bed" />
               </svg>
             </motion.div>
           </>
@@ -260,21 +260,21 @@ export function WindmillTelemetry({
       </div>
 
       {/* Telemetry Display */}
-      <div className="flex flex-col gap-1 min-w-0 font-pixel-body">
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-400 uppercase tracking-wider text-[9px] font-pixel-heading">
+      <div className="flex flex-col gap-0.5 min-w-0 font-pixel-body">
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <span className="text-zinc-400 uppercase tracking-wider text-[8px] font-pixel-heading whitespace-nowrap">
             WIND VELOCITY:
           </span>
-          <span className="text-zinc-100 font-bold text-sm tracking-wider font-pixel-heading">
-            {currentWind.toFixed(1)} <span className="text-zinc-500 text-[9px]">M/S</span>
+          <span className="text-zinc-100 font-bold text-xs tracking-wider font-pixel-heading whitespace-nowrap">
+            {currentWind.toFixed(1)} <span className="text-zinc-500 text-[8px]">M/S</span>
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className={`px-1.5 py-0.5 text-[8px] font-pixel-heading uppercase border shadow-[1px_1px_0px_#000] ${statusColor}`}>
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <span className={`px-1.5 py-0.5 text-[8px] font-pixel-heading uppercase border shadow-[1px_1px_0px_#000] whitespace-nowrap shrink-0 ${statusColor}`}>
             {statusLabel}
           </span>
-          <span className="text-zinc-400 text-xs tracking-wider font-pixel-body">
+          <span className="text-zinc-400 text-xs tracking-wider font-pixel-body whitespace-nowrap shrink-0">
             RANGE: [{minWind}–{maxWind} M/S]
           </span>
         </div>

@@ -10,10 +10,10 @@
   --arcade-surface: #1a1c26;
 
   /* 16-Bit Faction Colors */
-  --armada-cyan: #00f0ff;
-  --armada-cyan-dim: #0284c7;
+  --armada-cyan: #449bed;
+  --armada-cyan-dim: #2563eb;
   --armada-cobalt: #1d4ed8;
-  --armada-dark: #083344;
+  --armada-dark: #0a1c32;
 
   --cortex-flame: #ff2244;
   --cortex-flame-dim: #e11d48;
@@ -75,11 +75,11 @@
 }
 
 .pixel-box-armada {
-  background-color: #0c121e;
-  border: 2px solid #00f0ff;
+  background-color: #0b1a2e;
+  border: 2px solid #449bed;
   box-shadow: 
     inset -2px -2px 0px 0px #1d4ed8,
-    inset 2px 2px 0px 0px #38bdf8,
+    inset 2px 2px 0px 0px #6ec7f9,
     3px 3px 0px 0px #000000;
   border-radius: 0px !important;
 }
@@ -137,21 +137,21 @@
 }
 
 .pixel-btn-armada {
-  background-color: #072a38;
-  border-color: #00f0ff;
-  color: #00f0ff;
+  background-color: #0a1c32;
+  border-color: #449bed;
+  color: #449bed;
   box-shadow: 3px 3px 0px 0px #000000;
 }
 
 .pixel-btn-armada:hover {
-  background-color: #00f0ff;
+  background-color: #449bed;
   color: #0c0c14;
-  border-color: #00f0ff;
+  border-color: #449bed;
 }
 
 .pixel-btn-armada:active,
 .pixel-btn-armada.active {
-  background-color: #00f0ff;
+  background-color: #449bed;
   color: #0c0c14;
   transform: translate(3px, 3px);
   box-shadow: 0px 0px 0px 0px #000000;
@@ -200,10 +200,10 @@
 }
 
 .pixel-tab.active-armada {
-  background-color: #072a38;
-  border-color: #00f0ff;
-  color: #00f0ff;
-  box-shadow: inset 0px 3px 0px 0px #00f0ff, 2px -2px 0px 0px #000000;
+  background-color: #0a1c32;
+  border-color: #449bed;
+  color: #449bed;
+  box-shadow: inset 0px 3px 0px 0px #449bed, 2px -2px 0px 0px #000000;
 }
 
 .pixel-tab.active-cortex {

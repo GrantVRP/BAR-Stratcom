@@ -463,11 +463,11 @@ export function TacticalOverlay({
           <span className="text-zinc-600">•</span>
 
           {/* Dynamic Intel Alert / Push Warning or Next Action Ticker */}
-          {enemyPush ? (
+          {enemyPush && isLiveInGame ? (
             <span className="text-red-400 font-pixel-heading text-[9px] line-clamp-1 max-w-[150px] animate-pulse">
               🚨 PUSH: {enemyPush.unitCount}x {enemyPush.unitType}
             </span>
-          ) : (friendlyCount !== undefined && enemyCount !== undefined) ? (
+          ) : (isLiveInGame && friendlyCount !== undefined && enemyCount !== undefined) ? (
             <span className="text-zinc-300 font-pixel-heading text-[9px] line-clamp-1 max-w-[150px] flex items-center gap-1">
               <span className="text-emerald-400 font-bold">{friendlyCount}U</span>
               <span className="text-zinc-500">vs</span>
@@ -475,7 +475,7 @@ export function TacticalOverlay({
             </span>
           ) : (
             <span className="text-zinc-300 font-pixel-body text-xs line-clamp-1 max-w-[140px]">
-              {nextStep ? `NEXT: ${nextStep.raw.replace(/^\[\d+:\d+\]\s*/, "")}` : "MACRO RUNWAY"}
+              {liveState?.gameStatus === "IN_LOBBY" ? "LOBBY STAGING" : !liveState?.isRunning ? "ENGINE OFFLINE" : (nextStep ? `NEXT: ${nextStep.raw.replace(/^\[\d+:\d+\]\s*/, "")}` : "MACRO RUNWAY")}
             </span>
           )}
 
@@ -642,7 +642,8 @@ export function TacticalOverlay({
         <div className="p-2 overflow-y-auto max-h-[calc(100vh-140px)] custom-scrollbar">
           <BattleIntelCards
             faction={faction}
-            battleIntel={liveState?.battleIntel}
+            gameStatus={liveState?.gameStatus ?? "OFFLINE"}
+            battleIntel={liveState?.gameStatus === "IN_GAME" ? liveState?.battleIntel : undefined}
             accentColor={accentColor}
           />
         </div>
@@ -848,7 +849,8 @@ export function TacticalOverlay({
         <div className="p-2 overflow-y-auto max-h-[calc(100vh-140px)] space-y-2.5 custom-scrollbar">
           <BattleIntelCards
             faction={faction}
-            battleIntel={liveState?.battleIntel}
+            gameStatus={liveState?.gameStatus ?? "OFFLINE"}
+            battleIntel={liveState?.gameStatus === "IN_GAME" ? liveState?.battleIntel : undefined}
             accentColor={accentColor}
           />
 

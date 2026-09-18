@@ -84,31 +84,17 @@ export function generateSyntheticBattleIntel(
   if (gameTimeSeconds < 60) {
     // 00:00 - 01:00 (Opening Commander deployment)
     return {
-      friendlyUnitsCount: 3,
+      friendlyUnitsCount: 1,
       friendlyBreakdown: { raiders: 0, skirmishers: 0, assault: 0, air: 0 },
-      enemyUnitsCount: 3,
+      enemyUnitsCount: 0,
       enemyBreakdown: { raiders: 0, skirmishers: 0, assault: 0, air: 0 },
-      teammates: [
-        {
-          name: "roka",
-          faction: allyFaction,
-          role: "Frontline Combat",
-          metalIncome: 4.0,
-          energyIncome: 40,
-          status: "NORMAL",
-          techTier: "T1",
-        },
-        {
-          name: "Kovath",
-          faction: allyFaction,
-          role: "Backline Eco",
-          metalIncome: 6.0,
-          energyIncome: 60,
-          status: "NORMAL",
-          techTier: "T1",
-        },
-      ],
+      teammates: [],
       enemyPush: null,
+      playerName: "Commander",
+      enemyName: `Hostile Force (${enemyFaction})`,
+      playerMetalIncome: 12.0,
+      playerEnergyIncome: 210.0,
+      completedUnits: {},
     };
   } else if (gameTimeSeconds < 180) {
     // 01:00 - 03:00 (Initial Factory Output & Raider Recon)
@@ -282,13 +268,24 @@ export function useLiveGame(options?: UseLiveGameOptions): UseLiveGameReturn {
 
         const data: LiveGameState = await response.json();
 
-        // If bridge doesn't yet include battleIntel or is running, enrich with tactical engine
-        if (!data.battleIntel) {
-          data.battleIntel = generateSyntheticBattleIntel(
-            data.faction,
-            data.gameTimeSeconds,
-            data.mapName
-          );
+        // Sanitize battle intel: only active in-game matches have combat unit & radar telemetry
+        if (data.gameStatus !== "IN_GAME") {
+          data.battleIntel = undefined;
+        } else if (!data.battleIntel) {
+          // If in game but bridge hasn't emitted telemetry yet, default to clean ground truth match baseline
+          data.battleIntel = {
+            friendlyUnitsCount: 1, // 1 Commander deployed
+            friendlyBreakdown: { raiders: 0, skirmishers: 0, assault: 0, air: 0 },
+            enemyUnitsCount: 0,
+            enemyBreakdown: { raiders: 0, skirmishers: 0, assault: 0, air: 0 },
+            teammates: [],
+            enemyPush: null,
+            playerName: "Commander",
+            enemyName: "Hostile Force",
+            playerMetalIncome: 12.0,
+            playerEnergyIncome: 210.0,
+            completedUnits: {},
+          };
         }
 
         if (isMountedRef.current) {

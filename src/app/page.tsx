@@ -23,6 +23,7 @@ import {
   Wind,
   ShieldAlert,
   Waves,
+  MonitorUp,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -34,8 +35,10 @@ import { ResourceGraph } from "@/components/tactical/ResourceGraph";
 import { WindmillTelemetry } from "@/components/tactical/WindmillTelemetry";
 import { MapCombobox } from "@/components/tactical/MapCombobox";
 import { LiveLinkStatus } from "@/components/tactical/LiveLinkStatus";
+import { TacticalOverlay } from "@/components/tactical/TacticalOverlay";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
 import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
+import { useOverlaySync } from "@/hooks/useOverlaySync";
 
 const EnergyBoltIcon = ({ className }: { className?: string; style?: React.CSSProperties }) => (
   <img
@@ -318,6 +321,41 @@ export default function BeyondAllReasonConsole() {
   // Faction Accent Color Tokens (16-Bit Armada Cerulean #449bed vs Cortex Flame #ff2244)
   const accentColor = isArmada ? "#449bed" : "#ff2244";
 
+  // Tactical Overlay state & cross-tab sync
+  const { broadcastState } = useOverlaySync(true);
+  const [isOverlayOpen, setIsOverlayOpen] = useState<boolean>(false);
+
+  // Sync state to overlay whenever key dependencies change
+  useEffect(() => {
+    broadcastState({
+      faction,
+      selectedMap,
+      steps: parsedSteps,
+      liveState,
+      strategyTitle: currentStrategy?.title,
+    });
+  }, [faction, selectedMap, parsedSteps, liveState, currentStrategy, broadcastState]);
+
+  // Global hotkey: Shift + O or ~ to toggle overlay
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if ((e.shiftKey && e.key.toLowerCase() === "o") || e.key === "`" || e.key === "~") {
+        e.preventDefault();
+        setIsOverlayOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-[#0c0c14] text-zinc-100 font-pixel-body select-none relative">
       {/* Full-Screen 16-bit CRT Scanline Overlay & Tube Vignette */}
@@ -379,6 +417,26 @@ export default function BeyondAllReasonConsole() {
             ) : (
               <span className="text-zinc-400">RULES</span>
             )}
+          </button>
+
+          {/* Discord-Style Tactical Overlay Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setIsOverlayOpen((prev) => !prev)}
+            className={`pixel-btn text-[9px] py-1.5 px-2.5 gap-1.5 ${
+              isOverlayOpen
+                ? isArmada
+                  ? "border-[#449bed] text-[#449bed] bg-[#0a1c32]"
+                  : "border-[#ff2244] text-[#ff2244] bg-[#320a0a]"
+                : ""
+            }`}
+            title="Toggle Discord-Style In-Game Tactical Overlay (Shift + O)"
+          >
+            <MonitorUp className="size-3" />
+            <span className="hidden md:inline">OVERLAY</span>
+            <kbd className="hidden sm:inline text-[8px] px-1 py-0.5 bg-[#0a0b10] text-zinc-400 border border-zinc-700 font-pixel-heading">
+              Shift+O
+            </kbd>
           </button>
 
           {/* Copy Macro Shortcut Button */}
@@ -1422,6 +1480,18 @@ export default function BeyondAllReasonConsole() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Discord-Style In-Game Tactical Overlay */}
+      <TacticalOverlay
+        faction={faction}
+        selectedMap={selectedMap}
+        steps={parsedSteps}
+        liveState={liveState}
+        strategyTitle={currentStrategy?.title}
+        isOpen={isOverlayOpen}
+        onClose={() => setIsOverlayOpen(false)}
+        accentColor={accentColor}
+      />
     </div>
   );
 }

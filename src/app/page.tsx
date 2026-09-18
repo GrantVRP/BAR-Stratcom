@@ -11,7 +11,6 @@ import {
   Copy,
   Check,
   AlertTriangle,
-  Zap,
   Activity,
   Crosshair,
   Compass,
@@ -36,6 +35,14 @@ import { WindmillTelemetry } from "@/components/tactical/WindmillTelemetry";
 import { MapCombobox } from "@/components/tactical/MapCombobox";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
 import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
+
+const EnergyBoltIcon = ({ className }: { className?: string; style?: React.CSSProperties }) => (
+  <img
+    src="/energy.png"
+    alt="Energy"
+    className={`${className || "size-3.5"} object-contain pixelated shrink-0 inline-block`}
+  />
+);
 
 // Tournament Strategic Strategies & Playbooks
 const STRATEGY_PRESETS = [
@@ -77,7 +84,7 @@ const STRATEGY_PRESETS = [
     tag: "T2-T3 // ECO SLINGSHOT",
     timingWindow: "07:30 - 11:00",
     description: "Fast T2 lab into Advanced Fusion (+1050E/s), 70E:1M converters, dumping metal to frontline.",
-    icon: Zap,
+    icon: EnergyBoltIcon,
   },
   {
     id: "air-superiority-strike",
@@ -971,7 +978,11 @@ export default function BeyondAllReasonConsole() {
                                     : "text-zinc-400"
                                 }`}
                               >
-                                <Zap className="size-2.5 text-[#fbbf24]" />
+                                <img
+                                  src="/energy.png"
+                                  alt="Energy"
+                                  className="size-3 object-contain pixelated shrink-0 inline-block"
+                                />
                                 {step.energyDelta}
                               </span>
                             )}
@@ -1234,11 +1245,26 @@ export default function BeyondAllReasonConsole() {
 
                     <div className="p-3 pixel-box-inset">
                       <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
-                        <Waves className="size-3 text-blue-400" />
+                        <img
+                          src="/energy.png"
+                          alt="Energy"
+                          className="size-3 object-contain pixelated shrink-0"
+                        />
                         Tidal Energy
                       </div>
-                      <div className="text-xs font-pixel-heading text-zinc-200 mt-1">
-                        {selectedMap.tidal > 0 ? `+${selectedMap.tidal} E/s` : "0 E/s"}
+                      <div className="text-xs font-pixel-heading text-zinc-200 mt-1 flex items-center gap-1">
+                        {selectedMap.tidal > 0 ? (
+                          <>
+                            <img
+                              src="/energy.png"
+                              alt="Energy"
+                              className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                            />
+                            <span>+{selectedMap.tidal} E/s</span>
+                          </>
+                        ) : (
+                          "0 E/s"
+                        )}
                       </div>
                       <div className="text-xs font-pixel-body text-zinc-500">
                         {selectedMap.tidal > 0 ? "Oceanic tidal" : "Landlocked"}

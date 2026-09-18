@@ -38,6 +38,26 @@ export const BarIcon: React.FC<BarIconProps> = ({
     );
   }
 
+  // 0.1 Energy Resource Icon (Official Beyond All Reason Golden Energy Bolt)
+  if (
+    cleanName === "energy" ||
+    cleanName === "energy resource" ||
+    cleanName === "energy icon" ||
+    cleanName === "energy yield" ||
+    cleanName === "power" ||
+    cleanName === "e"
+  ) {
+    return (
+      <img
+        src="/energy.png"
+        alt={name}
+        width={size || 18}
+        height={size || 18}
+        className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[1px_1px_0px_#000000]`}
+      />
+    );
+  }
+
   // 1. Solar Collector (Armada or Cortex official Beyond All Reason render)
   if (cleanName.includes("solar")) {
     if (isArmada || cleanName.includes("armada")) {

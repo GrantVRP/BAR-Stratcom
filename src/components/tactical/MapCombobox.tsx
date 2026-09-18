@@ -185,8 +185,12 @@ export function MapCombobox({
               {selectedMap.tidal > 0 && (
                 <>
                   <span>•</span>
-                  <span className="text-[#449bed] flex items-center gap-0.5">
-                    <Waves className="size-3" />
+                  <span className="text-[#fbbf24] flex items-center gap-1">
+                    <img
+                      src="/energy.png"
+                      alt="Energy"
+                      className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                    />
                     +{selectedMap.tidal}E
                   </span>
                 </>
@@ -295,6 +299,19 @@ export function MapCombobox({
                           />
                           {map.metalDensity}
                         </span>
+                        {map.tidal > 0 && (
+                          <>
+                            <span>•</span>
+                            <span className="text-[#fbbf24] flex items-center gap-1">
+                              <img
+                                src="/energy.png"
+                                alt="Energy"
+                                className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                              />
+                              +{map.tidal}E
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
 

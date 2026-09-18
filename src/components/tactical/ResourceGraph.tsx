@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useCallback } from "react";
-import { Zap, AlertTriangle, Activity } from "lucide-react";
+import { AlertTriangle, Activity } from "lucide-react";
 import { type ParsedBuildStep } from "@/lib/timeline-parser";
 import { type Faction } from "@/lib/game-data";
 
@@ -299,7 +299,11 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
             <div className="flex items-center gap-3 bg-zinc-900/90 px-2.5 py-0.5 rounded border border-zinc-800">
               <span className="text-zinc-400 font-bold">T+{currentScrub.timeStr}</span>
               <span className="text-amber-400 font-bold flex items-center gap-1">
-                <Zap className="size-3" />
+                <img
+                  src="/energy.png"
+                  alt="E"
+                  className="size-3 object-contain pixelated shrink-0 inline-block"
+                />
                 {currentScrub.energy >= 0 ? `+${currentScrub.energy}` : currentScrub.energy} E/s
               </span>
               <span className="text-zinc-300 font-bold flex items-center gap-1" style={{ color: metalColor }}>
@@ -320,7 +324,11 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
           ) : (
             <div className="flex items-center gap-3 text-[10px] text-zinc-400">
               <div className="flex items-center gap-1.5">
-                <span className="size-2 rounded-full bg-amber-400" />
+                <img
+                  src="/energy.png"
+                  alt="Energy"
+                  className="size-3 object-contain pixelated shrink-0 inline-block"
+                />
                 <span>ENERGY (+E/s) [PEAK: +{stats.maxE}]</span>
               </div>
               <div className="flex items-center gap-1.5">

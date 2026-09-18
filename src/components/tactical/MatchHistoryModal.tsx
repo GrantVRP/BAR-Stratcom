@@ -75,19 +75,19 @@ export function MatchHistoryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm font-pixel-body select-none animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 font-pixel-body select-none">
       <div
-        className="w-full max-w-4xl max-h-[88vh] bg-[#0c0e17] border-2 rounded-lg shadow-[0_16px_40px_rgba(0,0,0,0.9),_3px_3px_0px_#000] flex flex-col overflow-hidden text-zinc-200"
+        className="w-full max-w-4xl max-h-[88vh] bg-[#0c0e17] border-2 rounded-none shadow-[0_16px_40px_rgba(0,0,0,0.9),_4px_4px_0px_#000] flex flex-col overflow-hidden text-zinc-200"
         style={{ borderColor: accentColor }}
       >
         {/* Header */}
         <div
-          className="px-4 py-3 bg-[#131624] border-b flex items-center justify-between"
+          className="px-4 py-3 bg-[#131624] border-b-2 flex items-center justify-between"
           style={{ borderColor: `${accentColor}40` }}
         >
           <div className="flex items-center gap-2.5">
             <div
-              className="size-7 rounded flex items-center justify-center text-white shadow"
+              className="size-7 rounded-none border border-black flex items-center justify-center text-white shadow"
               style={{ backgroundColor: accentColor }}
             >
               <History className="size-4" />
@@ -100,7 +100,7 @@ export function MatchHistoryModal({
                 >
                   MATCH HISTORY & REPLAYS
                 </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-purple-950 text-purple-300 border border-purple-700 font-pixel-heading">
+                <span className="text-[9px] px-1.5 py-0.2 rounded-none bg-purple-950 text-purple-300 border border-purple-700 font-pixel-heading">
                   GLOBAL REPLAY ARCHIVE
                 </span>
               </div>
@@ -140,12 +140,12 @@ export function MatchHistoryModal({
                 value={inputPlayer}
                 onChange={(e) => setInputPlayer(e.target.value)}
                 placeholder="Enter player name (e.g. Grant_P)..."
-                className="w-full pl-9 pr-3 py-1.5 bg-black/70 border border-zinc-700 rounded text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#449bed] font-pixel-body"
+                className="w-full pl-9 pr-3 py-1.5 bg-black/70 border border-zinc-700 rounded-none text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#449bed] font-pixel-body"
               />
             </div>
             <button
               type="submit"
-              className="px-3 py-1.5 rounded bg-[#449bed] hover:bg-[#3b85cc] text-white font-pixel-heading text-xs font-bold transition-colors"
+              className="px-3 py-1.5 rounded-none bg-[#449bed] hover:bg-[#3b85cc] text-white font-pixel-heading text-xs font-bold transition-none active:translate-y-0.5"
             >
               SEARCH
             </button>
@@ -157,20 +157,20 @@ export function MatchHistoryModal({
               <button
                 type="button"
                 onClick={handleFilterByCurrentMap}
-                className={`px-2 py-1 rounded border transition-colors ${
+                className={`px-2 py-1 rounded-none border transition-none ${
                   mapFilter
                     ? "bg-[#449bed]/20 text-[#449bed] border-[#449bed]"
                     : "bg-black/60 text-zinc-400 border-zinc-700 hover:text-white"
                 }`}
               >
-                🗺️ PRO REPLAYS: {defaultMap.split(" ")[0]}
+                [PRO REPLAYS]: {defaultMap.split(" ")[0]}
               </button>
             )}
             {(playerName || mapFilter) && (
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="px-2 py-1 rounded bg-black/60 hover:bg-zinc-800 text-zinc-400 border border-zinc-700"
+                className="px-2 py-1 rounded-none bg-black/60 hover:bg-zinc-800 text-zinc-400 border border-zinc-700 transition-none"
               >
                 CLEAR FILTER
               </button>
@@ -183,11 +183,11 @@ export function MatchHistoryModal({
           {/* Replays List (6 cols) */}
           <div className="md:col-span-6 p-2.5 overflow-y-auto max-h-[50vh] md:max-h-none space-y-2 custom-scrollbar bg-[#090b12]">
             {isLoading ? (
-              <div className="p-12 text-center text-zinc-500 text-xs font-pixel-heading">
+              <div className="p-12 text-center text-zinc-400 text-xs font-pixel-heading">
                 Searching Beyond All Reason replay repository...
               </div>
             ) : replays.length === 0 ? (
-              <div className="p-12 text-center text-zinc-500 text-xs font-pixel-heading">
+              <div className="p-12 text-center text-zinc-400 text-xs font-pixel-heading">
                 No replays found. Try another player name or clear filters.
               </div>
             ) : (
@@ -204,7 +204,7 @@ export function MatchHistoryModal({
                   <div
                     key={r.id}
                     onClick={() => loadReplayDetail(r.id)}
-                    className={`p-2.5 rounded border transition-all cursor-pointer ${
+                    className={`p-2.5 rounded-none border transition-none cursor-pointer ${
                       isSelected
                         ? "bg-[#18233a] border-[#449bed] shadow-md"
                         : "bg-[#0d101a] border-zinc-800 hover:border-zinc-700 hover:bg-[#121624]"
@@ -213,7 +213,7 @@ export function MatchHistoryModal({
                     <div className="flex items-start justify-between gap-1.5">
                       <div className="min-w-0">
                         <span className="font-pixel-heading text-xs font-bold text-zinc-100 truncate block">
-                          🗺️ {r.Map.scriptName || r.Map.fileName}
+                          [MAP]: {r.Map.scriptName || r.Map.fileName}
                         </span>
                         <div className="flex items-center gap-2 text-[9px] text-zinc-400 mt-0.5">
                           <span className="flex items-center gap-1">
@@ -228,7 +228,7 @@ export function MatchHistoryModal({
                       {/* Winner / Status Badge */}
                       {playerName ? (
                         <span
-                          className={`text-[8.5px] font-pixel-heading font-bold px-1.5 py-0.5 rounded shrink-0 ${
+                          className={`text-[8.5px] font-pixel-heading font-bold px-1.5 py-0.5 rounded-none shrink-0 ${
                             isTargetWinner
                               ? "bg-emerald-950 text-emerald-300 border border-emerald-700"
                               : "bg-red-950 text-red-300 border border-red-800"
@@ -237,7 +237,7 @@ export function MatchHistoryModal({
                           {isTargetWinner ? "VICTORY" : "DEFEAT"}
                         </span>
                       ) : (
-                        <span className="text-[8.5px] font-pixel-heading px-1.5 py-0.5 rounded bg-black/60 text-zinc-400 border border-zinc-800">
+                        <span className="text-[8.5px] font-pixel-heading px-1.5 py-0.5 rounded-none bg-black/60 text-zinc-400 border border-zinc-800">
                           {r.AllyTeams.reduce((sum, t) => sum + t.Players.length, 0)}P
                         </span>
                       )}
@@ -253,7 +253,7 @@ export function MatchHistoryModal({
                         ...
                       </div>
                       <span className="text-[#449bed] font-pixel-heading font-bold shrink-0">
-                        INSPECT ➔
+                        [INSPECT]
                       </span>
                     </div>
                   </div>
@@ -271,13 +271,13 @@ export function MatchHistoryModal({
             ) : selectedReplayDetail ? (
               <div className="space-y-3">
                 {/* Replay Header */}
-                <div className="p-3 rounded bg-black/60 border border-zinc-800 space-y-1">
+                <div className="p-3 rounded-none bg-black/60 border border-zinc-800 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[8px] font-pixel-heading text-zinc-500 font-mono">
                       MATCH ID: {selectedReplayDetail.id.slice(0, 12)}...
                     </span>
-                    <span className="text-[9px] font-pixel-heading px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300">
-                      ⏱️ {formatDuration(selectedReplayDetail.durationMs)}
+                    <span className="text-[9px] font-pixel-heading px-1.5 py-0.5 rounded-none bg-zinc-800 text-zinc-300">
+                      TIME: {formatDuration(selectedReplayDetail.durationMs)}
                     </span>
                   </div>
                   <h3 className="font-pixel-heading text-sm font-bold text-white">
@@ -297,31 +297,31 @@ export function MatchHistoryModal({
 
                   <div className="grid grid-cols-2 gap-2">
                     {/* Metal / Energy Produced */}
-                    <div className="p-2 rounded bg-black/70 border border-zinc-800 space-y-0.5">
-                      <span className="text-[7.5px] font-pixel-heading text-zinc-500 uppercase flex items-center gap-1">
+                    <div className="p-2 rounded-none bg-black/70 border border-zinc-800 space-y-0.5">
+                      <span className="text-[7.5px] font-pixel-heading text-zinc-400 uppercase flex items-center gap-1">
                         <Zap className="size-2.5 text-amber-400" /> Top Resources
                       </span>
                       <div className="font-pixel-heading text-xs font-bold text-amber-300">
                         {Math.round(
                           selectedReplayDetail.awards?.mostResourcesProduced?.[0]?.value || 0
                         ).toLocaleString()}{" "}
-                        <span className="text-[8px] text-zinc-500">M+E</span>
+                        <span className="text-[8px] text-zinc-400">M+E</span>
                       </div>
-                      <span className="text-[7.5px] text-zinc-500">Peak economy efficiency</span>
+                      <span className="text-[7.5px] text-zinc-400">Peak economy efficiency</span>
                     </div>
 
                     {/* Combat Units Destroyed */}
-                    <div className="p-2 rounded bg-black/70 border border-zinc-800 space-y-0.5">
-                      <span className="text-[7.5px] font-pixel-heading text-zinc-500 uppercase flex items-center gap-1">
+                    <div className="p-2 rounded-none bg-black/70 border border-zinc-800 space-y-0.5">
+                      <span className="text-[7.5px] font-pixel-heading text-zinc-400 uppercase flex items-center gap-1">
                         <Flame className="size-2.5 text-red-400" /> Combat Impact
                       </span>
                       <div className="font-pixel-heading text-xs font-bold text-red-400">
                         {Math.round(
                           selectedReplayDetail.awards?.fightingUnitsDestroyed?.[0]?.value || 0
                         ).toLocaleString()}{" "}
-                        <span className="text-[8px] text-zinc-500">XP</span>
+                        <span className="text-[8px] text-zinc-400">XP</span>
                       </div>
-                      <span className="text-[7.5px] text-zinc-500">Destroyed enemy army</span>
+                      <span className="text-[7.5px] text-zinc-400">Destroyed enemy army</span>
                     </div>
                   </div>
                 </div>
@@ -333,7 +333,7 @@ export function MatchHistoryModal({
                     return (
                       <div
                         key={team.allyTeamId || idx}
-                        className={`p-2.5 rounded border text-[9px] ${
+                        className={`p-2.5 rounded-none border text-[9px] ${
                           isWin
                             ? "bg-emerald-950/20 border-emerald-500/50"
                             : "bg-black/60 border-zinc-800"
@@ -341,9 +341,9 @@ export function MatchHistoryModal({
                       >
                         <div className="flex items-center justify-between font-pixel-heading font-bold mb-1.5">
                           <span className={isWin ? "text-emerald-400" : "text-zinc-400"}>
-                            TEAM {idx + 1} {isWin ? "🏆 WINNER" : ""}
+                            TEAM {idx + 1} {isWin ? "[WINNER]" : ""}
                           </span>
-                          <span className="text-[8px] text-zinc-500">
+                          <span className="text-[8px] text-zinc-400">
                             {team.Players.length} PLAYERS
                           </span>
                         </div>
@@ -352,7 +352,7 @@ export function MatchHistoryModal({
                           {team.Players.map((p) => (
                             <div
                               key={p.id}
-                              className="flex items-center justify-between py-0.5 px-1 rounded bg-black/40 text-[8.5px]"
+                              className="flex items-center justify-between py-0.5 px-1 rounded-none bg-black/40 text-[8.5px]"
                             >
                               <span className="text-zinc-200 font-bold truncate">
                                 {p.name} ({p.faction || "Armada"})
@@ -374,10 +374,10 @@ export function MatchHistoryModal({
                 </div>
               </div>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-zinc-600">
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-zinc-400">
                 <History className="size-8 stroke-[1.5] mb-2 opacity-50" />
-                <p className="font-pixel-heading text-xs text-zinc-400">SELECT A REPLAY</p>
-                <p className="text-[10px] max-w-xs mt-1">
+                <p className="font-pixel-heading text-xs text-zinc-300">SELECT A REPLAY</p>
+                <p className="text-[10px] max-w-xs mt-1 text-zinc-400">
                   Inspect damage dealt, combat units destroyed, starting map coordinates, and macro economy performance.
                 </p>
               </div>
@@ -386,12 +386,12 @@ export function MatchHistoryModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-4 py-2 bg-[#090b12] border-t border-zinc-800 text-[9px] text-zinc-500 flex items-center justify-between">
+        <div className="px-4 py-2 bg-[#090b12] border-t border-zinc-800 text-[9px] text-zinc-400 flex items-center justify-between">
           <span>Source: Official Beyond All Reason Replay DB (api.bar-rts.com)</span>
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-white font-pixel-heading text-[10px]"
+            className="px-3 py-1 rounded-none bg-zinc-800 hover:bg-zinc-700 text-white font-pixel-heading text-[10px] transition-none active:translate-y-0.5"
           >
             CLOSE
           </button>

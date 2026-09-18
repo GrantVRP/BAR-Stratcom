@@ -327,16 +327,16 @@ export function BattleIntelCards({
               <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-700 text-zinc-300">
                 COMMANDER IN STAGING AREA
               </span>
-              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-500">
+              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-400">
                 0 COMBAT UNITS DEPLOYED
               </span>
             </div>
           ) : (
             <div className="flex items-center gap-1.5 flex-wrap font-pixel-heading text-[8px]">
-              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-500">
+              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-400">
                 FEED OFFLINE
               </span>
-              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-600">
+              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-400">
                 AWAITING ENGINE LINK
               </span>
             </div>
@@ -434,16 +434,16 @@ export function BattleIntelCards({
             </div>
           ) : (
             <div className="space-y-1.5 mt-auto pb-4">
-              <div className="text-[7.5px] font-pixel-heading text-zinc-500 uppercase tracking-wider flex items-center gap-1">
-                <Activity className="size-2.5 text-zinc-600" />
+              <div className="text-[7.5px] font-pixel-heading text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+                <Activity className="size-2.5 text-zinc-400" />
                 <span>TELEMETRY SENSORS OFFLINE</span>
               </div>
               <div className="px-2.5 py-2 rounded bg-black/85 border border-zinc-800/80 text-[8px] font-pixel-heading space-y-1">
-                <div className="text-zinc-400 font-bold flex items-center gap-1.5">
-                  <Radio className="size-3 text-zinc-500" />
+                <div className="text-zinc-300 font-bold flex items-center gap-1.5">
+                  <Radio className="size-3 text-zinc-400" />
                   No Live Match Connected
                 </div>
-                <div className="text-[7px] text-zinc-500 font-pixel-body leading-relaxed">
+                <div className="text-[7px] text-zinc-400 font-pixel-body leading-relaxed">
                   Launch Beyond All Reason or connect bridge daemon to stream real-time unit counts and teammate economy.
                 </div>
               </div>
@@ -594,7 +594,8 @@ export function BattleIntelCards({
                   </div>
 
                   <div className="text-xs font-pixel-body text-red-200/90 line-clamp-1">
-                    ⚡ <span className="text-zinc-300">Advice:</span> {enemyPush.tacticalAdvice}
+                    <span className="text-amber-300 font-pixel-heading text-[8px] mr-1">[TACTICAL ADVICE]:</span>
+                    <span>{enemyPush.tacticalAdvice}</span>
                   </div>
                 </div>
               ) : (

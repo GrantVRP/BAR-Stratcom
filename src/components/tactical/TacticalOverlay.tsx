@@ -435,16 +435,16 @@ export function TacticalOverlay({
 
     return (
       <div
-        className={`fixed ${cornerClasses} z-50 transition-all select-none`}
+        className={`fixed ${cornerClasses} z-50 select-none`}
         style={{ opacity }}
       >
         <div
           onClick={() => setIsMini(false)}
-          className="flex items-center gap-2.5 px-3 py-1.5 bg-[#0a0d14]/95 border-2 rounded-full shadow-[0_8px_24px_rgba(0,0,0,0.8),_2px_2px_0px_#000] cursor-pointer hover:scale-105 transition-transform"
+          className="flex items-center gap-2.5 px-3 py-1.5 bg-[#0a0d14]/95 border-2 rounded-none shadow-[2px_2px_0px_#000] cursor-pointer active:translate-y-0.5"
           style={{ borderColor: accentColor }}
         >
           {/* Faction Emblem */}
-          <span className="size-2 rounded-full" style={{ backgroundColor: accentColor }} />
+          <span className="size-2 rounded-none" style={{ backgroundColor: accentColor }} />
           
           <span
             className="text-[10px] font-pixel-heading font-bold uppercase"
@@ -469,7 +469,7 @@ export function TacticalOverlay({
           {/* Dynamic Intel Alert / Push Warning or Next Action Ticker */}
           {enemyPush && isLiveInGame ? (
             <span className="text-red-400 font-pixel-heading text-[9px] line-clamp-1 max-w-[150px] animate-pulse">
-              🚨 PUSH: {enemyPush.unitCount}x {enemyPush.unitType}
+              [PUSH]: {enemyPush.unitCount}x {enemyPush.unitType}
             </span>
           ) : (isLiveInGame && friendlyCount !== undefined && enemyCount !== undefined) ? (
             <span className="text-zinc-300 font-pixel-heading text-[9px] line-clamp-1 max-w-[150px] flex items-center gap-1">
@@ -495,7 +495,7 @@ export function TacticalOverlay({
   // =========================================================================
   return (
     <div
-      className={`fixed ${cornerClasses} w-[360px] sm:w-[380px] max-w-[calc(100vw-24px)] z-50 select-none flex flex-col font-pixel-body shadow-[0_16px_36px_rgba(0,0,0,0.85),_3px_3px_0px_#000] border-2 transition-opacity ${className}`}
+      className={`fixed ${cornerClasses} w-[360px] sm:w-[380px] max-w-[calc(100vw-24px)] z-50 select-none flex flex-col font-pixel-body shadow-[3px_3px_0px_#000] border-2 rounded-none ${className}`}
       style={{
         backgroundColor: "rgba(10, 12, 18, 0.95)",
         borderColor: accentColor,
@@ -510,7 +510,7 @@ export function TacticalOverlay({
         <div className="flex items-center gap-2 min-w-0">
           <Move className="size-3 text-zinc-500 shrink-0" />
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: accentColor }} />
+            <span className="size-2 rounded-none shrink-0" style={{ backgroundColor: accentColor }} />
             <span
               className="font-pixel-heading text-[10px] font-bold uppercase truncate"
               style={{ color: accentColor }}
@@ -531,7 +531,7 @@ export function TacticalOverlay({
             type="button"
             onClick={launchPictureInPicture}
             title="Pop out Always-on-Top Picture-in-Picture window (Hovers over game)"
-            className="p-1 hover:text-white hover:bg-zinc-800 rounded transition-colors"
+            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5"
           >
             <ExternalLink className="size-3.5" />
           </button>
@@ -550,7 +550,7 @@ export function TacticalOverlay({
               setCorner(corners[nextIdx]);
             }}
             title={`Pin corner: Currently ${corner}`}
-            className="p-1 hover:text-white hover:bg-zinc-800 rounded transition-colors text-[9px] font-pixel-heading"
+            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 text-[9px] font-pixel-heading"
           >
             {corner === "top-right" ? "TR" : corner === "top-left" ? "TL" : corner === "bottom-right" ? "BR" : "BL"}
           </button>
@@ -560,7 +560,7 @@ export function TacticalOverlay({
             type="button"
             onClick={() => setIsMini(true)}
             title="Collapse to Discord Mini-Pill"
-            className="p-1 hover:text-white hover:bg-zinc-800 rounded transition-colors"
+            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5"
           >
             <Minus className="size-3.5" />
           </button>
@@ -570,7 +570,7 @@ export function TacticalOverlay({
             type="button"
             onClick={onClose}
             title="Close Overlay (Shift + O to reopen)"
-            className="p-1 hover:text-red-400 hover:bg-zinc-800 rounded transition-colors"
+            className="p-1 hover:text-red-400 hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5"
           >
             <X className="size-3.5" />
           </button>
@@ -601,10 +601,10 @@ export function TacticalOverlay({
         <button
           type="button"
           onClick={() => setActiveTab("INTEL")}
-          className={`flex-1 py-1.5 px-2 text-center transition-all flex items-center justify-center gap-1.5 border-b-2 ${
+          className={`flex-1 py-1.5 px-2 text-center transition-none flex items-center justify-center gap-1.5 border-b-2 ${
             activeTab === "INTEL"
               ? "bg-[#141824] font-bold"
-              : "text-zinc-500 border-transparent hover:text-zinc-300 hover:bg-zinc-900/40"
+              : "text-zinc-400 border-transparent hover:text-zinc-200 hover:bg-zinc-900/40"
           }`}
           style={activeTab === "INTEL" ? { borderColor: accentColor, color: accentColor } : {}}
         >
@@ -615,10 +615,10 @@ export function TacticalOverlay({
         <button
           type="button"
           onClick={() => setActiveTab("QUEUE")}
-          className={`flex-1 py-1.5 px-2 text-center transition-all flex items-center justify-center gap-1.5 border-b-2 ${
+          className={`flex-1 py-1.5 px-2 text-center transition-none flex items-center justify-center gap-1.5 border-b-2 ${
             activeTab === "QUEUE"
-              ? "bg-[#141824] font-bold"
-              : "text-zinc-500 border-transparent hover:text-zinc-300 hover:bg-zinc-900/40"
+              ? "bg-[#142033] font-bold"
+              : "text-zinc-400 border-transparent hover:text-zinc-200 hover:bg-zinc-900/40"
           }`}
           style={activeTab === "QUEUE" ? { borderColor: accentColor, color: accentColor } : {}}
         >
@@ -629,10 +629,10 @@ export function TacticalOverlay({
         <button
           type="button"
           onClick={() => setActiveTab("SPLIT")}
-          className={`flex-1 py-1.5 px-2 text-center transition-all flex items-center justify-center gap-1.5 border-b-2 ${
+          className={`flex-1 py-1.5 px-2 text-center transition-none flex items-center justify-center gap-1.5 border-b-2 ${
             activeTab === "SPLIT"
               ? "bg-[#141824] font-bold"
-              : "text-zinc-500 border-transparent hover:text-zinc-300 hover:bg-zinc-900/40"
+              : "text-zinc-400 border-transparent hover:text-zinc-200 hover:bg-zinc-900/40"
           }`}
           style={activeTab === "SPLIT" ? { borderColor: accentColor, color: accentColor } : {}}
         >
@@ -660,56 +660,56 @@ export function TacticalOverlay({
         <>
           {/* Preset Selector & Auto-Check Bar */}
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#0b0e16] border-b border-zinc-800 text-[8px] font-pixel-heading overflow-x-auto custom-scrollbar">
-            <span className="text-zinc-500 shrink-0 uppercase">Preset:</span>
+            <span className="text-zinc-400 shrink-0 uppercase">Preset:</span>
             {steps.length > 0 && (
               <button
                 type="button"
                 onClick={() => handleSelectPreset("custom")}
-                className={`px-2 py-0.5 rounded border transition-colors shrink-0 flex items-center gap-1 ${
+                className={`px-2 py-0.5 rounded-none border transition-none active:translate-y-0.5 shrink-0 flex items-center gap-1 ${
                   selectedPreset === "custom"
                     ? "bg-[#142033] border-[#449bed] text-white"
                     : "bg-black/60 border-zinc-800 text-zinc-400 hover:text-zinc-200"
                 }`}
                 style={selectedPreset === "custom" ? { borderColor: accentColor, color: accentColor } : {}}
               >
-                <span>📋 ACTIVE ({steps.length})</span>
+                <span>[ACTIVE: {steps.length}]</span>
               </button>
             )}
             <button
               type="button"
               onClick={() => handleSelectPreset("bot_skirmish")}
-              className={`px-2 py-0.5 rounded border transition-colors shrink-0 flex items-center gap-1 ${
+              className={`px-2 py-0.5 rounded-none border transition-none active:translate-y-0.5 shrink-0 flex items-center gap-1 ${
                 selectedPreset === "bot_skirmish"
                   ? "bg-[#142033] border-[#449bed] text-white"
                   : "bg-black/60 border-zinc-800 text-zinc-400 hover:text-zinc-200"
               }`}
               style={selectedPreset === "bot_skirmish" ? { borderColor: accentColor, color: accentColor } : {}}
             >
-              <span>🤖 BOT</span>
+              <span>[BOT]</span>
             </button>
             <button
               type="button"
               onClick={() => handleSelectPreset("raider_rush")}
-              className={`px-2 py-0.5 rounded border transition-colors shrink-0 flex items-center gap-1 ${
+              className={`px-2 py-0.5 rounded-none border transition-none active:translate-y-0.5 shrink-0 flex items-center gap-1 ${
                 selectedPreset === "raider_rush"
                   ? "bg-[#142033] border-[#449bed] text-white"
                   : "bg-black/60 border-zinc-800 text-zinc-400 hover:text-zinc-200"
               }`}
               style={selectedPreset === "raider_rush" ? { borderColor: accentColor, color: accentColor } : {}}
             >
-              <span>⚡ RAID</span>
+              <span>[RAID]</span>
             </button>
             <button
               type="button"
               onClick={() => handleSelectPreset("fast_eco")}
-              className={`px-2 py-0.5 rounded border transition-colors shrink-0 flex items-center gap-1 ${
+              className={`px-2 py-0.5 rounded-none border transition-none active:translate-y-0.5 shrink-0 flex items-center gap-1 ${
                 selectedPreset === "fast_eco"
                   ? "bg-[#142033] border-[#449bed] text-white"
                   : "bg-black/60 border-zinc-800 text-zinc-400 hover:text-zinc-200"
               }`}
               style={selectedPreset === "fast_eco" ? { borderColor: accentColor, color: accentColor } : {}}
             >
-              <span>☀️ ECO</span>
+              <span>[ECO]</span>
             </button>
 
             <span className="text-zinc-700 mx-0.5">|</span>
@@ -719,13 +719,13 @@ export function TacticalOverlay({
               type="button"
               onClick={() => setAutoCheckEnabled((prev) => !prev)}
               title={autoCheckEnabled ? "Auto-check enabled: Items check off automatically when built in-game" : "Auto-check disabled"}
-              className={`px-2 py-0.5 rounded border transition-colors shrink-0 flex items-center gap-1 font-bold ${
+              className={`px-2 py-0.5 rounded-none border transition-none active:translate-y-0.5 shrink-0 flex items-center gap-1 font-bold ${
                 autoCheckEnabled
                   ? "bg-emerald-950/80 border-emerald-500 text-emerald-300"
-                  : "bg-black/60 border-zinc-800 text-zinc-500 hover:text-zinc-300"
+                  : "bg-black/60 border-zinc-800 text-zinc-400 hover:text-zinc-200"
               }`}
             >
-              <span className={`size-1.5 rounded-full ${autoCheckEnabled ? "bg-emerald-400 arcade-blink" : "bg-zinc-600"}`} />
+              <span className={`size-1.5 rounded-none ${autoCheckEnabled ? "bg-emerald-400 arcade-blink" : "bg-zinc-600"}`} />
               <span>AUTO: {autoCheckEnabled ? "ON" : "OFF"}</span>
             </button>
           </div>
@@ -738,7 +738,7 @@ export function TacticalOverlay({
             >
               <div className="min-w-0 flex-1">
                 <div className="text-[8px] font-pixel-heading uppercase text-zinc-400 flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full arcade-blink" style={{ backgroundColor: accentColor }} />
+                  <span className="size-1.5 rounded-none arcade-blink" style={{ backgroundColor: accentColor }} />
                   UPCOMING AT {nextStep.timestamp}:
                 </div>
                 <div className="text-xs font-pixel-heading text-white truncate mt-0.5">
@@ -763,9 +763,9 @@ export function TacticalOverlay({
           {/* Scrollable Build Order Queue */}
           <div className="p-2 max-h-[calc(100vh-210px)] min-h-[140px] overflow-y-auto space-y-1 text-xs custom-scrollbar">
             {effectiveSteps.length === 0 ? (
-              <div className="p-4 text-center text-zinc-500 font-pixel-heading text-[10px]">
+              <div className="p-4 text-center text-zinc-400 font-pixel-heading text-[10px]">
                 NO ACTIVE BUILD ORDER DETECTED.
-                <div className="text-zinc-600 text-xs mt-1 font-pixel-body">
+                <div className="text-zinc-300 text-xs mt-1 font-pixel-body">
                   Select a preset above to load an opening build queue.
                 </div>
               </div>
@@ -783,8 +783,8 @@ export function TacticalOverlay({
                       isActive && !isDone
                         ? "bg-[#142033] border-[#449bed] text-white shadow-[1px_1px_0px_#000]"
                         : isDone
-                        ? "bg-[#0b0d14] border-zinc-800/80 text-zinc-500 opacity-60"
-                        : "bg-[#0e1018] border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                        ? "bg-[#0b0d14] border-zinc-800/80 text-zinc-400 opacity-60"
+                        : "bg-[#0e1018] border-zinc-800 text-zinc-200 hover:border-zinc-700"
                     }`}
                     style={isActive && !isDone ? { borderColor: accentColor } : undefined}
                   >
@@ -796,7 +796,7 @@ export function TacticalOverlay({
                           e.stopPropagation();
                           toggleStep(idx);
                         }}
-                        className={`size-4 border rounded-sm flex items-center justify-center shrink-0 ${
+                        className={`size-4 border rounded-none flex items-center justify-center shrink-0 ${
                           isDone
                             ? "bg-emerald-950 border-emerald-500 text-emerald-400"
                             : isActive
@@ -816,7 +816,7 @@ export function TacticalOverlay({
                             <BarIcon name={step.itemName} faction={faction} className="size-3.5 shrink-0" size={14} />
                           )}
                           {isAutoDone && (
-                            <span className="text-[7.5px] px-1 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold font-pixel-heading">
+                            <span className="text-[7.5px] px-1 py-0.2 rounded-none bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold font-pixel-heading">
                               ✓ IN-GAME
                             </span>
                           )}
@@ -825,7 +825,7 @@ export function TacticalOverlay({
                             if (patches.length === 0) return null;
                             return (
                               <span
-                                className="text-[7px] px-1 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-600/70 font-bold font-pixel-heading cursor-help shrink-0"
+                                className="text-[7px] px-1 py-0.2 rounded-none bg-amber-950/80 text-amber-300 border border-amber-600/70 font-bold font-pixel-heading cursor-help shrink-0"
                                 title={`Recent Balance Adjustment (${patches[0].date?.substring(0, 10) || "Patch"}): ${patches[0].message}`}
                               >
                                 PATCH
@@ -918,7 +918,7 @@ export function TacticalOverlay({
                             e.stopPropagation();
                             toggleStep(idx);
                           }}
-                          className={`size-3.5 border rounded-sm flex items-center justify-center shrink-0 ${
+                          className={`size-3.5 border rounded-none flex items-center justify-center shrink-0 ${
                             isDone
                               ? "bg-emerald-950 border-emerald-500 text-emerald-400"
                               : isActive
@@ -932,13 +932,13 @@ export function TacticalOverlay({
                           {step.timestamp}
                         </span>
                         {isAutoDone && (
-                          <span className="text-[7px] px-1 py-0.1 rounded bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold font-pixel-heading">
+                          <span className="text-[7px] px-1 py-0.1 rounded-none bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold font-pixel-heading">
                             ✓
                           </span>
                         )}
                         {step.itemName && findChangesForUnit(step.itemName).length > 0 && (
                           <span
-                            className="text-[6.5px] px-0.5 rounded bg-amber-950 text-amber-300 border border-amber-600/70 font-bold font-pixel-heading shrink-0 cursor-help"
+                            className="text-[6.5px] px-0.5 rounded-none bg-amber-950 text-amber-300 border border-amber-600/70 font-bold font-pixel-heading shrink-0 cursor-help"
                             title={`Recent Balance Adjustment: ${findChangesForUnit(step.itemName)[0].message}`}
                           >
                             P

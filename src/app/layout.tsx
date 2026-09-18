@@ -15,7 +15,7 @@ const vt323 = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "Beyond All Reason — StratCom 16-Bit Tactical Console",
+  title: "Beyond All Reason // StratCom 16-Bit Tactical Console",
   description: "16-bit retro tactical arcade build order generator and telemetry console for Beyond All Reason",
 };
 

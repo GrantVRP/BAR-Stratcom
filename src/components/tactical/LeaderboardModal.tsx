@@ -44,19 +44,19 @@ export function LeaderboardModal({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm font-pixel-body select-none animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 font-pixel-body select-none">
       <div
-        className="w-full max-w-3xl max-h-[85vh] bg-[#0c0e17] border-2 rounded-lg shadow-[0_16px_40px_rgba(0,0,0,0.9),_3px_3px_0px_#000] flex flex-col overflow-hidden text-zinc-200"
+        className="w-full max-w-3xl max-h-[85vh] bg-[#0c0e17] border-2 rounded-none shadow-[0_16px_40px_rgba(0,0,0,0.9),_4px_4px_0px_#000] flex flex-col overflow-hidden text-zinc-200"
         style={{ borderColor: accentColor }}
       >
         {/* Header */}
         <div
-          className="px-4 py-3 bg-[#131624] border-b flex items-center justify-between"
+          className="px-4 py-3 bg-[#131624] border-b-2 flex items-center justify-between"
           style={{ borderColor: `${accentColor}40` }}
         >
           <div className="flex items-center gap-2.5">
             <div
-              className="size-7 rounded flex items-center justify-center text-white shadow"
+              className="size-7 rounded-none border border-black flex items-center justify-center text-white shadow"
               style={{ backgroundColor: accentColor }}
             >
               <Trophy className="size-4 text-amber-300" />
@@ -69,7 +69,7 @@ export function LeaderboardModal({
                 >
                   OFFICIAL BAR LEADERBOARDS
                 </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-700 font-pixel-heading">
+                <span className="text-[9px] px-1.5 py-0.2 rounded-none bg-amber-950 text-amber-300 border border-amber-700 font-pixel-heading">
                   SEASON {season}
                 </span>
               </div>
@@ -85,14 +85,14 @@ export function LeaderboardModal({
               onClick={refresh}
               disabled={isLoading}
               title="Refresh leaderboards"
-              className="p-1.5 rounded bg-black/60 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700 transition-colors"
+              className="p-1.5 rounded-none bg-black/60 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700 transition-none"
             >
               <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin text-amber-400" : ""}`} />
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded bg-black/60 hover:bg-red-950/60 text-zinc-400 hover:text-red-300 border border-zinc-700 hover:border-red-600 transition-colors"
+              className="p-1.5 rounded-none bg-black/60 hover:bg-red-950/60 text-zinc-400 hover:text-red-300 border border-zinc-700 hover:border-red-600 transition-none"
             >
               <X className="size-4" />
             </button>
@@ -100,7 +100,7 @@ export function LeaderboardModal({
         </div>
 
         {/* Division Navigation Tabs (Duel, Small Team, Large Team, FFA) */}
-        <div className="flex items-center border-b border-zinc-800 bg-[#0f121d] px-2 overflow-x-auto custom-scrollbar">
+        <div className="flex items-center border-b-2 border-zinc-800 bg-[#0f121d] px-2 overflow-x-auto custom-scrollbar">
           {["Duel", "Small Team", "Large Team", "FFA"].map((cat) => {
             const isSelected = selectedCategory === cat;
             return (
@@ -108,19 +108,19 @@ export function LeaderboardModal({
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`py-2 px-3 text-xs font-pixel-heading font-bold border-b-2 transition-all whitespace-nowrap ${
+                className={`py-2 px-3 text-xs font-pixel-heading font-bold border-b-2 transition-none whitespace-nowrap ${
                   isSelected
                     ? "border-amber-400 text-amber-300 bg-amber-950/20"
                     : "border-transparent text-zinc-400 hover:text-zinc-200"
                 }`}
               >
                 {cat === "Duel"
-                  ? "⚔️ 1v1 DUEL"
+                  ? "[1v1 DUEL]"
                   : cat === "Small Team"
-                  ? "🛡️ SMALL TEAM"
+                  ? "[SMALL TEAM]"
                   : cat === "Large Team"
-                  ? "👑 8v8 LARGE TEAM"
-                  : "💥 FFA"}
+                  ? "[8v8 LARGE TEAM]"
+                  : "[FFA]"}
               </button>
             );
           })}

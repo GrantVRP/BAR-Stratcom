@@ -74,19 +74,19 @@ export function LiveBattlesModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm font-pixel-body select-none animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 font-pixel-body select-none">
       <div
-        className="w-full max-w-4xl max-h-[90vh] bg-[#0c0e17] border-2 rounded-lg shadow-[0_16px_40px_rgba(0,0,0,0.9),_3px_3px_0px_#000] flex flex-col overflow-hidden text-zinc-200"
+        className="w-full max-w-4xl max-h-[90vh] bg-[#0c0e17] border-2 rounded-none shadow-[0_16px_40px_rgba(0,0,0,0.9),_4px_4px_0px_#000] flex flex-col overflow-hidden text-zinc-200"
         style={{ borderColor: accentColor }}
       >
         {/* Modal Header */}
         <div
-          className="px-4 py-3 bg-[#131624] border-b flex items-center justify-between"
+          className="px-4 py-3 bg-[#131624] border-b-2 flex items-center justify-between"
           style={{ borderColor: `${accentColor}40` }}
         >
           <div className="flex items-center gap-2.5">
             <div
-              className="size-7 rounded flex items-center justify-center text-white shadow"
+              className="size-7 rounded-none border border-black flex items-center justify-center text-white shadow"
               style={{ backgroundColor: accentColor }}
             >
               <Swords className="size-4" />
@@ -99,7 +99,7 @@ export function LiveBattlesModal({
                 >
                   LIVE BATTLES & OPPONENT SCOUT
                 </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-700 font-pixel-heading">
+                <span className="text-[9px] px-1.5 py-0.2 rounded-none bg-emerald-950 text-emerald-300 border border-emerald-700 font-pixel-heading">
                   ● {battles.length} SERVERS ONLINE
                 </span>
               </div>
@@ -193,9 +193,9 @@ export function LiveBattlesModal({
 
                     <div className="mt-1 flex items-center justify-between text-[10px] text-zinc-400">
                       <span className="text-[#449bed] font-bold truncate max-w-[170px]">
-                        🗺️ {battle.map}
+                        [MAP]: {battle.map}
                       </span>
-                      <span className="text-[8.5px] text-zinc-500 font-pixel-heading">
+                      <span className="text-[8.5px] text-zinc-400 font-pixel-heading">
                         Host: {battle.founder?.username}
                       </span>
                     </div>
@@ -357,8 +357,8 @@ function PlayerRosterRow({
           {player.username}
         </span>
         {player.status?.rank !== undefined && (
-          <span className="text-[7.5px] px-1 rounded bg-zinc-800 text-zinc-400 font-pixel-heading shrink-0">
-            ★{player.status.rank}
+          <span className="text-[7.5px] px-1 rounded-none bg-zinc-800 text-zinc-300 font-pixel-heading shrink-0 border border-zinc-700">
+            R{player.status.rank}
           </span>
         )}
       </div>

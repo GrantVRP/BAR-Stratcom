@@ -1354,7 +1354,7 @@ export default function BeyondAllReasonConsole() {
                     <span style={{ color: accentColor }}>▸</span>
                     <span>THEATER NARRATIVE & ENVIRONMENT</span>
                   </div>
-                  <p className="text-base text-zinc-300 leading-relaxed font-pixel-body pl-3 border-l-2 border-zinc-700">
+                  <p className="text-base text-zinc-300 leading-relaxed font-pixel-body p-3 pixel-box-inset bg-black/40">
                     {selectedMap.tacticalBriefing}
                   </p>
                 </div>
@@ -1459,7 +1459,7 @@ export default function BeyondAllReasonConsole() {
       {/* ========================================================================= */}
       <AnimatePresence>
         {showKeyModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -1487,9 +1487,9 @@ export default function BeyondAllReasonConsole() {
                   Link your Gemini API key to activate live reasoning with{" "}
                   <strong className="text-white font-pixel-heading text-[10px]">Gemini 1.5 Pro</strong>.
                 </p>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-zinc-400">
                   Keys are stored exclusively in your local browser storage. If empty, the console
-                  seamlessly uses the built-in Grandmaster ruleset.
+                  uses the built-in Grandmaster ruleset directly without configuration.
                 </p>
                 <div className="pt-2">
                   <Input

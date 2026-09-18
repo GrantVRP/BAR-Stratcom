@@ -168,6 +168,7 @@ OUTPUT FORMAT & CASTER VOICE INSTRUCTIONS:
 3. 'strategyNotes':
    - Formatted in comprehensive GitHub-flavored Markdown.
    - Written in the energetic, analytical, high-tempo style of a veteran tournament caster (as exemplified in the few-shot excerpts above).
+   - DIRECTIVE: STRICTLY NO EMOJIS IN HEADINGS. Never write '### ⚡ Macro' or '### 🎯 Execution'. Use clean military bracket syntax such as '### [MACRO DISCIPLINE]' or '### [COMBAT TIMING WINDOWS]'.
    - Break down the 100E:10M macro balance, timing attack execution windows, Commander reclaim sweeps, and radar/skirmish positioning.`;
 }
 
@@ -212,14 +213,15 @@ function generateTacticalPreset(
           '2x Construction Bot (Perimeter Expansion)',
           '1x Advanced Construction Bot (T2 Infrastructure)',
         ],
-        strategyNotes: `# 🎙️ Caster Desk: Armada Anti-Chain Solars & 100% Reclaim Slingshot
+        strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Armada Anti-Chain Solars & 100% Reclaim Slingshot
 
-### ⚡ Macro Discipline: The Solar Reclaim Advantage
+### [MACRO DISCIPLINE: THE SOLAR RECLAIM ADVANTAGE]
 - **Zero Wind RNG Stalls**: Unlike Wind Turbines which fluctuate wildly between 0 and 25+, Solar Collectors provide a rigid, guaranteed +20 Energy baseline.
 - **Anti-Chain Spacing**: Solars explode violently when destroyed. Always space them at least 3-4 tiles apart so an enemy artillery shell or stray raider cannot trigger a cascading chain reaction.
 - **100% Metal Recycling Slingshot**: At 03:15, your Commander reclaims all early Solars, recovering 100% of the 145 metal cost per unit (+580 metal total!). This massive burst liquidates dead capital directly into an immediate T2 Lab or Advanced Solar without stalling!
 
-### 🎯 Transition & Combat Execution (04:00 - 06:30)
+### [COMBAT TIMING & TRANSITION] (04:00 - 06:30)
 - Maintain lane control with 4x Paws and 2x Rockos.
 - As the reclaimed metal floods your bank, drop the T2 Bot Lab by 04:30 and transition directly into Hounds and Sharpshooters!`,
       };
@@ -248,13 +250,14 @@ function generateTacticalPreset(
           '2x Hammer (Mobile Plasma Artillery Bot)',
           '2x Jethro (Anti-Air Escort Bot)',
         ],
-        strategyNotes: `# 🎙️ Caster Desk: Armada Flank Assault & Lazarus Reanimation Protocol
+        strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Armada Flank Assault & Lazarus Reanimation Protocol
 
-### ⚡ The Flanking Engine (+100% to +150% Rear Damage)
+### [THE FLANKING ENGINE] (+100% to +150% Rear Damage)
 - **Directional Armor Penetration**: In Beyond All Reason, units take massive bonus damage when struck from behind or sideways (+100% to +150% extra damage).
 - **The Hammer & Anvil Pin**: Use 6x Rockos and Hammers to hold the opponent's main force in place from 420 range, then sprint 6-8 Paws around their flanks to assassinate heavy units from the rear in seconds!
 
-### 🧬 Lazarus Resurrection Loop
+### [LAZARUS RESURRECTION PROTOCOL]
 - Set 2x Lazarus bots to 'Fight' or 'Patrol' commands directly behind your skirmish line.
 - The moment an enemy unit dies, Lazarus reanimates the metallic husk back into a living Armada fighter under your control! You steal their metal and double your army size on the fly!`,
       };
@@ -283,9 +286,10 @@ function generateTacticalPreset(
           '1x Advanced Fusion Reactor (+1050 Energy/s)',
           '4x Advanced Energy Converter (70E:1M Conversion Grid)',
         ],
-        strategyNotes: `# 🎙️ Caster Desk: Armada Dedicated Backline Eco & AFUS Slingshot
+        strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Armada Dedicated Backline Eco & AFUS Slingshot
 
-### ⚡ Macro Discipline: 70E:1M Conversion & AFUS Dominance
+### [MACRO DISCIPLINE: 70E:1M CONVERSION & AFUS DOMINANCE]
 - **The Golden Ratio**: Energy is metal in high-level BAR! Once your Advanced Fusion Reactor (+1050 E/s) is completed, each Energy Converter converts 70 excess Energy into 1 Metal.
 - **Frontline Feeding**: A dedicated backline eco player does not build combat units early; your sole purpose is to hit AFUS by 07:30 - 09:00, convert 1000+ Energy into 15-25 Metal/sec, and send metal streams directly to your frontline players to crush their lanes!`,
       };
@@ -313,13 +317,14 @@ function generateTacticalPreset(
           '2x Samson (Mobile Anti-Air Screen)',
           '1x Sparrow (Scout Plane)',
         ],
-        strategyNotes: `# 🎙️ Caster Desk: Armada Automated Air-Drop & Cliff Bypass Siege
+        strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Armada Automated Air-Drop & Cliff Bypass Siege
 
-### ✈️ Automated Ferry Lanes (\'F\' Command)
+### [AIR TRANSPORT FERRY LANES] ('F' Command)
 - In competitive BAR, ground armies often get bottlenecked in narrow mountain passes or choke points guarded by dozens of Light Laser Towers.
-- Use the Atlas transport\'s automated Ferry command (\'F\'): set pickup and drop-off beacons. Any unit that moves into the beacon is automatically airlifted over mountains directly into the enemy\'s unfortified backline!
+- Use the Atlas transport's automated Ferry command ('F'): set pickup and drop-off beacons. Any unit that moves into the beacon is automatically airlifted over mountains directly into the enemy's unfortified backline!
 
-### 🎯 Tactical Execution
+### [TACTICAL COMBAT EXECUTION]
 - Fly heavy Bulldogs and Stumps over impassable terrain to crush vulnerable Solars and Advanced Mexes from behind!`,
       };
     }
@@ -347,20 +352,21 @@ function generateTacticalPreset(
           '2x Wolverine (Light Mobile Artillery / Mine Dispenser)',
           '1x Beaver / Construction Vehicle (Perimeter Mex Expansion)',
         ],
-        strategyNotes: `# 🎙️ Caster Desk: Armada Blitzkrieg - Early Vehicle Raider Surge
+        strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Armada Blitzkrieg - Early Vehicle Raider Surge
 
-### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+### [MACRO DISCIPLINE: +60 ENERGY RULE & 100E:10M RATIO]
 - **The +60E Power Threshold**: Notice how we never drop the Vehicle Plant until 3 Solars lock down +60 Energy. Dropping a factory on +20E cuts Commander build power down to a crawl and delays your first Flash tank by 25 seconds—an eternity in competitive BAR!
 - **100:10 Macro Sustain**: As perimeter Mexes come online (+10M), immediately balance with Wind Turbines to maintain 100 Energy per 10 Metal. When excess power crosses 400+, slide on 1x Energy Converter (70E -> 1M) for a steady +5.7 metal influx.
 
-### 🌬️ Wind vs. Solar Tactical Adaptation
+### [POWER GRID CONVERSION & WIND SENSORS]
 - If map wind averages >= 8, scale spaced pairs of Wind Turbines to avoid chain explosions. If wind falls below 6, drop an extra Solar Collector immediately to keep nanofabricators running at 100% capacity.
 
-### 🛠️ Commander Reclaim & Power Recycling
+### [COMMANDER RECLAIM HARVEST]
 - **02:30 Rock Reclaim**: Commander vacuums up local boulder clusters for +280 instant metal, injecting pure fuel into continuous Flash and Stump production.
 - **03:25 Solar Recycling**: Once wind turbines stabilize, reclaim 1x early obsolete Solar Collector. That recovers 100% of the 145 metal investment, instantly converted into frontline armor!
 
-### 🎯 Timing Attack Execution Window (02:30 - 03:45)
+### [TIMING ATTACK WINDOWS] (02:30 - 03:45)
 - **Flank Harassment (02:30)**: Group 4-6 Flash tanks. Never dive the enemy Commander's D-Gun! Sweep the outer lanes to snipe unprotected Metal Extractors.
 - **Armor Push (04:15)**: Follow up with 4x Stumps and 2x Wolverines to crack static Light Laser Towers from outside their 420 range.`,
       };
@@ -388,16 +394,17 @@ function generateTacticalPreset(
           '2x Freedom Fighter (Air Superiority Interceptor)',
           '1x Sparrow (Reconnaissance Scout Plane)',
         ],
-        strategyNotes: `# 🎙️ Caster Desk: Armada Air Supremacy - Gunship & Bomber Surgical Harass
+        strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Armada Air Supremacy - Gunship & Bomber Surgical Harass
 
-### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+### [MACRO DISCIPLINE: +60 ENERGY RULE & 100E:10M RATIO]
 - **Air Factory Power Floor**: Air plants have brutal energy demands. Starting before +60E will brown out your base instantly. Securing 3x Solars gives the +60E bedrock needed to keep the nanofabricator spinning without choking the Commander.
 - **100:10 Ratio & Energy Storage**: Air units drink energy like water. Build early Energy Storage before your second bomber is queued to cushion high burst drain and enable Commander D-Gun defense.
 
-### 🌬️ Wind vs. Solar & Commander Power Recycling
+### [POWER GRID CONVERSION & WIND SENSORS]
 - Scale wind turbines in the safe backline. At 03:10, reclaim 1x early Solar Collector to refund 145 metal directly into Freedom Fighter anti-air defense.
 
-### 🎯 Timing Windows (03:15 - 04:30)
+### [TIMING ATTACK WINDOWS] (03:15 - 04:30)
 - **03:15 Gunship Snipe**: Fly Brawlers over ridgelines to eliminate isolated constructors.
 - **04:15 Carpet Bombing**: Coordinate 2x Shadows against tightly packed enemy windmills for massive secondary chain reactions!`,
       };
@@ -427,17 +434,18 @@ function generateTacticalPreset(
         '2x Jethro (Mobile Anti-Air Missile Bot)',
         '1x Lazarus (Resurrection & Fast Reclaim Bot)',
       ],
-      strategyNotes: `# 🎙️ Caster Desk: Armada Bot Skirmish & Choke Creep
+      strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Armada Bot Skirmish & Choke Creep
 
-### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+### [MACRO DISCIPLINE: +60 ENERGY RULE & 100E:10M RATIO]
 - **The +60E Bedrock**: 3x Solars give you guaranteed +60E before the Bot Lab starts. That means the Commander can assist unit production without bleeding your energy reserves dry.
 - **100:10 Macro Sustain**: Match every 10 metal per second with 100 energy generation. Bot armies are metal-efficient, but Rockos and Lasers need constant power backing.
 
-### 🌬️ Wind vs. Solar & Commander Reclaim Tasks
+### [POWER GRID CONVERSION & COMMANDER RECLAIM]
 - **Boulders & Obsolete Power Reclaim**: Commander cleans out local boulders at 02:30 for +260 metal, then recycles an obsolete Solar Collector at 03:18 to recover 145 metal for forward defenses.
 - **Lazarus Recycling**: Resurrect fallen Paw wrecks to reinforce the frontline for free!
 
-### 🎯 Tactical Range Superiority (02:45 - 04:30)
+### [TACTICAL RANGE SUPERIORITY] (02:45 - 04:30)
 - Rockos boast 420 range, outranging Light Laser Towers (420 vs 400). Use hold-ground micro to pick apart static defenses without taking hull damage while Ticks provide radar spotting.`,
     };
   }
@@ -465,9 +473,10 @@ function generateTacticalPreset(
         '2x Construction Bot (Perimeter Expansion)',
         '1x Advanced Construction Bot (T2 Infrastructure)',
       ],
-      strategyNotes: `# 🎙️ Caster Desk: Cortex Anti-Chain Solars & 100% Metal Reclaim Slingshot
+      strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Cortex Anti-Chain Solars & 100% Metal Reclaim Slingshot
 
-### ⚡ Macro Discipline: The Solar Reclaim Slingshot
+### [MACRO DISCIPLINE: THE SOLAR RECLAIM SLINGSHOT]
 - **Eliminating Volatility**: Wind turbines on fluctuating maps risk crippling power stalls. Solar Collectors give an unyielding +20 Energy baseline.
 - **Anti-Chain Grid**: Cortex solars explode with heavy area damage. Spacing them by 4 tiles ensures zero cascading base destruction.
 - **100% Metal Reclaim at 03:15**: By reclaiming 4 solars, you get +580 metal back on the spot—funding an instant T2 Lab transition while competitors are still building T1 wind farms!`,
@@ -497,9 +506,10 @@ function generateTacticalPreset(
         '2x Pyros (Close-Quarters Flamethrower Assault Bot)',
         '2x Crasher (Anti-Air Support Bot)',
       ],
-      strategyNotes: `# 🎙️ Caster Desk: Cortex Flank Assault & Necro Reanimation Swarm
+      strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Cortex Flank Assault & Necro Reanimation Swarm
 
-### ⚡ The Flanking Engine (+100% to +150% Rear Damage)
+### [THE FLANKING ENGINE] (+100% to +150% Rear Damage)
 - **Flank Multipliers**: BAR's combat engine rewards encircling the enemy. Strike enemy heavy armor from behind with Grunts for +150% damage bonus!
 - **Necro Field Reanimation**: Necro bots salvage metal at insane speed and reanimate husks on the fly. Turn fallen enemy tanks into Cortex shock troops right in their own territory!`,
       };
@@ -528,9 +538,10 @@ function generateTacticalPreset(
         '1x Advanced Fusion Reactor (+1050 Energy/s)',
         '4x Advanced Energy Converter (70E:1M Conversion Grid)',
       ],
-      strategyNotes: `# 🎙️ Caster Desk: Cortex Dedicated Backline Eco & AFUS Powerhouse
+        strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Cortex Dedicated Backline Eco & AFUS Powerhouse
 
-### ⚡ Macro Discipline: 70E:1M Ratio & Slingshotting the Team
+### [MACRO DISCIPLINE: 70E:1M RATIO & SLINGSHOTTING THE TEAM]
 - Fast T2 into Advanced Fusion (+1050 E/s) is the premier win condition in 8v8 competitive BAR.
 - Convert power with 4x Advanced Converters and funnel surplus metal into frontline teammate factories or tech directly into T3 Titans (Sumo / Goliath / Nukes)!`,
     };
@@ -558,9 +569,10 @@ function generateTacticalPreset(
         '2x Crasher (Mobile Anti-Air Screen)',
         '1x Avenger (Air Superiority Interceptor)',
       ],
-      strategyNotes: `# 🎙️ Caster Desk: Cortex Automated Valkyrie Air-Drop Siege
+      strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Cortex Automated Valkyrie Air-Drop Siege
 
-### ✈️ Automated Ferry Lanes & Heavy Armor Cliff Drops
+### [AIR TRANSPORT FERRY LANES & HEAVY ARMOR CLIFF DROPS]
 - Heavy Cortex fortresses like the Can and Sumo have terrifying armor and DPS, but move at a crawl.
 - Use automated Valkyrie ferry lines to lift them over cliffs and waterways, dropping unkillable laser fortresses straight into the enemy rear economy!`,
     };
@@ -589,17 +601,18 @@ function generateTacticalPreset(
         '2x Slasher (Mobile Surface-to-Air & Rocket Support Truck)',
         '1x Construction Vehicle (Perimeter Expansion)',
       ],
-      strategyNotes: `# 🎙️ Caster Desk: Cortex Iron Fist - Early Blitz Raider Surge
+      strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Cortex Iron Fist - Early Blitz Raider Surge
 
-### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+### [MACRO DISCIPLINE: +60 ENERGY RULE & 100E:10M RATIO]
 - **Heavy Armor Needs Heavy Power**: Cortex tanks carry thicker hulls and high energy maintenance. Never place the Vehicle Plant before reaching +60 Energy (3x Solars).
 - **100:10 Macro Sustain**: With 4 Mexes pumping 8.8M/s, your energy grid must produce 90-100E. Build spaced wind turbines and reserve 150+ energy buffer for Commander D-Guns.
 
-### 🌬️ Wind vs. Solar & Commander Reclaim Tasks
+### [POWER GRID CONVERSION & COMMANDER RECLAIM]
 - **Boulder Reclaim**: Commander clears heavy boulders at 02:38 for +300 metal, fueling non-stop Blitz fabrication.
 - **Power Recycling**: At 03:28, reclaim 1x obsolete Solar Collector once the wind farm is spinning to refund 145 metal directly into Leveler riot cannons.
 
-### 🎯 Timing Attack Windows (02:30 - 04:00)
+### [TIMING ATTACK WINDOWS] (02:30 - 04:00)
 - **Blitz Incursion (02:30)**: Group 4x Blitz raiders and dive past the front line to snipe 2-3 enemy Metal Extractors. Blitz acceleration shreds light bots.
 - **Riot Breakthrough (04:00)**: Roll forward with Levelers and Raiders. The Leveler's riot cannon vaporizes swarms and tears open defense lines.`,
     };
@@ -629,16 +642,17 @@ function generateTacticalPreset(
       '4x Storm (Rocket Skirmisher Bot)',
       '1x Roach (Crawling High-Explosive Suicide Bomb)',
     ],
-    strategyNotes: `# 🎙️ Caster Desk: Cortex Flame & Steel - Bot Assault Strategy
+    strategyNotes: `# [STRATEGIC BRIEFING: CASTER DESK]
+## Cortex Flame & Steel - Bot Assault Strategy
 
-### ⚡ Macro Discipline: +60 Energy Rule & 100E:10M Ratio
+### [MACRO DISCIPLINE: +60 ENERGY RULE & 100E:10M RATIO]
 - **The +60E Launchpad**: Securing 3x Solars gives guaranteed +60E before the Bot Lab is queued. Cortex bots build fast—without +60E, your Commander will stall on the very first Grunt.
 - **100:10 Macro Sustain**: Keep energy generation at 10x your metal income. Scale wind turbines in spaced pairs and use 1x Energy Converter when storage exceeds 400+.
 
-### 🌬️ Wind vs. Solar & Commander Reclaim Tasks
+### [POWER GRID CONVERSION & COMMANDER RECLAIM]
 - **Boulder Injection & Solar Recycling**: Commander claims 275+ metal from nearby rocks at 02:32, then reclaims 1x obsolete Solar Collector at 03:20 to refund 145 metal into high-impact Pyros flamethrowers.
 
-### 🎯 Attack Execution (03:00 - 04:30)
+### [TIMING ATTACK WINDOWS] (03:00 - 04:30)
 - Open with Storm rockets from 430 range to force an opponent counter-charge.
 - Counter-charge with Pyros and Thugs as they commit, melting incoming raiders with terrifying AoE fire damage!`,
   };

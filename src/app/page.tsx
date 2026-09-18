@@ -33,6 +33,7 @@ import { BarIcon } from "@/components/tactical/BarIcon";
 import { ResourceGraph } from "@/components/tactical/ResourceGraph";
 import { WindmillTelemetry } from "@/components/tactical/WindmillTelemetry";
 import { MapCombobox } from "@/components/tactical/MapCombobox";
+import { LiveLinkStatus } from "@/components/tactical/LiveLinkStatus";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
 import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
 
@@ -345,73 +346,17 @@ export default function BeyondAllReasonConsole() {
               </h1>
             </div>
           </div>
-
-          {/* Quick Telemetry Strip */}
-          <div className="hidden xl:flex items-center gap-3 text-sm font-pixel-body text-zinc-400 border-l-2 border-zinc-800 pl-4 whitespace-nowrap">
-            <div>
-              ROLE: <span className="text-zinc-200 font-bold">FRONT-LINE COMBAT</span>
-            </div>
-            <span className="text-zinc-700">•</span>
-            <div>
-              TIMING: <span className="text-zinc-200 font-bold">T2 @ 05:30</span>
-            </div>
-            <span className="text-zinc-700">•</span>
-            <div>
-              EXPANSION: <span className="text-zinc-200 font-bold">3-4 Mex @ 01:30</span>
-            </div>
-          </div>
         </div>
 
         {/* Right: Dynamic Wind Widget wired to current map state, Live Memory Bridge, and Actions */}
         <div className="flex items-center gap-3 shrink-0">
-          {/* Live Game Memory Bridge Status Indicator */}
-          <div
-            onClick={syncWithLiveMatch}
-            title={
-              liveState?.isRunning
-                ? "Live game link active. Click to sync console with live game."
-                : "Live game link standby. Start Beyond All Reason to link."
-            }
-            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 border-2 text-[10px] font-pixel-heading transition-none select-none ${
-              liveState?.gameStatus === "IN_GAME"
-                ? "bg-[#0a1c32] border-[#449bed] text-[#449bed] shadow-[2px_2px_0px_#000] cursor-pointer"
-                : liveState?.gameStatus === "IN_LOBBY"
-                ? "bg-[#332205] border-[#fbbf24] text-[#fbbf24] shadow-[2px_2px_0px_#000] cursor-pointer"
-                : "bg-[#10121a] border-[#2a2e42] text-zinc-500 shadow-[2px_2px_0px_#000]"
-            }`}
-          >
-            {liveState?.gameStatus === "IN_GAME" ? (
-              <>
-                <span className="size-2 bg-[#449bed] shrink-0 arcade-blink" />
-                <span className="text-[#449bed] font-bold tracking-tight whitespace-nowrap">
-                  [LINK: IN-GAME]
-                </span>
-                <span className="text-[#3b8fe8]">•</span>
-                <span className="text-white font-bold tracking-wider tabular-nums whitespace-nowrap font-pixel-body text-base">
-                  {Math.floor(liveState.gameTimeSeconds / 60)}:
-                  {String(liveState.gameTimeSeconds % 60).padStart(2, "0")}
-                </span>
-              </>
-            ) : liveState?.gameStatus === "IN_LOBBY" ? (
-              <>
-                <span className="size-2 bg-[#fbbf24] shrink-0 arcade-blink" />
-                <span className="text-[#fbbf24] font-bold tracking-tight whitespace-nowrap">
-                  [LINK: LOBBY]
-                </span>
-                <span className="text-amber-600">•</span>
-                <span className="text-amber-200 font-medium whitespace-nowrap font-pixel-body text-base">
-                  {liveState.lobbyName || "Chobby Active"}
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="size-2 bg-zinc-600 shrink-0" />
-                <span className="text-zinc-500 font-medium tracking-tight whitespace-nowrap">
-                  [LINK: STANDBY]
-                </span>
-              </>
-            )}
-          </div>
+          {/* Live Game Memory Bridge Status Indicator (Tactical Link HUD) */}
+          <LiveLinkStatus
+            liveState={liveState}
+            faction={faction}
+            accentColor={accentColor}
+            onSync={syncWithLiveMatch}
+          />
 
           {/* Dynamic Wind Widget wired to current map and faction state */}
           <WindmillTelemetry

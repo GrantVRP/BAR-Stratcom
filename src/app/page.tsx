@@ -24,6 +24,10 @@ import {
   ShieldAlert,
   Waves,
   MonitorUp,
+  Swords,
+  Trophy,
+  History,
+  Flame,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -36,6 +40,10 @@ import { WindmillTelemetry } from "@/components/tactical/WindmillTelemetry";
 import { MapCombobox } from "@/components/tactical/MapCombobox";
 import { LiveLinkStatus } from "@/components/tactical/LiveLinkStatus";
 import { TacticalOverlay } from "@/components/tactical/TacticalOverlay";
+import { LiveBattlesModal } from "@/components/tactical/LiveBattlesModal";
+import { LeaderboardModal } from "@/components/tactical/LeaderboardModal";
+import { MatchHistoryModal } from "@/components/tactical/MatchHistoryModal";
+import { PatchWatchModal } from "@/components/tactical/PatchWatchModal";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
 import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
 import { useOverlaySync } from "@/hooks/useOverlaySync";
@@ -124,6 +132,12 @@ export default function BeyondAllReasonConsole() {
   const [activeTab, setActiveTab] = useState<"timeline" | "unitComp" | "notes" | "briefing">("timeline");
   const [showEcoRunway, setShowEcoRunway] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
+
+  // Competitive BAR APIs Modals
+  const [showBattlesModal, setShowBattlesModal] = useState<boolean>(false);
+  const [showLeaderboardModal, setShowLeaderboardModal] = useState<boolean>(false);
+  const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
+  const [showPatchModal, setShowPatchModal] = useState<boolean>(false);
 
   // Track last detected match state from daemon to prevent recurring overwrite of manual user selections
   const lastDetectedRef = useRef<{
@@ -384,6 +398,49 @@ export default function BeyondAllReasonConsole() {
               </h1>
             </div>
           </div>
+        </div>
+
+        {/* Center: Global Competitive Intel & API Hub Navigation Buttons */}
+        <div className="hidden md:flex items-center gap-1.5 font-pixel-heading text-[8.5px]">
+          <button
+            type="button"
+            onClick={() => setShowBattlesModal(true)}
+            className="pixel-btn py-1 px-2 gap-1 hover:border-[#449bed] transition-colors"
+            title="Browse live worldwide games & scout lobby opponents"
+          >
+            <Swords className="size-2.5 text-[#449bed]" />
+            <span>BATTLES</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowLeaderboardModal(true)}
+            className="pixel-btn py-1 px-2 gap-1 hover:border-amber-400 transition-colors"
+            title="Inspect official BAR Season 3 Top 100 Leaderboards"
+          >
+            <Trophy className="size-2.5 text-amber-400" />
+            <span>LEADERBOARD</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowHistoryModal(true)}
+            className="pixel-btn py-1 px-2 gap-1 hover:border-purple-400 transition-colors"
+            title="Search player match history, macro efficiency, & pro replays"
+          >
+            <History className="size-2.5 text-purple-400" />
+            <span>REPLAYS</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowPatchModal(true)}
+            className="pixel-btn py-1 px-2 gap-1 hover:border-red-400 transition-colors"
+            title="Live unit nerfs, buffs, and engine balance patches"
+          >
+            <Flame className="size-2.5 text-red-400" />
+            <span>PATCH WATCH</span>
+          </button>
         </div>
 
         {/* Right: Dynamic Wind Widget wired to current map state, Live Memory Bridge, and Actions */}
@@ -1480,6 +1537,29 @@ export default function BeyondAllReasonConsole() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Competitive Intelligence Modals */}
+      <LiveBattlesModal
+        isOpen={showBattlesModal}
+        onClose={() => setShowBattlesModal(false)}
+        accentColor={accentColor}
+      />
+      <LeaderboardModal
+        isOpen={showLeaderboardModal}
+        onClose={() => setShowLeaderboardModal(false)}
+        accentColor={accentColor}
+      />
+      <MatchHistoryModal
+        isOpen={showHistoryModal}
+        onClose={() => setShowHistoryModal(false)}
+        accentColor={accentColor}
+        defaultMap={selectedMap?.name}
+      />
+      <PatchWatchModal
+        isOpen={showPatchModal}
+        onClose={() => setShowPatchModal(false)}
+        accentColor={accentColor}
+      />
 
       {/* Discord-Style In-Game Tactical Overlay */}
       <TacticalOverlay

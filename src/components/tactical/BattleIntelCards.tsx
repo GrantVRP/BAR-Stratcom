@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import {
   ShieldAlert,
   Swords,
@@ -12,9 +12,13 @@ import {
   Radio,
   Eye,
   Crosshair,
+  Users,
+  Globe,
+  Award,
 } from "lucide-react";
 import { type Faction } from "@/lib/game-data";
 import { type TacticalBattleIntel } from "@/hooks/useLiveGame";
+import { useBarBattles } from "@/hooks/useBarBattles";
 
 export interface BattleIntelCardsProps {
   faction: Faction;
@@ -22,6 +26,8 @@ export interface BattleIntelCardsProps {
   battleIntel?: TacticalBattleIntel;
   accentColor?: string;
   className?: string;
+  lobbyName?: string;
+  mapName?: string;
 }
 
 export function BattleIntelCards({
@@ -30,6 +36,8 @@ export function BattleIntelCards({
   battleIntel,
   accentColor: customAccent,
   className = "",
+  lobbyName,
+  mapName,
 }: BattleIntelCardsProps) {
   const isArmada = faction === "Armada";
   const accentColor = customAccent || (isArmada ? "#449bed" : "#ff2244");
@@ -49,6 +57,49 @@ export function BattleIntelCards({
   const enemyName = battleIntel?.enemyName || "Hostile Force";
   const playerMetalIncome = battleIntel?.playerMetalIncome ?? 12.0;
   const playerEnergyIncome = battleIntel?.playerEnergyIncome ?? 210.0;
+
+  // Live competitive BAR API battle scouting (active in lobby)
+  const { battles, isLoading: isBattlesLoading } = useBarBattles({
+    autoPoll: isLobby,
+    pollIntervalMs: 25000,
+  });
+
+  const matchedLobby = useMemo(() => {
+    if (!isLobby || battles.length === 0) return null;
+    // 1. Match by player name if player has non-default username
+    if (playerName && playerName !== "Commander") {
+      const byPlayer = battles.find((b) =>
+        b.players?.some((p) => p.username.toLowerCase() === playerName.toLowerCase())
+      );
+      if (byPlayer) return byPlayer;
+    }
+    // 2. Match by lobbyName if provided
+    if (lobbyName) {
+      const lLower = lobbyName.toLowerCase();
+      const byTitle = battles.find(
+        (b) => b.title.toLowerCase().includes(lLower) || lLower.includes(b.title.toLowerCase())
+      );
+      if (byTitle) return byTitle;
+    }
+    // 3. Match by mapName if provided
+    if (mapName) {
+      const mLower = mapName.toLowerCase();
+      const byMap = battles.find(
+        (b) => b.map.toLowerCase().includes(mLower) || mLower.includes(b.map.toLowerCase())
+      );
+      if (byMap) return byMap;
+    }
+    // 4. Default to first active lobby with players
+    return battles.find((b) => (b.players?.length || 0) > 0) || battles[0] || null;
+  }, [isLobby, battles, playerName, lobbyName, mapName]);
+
+  const lobbyScoutedOpponents = useMemo(() => {
+    if (!matchedLobby?.players) return [];
+    const lowerPlayer = (playerName || "").toLowerCase();
+    return [...matchedLobby.players]
+      .filter((p) => p.username.toLowerCase() !== lowerPlayer)
+      .sort((a, b) => (b.skillNumeric || 0) - (a.skillNumeric || 0));
+  }, [matchedLobby, playerName]);
 
   // Canvas animations for radar sweeps
   const friendlyCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -446,8 +497,17 @@ export function BattleIntelCards({
           </div>
         ) : isLobby ? (
           <div className="absolute top-2 right-2 z-10 flex items-center gap-1 px-2 py-0.5 rounded bg-black/80 border border-zinc-700 text-amber-400 font-pixel-heading text-[9px] font-bold shadow">
-            <Eye className="size-3" />
-            <span>RADAR: STANDBY</span>
+            {matchedLobby ? (
+              <>
+                <Users className="size-3" />
+                <span>LOBBY: {matchedLobby.players.length}/{matchedLobby.maxPlayers}</span>
+              </>
+            ) : (
+              <>
+                <Eye className="size-3" />
+                <span>RADAR: STANDBY</span>
+              </>
+            )}
           </div>
         ) : (
           <div className="absolute top-2 right-2 z-10 flex items-center gap-1 px-2 py-0.5 rounded bg-black/80 border border-zinc-800 text-zinc-500 font-pixel-heading text-[9px] font-bold shadow">
@@ -481,12 +541,30 @@ export function BattleIntelCards({
             </div>
           ) : isLobby ? (
             <div className="flex items-center gap-1.5 flex-wrap font-pixel-heading text-[8px]">
-              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-400">
-                AWAITING MATCH START
-              </span>
-              <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-500">
-                RADAR SWEEP READY
-              </span>
+              {matchedLobby ? (
+                <>
+                  <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-700 text-amber-300">
+                    MAP: {matchedLobby.map || "CUSTOM"}
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-700 text-zinc-300">
+                    {matchedLobby.players.length} COMBATANTS
+                  </span>
+                  {matchedLobby.passworded && (
+                    <span className="px-1.5 py-0.5 rounded bg-black/70 border border-amber-800/80 text-amber-400">
+                      PRIVATE
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-400">
+                    AWAITING MATCH START
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded bg-black/70 border border-zinc-800 text-zinc-500">
+                    RADAR SWEEP READY
+                  </span>
+                </>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-1.5 flex-wrap font-pixel-heading text-[8px]">
@@ -533,15 +611,71 @@ export function BattleIntelCards({
             </div>
           ) : isLobby ? (
             <div className="pb-4">
-              <div className="p-2.5 rounded bg-black/80 border border-zinc-800 text-zinc-400 text-center font-pixel-heading text-[8px] space-y-1">
-                <div className="flex items-center justify-center gap-1.5 text-zinc-300 font-bold">
-                  <span className="size-1.5 rounded-full bg-amber-400" />
-                  <span>OPPONENT RADAR STANDBY</span>
+              {matchedLobby && matchedLobby.players.length > 0 ? (
+                <div className="p-2 rounded bg-black/85 border border-zinc-800 text-[8px] font-pixel-heading space-y-1.5">
+                  <div className="flex items-center justify-between text-zinc-300">
+                    <div className="flex items-center gap-1.5 font-bold text-amber-400 truncate max-w-[170px]">
+                      <Globe className="size-2.5 shrink-0" />
+                      <span className="truncate">{matchedLobby.title}</span>
+                    </div>
+                    <span className="text-[7px] text-zinc-500 font-mono">
+                      ID #{matchedLobby.battleId}
+                    </span>
+                  </div>
+
+                  {/* Top Scouted Opponents Roster */}
+                  <div className="space-y-1">
+                    <div className="text-[7px] text-zinc-500 uppercase flex items-center justify-between">
+                      <span>OPPONENT SCOUT (TOP RATINGS)</span>
+                      <span>OPENSKILL</span>
+                    </div>
+                    <div className="space-y-0.5 max-h-[56px] overflow-y-auto custom-scrollbar">
+                      {lobbyScoutedOpponents.slice(0, 3).map((p, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between px-1.5 py-0.5 rounded bg-zinc-900/90 border border-zinc-800 text-[7.5px]"
+                        >
+                          <div className="flex items-center gap-1 min-w-0">
+                            {p.country && (
+                              <span className="text-[7px] font-mono text-zinc-400">
+                                [{p.country.toUpperCase()}]
+                              </span>
+                            )}
+                            <span className="text-zinc-200 font-bold truncate max-w-[95px]">
+                              {p.username}
+                            </span>
+                            {p.status?.rank !== undefined && (
+                              <span className="text-[6.5px] px-1 rounded bg-zinc-800 text-zinc-400">
+                                R{p.status.rank}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0 font-mono font-bold text-amber-300">
+                            <Award className="size-2 text-amber-400" />
+                            <span>
+                              {p.skillNumeric
+                                ? p.skillNumeric.toFixed(1)
+                                : p.skill?.replace(/[[\]?]/g, "").trim() || "--"}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[7.5px] text-zinc-500 font-pixel-body">
-                  Players are currently in lobby staging. Hostile recon radar and push alerts will activate at match drop.
+              ) : (
+                <div className="p-2.5 rounded bg-black/80 border border-zinc-800 text-zinc-400 text-center font-pixel-heading text-[8px] space-y-1">
+                  <div className="flex items-center justify-center gap-1.5 text-zinc-300 font-bold">
+                    <span className="size-1.5 rounded-full bg-amber-400" />
+                    <span>GLOBAL SCOUTING STANDBY</span>
+                  </div>
+                  <div className="text-[7.5px] text-zinc-500 font-pixel-body">
+                    {isBattlesLoading
+                      ? "Connecting to BAR global battle stream..."
+                      : "No direct lobby match identified. Hostile radar will activate at match drop."}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             <div className="pb-4">
@@ -567,7 +701,9 @@ export function BattleIntelCards({
             ) : isLobby ? (
               <>
                 <span className="size-1.5 rounded-full bg-amber-400 shrink-0" />
-                <span className="truncate">Hostile Recon [Awaiting Drop]</span>
+                <span className="truncate">
+                  {matchedLobby ? `Scouting: ${matchedLobby.title}` : "Hostile Recon [Awaiting Drop]"}
+                </span>
               </>
             ) : (
               <>

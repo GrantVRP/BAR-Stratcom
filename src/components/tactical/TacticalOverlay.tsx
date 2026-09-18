@@ -28,6 +28,7 @@ import { type LiveGameState } from "@/hooks/useLiveGame";
 import { LiveLinkStatus } from "@/components/tactical/LiveLinkStatus";
 import { BarIcon } from "@/components/tactical/BarIcon";
 import { BattleIntelCards } from "@/components/tactical/BattleIntelCards";
+import { useBarBalance } from "@/hooks/useBarBalance";
 
 export interface TacticalOverlayProps {
   faction: Faction;
@@ -238,6 +239,9 @@ export function TacticalOverlay({
   const [selectedPreset, setSelectedPreset] = useState<string>(
     steps && steps.length > 0 ? "custom" : "bot_skirmish"
   );
+
+  // Live BAR Unit Balance Patch Checker
+  const { findChangesForUnit } = useBarBalance(40);
 
   // If new steps are supplied dynamically (e.g. StratCom playbook generated)
   useEffect(() => {
@@ -645,6 +649,8 @@ export function TacticalOverlay({
             gameStatus={liveState?.gameStatus ?? "OFFLINE"}
             battleIntel={liveState?.gameStatus === "IN_GAME" ? liveState?.battleIntel : undefined}
             accentColor={accentColor}
+            lobbyName={liveState?.lobbyName}
+            mapName={liveState?.mapName || selectedMap?.name}
           />
         </div>
       )}
@@ -814,6 +820,18 @@ export function TacticalOverlay({
                               ✓ IN-GAME
                             </span>
                           )}
+                          {(() => {
+                            const patches = step.itemName ? findChangesForUnit(step.itemName) : [];
+                            if (patches.length === 0) return null;
+                            return (
+                              <span
+                                className="text-[7px] px-1 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-600/70 font-bold font-pixel-heading cursor-help shrink-0"
+                                title={`Recent Balance Adjustment (${patches[0].date?.substring(0, 10) || "Patch"}): ${patches[0].message}`}
+                              >
+                                PATCH
+                              </span>
+                            );
+                          })()}
                         </div>
                         <div className={`font-pixel-body text-xs line-clamp-1 ${isDone ? "line-through text-zinc-500" : "text-zinc-200"}`}>
                           {step.raw.replace(/^\[\d+:\d+\]\s*/, "")}
@@ -852,6 +870,8 @@ export function TacticalOverlay({
             gameStatus={liveState?.gameStatus ?? "OFFLINE"}
             battleIntel={liveState?.gameStatus === "IN_GAME" ? liveState?.battleIntel : undefined}
             accentColor={accentColor}
+            lobbyName={liveState?.lobbyName}
+            mapName={liveState?.mapName || selectedMap?.name}
           />
 
           <div className="border-t border-zinc-800 pt-2 space-y-1.5">
@@ -914,6 +934,14 @@ export function TacticalOverlay({
                         {isAutoDone && (
                           <span className="text-[7px] px-1 py-0.1 rounded bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold font-pixel-heading">
                             ✓
+                          </span>
+                        )}
+                        {step.itemName && findChangesForUnit(step.itemName).length > 0 && (
+                          <span
+                            className="text-[6.5px] px-0.5 rounded bg-amber-950 text-amber-300 border border-amber-600/70 font-bold font-pixel-heading shrink-0 cursor-help"
+                            title={`Recent Balance Adjustment: ${findChangesForUnit(step.itemName)[0].message}`}
+                          >
+                            P
                           </span>
                         )}
                         <span className={`font-pixel-body text-[11px] line-clamp-1 ${isDone ? "line-through text-zinc-500" : "text-zinc-200"}`}>

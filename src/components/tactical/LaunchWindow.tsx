@@ -100,7 +100,7 @@ export function LaunchWindow({
               alt="Armada Sprinter"
               width={640}
               height={640}
-              className="w-[360px] h-[360px] sm:w-[540px] sm:h-[540px] lg:w-[600px] lg:h-[600px] max-w-[90vw] max-h-[55vh] object-contain pointer-events-none drop-shadow-[0_12px_30px_rgba(68,155,237,0.35)]"
+              className="w-[360px] h-[360px] sm:w-[540px] sm:h-[540px] lg:w-[600px] lg:h-[600px] max-w-[90vw] max-h-[55vh] object-contain pointer-events-none"
               style={{ imageRendering: "pixelated" }}
             />
           </motion.div>
@@ -120,7 +120,7 @@ export function LaunchWindow({
               alt="Cortex Fiend"
               width={640}
               height={640}
-              className="w-[360px] h-[360px] sm:w-[540px] sm:h-[540px] lg:w-[600px] lg:h-[600px] max-w-[90vw] max-h-[55vh] object-contain pointer-events-none drop-shadow-[0_12px_30px_rgba(255,34,68,0.35)]"
+              className="w-[360px] h-[360px] sm:w-[540px] sm:h-[540px] lg:w-[600px] lg:h-[600px] max-w-[90vw] max-h-[55vh] object-contain pointer-events-none"
               style={{ imageRendering: "pixelated" }}
             />
           </motion.div>

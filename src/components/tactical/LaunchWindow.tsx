@@ -84,15 +84,37 @@ export function LaunchWindow({
       transition={{ duration: 0.2 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-[#0c0c14] select-none"
     >
-      {/* Centered Start Button */}
-      <button
-        type="button"
-        onClick={handleLaunch}
-        className="px-12 py-5 text-xl font-pixel-heading font-bold text-white uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#000] active:translate-y-1 active:shadow-none transition-none cursor-pointer"
-        style={{ backgroundColor: factionColor }}
-      >
-        Start
-      </button>
+      {/* Centered Area: Fiend animation (on Cortex) with Start button directly under it */}
+      <div className="flex flex-col items-center justify-center gap-6 z-10">
+        {faction === "Cortex" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col items-center overflow-visible"
+          >
+            <img
+              src="/fiend-pixel.webp"
+              alt="Cortex Fiend"
+              width={640}
+              height={640}
+              className="w-[360px] h-[360px] sm:w-[540px] sm:h-[540px] lg:w-[600px] lg:h-[600px] max-w-[90vw] max-h-[55vh] object-contain pointer-events-none drop-shadow-[0_12px_30px_rgba(255,34,68,0.35)]"
+              style={{ imageRendering: "pixelated" }}
+            />
+          </motion.div>
+        )}
+
+        {/* Start Button */}
+        <button
+          type="button"
+          onClick={handleLaunch}
+          className="px-12 py-5 text-xl font-pixel-heading font-bold text-white uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#000] active:translate-y-1 active:shadow-none transition-none cursor-pointer"
+          style={{ backgroundColor: factionColor }}
+        >
+          Start
+        </button>
+      </div>
 
       {/* Bottom-Right Faction Switch */}
       <div className="fixed bottom-6 right-6 flex items-center gap-3 z-50">

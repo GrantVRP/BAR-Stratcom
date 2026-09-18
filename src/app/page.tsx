@@ -28,6 +28,7 @@ import {
   Trophy,
   History,
   Flame,
+  Power,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -44,6 +45,7 @@ import { LiveBattlesModal } from "@/components/tactical/LiveBattlesModal";
 import { LeaderboardModal } from "@/components/tactical/LeaderboardModal";
 import { MatchHistoryModal } from "@/components/tactical/MatchHistoryModal";
 import { PatchWatchModal } from "@/components/tactical/PatchWatchModal";
+import { LaunchWindow } from "@/components/tactical/LaunchWindow";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
 import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
 import { useOverlaySync } from "@/hooks/useOverlaySync";
@@ -138,6 +140,9 @@ export default function BeyondAllReasonConsole() {
   const [showLeaderboardModal, setShowLeaderboardModal] = useState<boolean>(false);
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
   const [showPatchModal, setShowPatchModal] = useState<boolean>(false);
+
+  // 16-Bit Arcade Launch Window state
+  const [isLaunched, setIsLaunched] = useState<boolean>(false);
 
   // Track last detected match state from daemon to prevent recurring overwrite of manual user selections
   const lastDetectedRef = useRef<{
@@ -375,6 +380,17 @@ export default function BeyondAllReasonConsole() {
       {/* Full-Screen 16-bit CRT Scanline Overlay & Tube Vignette */}
       <div className="crt-scanlines pointer-events-none" />
 
+      {/* 16-Bit Arcade CRT Launch Window (Boots before entering console) */}
+      <AnimatePresence>
+        {!isLaunched && (
+          <LaunchWindow
+            onStart={() => setIsLaunched(true)}
+            faction={faction}
+            onFactionChange={setFaction}
+          />
+        )}
+      </AnimatePresence>
+
       {/* ========================================================================= */}
       {/* 1. TOP BAR: PRACTICAL RTS TELEMETRY & HOTKEYS                             */}
       {/* ========================================================================= */}
@@ -440,6 +456,16 @@ export default function BeyondAllReasonConsole() {
           >
             <Flame className="size-2.5 text-red-400" />
             <span>PATCH WATCH</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsLaunched(false)}
+            className="pixel-btn py-1 px-2 gap-1 hover:border-zinc-500 transition-none"
+            title="Return to Launch Terminal / Title Screen"
+          >
+            <Power className="size-2.5 text-zinc-400" />
+            <span>LAUNCHER</span>
           </button>
         </div>
 

@@ -86,8 +86,29 @@ export function LaunchWindow({
     >
       {/* Centered Area: Fiend animation (on Cortex) with Start button directly under it */}
       <div className="flex flex-col items-center justify-center gap-6 z-10">
+        {faction === "Armada" && (
+          <motion.div
+            key="armada-sprinter"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col items-center overflow-visible"
+          >
+            <img
+              src="/sprinter-pixel.webp"
+              alt="Armada Sprinter"
+              width={640}
+              height={640}
+              className="w-[360px] h-[360px] sm:w-[540px] sm:h-[540px] lg:w-[600px] lg:h-[600px] max-w-[90vw] max-h-[55vh] object-contain pointer-events-none drop-shadow-[0_12px_30px_rgba(68,155,237,0.35)]"
+              style={{ imageRendering: "pixelated" }}
+            />
+          </motion.div>
+        )}
+
         {faction === "Cortex" && (
           <motion.div
+            key="cortex-fiend"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}

@@ -1,0 +1,103 @@
+{
+  "strategyTitle": "Early Tank Raider Rush",
+  "faction": "Armada",
+  "timestamp": 1789785544683,
+  "steps": [
+    {
+      "time": "00:00",
+      "builder": "commander",
+      "unit": "Solar Collector",
+      "count": 1,
+      "cumulative": 1,
+      "note": "+20E baseline grid"
+    },
+    {
+      "time": "00:20",
+      "builder": "commander",
+      "unit": "Metal Extractor",
+      "count": 2,
+      "cumulative": 2,
+      "note": "+4.4M/s"
+    },
+    {
+      "time": "00:42",
+      "builder": "commander",
+      "unit": "Solar Collector",
+      "count": 2,
+      "cumulative": 3,
+      "note": "+60E threshold reached"
+    },
+    {
+      "time": "01:06",
+      "builder": "commander",
+      "unit": "Bot Lab oriented toward primary lane corridor",
+      "count": 1,
+      "cumulative": 1,
+      "note": "Primary production facility for mobile vanguard"
+    },
+    {
+      "time": "01:30",
+      "builder": "commander",
+      "unit": "Wind Turbine",
+      "count": 2,
+      "cumulative": 2,
+      "note": "Scaling power for bot production"
+    },
+    {
+      "time": "01:48",
+      "builder": "factory",
+      "unit": "Paw",
+      "count": 4,
+      "cumulative": 4,
+      "note": "Light Raider Bot"
+    },
+    {
+      "time": "02:10",
+      "builder": "factory",
+      "unit": "Rocko",
+      "count": 4,
+      "cumulative": 4,
+      "note": "Rocket Skirmisher"
+    },
+    {
+      "time": "02:32",
+      "builder": "commander",
+      "unit": "Reclaim spawn rock clusters",
+      "count": 260,
+      "cumulative": 260,
+      "note": "+260 instant metal surge"
+    },
+    {
+      "time": "02:55",
+      "builder": "factory",
+      "unit": "Lazarus  set",
+      "count": 2,
+      "cumulative": 2,
+      "note": "Resurrection Bot"
+    },
+    {
+      "time": "03:20",
+      "builder": "commander",
+      "unit": "Reclaim 1x early Solar Collector",
+      "count": 1,
+      "cumulative": 1,
+      "note": "+145M into combat reinforcements"
+    },
+    {
+      "time": "03:45",
+      "builder": "commander",
+      "unit": "forward choke and build 1x Light Laser Tower",
+      "count": 1,
+      "cumulative": 1,
+      "note": "LLT"
+    },
+    {
+      "time": "04:10",
+      "builder": "factory",
+      "unit": "Hammer",
+      "count": 2,
+      "cumulative": 2,
+      "note": "Plasma Artillery Bot"
+    }
+  ]
+}

@@ -144,6 +144,29 @@ export default function BeyondAllReasonConsole() {
   // 16-Bit Arcade Launch Window state
   const [isLaunched, setIsLaunched] = useState<boolean>(false);
 
+  // 1-Click In-Game Macro Trigger
+  const [isReloadingMacro, setIsReloadingMacro] = useState<boolean>(false);
+  const [reloadMacroSuccess, setReloadMacroSuccess] = useState<boolean>(false);
+
+  const triggerGameReloadMacro = async () => {
+    try {
+      setIsReloadingMacro(true);
+      setReloadMacroSuccess(false);
+      const res = await fetch("/api/overlay/macro-reload", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        setReloadMacroSuccess(true);
+        setTimeout(() => setReloadMacroSuccess(false), 4000);
+      } else {
+        console.warn("Macro error:", data.error);
+      }
+    } catch (err) {
+      console.error("Macro request failed:", err);
+    } finally {
+      setIsReloadingMacro(false);
+    }
+  };
+
   // Track last detected match state from daemon to prevent recurring overwrite of manual user selections
   const lastDetectedRef = useRef<{
     mapName?: string;
@@ -458,6 +481,23 @@ export default function BeyondAllReasonConsole() {
             <span>PATCH WATCH</span>
           </button>
 
+          {/* Quick 1-Click Tactical Overlay Toggle Button */}
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                await fetch("/api/overlay/toggle", { method: "POST" });
+              } catch {
+                setIsOverlayOpen((prev) => !prev);
+              }
+            }}
+            className="pixel-btn py-1 px-2 gap-1 border-emerald-600 bg-emerald-950/40 text-emerald-300 hover:border-emerald-400 transition-colors cursor-pointer"
+            title="Toggle Tactical Overlay On / Off [F8 or Insert]"
+          >
+            <span className="size-1.5 bg-emerald-400 arcade-blink" />
+            <span>OVERLAY [F8]</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setIsLaunched(false)}
@@ -520,6 +560,28 @@ export default function BeyondAllReasonConsole() {
             <kbd className="hidden sm:inline text-[8px] px-1 py-0.5 bg-[#0a0b10] text-zinc-400 border border-zinc-700 font-pixel-heading">
               Shift+O
             </kbd>
+          </button>
+
+          {/* 1-Click In-Game Widget Reload Button */}
+          <button
+            type="button"
+            onClick={triggerGameReloadMacro}
+            disabled={isReloadingMacro}
+            className={`pixel-btn text-[9px] py-1.5 px-2.5 gap-1.5 ${
+              reloadMacroSuccess
+                ? "border-emerald-400 text-emerald-300 bg-emerald-950/80"
+                : "border-cyan-500/80 text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/80"
+            }`}
+            title="1-Click Macro: Automatically switches into Beyond All Reason and inputs /clear & /luaui reload to activate the in-game HUD!"
+          >
+            <Sparkles className={`size-3 ${isReloadingMacro ? "animate-spin text-cyan-400" : reloadMacroSuccess ? "text-emerald-400" : "text-cyan-400"}`} />
+            <span>
+              {isReloadingMacro
+                ? "RELOADING..."
+                : reloadMacroSuccess
+                ? "IN-GAME ACTIVE! ✓"
+                : "RELOAD IN-GAME"}
+            </span>
           </button>
 
           {/* Copy Macro Shortcut Button */}

@@ -154,12 +154,13 @@ function normalizeUnitKey(name: string): string {
 }
 
 const UNIT_KEY_ALIASES: Record<string, string[]> = {
-  solarcollector: ["solarcollector", "armsolar", "corsolar", "solar"],
-  metalextractor: ["metalextractor", "armmex", "cormex", "mex"],
-  windgenerator: ["windgenerator", "windturbine", "armwin", "corwin", "wind"],
-  botlab: ["botlab", "armlab", "corlab", "lab"],
-  vehicleplant: ["vehicleplant", "armvp", "corvp", "plant", "factory"],
-  lightlasertower: ["lightlasertower", "lightlasertowerllt", "armllt", "corllt", "llt"],
+  solarcollector: ["solarcollector", "armsolar", "corsolar", "solar", "solar collector"],
+  metalextractor: ["metalextractor", "armmex", "cormex", "mex", "metal extractor"],
+  windgenerator: ["windgenerator", "windturbine", "armwin", "corwin", "wind", "wind generator"],
+  botlab: ["botlab", "armlab", "corlab", "lab", "bot lab", "infantry factory"],
+  vehicleplant: ["vehicleplant", "armvp", "corvp", "plant", "factory", "vehicle plant", "light vehicle factory"],
+  aircraftplant: ["aircraftplant", "armap", "corap", "airplant", "air plant", "aircraft plant"],
+  lightlasertower: ["lightlasertower", "lightlasertowerllt", "armllt", "corllt", "llt", "light laser tower", "laser tower"],
   pawn: ["pawn", "armpw", "pw"],
   grunt: ["grunt", "corak", "ak"],
   rocko: ["rocko", "armrock", "rock"],
@@ -168,10 +169,16 @@ const UNIT_KEY_ALIASES: Record<string, string[]> = {
   blitz: ["blitz", "armblitz"],
   stumpy: ["stumpy", "corstump", "stump"],
   raider: ["raider", "corraider"],
-  constructionbot: ["constructionbot", "armck", "corck", "conbot"],
-  constructionvehicle: ["constructionvehicle", "armcv", "corcv", "convehicle", "beaver"],
-  energyconverter: ["energyconverter", "armmakr", "cormakr", "converter"],
-  energystorage: ["energystorage", "armestor", "corestor", "estor"],
+  constructionbot: ["constructionbot", "armck", "corck", "conbot", "construction bot"],
+  constructionvehicle: ["constructionvehicle", "armcv", "corcv", "convehicle", "beaver", "construction vehicle"],
+  energyconverter: ["energyconverter", "armmakr", "cormakr", "converter", "energy converter"],
+  energystorage: ["energystorage", "armestor", "corestor", "estor", "energy storage"],
+  lazarus: ["lazarus", "armlatnk", "necro", "cornecro", "resurrection bot"],
+  hound: ["hound", "armfido", "sheldon", "corsheld"],
+  centurion: ["centurion", "sumo", "corsumo"],
+  sharpshooter: ["sharpshooter", "armsnipe"],
+  brawler: ["brawler", "armbraw"],
+  blade: ["blade", "armblade"],
 };
 
 function getCompletedCountForUnit(
@@ -180,19 +187,25 @@ function getCompletedCountForUnit(
 ): number {
   if (!itemName || !completedUnits) return 0;
   const norm = normalizeUnitKey(itemName);
-  if (completedUnits[itemName] !== undefined) return completedUnits[itemName];
 
+  // Exact direct match
+  if (completedUnits[itemName] !== undefined) return completedUnits[itemName];
+  if (completedUnits[norm] !== undefined) return completedUnits[norm];
+
+  // Normalized key match
   for (const [key, count] of Object.entries(completedUnits)) {
     if (normalizeUnitKey(key) === norm) {
       return count;
     }
   }
 
-  for (const [, aliases] of Object.entries(UNIT_KEY_ALIASES)) {
-    if (aliases.some((a) => norm.includes(a) || a.includes(norm))) {
+  // Alias lookup
+  for (const [canon, aliases] of Object.entries(UNIT_KEY_ALIASES)) {
+    const isTarget = norm === canon || aliases.some((a) => normalizeUnitKey(a) === norm || norm.includes(normalizeUnitKey(a)));
+    if (isTarget) {
       for (const [key, count] of Object.entries(completedUnits)) {
         const keyNorm = normalizeUnitKey(key);
-        if (aliases.some((a) => keyNorm.includes(a) || a.includes(keyNorm))) {
+        if (keyNorm === canon || aliases.some((a) => normalizeUnitKey(a) === keyNorm || keyNorm.includes(normalizeUnitKey(a)))) {
           return count;
         }
       }
@@ -235,6 +248,18 @@ export function TacticalOverlay({
   // Manual overrides for steps where user explicitly clicked to check or uncheck
   const [manualOverrides, setManualOverrides] = useState<Record<number, boolean>>({});
 
+  // Electron Desktop Environment detection & Pass-Through mode tracking
+  const isElectron = typeof window !== "undefined" && Boolean(window.electronAPI?.isElectron);
+  const [isClickThrough, setIsClickThrough] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.electronAPI?.on) {
+      window.electronAPI.on("click-through-changed", (enabled: boolean) => {
+        setIsClickThrough(Boolean(enabled));
+      });
+    }
+  }, []);
+
   // Active preset state: "custom" (if steps supplied), or "bot_skirmish", "raider_rush", "fast_eco"
   const [selectedPreset, setSelectedPreset] = useState<string>(
     steps && steps.length > 0 ? "custom" : "bot_skirmish"
@@ -249,6 +274,29 @@ export function TacticalOverlay({
       setSelectedPreset("custom");
     }
   }, [steps]);
+
+  // In-Game Widget Reload Macro
+  const [isReloadingGame, setIsReloadingGame] = useState<boolean>(false);
+  const [reloadSuccess, setReloadSuccess] = useState<boolean>(false);
+
+  const executeGameReloadMacro = async () => {
+    try {
+      setIsReloadingGame(true);
+      setReloadSuccess(false);
+      const res = await fetch("/api/overlay/macro-reload", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        setReloadSuccess(true);
+        setTimeout(() => setReloadSuccess(false), 4000);
+      } else {
+        console.warn("Macro error:", data.error);
+      }
+    } catch (e) {
+      console.error("Macro failed:", e);
+    } finally {
+      setIsReloadingGame(false);
+    }
+  };
 
   // Reset manual overrides when switching presets
   const handleSelectPreset = (presetKey: string) => {
@@ -281,6 +329,37 @@ export function TacticalOverlay({
     });
   }, [effectiveSteps]);
 
+  // Sync effective build order to Beyond All Reason in-game overlay
+  useEffect(() => {
+    if (!effectiveSteps || effectiveSteps.length === 0) return;
+    const formattedSteps = effectiveSteps.map((s, idx) => {
+      const req = cumulativeRequirements[idx];
+      return {
+        time: s.timestamp ? s.timestamp.replace(/\[|\]/g, "") : "00:00",
+        builder: s.entityType || "Commander",
+        unit: s.itemName || "Unit",
+        count: parseStepCount(s.count),
+        cumulative: req?.requiredCount || parseStepCount(s.count),
+        note: s.explanation || "",
+      };
+    });
+
+    const activeTitle =
+      selectedPreset === "custom"
+        ? strategyTitle
+        : (DEFAULT_PRESETS[faction]?.[selectedPreset]?.title || strategyTitle);
+
+    fetch("/api/overlay/sync-strategy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        strategyTitle: activeTitle,
+        faction,
+        steps: formattedSteps,
+      }),
+    }).catch(() => {});
+  }, [effectiveSteps, faction, selectedPreset, strategyTitle, cumulativeRequirements]);
+
   // Parse steps with numerical seconds for live matching
   const stepsWithTime = useMemo(() => {
     return effectiveSteps.map((step, idx) => ({
@@ -295,32 +374,23 @@ export function TacticalOverlay({
   const completedUnits = liveState?.battleIntel?.completedUnits || {};
   const isLiveInGame = liveState?.gameStatus === "IN_GAME";
 
-  // Evaluates whether a build step is finished in game via unit census or match milestone
+  // Evaluates whether a build step is finished in game strictly via live unit census
   const isStepCompletedInGame = (idx: number): boolean => {
     if (!isLiveInGame) return false;
 
     const step = stepsWithTime[idx];
-    if (!step) return false;
+    if (!step || !step.itemName) return false;
 
-    // 1. Direct unit telemetry check (if game engine reports completedUnits)
+    // Direct unit telemetry check: ONLY check off if the game data proves it was built!
     const req = cumulativeRequirements[idx];
-    if (req && Object.keys(completedUnits).length > 0) {
+    if (req && completedUnits && Object.keys(completedUnits).length > 0) {
       const builtCount = getCompletedCountForUnit(step.itemName, completedUnits);
       if (builtCount >= req.requiredCount) {
         return true;
       }
     }
 
-    // 2. Timeline milestone check:
-    // When match timer reaches or passes the step's scheduled completion window
-    const nextStepItem = stepsWithTime[idx + 1];
-    if (nextStepItem && currentSeconds >= nextStepItem.stepSeconds) {
-      return true;
-    }
-    if (!nextStepItem && currentSeconds >= step.stepSeconds + 30) {
-      return true;
-    }
-
+    // STRICT: If the unit has NOT been completed in the game, it is NOT checked off!
     return false;
   };
 
@@ -346,36 +416,55 @@ export function TacticalOverlay({
     }));
   };
 
-  // Identify active step and next upcoming step based on completion and game clock
+  // Identify active step and next upcoming step based strictly on in-game completion
   const { activeStepIndex, nextStep } = useMemo(() => {
     if (stepsWithTime.length === 0) return { activeStepIndex: 0, nextStep: null };
 
-    // Find the latest step that is either checked or time <= currentSeconds
-    let activeIdx = 0;
-    for (let i = 0; i < stepsWithTime.length; i++) {
-      if (isStepChecked(stepsWithTime[i].idx) || currentSeconds >= stepsWithTime[i].stepSeconds) {
-        activeIdx = i;
-      } else {
-        break;
-      }
-    }
+    // The active target to execute is the first step that is NOT completed in the game
+    const firstUncheckedIdx = stepsWithTime.findIndex((s) => !isStepChecked(s.idx));
+    const activeIdx = firstUncheckedIdx !== -1 ? firstUncheckedIdx : stepsWithTime.length - 1;
+    const next = firstUncheckedIdx !== -1 ? stepsWithTime[firstUncheckedIdx] : null;
 
-    // Next step is the earliest step that is not yet completed
-    const next = stepsWithTime.find((s) => !isStepChecked(s.idx)) || stepsWithTime[activeIdx + 1] || null;
     return { activeStepIndex: activeIdx, nextStep: next };
-  }, [stepsWithTime, currentSeconds, autoCheckEnabled, manualOverrides, completedUnits]);
+  }, [stepsWithTime, autoCheckEnabled, manualOverrides, completedUnits, isLiveInGame]);
 
   // Next step countdown in seconds
   const secondsToNext = nextStep ? Math.max(0, nextStep.stepSeconds - currentSeconds) : 0;
+
+  const [isLaunchingDesktop, setIsLaunchingDesktop] = useState(false);
+
+  // Launch Native Electron Desktop Overlay (NVIDIA-Style, stays pinned on top of BAR)
+  const launchDesktopOverlay = async () => {
+    try {
+      setIsLaunchingDesktop(true);
+      const res = await fetch("/api/overlay/launch", { method: "POST" });
+      const data = await res.json();
+      if (!data.success) {
+        // Fallback to PiP if desktop launcher fails
+        launchPictureInPicture();
+      }
+    } catch {
+      launchPictureInPicture();
+    } finally {
+      setIsLaunchingDesktop(false);
+    }
+  };
 
   // Launch Always-on-Top OS-Level Document Picture-in-Picture Window
   const launchPictureInPicture = async () => {
     if (typeof window !== "undefined" && "documentPictureInPicture" in window) {
       try {
         const pipWindow = await (window as any).documentPictureInPicture.requestWindow({
-          width: 380,
-          height: 540,
+          width: 390,
+          height: 640,
         });
+
+        // Ensure pipWindow body is solid dark - NEVER white
+        pipWindow.document.body.style.backgroundColor = "#0a0c14";
+        pipWindow.document.body.style.margin = "0";
+        pipWindow.document.body.style.padding = "0";
+        pipWindow.document.body.style.overflow = "hidden";
+        pipWindow.document.body.style.colorScheme = "dark";
 
         // Copy all stylesheets from main document into PiP window
         document.querySelectorAll("link[rel='stylesheet'], style").forEach((elem) => {
@@ -390,15 +479,17 @@ export function TacticalOverlay({
 
         // Render standalone overlay container inside PiP window
         const pipRoot = pipWindow.document.createElement("div");
-        pipRoot.className = "h-full w-full bg-[#0c0c14] text-zinc-100 font-pixel-body";
+        pipRoot.className = "h-full w-full bg-[#0a0c14] text-zinc-100 font-pixel-body";
+        pipRoot.style.backgroundColor = "#0a0c14";
         pipWindow.document.body.appendChild(pipRoot);
 
-        // Open standalone route in PiP if preferred or notify
+        // Open standalone route in PiP with dark canvas
         const iframe = pipWindow.document.createElement("iframe");
         iframe.src = "/overlay";
         iframe.style.width = "100%";
         iframe.style.height = "100%";
         iframe.style.border = "none";
+        iframe.style.backgroundColor = "#0a0c14";
         pipRoot.appendChild(iframe);
 
         return;
@@ -411,7 +502,7 @@ export function TacticalOverlay({
     window.open(
       "/overlay",
       "bar_overlay_window",
-      "width=380,height=540,menubar=no,toolbar=no,location=no,status=no"
+      "width=390,height=640,menubar=no,toolbar=no,location=no,status=no"
     );
   };
 
@@ -485,6 +576,19 @@ export function TacticalOverlay({
 
           {/* Expand Trigger */}
           <Maximize2 className="size-3 text-zinc-400 ml-1 hover:text-white" />
+
+          {/* Close / Hide Trigger from Mini Pill */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            title="Close / Hide Overlay (Esc or Alt+O to reopen)"
+            className="p-0.5 text-zinc-500 hover:text-red-400 transition-none ml-1 cursor-pointer"
+          >
+            <X className="size-3" />
+          </button>
         </div>
       </div>
     );
@@ -505,74 +609,133 @@ export function TacticalOverlay({
       {/* --- TOP DRAG HANDLE & DISCORD OVERLAY HEADER --- */}
       <div
         className="px-3 py-2 flex items-center justify-between border-b border-zinc-800 bg-[#121520]/90 cursor-move"
-        style={{ borderBottomColor: `${accentColor}40` }}
+        style={{ borderBottomColor: `${accentColor}40`, WebkitAppRegion: "drag" } as React.CSSProperties}
       >
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-1.5 min-w-0 mr-2 overflow-hidden">
           <Move className="size-3 text-zinc-500 shrink-0" />
-          <div className="flex items-center gap-1.5 min-w-0">
+          <div className="flex items-center gap-1 min-w-0">
             <span className="size-2 rounded-none shrink-0" style={{ backgroundColor: accentColor }} />
             <span
-              className="font-pixel-heading text-[10px] font-bold uppercase truncate"
+              className="font-pixel-heading text-[9px] font-bold uppercase shrink-0"
               style={{ color: accentColor }}
             >
-              BAR OVERLAY
+              BAR
             </span>
-            <span className="text-zinc-600 text-[9px]">•</span>
-            <span className="text-zinc-400 font-pixel-heading text-[9px] truncate">
+            <span className="text-zinc-600 text-[8px] shrink-0">•</span>
+            <span className="text-zinc-400 font-pixel-heading text-[8px] truncate max-w-[80px]">
               {selectedMap.name}
             </span>
           </div>
         </div>
 
-        {/* Top Action Controls: PiP, Corner, Minimize, Close */}
-        <div className="flex items-center gap-1 shrink-0 text-zinc-400">
-          {/* Always-on-top PiP Launcher */}
+        {/* Top Action Controls: Desktop Overlay, PiP, Corner, Minimize, Close */}
+        <div className="flex items-center gap-1 shrink-0 text-zinc-400" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+          {/* Native Desktop Mode: Click-Through / Ghost Mode Toggle */}
+          {isElectron && (
+            <button
+              type="button"
+              onClick={() => window.electronAPI?.toggleClickThrough?.()}
+              title="Toggle Click-Through Ghost Mode [Ctrl+Shift+T or Alt+T]: Mouse clicks pass directly to Beyond All Reason!"
+              className={`px-1.5 py-0.5 border rounded-none transition-none active:translate-y-0.5 text-[8px] font-pixel-heading flex items-center gap-1 cursor-pointer ${
+                isClickThrough
+                  ? "bg-purple-950/90 border-purple-400 text-purple-200"
+                  : "bg-zinc-900 border-zinc-700 text-zinc-300 hover:text-white"
+              }`}
+            >
+              <span className={`size-1.5 rounded-none ${isClickThrough ? "bg-purple-400 arcade-blink" : "bg-zinc-500"}`} />
+              <span>{isClickThrough ? "GHOST: ON" : "GHOST"}</span>
+            </button>
+          )}
+          {/* 1-Click In-Game Macro: Activates BAR and sends /clear & /luaui reload */}
           <button
             type="button"
-            onClick={launchPictureInPicture}
-            title="Pop out Always-on-Top Picture-in-Picture window (Hovers over game)"
-            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5"
+            onClick={executeGameReloadMacro}
+            disabled={isReloadingGame}
+            title="1-Click In-Game Macro: Automatically switches to Beyond All Reason and inputs /luaui reload to activate the in-game HUD!"
+            className="px-1.5 py-0.5 bg-cyan-950/80 border border-cyan-500/80 text-cyan-300 hover:bg-cyan-900/90 rounded-none transition-none active:translate-y-0.5 text-[8.5px] font-pixel-heading flex items-center gap-1 cursor-pointer"
           >
-            <ExternalLink className="size-3.5" />
+            <Sparkles className={`size-2.5 ${isReloadingGame ? "animate-spin text-cyan-400" : reloadSuccess ? "text-emerald-400" : "text-cyan-400"}`} />
+            <span>{isReloadingGame ? "RELOADING..." : reloadSuccess ? "ACTIVE! ✓" : "⚡ BAR HUD"}</span>
           </button>
 
-          {/* Corner Cycle Selector */}
-          <button
-            type="button"
-            onClick={() => {
-              const corners: ("top-left" | "top-right" | "bottom-right" | "bottom-left")[] = [
-                "top-right",
-                "bottom-right",
-                "bottom-left",
-                "top-left",
-              ];
-              const nextIdx = (corners.indexOf(corner) + 1) % corners.length;
-              setCorner(corners[nextIdx]);
-            }}
-            title={`Pin corner: Currently ${corner}`}
-            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 text-[9px] font-pixel-heading"
-          >
-            {corner === "top-right" ? "TR" : corner === "top-left" ? "TL" : corner === "bottom-right" ? "BR" : "BL"}
-          </button>
+          {!isElectron && (
+            /* Browser Mode: Native Desktop Overlay Launcher */
+            <button
+              type="button"
+              onClick={launchDesktopOverlay}
+              disabled={isLaunchingDesktop}
+              title="Launch Native Always-On-Top Game Overlay (NVIDIA Broadcast Style: Stays pinned above Beyond All Reason even when clicking the game!)"
+              className="px-1.5 py-0.5 bg-emerald-950/80 border border-emerald-500/80 text-emerald-300 hover:bg-emerald-900/90 rounded-none transition-none active:translate-y-0.5 text-[8.5px] font-pixel-heading flex items-center gap-1 cursor-pointer"
+            >
+              <span className={`size-1.5 rounded-none bg-emerald-400 ${isLaunchingDesktop ? "animate-spin" : "arcade-blink"}`} />
+              <span>NVIDIA OVERLAY</span>
+            </button>
+          )}
 
-          {/* Minimize to Mini-Pill */}
+          {/* Browser Mode: PiP Launcher */}
+          {!isElectron && (
+            <button
+              type="button"
+              onClick={launchPictureInPicture}
+              title="Pop out Always-on-Top Picture-in-Picture window (Hovers over game)"
+              className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 cursor-pointer"
+            >
+              <ExternalLink className="size-3.5" />
+            </button>
+          )}
+
+          {/* Browser Mode: Corner Cycle Selector */}
+          {!isElectron && (
+            <button
+              type="button"
+              onClick={() => {
+                const corners: ("top-left" | "top-right" | "bottom-right" | "bottom-left")[] = [
+                  "top-right",
+                  "bottom-right",
+                  "bottom-left",
+                  "top-left",
+                ];
+                const nextIdx = (corners.indexOf(corner) + 1) % corners.length;
+                setCorner(corners[nextIdx]);
+              }}
+              title={`Pin corner: Currently ${corner}`}
+              className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 text-[9px] font-pixel-heading"
+            >
+              {corner === "top-right" ? "TR" : corner === "top-left" ? "TL" : corner === "bottom-right" ? "BR" : "BL"}
+            </button>
+          )}
+
+          {/* Minimize / Hide Electron Window */}
+          {isElectron && (
+            <button
+              type="button"
+              onClick={() => window.electronAPI?.minimize?.()}
+              title="Minimize to Windows Taskbar"
+              className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 cursor-pointer"
+            >
+              <Minus className="size-3.5" />
+            </button>
+          )}
+
+          {/* Collapse to Mini HUD Pill */}
           <button
             type="button"
             onClick={() => setIsMini(true)}
-            title="Collapse to Discord Mini-Pill"
-            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5"
+            title="Collapse to Mini HUD Pill"
+            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 cursor-pointer"
           >
-            <Minus className="size-3.5" />
+            <span className="text-[7.5px] font-pixel-heading px-1 border border-zinc-700 bg-zinc-900 text-zinc-300">HUD</span>
           </button>
 
-          {/* Close Overlay */}
+          {/* Unmistakable 1-Click Hide Button */}
           <button
             type="button"
             onClick={onClose}
-            title="Close Overlay (Shift + O to reopen)"
-            className="p-1 hover:text-red-400 hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5"
+            title="Toggle / Hide Overlay (Press F8 or Insert to toggle anytime)"
+            className="px-1.5 py-0.5 bg-red-950/80 border border-red-500/80 text-red-300 hover:bg-red-900 rounded-none transition-none active:translate-y-0.5 cursor-pointer text-[8px] font-pixel-heading flex items-center gap-1"
           >
-            <X className="size-3.5" />
+            <X className="size-2.5" />
+            <span>HIDE [F8]</span>
           </button>
         </div>
       </div>
@@ -978,8 +1141,15 @@ export function TacticalOverlay({
           ))}
         </div>
 
-        <div className="text-zinc-500 text-[8px]">
-          [SHIFT+O] TOGGLE
+        <div className="flex items-center gap-1 font-pixel-heading text-[8px]">
+          <button
+            type="button"
+            onClick={onClose}
+            title="Hide Overlay (Press F8 or Insert to toggle anytime)"
+            className="px-1.5 py-0.5 bg-red-950/60 border border-red-800 text-red-300 hover:bg-red-900/80 transition-none active:translate-y-0.5 cursor-pointer flex items-center gap-1"
+          >
+            <span>✕ HIDE [F8 / INSERT]</span>
+          </button>
         </div>
       </div>
     </div>

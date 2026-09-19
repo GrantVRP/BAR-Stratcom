@@ -161,7 +161,18 @@ class BarTelemetryScanner:
         return None
 
     def _check_infolog_match_state(self, data_dir: str) -> bool:
-        """Inspects the tail of infolog.txt to determine if an active match is in progress."""
+        """Inspects bar_live_telemetry.json and infolog.txt to determine if an active match is in progress."""
+        # 1. Check if bar_live_telemetry.json is actively being written by the Lua widget
+        telem_file = os.path.join(data_dir, "bar_live_telemetry.json")
+        if os.path.isfile(telem_file):
+            try:
+                mtime = os.path.getmtime(telem_file)
+                if time.time() - mtime < 10.0:
+                    return True
+            except Exception:
+                pass
+
+        # 2. Inspect infolog.txt
         infolog_path = os.path.join(data_dir, "infolog.txt")
         if not os.path.isfile(infolog_path):
             return False
@@ -169,6 +180,8 @@ class BarTelemetryScanner:
             with open(infolog_path, "r", encoding="utf-8", errors="ignore") as f:
                 lines = f.readlines()[-400:]
             for line in reversed(lines):
+                if "BAR_THEORY_TELEMETRY:" in line:
+                    return True
                 if "TotalHideLobbyInterface, false" in line or "HandleLobbyOverlay SetMainInterfaceVisibley" in line:
                     return False
                 if "TotalHideLobbyInterface, true" in line or "finished loading and is now ingame" in line or "[Initial Spawn]" in line:
@@ -198,11 +211,29 @@ class BarTelemetryScanner:
                 "data_dir": None,
             }
 
+        # Check candidate BAR data directories for active telemetry
+        for p in BAR_DATA_PATHS:
+            if os.path.isdir(p):
+                if not active_data_dir:
+                    active_data_dir = p
+                tf = os.path.join(p, "bar_live_telemetry.json")
+                if os.path.isfile(tf):
+                    try:
+                        if time.time() - os.path.getmtime(tf) < 45.0:
+                            active_data_dir = p
+                            engine_found = True
+                            break
+                    except Exception:
+                        pass
+
         for proc in psutil.process_iter(["pid", "name", "create_time"]):
             try:
                 name = (proc.info.get("name") or "").lower()
                 if name in TARGET_ENGINE:
-                    data_dir = self._resolve_data_dir(proc)
+                    resolved_dir = self._resolve_data_dir(proc)
+                    if resolved_dir:
+                        active_data_dir = resolved_dir
+
                     try:
                         cmdline = [arg.lower() for arg in proc.cmdline()]
                     except (psutil.AccessDenied, psutil.NoSuchProcess):
@@ -210,26 +241,30 @@ class BarTelemetryScanner:
 
                     is_menu = any("--menu" in arg or "luamenu" in arg for arg in cmdline)
                     
-                    if not is_menu:
-                        # Process launched directly without --menu is an active match
+                    # If telemetry file was actively written within 45s, it is an active match
+                    telem_fresh = False
+                    if active_data_dir:
+                        tf = os.path.join(active_data_dir, "bar_live_telemetry.json")
+                        if os.path.isfile(tf):
+                            try:
+                                telem_fresh = (time.time() - os.path.getmtime(tf)) < 45.0
+                            except Exception:
+                                pass
+
+                    if telem_fresh or not is_menu:
                         engine_found = True
                         engine_proc = proc
-                        active_data_dir = data_dir
                     else:
-                        # Process with --menu (Chobby): check whether it loaded a match in-place
                         is_in_match = False
-                        if data_dir:
-                            is_in_match = self._check_infolog_match_state(data_dir)
+                        if active_data_dir:
+                            is_in_match = self._check_infolog_match_state(active_data_dir)
 
                         if is_in_match:
                             engine_found = True
                             engine_proc = proc
-                            active_data_dir = data_dir
                         else:
                             lobby_found = True
                             lobby_proc = proc
-                            if not active_data_dir:
-                                active_data_dir = data_dir
 
                 elif name in TARGET_LAUNCHER:
                     launcher_found = True

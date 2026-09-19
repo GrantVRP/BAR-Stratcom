@@ -68,8 +68,8 @@ export interface UseLiveGameOptions {
 }
 
 const POLL_INTERVAL_MS = 2000;
-const REQUEST_TIMEOUT_MS = 1500;
-const BRIDGE_ENDPOINT = "http://127.0.0.1:5050/api/live-status";
+const REQUEST_TIMEOUT_MS = 2500;
+const BRIDGE_ENDPOINT = "/api/live-status";
 
 // Deterministic RTS tactical intelligence simulation engine
 export function generateSyntheticBattleIntel(

@@ -29,6 +29,7 @@ import {
   History,
   Flame,
   Power,
+  ChevronDown,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -140,6 +141,26 @@ export default function BeyondAllReasonConsole() {
   const [showLeaderboardModal, setShowLeaderboardModal] = useState<boolean>(false);
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
   const [showPatchModal, setShowPatchModal] = useState<boolean>(false);
+
+  // REAL-GAME INFO Popdown Menu state
+  const [showRealGameMenu, setShowRealGameMenu] = useState<boolean>(false);
+  const realGameMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close REAL-GAME INFO popdown menu on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        realGameMenuRef.current &&
+        !realGameMenuRef.current.contains(e.target as Node)
+      ) {
+        setShowRealGameMenu(false);
+      }
+    }
+    if (showRealGameMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showRealGameMenu]);
 
   // 16-Bit Arcade Launch Window state
   const [isLaunched, setIsLaunched] = useState<boolean>(false);
@@ -439,64 +460,108 @@ export default function BeyondAllReasonConsole() {
           </div>
         </div>
 
-        {/* Center: Global Competitive Intel & API Hub Navigation Buttons */}
+        {/* Center: Global Competitive Intel & API Hub Navigation */}
         <div className="hidden md:flex items-center gap-1.5 font-pixel-heading text-[8.5px]">
-          <button
-            type="button"
-            onClick={() => setShowBattlesModal(true)}
-            className="pixel-btn py-1 px-2 gap-1 hover:border-[#449bed] transition-colors"
-            title="Browse live worldwide games & scout lobby opponents"
-          >
-            <Swords className="size-2.5 text-[#449bed]" />
-            <span>BATTLES</span>
-          </button>
+          {/* REAL-GAME INFO Popdown Menu */}
+          <div className="relative" ref={realGameMenuRef}>
+            <button
+              type="button"
+              onClick={() => setShowRealGameMenu((prev) => !prev)}
+              className={`pixel-btn py-1 px-2.5 gap-1.5 transition-colors cursor-pointer ${
+                showRealGameMenu
+                  ? isArmada
+                    ? "border-[#449bed] text-[#449bed] bg-[#0a1c32]"
+                    : "border-[#ff2244] text-[#ff2244] bg-[#320a0a]"
+                  : "hover:border-[#449bed]"
+              }`}
+              title="Real-Game Intelligence: Battles, Leaderboard, Replays & Patch Watch"
+            >
+              <Activity className="size-2.5 text-[#449bed]" />
+              <span>REAL-GAME INFO</span>
+              <ChevronDown
+                className={`size-2.5 transition-transform duration-150 ${
+                  showRealGameMenu ? "rotate-180 text-white" : "text-zinc-400"
+                }`}
+              />
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setShowLeaderboardModal(true)}
-            className="pixel-btn py-1 px-2 gap-1 hover:border-amber-400 transition-colors"
-            title="Inspect official BAR Season 3 Top 100 Leaderboards"
-          >
-            <Trophy className="size-2.5 text-amber-400" />
-            <span>LEADERBOARD</span>
-          </button>
+            {/* Dropdown Menu Container */}
+            <AnimatePresence>
+              {showRealGameMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.1 }}
+                  className="absolute left-0 top-full mt-1.5 w-48 bg-[#0a0d16]/98 border-2 border-[#449bed] shadow-[3px_3px_0px_#000] z-50 p-1 flex flex-col gap-0.5 select-none"
+                >
+                  <div className="px-2 py-1 text-[7px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800/80 mb-0.5">
+                    Live Match Telemetry & Intel
+                  </div>
 
-          <button
-            type="button"
-            onClick={() => setShowHistoryModal(true)}
-            className="pixel-btn py-1 px-2 gap-1 hover:border-purple-400 transition-colors"
-            title="Search player match history, macro efficiency, & pro replays"
-          >
-            <History className="size-2.5 text-purple-400" />
-            <span>REPLAYS</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowBattlesModal(true);
+                      setShowRealGameMenu(false);
+                    }}
+                    className="flex items-center gap-2 px-2 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-[#12243d] transition-colors group cursor-pointer"
+                  >
+                    <Swords className="size-3 text-[#449bed] group-hover:scale-110 transition-transform shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-bold text-[8.5px]">BATTLES</span>
+                      <span className="text-[7px] text-zinc-500 font-pixel-body">Live worldwide lobby scout</span>
+                    </div>
+                  </button>
 
-          <button
-            type="button"
-            onClick={() => setShowPatchModal(true)}
-            className="pixel-btn py-1 px-2 gap-1 hover:border-red-400 transition-colors"
-            title="Live unit nerfs, buffs, and engine balance patches"
-          >
-            <Flame className="size-2.5 text-red-400" />
-            <span>PATCH WATCH</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowLeaderboardModal(true);
+                      setShowRealGameMenu(false);
+                    }}
+                    className="flex items-center gap-2 px-2 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-[#2e2410] transition-colors group cursor-pointer"
+                  >
+                    <Trophy className="size-3 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-bold text-[8.5px]">LEADERBOARD</span>
+                      <span className="text-[7px] text-zinc-500 font-pixel-body">Season 3 Top 100 players</span>
+                    </div>
+                  </button>
 
-          {/* Quick 1-Click Tactical Overlay Toggle Button */}
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                await fetch("/api/overlay/toggle", { method: "POST" });
-              } catch {
-                setIsOverlayOpen((prev) => !prev);
-              }
-            }}
-            className="pixel-btn py-1 px-2 gap-1 border-emerald-600 bg-emerald-950/40 text-emerald-300 hover:border-emerald-400 transition-colors cursor-pointer"
-            title="Toggle Tactical Overlay On / Off [F8 or Insert]"
-          >
-            <span className="size-1.5 bg-emerald-400 arcade-blink" />
-            <span>OVERLAY [F8]</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowHistoryModal(true);
+                      setShowRealGameMenu(false);
+                    }}
+                    className="flex items-center gap-2 px-2 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-[#251532] transition-colors group cursor-pointer"
+                  >
+                    <History className="size-3 text-purple-400 group-hover:scale-110 transition-transform shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-bold text-[8.5px]">REPLAYS</span>
+                      <span className="text-[7px] text-zinc-500 font-pixel-body">Match history & macro ratings</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPatchModal(true);
+                      setShowRealGameMenu(false);
+                    }}
+                    className="flex items-center gap-2 px-2 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-[#321215] transition-colors group cursor-pointer"
+                  >
+                    <Flame className="size-3 text-red-400 group-hover:scale-110 transition-transform shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-bold text-[8.5px]">PATCH WATCH</span>
+                      <span className="text-[7px] text-zinc-500 font-pixel-body">Engine balance & unit changes</span>
+                    </div>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           <button
             type="button"

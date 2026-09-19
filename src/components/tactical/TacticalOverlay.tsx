@@ -646,32 +646,6 @@ export function TacticalOverlay({
               <span>{isClickThrough ? "GHOST: ON" : "GHOST"}</span>
             </button>
           )}
-          {/* 1-Click In-Game Macro: Activates BAR and sends /clear & /luaui reload */}
-          <button
-            type="button"
-            onClick={executeGameReloadMacro}
-            disabled={isReloadingGame}
-            title="1-Click In-Game Macro: Automatically switches to Beyond All Reason and inputs /luaui reload to activate the in-game HUD!"
-            className="px-1.5 py-0.5 bg-cyan-950/80 border border-cyan-500/80 text-cyan-300 hover:bg-cyan-900/90 rounded-none transition-none active:translate-y-0.5 text-[8.5px] font-pixel-heading flex items-center gap-1 cursor-pointer"
-          >
-            <Sparkles className={`size-2.5 ${isReloadingGame ? "animate-spin text-cyan-400" : reloadSuccess ? "text-emerald-400" : "text-cyan-400"}`} />
-            <span>{isReloadingGame ? "RELOADING..." : reloadSuccess ? "ACTIVE! ✓" : "⚡ BAR HUD"}</span>
-          </button>
-
-          {!isElectron && (
-            /* Browser Mode: Native Desktop Overlay Launcher */
-            <button
-              type="button"
-              onClick={launchDesktopOverlay}
-              disabled={isLaunchingDesktop}
-              title="Launch Native Always-On-Top Game Overlay (NVIDIA Broadcast Style: Stays pinned above Beyond All Reason even when clicking the game!)"
-              className="px-1.5 py-0.5 bg-emerald-950/80 border border-emerald-500/80 text-emerald-300 hover:bg-emerald-900/90 rounded-none transition-none active:translate-y-0.5 text-[8.5px] font-pixel-heading flex items-center gap-1 cursor-pointer"
-            >
-              <span className={`size-1.5 rounded-none bg-emerald-400 ${isLaunchingDesktop ? "animate-spin" : "arcade-blink"}`} />
-              <span>NVIDIA OVERLAY</span>
-            </button>
-          )}
-
           {/* Browser Mode: PiP Launcher */}
           {!isElectron && (
             <button

@@ -1,7 +1,7 @@
 function widget:GetInfo()
     return {
         name    = "BAR Theory Tactical Overlay",
-        desc    = "Native 16-bit arcade tactical HUD, live build order checklist, and telemetry exporter",
+        desc    = "Native 16-bit arcade tactical HUD, live battle intel feeds, build queue, and telemetry exporter",
         author  = "Theory-App",
         date    = "2026-09-18",
         license = "GNU GPL, v2 or later",
@@ -27,6 +27,8 @@ local spGetTeamInfo       = Spring.GetTeamInfo
 local spGetGaiaTeamID     = Spring.GetGaiaTeamID
 local spGetUnitHealth     = Spring.GetUnitHealth
 local spGetGameFrame      = Spring.GetGameFrame
+local spGetWind           = Spring.GetWind
+local spIsGameOver        = Spring.IsGameOver
 
 local glColor             = gl.Color
 local glRect              = gl.Rect
@@ -46,17 +48,19 @@ local isVisible = true
 local isDragging = false
 local dragOffsetX, dragOffsetY = 0, 0
 
-local winW, winH = 350, 420
-local winX, winY = 1560, 540 -- Default position in white highlighted area (120px from top, 10px from right)
+local winW, winH = 350, 490
+local winX, winY = 1560, 470 -- Default position docked on right (120px from top, 10px from right)
 
 local pillX, pillY = 1760, 936
 local pillW, pillH = 150, 24
 local customPositionLoaded = false
 local isGameOver = false
 
+-- Navigation & View Modes: "SPLIT" (default), "INTEL", "QUEUE"
+local activeTab = "SPLIT"
 local activePreset = 1 -- 1: BOT, 2: VEH, 3: ECO, 4: APP
 local scrollOffset = 0
-local maxVisibleSteps = 9
+local radarAngle = 0
 
 --------------------------------------------------------------------------------
 -- Color Constants (Spring text formatting & OpenGL)
@@ -69,6 +73,8 @@ local cGold     = string.char(255, 251, 146, 60)
 local cGray     = string.char(255, 148, 163, 184)
 local cDarkGray = string.char(255, 100, 116, 139)
 local cRed      = string.char(255, 248, 113, 113)
+local cPurple   = string.char(255, 168, 85, 247)
+local cBlue     = string.char(255, 96, 165, 250)
 
 --------------------------------------------------------------------------------
 -- Unit Name Mappings
@@ -109,7 +115,7 @@ local UNIT_NAME_TRANSLATIONS = {
     armestor = "Energy Storage",
     corestor = "Energy Storage",
     armmstor = "Metal Storage",
-    cormstor = "Metal Storage",
+    cormmstor = "Metal Storage",
     armfido = "Hound",
     corsheld = "Sheldon",
     armlatnk = "Lazarus",
@@ -237,11 +243,25 @@ local liveStats = {
     faction = "Armada",
     mCurr = 1000,
     mInc = 0,
+    mExp = 0,
     eCurr = 1000,
     eInc = 0,
+    eExp = 0,
+    wind = 12.0,
     combatUnits = 0,
     commanders = 1,
-    buildings = 0
+    builders = 0,
+    buildings = 0,
+    raiders = 0,
+    skirmishers = 0,
+    assault = 0,
+    air = 0,
+    enemyCount = 0,
+    enemyRaiders = 0,
+    enemySkirmishers = 0,
+    enemyAssault = 0,
+    enemyAir = 0,
+    enemyCommanders = 0
 }
 
 --------------------------------------------------------------------------------
@@ -310,7 +330,6 @@ local function checkAppBuildOrderSync()
     
     if not content or #content < 10 then return end
     
-    -- Lightweight resilient parser for the JSON build order
     local titleMatch = content:match('"strategyTitle"%s*:%s*"([^"]+)"')
     local steps = {}
     
@@ -353,7 +372,7 @@ function widget:Initialize()
     if not vsx or vsx <= 0 then vsx = 1920 end
     if not vsy or vsy <= 0 then vsy = 1080 end
     
-    -- Default position docked to the right in the white highlighted area (120px from top)
+    -- Default position docked to the right in the white highlighted area (120px from top, 10px from right)
     if not customPositionLoaded then
         winX = math.max(10, vsx - winW - 10)
         winY = math.max(20, vsy - winH - 120)
@@ -364,6 +383,7 @@ function widget:Initialize()
     
     isVisible = true
     isGameOver = false
+    activeTab = "SPLIT"
     checkAppBuildOrderSync()
 end
 
@@ -390,36 +410,40 @@ function widget:GetConfigData()
         pillX = pillX,
         pillY = pillY,
         isVisible = false, -- Always close overlay after every game
-        activePreset = activePreset
+        activePreset = activePreset,
+        activeTab = activeTab
     }
 end
 
 function widget:SetConfigData(data)
     if data then
-        if data.winX and data.winX > 100 then
+        if data.winX and data.winX > 50 then
             winX = data.winX
         else
             winX = math.max(10, vsx - winW - 10)
         end
         -- Only preserve winY if it was manually dragged and is not an old legacy default (350)
-        if data.winY and data.winY > 100 and data.winY ~= 350 then
+        if data.winY and data.winY > 50 and data.winY ~= 350 then
             winY = data.winY
             customPositionLoaded = true
         else
             winY = math.max(20, vsy - winH - 120)
         end
-        if data.pillX and data.pillX > 100 then pillX = data.pillX else pillX = math.max(10, vsx - pillW - 10) end
-        if data.pillY and data.pillY > 100 and data.pillY ~= 350 and data.pillY ~= 740 then
+        if data.pillX and data.pillX > 50 then pillX = data.pillX else pillX = math.max(10, vsx - pillW - 10) end
+        if data.pillY and data.pillY > 50 and data.pillY ~= 350 and data.pillY ~= 740 then
             pillY = data.pillY
         else
             pillY = math.max(20, vsy - pillH - 120)
         end
         if data.activePreset then activePreset = data.activePreset end
+        if data.activeTab then activeTab = data.activeTab end
     end
 end
 
 local triggerCounter = 0
 function widget:Update()
+    radarAngle = (radarAngle + 0.04) % (math.pi * 2)
+
     triggerCounter = triggerCounter + 1
     if triggerCounter >= 20 then
         triggerCounter = 0
@@ -449,7 +473,7 @@ function widget:UnitFinished(unitID, unitDefID, unitTeam)
 end
 
 function widget:GameFrame(frame)
-    if Spring.IsGameOver and Spring.IsGameOver() then
+    if spIsGameOver and spIsGameOver() then
         isVisible = false
         isGameOver = true
         return
@@ -480,12 +504,30 @@ function widget:GameFrame(frame)
     eInc  = math.floor((eInc or 0) * 10) / 10
     eExp  = math.floor((eExp or 0) * 10) / 10
     
-    -- Count friendly units
+    -- Live Wind Speed
+    local currentWind = 12.0
+    if spGetWind then
+        local wx, wy, wz, ws = spGetWind()
+        if ws and ws > 0 then
+            currentWind = math.floor(ws * 10) / 10
+        elseif wx and wz then
+            local mag = math.sqrt(wx * wx + (wz or 0) * (wz or 0))
+            if mag > 0 then
+                currentWind = math.floor(mag * 10) / 10
+            end
+        end
+    end
+    
+    -- Friendly Forces Census & Breakdown
     local myUnits = spGetTeamUnits(myTeamID) or {}
     local friendlyCount = 0
     local commanders = 0
     local builders = 0
     local buildings = 0
+    local raiders = 0
+    local skirmishers = 0
+    local assault = 0
+    local air = 0
     local currentFrameCounts = {}
     
     for i = 1, #myUnits do
@@ -514,10 +556,55 @@ function widget:GameFrame(frame)
                 builders = builders + 1
             else
                 friendlyCount = friendlyCount + 1
+                if def.canFly then
+                    air = air + 1
+                elseif uName:find("pw") or uName:find("ak") or uName:find("grunt") or uName:find("pawn") or uName:find("flash") or uName:find("raider") then
+                    raiders = raiders + 1
+                elseif uName:find("rock") or uName:find("storm") or uName:find("stump") then
+                    skirmishers = skirmishers + 1
+                else
+                    assault = assault + 1
+                end
             end
         end
     end
     currentCounts = currentFrameCounts
+
+    -- Visible Enemy Units Census & Radar Scanning
+    local enemyCount = 0
+    local enemyRaiders = 0
+    local enemySkirmishers = 0
+    local enemyAssault = 0
+    local enemyAir = 0
+    local enemyCommanders = 0
+    
+    if spGetVisibleUnits then
+        local visUnits = spGetVisibleUnits(-1, nil, false) or {}
+        for i = 1, #visUnits do
+            local uID = visUnits[i]
+            local uAlly = spGetUnitAllyTeam(uID)
+            if uAlly and uAlly ~= myAllyTeamID then
+                enemyCount = enemyCount + 1
+                local uDefID = spGetUnitDefID(uID)
+                if uDefID and UnitDefs and UnitDefs[uDefID] then
+                    local def = UnitDefs[uDefID]
+                    local uName = (def.name or ""):lower()
+                    local isCom = (def.customParams and (def.customParams.iscommander == "1" or def.customParams.iscommander == true)) or uName:find("com") or uName:find("commander")
+                    if isCom then
+                        enemyCommanders = enemyCommanders + 1
+                    elseif def.canFly then
+                        enemyAir = enemyAir + 1
+                    elseif uName:find("pw") or uName:find("ak") or uName:find("grunt") or uName:find("pawn") or uName:find("flash") or uName:find("raider") then
+                        enemyRaiders = enemyRaiders + 1
+                    elseif uName:find("rock") or uName:find("storm") or uName:find("stump") then
+                        enemySkirmishers = enemySkirmishers + 1
+                    else
+                        enemyAssault = enemyAssault + 1
+                    end
+                end
+            end
+        end
+    end
     
     local gameSec = math.floor(frame / 30)
     liveStats.frame = frame
@@ -526,11 +613,25 @@ function widget:GameFrame(frame)
     liveStats.faction = myFaction
     liveStats.mCurr = mCurr
     liveStats.mInc = mInc
+    liveStats.mExp = mExp
     liveStats.eCurr = eCurr
     liveStats.eInc = eInc
+    liveStats.eExp = eExp
+    liveStats.wind = currentWind
     liveStats.combatUnits = friendlyCount
     liveStats.commanders = commanders
+    liveStats.builders = builders
     liveStats.buildings = buildings
+    liveStats.raiders = raiders
+    liveStats.skirmishers = skirmishers
+    liveStats.assault = assault
+    liveStats.air = air
+    liveStats.enemyCount = enemyCount
+    liveStats.enemyRaiders = enemyRaiders
+    liveStats.enemySkirmishers = enemySkirmishers
+    liveStats.enemyAssault = enemyAssault
+    liveStats.enemyAir = enemyAir
+    liveStats.enemyCommanders = enemyCommanders
     
     -- Silently export live telemetry to disk for Theory-App
     local completedUnitsJson = {}
@@ -542,8 +643,11 @@ function widget:GameFrame(frame)
         table.insert(completedUnitsJson, string.format('"%s":%d', sanitize(k), count))
     end
     
-    local jsonStr = string.format('{"gameFrame":%d,"gameTimeSeconds":%d,"playerName":"%s","faction":"%s","metal":{"current":%d,"income":%s,"expense":%s},"energy":{"current":%d,"income":%s,"expense":%s},"friendlyUnits":{"total":%d,"commanders":%d,"combat":%d,"buildings":%d},"completedUnits":{%s}}',
-        frame, gameSec, sanitize(playerName), sanitize(myFaction), mCurr, mInc, mExp, eCurr, eInc, eExp, (friendlyCount + commanders), commanders, friendlyCount, buildings, table.concat(completedUnitsJson, ","))
+    local jsonStr = string.format('{"gameFrame":%d,"gameTimeSeconds":%d,"playerName":"%s","faction":"%s","metal":{"current":%d,"income":%s,"expense":%s},"energy":{"current":%d,"income":%s,"expense":%s},"wind":%.1f,"friendlyUnits":{"total":%d,"commanders":%d,"combat":%d,"builders":%d,"buildings":%d,"raiders":%d,"skirmishers":%d,"assault":%d,"air":%d},"enemyUnits":{"total":%d,"commanders":%d,"raiders":%d,"skirmishers":%d,"assault":%d,"air":%d},"completedUnits":{%s}}',
+        frame, gameSec, sanitize(playerName), sanitize(myFaction), mCurr, mInc, mExp, eCurr, eInc, eExp, currentWind,
+        (friendlyCount + commanders), commanders, friendlyCount, builders, buildings, raiders, skirmishers, assault, air,
+        enemyCount, enemyCommanders, enemyRaiders, enemySkirmishers, enemyAssault, enemyAir,
+        table.concat(completedUnitsJson, ","))
         
     local f = io.open("bar_live_telemetry.json", "w")
     if f then
@@ -590,30 +694,58 @@ function widget:MousePress(mx, my, button)
     
     -- If HUD is visible, check bounds
     if mx >= winX and mx <= (winX + winW) and my >= winY and my <= (winY + winH) then
-        -- 1. Minimize button clicked [ - ]
-        if mx >= (winX + winW - 32) and mx <= (winX + winW - 8) and my >= (winY + winH - 26) and my <= (winY + winH - 6) then
+        local headerY = winY + winH - 26
+
+        -- 1. Close button clicked [ ✕ ]
+        if mx >= (winX + winW - 28) and mx <= (winX + winW - 8) and my >= (headerY + 3) and my <= (headerY + 21) then
+            isVisible = false
+            return true
+        end
+
+        -- 2. Minimize button clicked [ - ]
+        if mx >= (winX + winW - 50) and mx <= (winX + winW - 30) and my >= (headerY + 3) and my <= (headerY + 21) then
             isVisible = false
             return true
         end
         
-        -- 2. Header bar clicked -> start window drag
-        if my >= (winY + winH - 30) then
+        -- 3. Header bar clicked -> start window drag
+        if my >= headerY then
             isDragging = true
             dragOffsetX = mx - winX
             dragOffsetY = my - winY
             return true
         end
         
-        -- 3. Preset switcher tabs (Y: winY + winH - 74 to winY + winH - 52)
-        local tabY1 = winY + winH - 74
-        local tabY2 = winY + winH - 52
+        -- 4. Tactical View Navigation Tabs Bar
+        local tabY1 = headerY - 3 - 28 - 4 - 24
+        local tabY2 = tabY1 + 24
         if my >= tabY1 and my <= tabY2 then
-            local tW = (winW - 20) / 4
-            for t = 1, 4 do
-                local tX1 = winX + 10 + (t - 1) * tW
-                local tX2 = tX1 + tW - 4
-                if mx >= tX1 and mx <= tX2 then
-                    activePreset = t
+            local tW = (winW - 12) / 3
+            if mx >= (winX + 6) and mx <= (winX + 6 + tW) then
+                activeTab = "INTEL"
+                scrollOffset = 0
+                return true
+            elseif mx > (winX + 6 + tW) and mx <= (winX + 6 + tW * 2) then
+                activeTab = "QUEUE"
+                scrollOffset = 0
+                return true
+            elseif mx > (winX + 6 + tW * 2) and mx <= (winX + winW - 6) then
+                activeTab = "SPLIT"
+                scrollOffset = 0
+                return true
+            end
+        end
+
+        -- 5. Footer preset buttons: BOT, VEH, ECO, APP
+        local footerY = winY + 6
+        if my >= footerY and my <= (footerY + 24) then
+            local pW = 42
+            local pStartX = winX + 68
+            for p = 1, 4 do
+                local px1 = pStartX + (p - 1) * (pW + 6)
+                local px2 = px1 + pW
+                if mx >= px1 and mx <= px2 then
+                    activePreset = p
                     scrollOffset = 0
                     return true
                 end
@@ -669,18 +801,15 @@ function widget:DrawScreen()
 
     -- MINIMIZED FLOATING PILL
     if not isVisible then
-        -- Pill background
-        glColor(0.04, 0.08, 0.16, 0.90)
+        glColor(0.04, 0.08, 0.16, 0.92)
         glRect(pillX, pillY, pillX + pillW, pillY + pillH)
         
-        -- Pill border
         glColor(0.22, 0.74, 0.97, 0.90)
         glLineWidth(1.5)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glRect(pillX, pillY, pillX + pillW, pillY + pillH)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         
-        -- Pill text
         glText(cCyan .. "◈ " .. cWhite .. "THEORY HUD " .. cYellow .. "[F8]", pillX + 10, pillY + 6, 11, "on")
         return
     end
@@ -688,11 +817,11 @@ function widget:DrawScreen()
     ----------------------------------------------------------------------------
     -- 1. MAIN WINDOW CONTAINER
     ----------------------------------------------------------------------------
-    -- Glassy backdrop
-    glColor(0.03, 0.05, 0.10, 0.92)
+    -- Deep Obsidian / Glassy backdrop
+    glColor(0.03, 0.05, 0.10, 0.94)
     glRect(winX, winY, winX + winW, winY + winH)
     
-    -- Outer neon cyan border
+    -- Neon Cyan Outer Border
     glColor(0.22, 0.74, 0.97, 0.85)
     glLineWidth(1.5)
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
@@ -702,72 +831,92 @@ function widget:DrawScreen()
     ----------------------------------------------------------------------------
     -- 2. TITLE / HEADER BAR
     ----------------------------------------------------------------------------
-    local headerH = 30
+    local headerH = 26
     local headerY = winY + winH - headerH
     glColor(0.07, 0.12, 0.22, 0.98)
     glRect(winX, headerY, winX + winW, winY + winH)
     
-    -- Bottom line under header
+    -- Header underline
     glColor(0.22, 0.74, 0.97, 0.5)
     glRect(winX, headerY, winX + winW, headerY + 1)
     
-    -- Title: THEORY HUD
-    glText(cCyan .. "THEORY HUD", winX + 10, headerY + 8, 12, "on")
+    -- Title: ⚡ BAR HUD
+    glText(cCyan .. "⚡ BAR HUD", winX + 10, headerY + 7, 11, "on")
     
-    -- Faction tag
+    -- Faction Tag Badge
     local fTag = (liveStats.faction == "Cortex") and (cRed .. "[CORTEX]") or (cCyan .. "[ARMADA]")
-    glText(fTag, winX + 115, headerY + 9, 10, "on")
-    
-    -- Game Clock (MM:SS)
-    local clockStr = string.format("%02d:%02d", math.floor(liveStats.gameSec / 60), liveStats.gameSec % 60)
-    glText(cGreen .. clockStr, winX + 200, headerY + 8, 12, "on")
+    glText(fTag, winX + 115, headerY + 8, 9, "on")
     
     -- Minimize button [ - ]
-    glColor(0.12, 0.20, 0.32, 0.9)
-    glRect(winX + winW - 32, headerY + 5, winX + winW - 8, headerY + 23)
-    glText(cWhite .. "-", winX + winW - 22, headerY + 7, 12, "on")
-    
-    ----------------------------------------------------------------------------
-    -- 3. RESOURCE & FORCE STATS SUBHEADER
-    ----------------------------------------------------------------------------
-    local statsY = headerY - 24
-    glColor(0.05, 0.08, 0.15, 0.8)
-    glRect(winX + 4, statsY, winX + winW - 4, statsY + 22)
-    
-    local metalStr = string.format("%sM:+%.1f %s(%d)", cWhite, liveStats.mInc, cGray, liveStats.mCurr)
-    local energyStr = string.format("%sE:+%d %s(%d)", cYellow, math.floor(liveStats.eInc), cGray, liveStats.eCurr)
-    local armyStr = string.format("%sArmy:%d %sBld:%d", cGreen, liveStats.combatUnits, cGray, liveStats.buildings)
-    
-    glText(metalStr, winX + 10, statsY + 6, 9, "on")
-    glText(energyStr, winX + 125, statsY + 6, 9, "on")
-    glText(armyStr, winX + 235, statsY + 6, 9, "on")
+    glColor(0.12, 0.18, 0.28, 0.9)
+    glRect(winX + winW - 50, headerY + 3, winX + winW - 32, headerY + 21)
+    glText(cWhite .. "-", winX + winW - 44, headerY + 5, 11, "on")
+
+    -- Close button [ ✕ ]
+    glColor(0.35, 0.10, 0.12, 0.9)
+    glRect(winX + winW - 28, headerY + 3, winX + winW - 8, headerY + 21)
+    glText(cRed .. "x", winX + winW - 21, headerY + 5, 10, "on")
 
     ----------------------------------------------------------------------------
-    -- 4. PRESET SWITCHER TABS
+    -- 3. SUB-HEADER: LINK [✓] GAME: MM:SS  |  WIND SPEED
     ----------------------------------------------------------------------------
-    local tabY = statsY - 26
-    local tabNames = { "BOT", "VEH", "ECO", "APP" }
-    local tW = (winW - 20) / 4
-    
-    for t = 1, 4 do
-        local tX1 = winX + 10 + (t - 1) * tW
-        local tX2 = tX1 + tW - 4
-        
-        if t == activePreset then
-            -- Active tab: glowing blue
-            glColor(0.16, 0.45, 0.85, 0.95)
-            glRect(tX1, tabY, tX2, tabY + 20)
-            glColor(0.4, 0.8, 1.0, 1.0)
-            glLineWidth(1.5)
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-            glRect(tX1, tabY, tX2, tabY + 20)
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-            glText(cWhite .. tabNames[t], tX1 + 14, tabY + 5, 10, "on")
+    local subY2 = headerY - 4
+    local subY1 = subY2 - 28
+    local subLeftW = (winW - 18) * 0.58
+    local subRightW = (winW - 18) - subLeftW
+
+    -- Left Box: Link + Game Clock
+    local leftX1 = winX + 6
+    local leftX2 = leftX1 + subLeftW
+    glColor(0.05, 0.10, 0.20, 0.92)
+    glRect(leftX1, subY1, leftX2, subY2)
+    glColor(0.25, 0.70, 0.95, 0.85)
+    glLineWidth(1)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    glRect(leftX1, subY1, leftX2, subY2)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+    local clockStr = string.format("%02d:%02d", math.floor(liveStats.gameSec / 60), liveStats.gameSec % 60)
+    glText(cCyan .. "Link " .. cGreen .. "[✓] " .. cCyan .. "Game: " .. cWhite .. clockStr, leftX1 + 8, subY1 + 8, 10, "on")
+
+    -- Right Box: Live Wind Speed
+    local rightX1 = leftX2 + 6
+    local rightX2 = winX + winW - 6
+    glColor(0.06, 0.09, 0.15, 0.92)
+    glRect(rightX1, subY1, rightX2, subY2)
+    glColor(0.25, 0.35, 0.45, 0.75)
+    glLineWidth(1)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    glRect(rightX1, subY1, rightX2, subY2)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+    glText(cCyan .. "💨 WIND: " .. cWhite .. string.format("%.1f", liveStats.wind) .. cDarkGray .. " M/S", rightX1 + 8, subY1 + 8, 9, "on")
+
+    ----------------------------------------------------------------------------
+    -- 4. TACTICAL VIEW NAVIGATION TABS (INTEL FEEDS | BUILD QUEUE | ✨ SPLIT)
+    ----------------------------------------------------------------------------
+    local tabY2 = subY1 - 4
+    local tabY1 = tabY2 - 24
+    local tabW = (winW - 12) / 3
+    local tabLabels = { "INTEL FEEDS", "BUILD QUEUE", "✨ SPLIT" }
+    local tabKeys   = { "INTEL", "QUEUE", "SPLIT" }
+
+    for t = 1, 3 do
+        local tx1 = winX + 6 + (t - 1) * tabW
+        local tx2 = tx1 + tabW - 2
+        local isActive = (activeTab == tabKeys[t])
+
+        if isActive then
+            glColor(0.09, 0.18, 0.32, 0.95)
+            glRect(tx1, tabY1, tx2, tabY2)
+            -- Glowing cyan highlight bottom line
+            glColor(0.25, 0.80, 1.0, 1.0)
+            glRect(tx1, tabY1, tx2, tabY1 + 2)
+            glText(cWhite .. tabLabels[t], tx1 + 10, tabY1 + 7, 9, "on")
         else
-            -- Inactive tab: dim slate
-            glColor(0.08, 0.12, 0.20, 0.75)
-            glRect(tX1, tabY, tX2, tabY + 20)
-            glText(cGray .. tabNames[t], tX1 + 14, tabY + 5, 10, "on")
+            glColor(0.04, 0.07, 0.12, 0.75)
+            glRect(tx1, tabY1, tx2, tabY2)
+            glText(cGray .. tabLabels[t], tx1 + 10, tabY1 + 7, 9, "on")
         end
     end
 
@@ -782,20 +931,8 @@ function widget:DrawScreen()
     else
         currentPreset = factionPresets[math.min(activePreset, #factionPresets)] or factionPresets[1]
     end
-    
-    -- Subtitle showing active strategy name
-    local subY = tabY - 20
-    local stratTitle = currentPreset.title or currentPreset.name
-    glText(cYellow .. "▶ " .. cWhite .. stratTitle, winX + 10, subY + 4, 10, "on")
-
-    ----------------------------------------------------------------------------
-    -- 6. BUILD ORDER STEP CHECKLIST
-    ----------------------------------------------------------------------------
-    local listYTop = subY - 10
-    local listYBottom = winY + 45
-    local rowH = 25
     local steps = currentPreset.steps or {}
-    
+
     -- Identify the first incomplete step as active
     local firstIncompleteIdx = -1
     for i, step in ipairs(steps) do
@@ -805,81 +942,375 @@ function widget:DrawScreen()
             break
         end
     end
-    
-    -- Clamp scrolling
-    local totalSteps = #steps
-    local visibleCount = math.min(maxVisibleSteps, math.floor((listYTop - listYBottom) / rowH))
-    if scrollOffset > (totalSteps - visibleCount) then
-        scrollOffset = math.max(0, totalSteps - visibleCount)
-    end
-    
-    for i = 1, visibleCount do
-        local stepIdx = i + scrollOffset
-        if stepIdx > totalSteps then break end
-        
-        local step = steps[stepIdx]
-        local rowY = listYTop - (i * rowH)
-        local builtCount = getUnitCount(step.unit, step.codes)
-        local isComplete = (builtCount >= step.cumulative)
-        local isActive = (stepIdx == firstIncompleteIdx)
-        
-        -- Row highlight for active step
-        if isActive then
-            glColor(0.20, 0.45, 0.70, 0.35)
-            glRect(winX + 6, rowY - 2, winX + winW - 6, rowY + rowH - 4)
-            glColor(0.25, 0.80, 1.0, 0.75)
-            glLineWidth(1)
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-            glRect(winX + 6, rowY - 2, winX + winW - 6, rowY + rowH - 4)
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-        elseif isComplete then
-            glColor(0.05, 0.15, 0.08, 0.25)
-            glRect(winX + 6, rowY - 2, winX + winW - 6, rowY + rowH - 4)
+
+    -- Next step countdown calculation
+    local nextStepTime = "00:00"
+    local nextStepSeconds = 0
+    if firstIncompleteIdx > 0 and steps[firstIncompleteIdx] then
+        local s = steps[firstIncompleteIdx]
+        nextStepTime = s.time or "00:00"
+        local m, sec = nextStepTime:match("(%d+):(%d+)")
+        if m and sec then
+            local targetSec = tonumber(m) * 60 + tonumber(sec)
+            nextStepSeconds = math.max(0, targetSec - liveStats.gameSec)
         end
-        
-        -- Status Icon Badge
-        local statusIcon = ""
-        local textCol = cGray
-        if isComplete then
-            statusIcon = cGreen .. "[✓] "
-            textCol = cGreen
-        elseif isActive then
-            statusIcon = cYellow .. "[►] "
-            textCol = cWhite
-        else
-            statusIcon = cDarkGray .. "[ ] "
-            textCol = cGray
-        end
-        
-        -- Step text line
-        local countRatio = string.format("(%d/%d)", math.min(step.cumulative, builtCount), step.cumulative)
-        local stepStr = string.format("%s%s%s %s%s: %s%dx %s %s%s",
-            statusIcon,
-            cCyan, step.time,
-            cYellow, step.builder,
-            textCol, step.count, step.unit,
-            (isComplete and cGreen or cDarkGray), countRatio
-        )
-        
-        glText(stepStr, winX + 10, rowY + 3, 9, "on")
     end
 
     ----------------------------------------------------------------------------
-    -- 7. FOOTER & RECOMMENDATION
+    -- 6. CONTENT RENDERING BY ACTIVE TAB
     ----------------------------------------------------------------------------
+    local contentTopY = tabY1 - 6
     local footerY = winY + 6
-    local footerH = 34
-    glColor(0.06, 0.10, 0.18, 0.95)
+    local footerH = 26
+    local contentBotY = footerY + footerH + 4
+
+    ----------------------------------------------------------------------------
+    -- HELPER: Draw Friendly Intel Card
+    ----------------------------------------------------------------------------
+    local function drawFriendlyCard(cardX1, cardY1, cardX2, cardY2, isCompact)
+        local cardW = cardX2 - cardX1
+        local cardH = cardY2 - cardY1
+
+        -- Background
+        glColor(0.04, 0.07, 0.13, 0.95)
+        glRect(cardX1, cardY1, cardX2, cardY2)
+
+        -- Radar Grid Lines
+        glColor(0.20, 0.60, 0.90, 0.09)
+        glLineWidth(1)
+        for gy = cardY1 + 15, cardY2 - 15, 20 do
+            glRect(cardX1 + 4, gy, cardX2 - 4, gy + 1)
+        end
+        for gx = cardX1 + 25, cardX2 - 25, 35 do
+            glRect(gx, cardY1 + 4, gx + 1, cardY2 - 4)
+        end
+
+        -- Animated Radar Sweep
+        local sweepX = cardX1 + (math.sin(radarAngle) * 0.5 + 0.5) * cardW
+        glColor(0.22, 0.74, 0.97, 0.18)
+        glRect(sweepX - 1, cardY1 + 2, sweepX + 1, cardY2 - 2)
+
+        -- Radar friendly blips (green dots)
+        glColor(0.29, 0.87, 0.50, 0.5)
+        glRect(cardX1 + 90, cardY1 + 35, cardX1 + 93, cardY1 + 38)
+        glRect(cardX1 + 180, cardY1 + 65, cardX1 + 183, cardY1 + 68)
+        glRect(cardX1 + 240, cardY1 + 45, cardX1 + 243, cardY1 + 48)
+
+        -- Card Outer Border
+        glColor(0.20, 0.35, 0.50, 0.85)
+        glLineWidth(1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glRect(cardX1, cardY1, cardX2, cardY2)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+        -- Top-Left Badge: Purple [✓] Checkmark
+        local badgeY2 = cardY2 - 4
+        local badgeY1 = badgeY2 - 16
+        glColor(0.28, 0.24, 0.68, 0.95)
+        glRect(cardX1 + 6, badgeY1, cardX1 + 24, badgeY2)
+        glText(cWhite .. "✓", cardX1 + 11, badgeY1 + 4, 10, "on")
+
+        -- Sub-Badge: Commander / Combat Breakdown
+        local comBadgeText = "1x COMMANDER (ARMOR ACTIVE)"
+        if liveStats.combatUnits > 0 then
+            comBadgeText = string.format("%dx COMBAT (%dx R | %dx S)", liveStats.combatUnits, liveStats.raiders, liveStats.skirmishers)
+        end
+        glColor(0.08, 0.12, 0.20, 0.85)
+        glRect(cardX1 + 30, badgeY1, cardX1 + 195, badgeY2)
+        glText(cGreen .. comBadgeText, cardX1 + 34, badgeY1 + 4, 7.5, "on")
+
+        -- Top-Right Badge: 🛡 FRIENDLY: N
+        local frCount = liveStats.combatUnits + liveStats.commanders
+        local frText = string.format("🛡 FRIENDLY: %d", frCount)
+        glColor(0.06, 0.25, 0.12, 0.95)
+        glRect(cardX2 - 95, badgeY1, cardX2 - 6, badgeY2)
+        glColor(0.29, 0.87, 0.50, 0.8)
+        glLineWidth(1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glRect(cardX2 - 95, badgeY1, cardX2 - 6, badgeY2)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        glText(cGreen .. frText, cardX2 - 90, badgeY1 + 4, 8, "on")
+
+        -- Economy & Command Row
+        local ecoY = badgeY1 - 18
+        glText(cGray .. "📈 PLAYER COMMAND & ECONOMY:", cardX1 + 8, ecoY + 4, 8, "on")
+
+        local pRowY = ecoY - 18
+        glColor(0.06, 0.09, 0.16, 0.8)
+        glRect(cardX1 + 6, pRowY, cardX2 - 6, pRowY + 16)
+        
+        local pNameText = string.format("%s● %s %s(%s)", cBlue, liveStats.playerName, cDarkGray, liveStats.faction)
+        local pEcoText = string.format("%s▤ +%.1f  %s⚡ +%d", cGray, liveStats.mInc, cYellow, math.floor(liveStats.eInc))
+        glText(pNameText, cardX1 + 10, pRowY + 4, 8.5, "on")
+        glText(pEcoText, cardX2 - 95, pRowY + 4, 8.5, "on")
+
+        -- Bottom Player Status Pill
+        local pillBoxY = cardY1 + 6
+        local pillWd = 160
+        local pillX1 = cardX1 + (cardW - pillWd) / 2
+        glColor(0.06, 0.08, 0.14, 0.9)
+        glRect(pillX1, pillBoxY, pillX1 + pillWd, pillBoxY + 14)
+        glColor(0.20, 0.30, 0.45, 0.7)
+        glLineWidth(1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glRect(pillX1, pillBoxY, pillX1 + pillWd, pillBoxY + 14)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        glText(cGreen .. "● " .. cWhite .. liveStats.playerName .. cGray .. " (Commander)", pillX1 + 12, pillBoxY + 3, 7.5, "on")
+    end
+
+    ----------------------------------------------------------------------------
+    -- HELPER: Draw Enemy Intel Card
+    ----------------------------------------------------------------------------
+    local function drawEnemyCard(cardX1, cardY1, cardX2, cardY2, isCompact)
+        local cardW = cardX2 - cardX1
+        local cardH = cardY2 - cardY1
+
+        -- Background
+        glColor(0.08, 0.04, 0.06, 0.95)
+        glRect(cardX1, cardY1, cardX2, cardY2)
+
+        -- Radar Grid Lines (subtle crimson)
+        glColor(0.90, 0.20, 0.20, 0.07)
+        glLineWidth(1)
+        for gy = cardY1 + 15, cardY2 - 15, 20 do
+            glRect(cardX1 + 4, gy, cardX2 - 4, gy + 1)
+        end
+        for gx = cardX1 + 25, cardX2 - 25, 35 do
+            glRect(gx, cardY1 + 4, gx + 1, cardY2 - 4)
+        end
+
+        -- Animated Radar Sweep
+        local sweepX = cardX1 + (math.sin(radarAngle + 1.2) * 0.5 + 0.5) * cardW
+        glColor(0.95, 0.25, 0.25, 0.14)
+        glRect(sweepX - 1, cardY1 + 2, sweepX + 1, cardY2 - 2)
+
+        -- Card Outer Border
+        glColor(0.45, 0.18, 0.22, 0.85)
+        glLineWidth(1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glRect(cardX1, cardY1, cardX2, cardY2)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+        -- Top-Left Badge: Crosshair [⌖]
+        local badgeY2 = cardY2 - 4
+        local badgeY1 = badgeY2 - 16
+        glColor(0.16, 0.18, 0.25, 0.95)
+        glRect(cardX1 + 6, badgeY1, cardX1 + 24, badgeY2)
+        glText(cRed .. "⌖", cardX1 + 10, badgeY1 + 4, 10, "on")
+
+        -- Sub-Badge: Hostile Contact Status
+        local hostBadgeText = (liveStats.enemyCount == 0) and "NO HOSTILE CONTACTS IN SIGHT" or string.format("HOSTILE CONTACT CONFIRMED (~%d)", liveStats.enemyCount)
+        glColor(0.12, 0.08, 0.10, 0.85)
+        glRect(cardX1 + 30, badgeY1, cardX1 + 205, badgeY2)
+        glText((liveStats.enemyCount == 0 and cGray or cRed) .. hostBadgeText, cardX1 + 34, badgeY1 + 4, 7.5, "on")
+
+        -- Top-Right Badge: ⚔ ENEMY: ~N
+        local enText = string.format("⚔ ENEMY: ~%d", liveStats.enemyCount)
+        glColor(0.35, 0.08, 0.10, 0.95)
+        glRect(cardX2 - 85, badgeY1, cardX2 - 6, badgeY2)
+        glColor(0.95, 0.25, 0.25, 0.8)
+        glLineWidth(1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glRect(cardX2 - 85, badgeY1, cardX2 - 6, badgeY2)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        glText(cRed .. enText, cardX2 - 80, badgeY1 + 4, 8, "on")
+
+        -- Middle Content: FOG OF WAR or HOSTILE CONTACT
+        local midY = badgeY1 - 22
+        if liveStats.enemyCount == 0 then
+            -- Fog of war clear
+            glColor(0.04, 0.06, 0.08, 0.8)
+            glRect(cardX1 + 16, midY - 6, cardX2 - 16, midY + 16)
+            glColor(0.18, 0.22, 0.28, 0.7)
+            glLineWidth(1)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+            glRect(cardX1 + 16, midY - 6, cardX2 - 16, midY + 16)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+            glText(cGreen .. "● FOG OF WAR // RADAR CLEAR", cardX1 + 65, midY + 3, 8.5, "on")
+            glText(cDarkGray .. "No hostile combat formations detected in forward sectors.", cardX1 + 24, midY - 14, 7.5, "on")
+
+            -- Bottom status pill
+            local pillBoxY = cardY1 + 6
+            local pillWd = 160
+            local pillX1 = cardX1 + (cardW - pillWd) / 2
+            glColor(0.08, 0.06, 0.08, 0.9)
+            glRect(pillX1, pillBoxY, pillX1 + pillWd, pillBoxY + 14)
+            glText(cRed .. "● " .. cGray .. "Enemy Force " .. cDarkGray .. "[Radar Sweep]", pillX1 + 14, pillBoxY + 3, 7.5, "on")
+        else
+            -- Enemy Spotted
+            glColor(0.25, 0.06, 0.08, 0.85)
+            glRect(cardX1 + 16, midY - 6, cardX2 - 16, midY + 16)
+            glColor(0.85, 0.20, 0.20, 0.8)
+            glLineWidth(1)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+            glRect(cardX1 + 16, midY - 6, cardX2 - 16, midY + 16)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+            glText(cRed .. "● HOSTILE UNITS DETECTED", cardX1 + 80, midY + 3, 8.5, "on")
+            local enDetail = string.format("~%dx Raiders  ~%dx Skirmish  ~%dx Air", liveStats.enemyRaiders, liveStats.enemySkirmishers, liveStats.enemyAir)
+            glText(cYellow .. enDetail, cardX1 + 45, midY - 14, 8, "on")
+
+            -- Bottom status pill
+            local pillBoxY = cardY1 + 6
+            local pillWd = 160
+            local pillX1 = cardX1 + (cardW - pillWd) / 2
+            glColor(0.12, 0.06, 0.08, 0.9)
+            glRect(pillX1, pillBoxY, pillX1 + pillWd, pillBoxY + 14)
+            glText(cRed .. "● " .. cWhite .. "Enemy Detected " .. cYellow .. "[Recon]", pillX1 + 14, pillBoxY + 3, 7.5, "on")
+        end
+    end
+
+    ----------------------------------------------------------------------------
+    -- HELPER: Draw Build Queue Rows
+    ----------------------------------------------------------------------------
+    local function drawBuildQueueRows(listX1, listYTop, listX2, listYBottom, rowH, maxStepsCount)
+        local totalSteps = #steps
+        local visibleCount = math.min(maxStepsCount, math.floor((listYTop - listYBottom) / rowH))
+        if scrollOffset > (totalSteps - visibleCount) then
+            scrollOffset = math.max(0, totalSteps - visibleCount)
+        end
+
+        for i = 1, visibleCount do
+            local stepIdx = i + scrollOffset
+            if stepIdx > totalSteps then break end
+
+            local step = steps[stepIdx]
+            local rowY = listYTop - (i * rowH)
+            local builtCount = getUnitCount(step.unit, step.codes)
+            local isComplete = (builtCount >= step.cumulative)
+            local isActive = (stepIdx == firstIncompleteIdx)
+
+            -- Row highlight box for active step
+            if isActive then
+                glColor(0.12, 0.28, 0.48, 0.45)
+                glRect(listX1, rowY - 1, listX2, rowY + rowH - 3)
+                glColor(0.25, 0.80, 1.0, 0.85)
+                glLineWidth(1)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+                glRect(listX1, rowY - 1, listX2, rowY + rowH - 3)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+            elseif isComplete then
+                glColor(0.04, 0.12, 0.07, 0.3)
+                glRect(listX1, rowY - 1, listX2, rowY + rowH - 3)
+            else
+                glColor(0.05, 0.07, 0.12, 0.35)
+                glRect(listX1, rowY - 1, listX2, rowY + rowH - 3)
+            end
+
+            -- Status Icon
+            local statusIcon = isComplete and (cGreen .. "[✓] ") or (isActive and (cYellow .. "[►] ") or (cDarkGray .. "[ ] "))
+            local textCol = isComplete and cGreen or (isActive and cWhite or cGray)
+            local countRatio = string.format("(%d/%d)", math.min(step.cumulative, builtCount), step.cumulative)
+
+            local stepStr = string.format("%s%s%s %s%s: %s%dx %s %s%s",
+                statusIcon,
+                cCyan, step.time,
+                cYellow, step.builder,
+                textCol, step.count, step.unit,
+                (isComplete and cGreen or cDarkGray), countRatio
+            )
+
+            glText(stepStr, listX1 + 4, rowY + 3, 8.5, "on")
+        end
+    end
+
+    ----------------------------------------------------------------------------
+    -- VIEW MODE 1: SPLIT VIEW (DUAL INTEL CARDS + COMPACT BUILD QUEUE)
+    ----------------------------------------------------------------------------
+    if activeTab == "SPLIT" then
+        -- Section Header: 📺 Screenshare • BATTLE INTEL • ● LIVE 60FPS
+        local intelHeaderY = contentTopY - 12
+        glText(cGray .. "📺 Screenshare • " .. cWhite .. "BATTLE INTEL • " .. cGreen .. "● LIVE 60FPS", winX + 8, intelHeaderY, 8.5, "on")
+
+        -- Card 1: Friendly Intel Card (H: 98px)
+        local card1Y2 = intelHeaderY - 5
+        local card1Y1 = card1Y2 - 98
+        drawFriendlyCard(winX + 6, card1Y1, winX + winW - 6, card1Y2, true)
+
+        -- Card 2: Enemy Intel Card (H: 98px)
+        local card2Y2 = card1Y1 - 6
+        local card2Y1 = card2Y2 - 98
+        drawEnemyCard(winX + 6, card2Y1, winX + winW - 6, card2Y2, true)
+
+        -- Separator & Build Queue Header
+        local queueHeaderY = card2Y1 - 16
+        glColor(0.20, 0.25, 0.35, 0.5)
+        glRect(winX + 6, queueHeaderY + 12, winX + winW - 6, queueHeaderY + 13)
+
+        local queueTitle = string.format("%s🗂 BUILD QUEUE (%d STEPS)", cGray, #steps)
+        local nextPrompt = string.format("%sNEXT: %s (%ds)", cGold, nextStepTime, nextStepSeconds)
+        glText(queueTitle, winX + 8, queueHeaderY, 8.5, "on")
+        glText(nextPrompt, winX + winW - 130, queueHeaderY, 8.5, "on")
+
+        -- Build Queue Step Rows (H: ~100px available down to footer)
+        local listYTop = queueHeaderY - 4
+        drawBuildQueueRows(winX + 6, listYTop, winX + winW - 6, contentBotY, 23, 4)
+
+    ----------------------------------------------------------------------------
+    -- VIEW MODE 2: INTEL FEEDS (EXPANDED BATTLE INTEL CARDS)
+    ----------------------------------------------------------------------------
+    elseif activeTab == "INTEL" then
+        local intelHeaderY = contentTopY - 12
+        glText(cGray .. "📺 Screenshare • " .. cWhite .. "FULL BATTLE INTEL STREAM • " .. cGreen .. "● LIVE 60FPS", winX + 8, intelHeaderY, 8.5, "on")
+
+        local cardH = (intelHeaderY - contentBotY - 16) / 2
+        local card1Y2 = intelHeaderY - 5
+        local card1Y1 = card1Y2 - cardH
+        drawFriendlyCard(winX + 6, card1Y1, winX + winW - 6, card1Y2, false)
+
+        local card2Y2 = card1Y1 - 6
+        local card2Y1 = card2Y2 - cardH
+        drawEnemyCard(winX + 6, card2Y1, winX + winW - 6, card2Y2, false)
+
+    ----------------------------------------------------------------------------
+    -- VIEW MODE 3: BUILD QUEUE (FULL BUILD ORDER CHECKLIST & PRESET SELECTOR)
+    ----------------------------------------------------------------------------
+    elseif activeTab == "QUEUE" then
+        -- Preset selector bar
+        local stratTitle = currentPreset.title or currentPreset.name
+        glText(cYellow .. "▶ " .. cWhite .. stratTitle, winX + 8, contentTopY - 12, 9.5, "on")
+
+        local queueTitle = string.format("%s🗂 BUILD QUEUE (%d STEPS)", cGray, #steps)
+        local nextPrompt = string.format("%sNEXT: %s (%ds)", cGold, nextStepTime, nextStepSeconds)
+        glText(queueTitle, winX + 8, contentTopY - 28, 8.5, "on")
+        glText(nextPrompt, winX + winW - 130, contentTopY - 28, 8.5, "on")
+
+        local listYTop = contentTopY - 32
+        drawBuildQueueRows(winX + 6, listYTop, winX + winW - 6, contentBotY, 24, 12)
+    end
+
+    ----------------------------------------------------------------------------
+    -- 7. FOOTER BAR: PRESET SWITCHER
+    ----------------------------------------------------------------------------
+    glColor(0.06, 0.09, 0.16, 0.95)
     glRect(winX + 4, footerY, winX + winW - 4, footerY + footerH)
     glColor(0.22, 0.74, 0.97, 0.4)
     glRect(winX + 4, footerY + footerH, winX + winW - 4, footerY + footerH + 1)
-    
-    local nextActionText = "Build order complete! Maintain frontline & scale T2."
-    if firstIncompleteIdx > 0 and steps[firstIncompleteIdx] then
-        local s = steps[firstIncompleteIdx]
-        nextActionText = string.format("NEXT: %dx %s (%s) @ %s", s.count, s.unit, s.builder, s.time)
+
+    -- Preset Switcher
+    glText(cDarkGray .. "PRESET:", winX + 12, footerY + 8, 8, "on")
+    local presetNames = { "BOT", "VEH", "ECO", "APP" }
+    local pW = 42
+    local pStartX = winX + 68
+
+    for p = 1, 4 do
+        local px1 = pStartX + (p - 1) * (pW + 6)
+        local px2 = px1 + pW
+        local isAct = (p == activePreset)
+        if isAct then
+            glColor(0.16, 0.45, 0.85, 0.95)
+            glRect(px1, footerY + 3, px2, footerY + 21)
+            glColor(0.4, 0.8, 1.0, 1.0)
+            glLineWidth(1)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+            glRect(px1, footerY + 3, px2, footerY + 21)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+            glText(cWhite .. presetNames[p], px1 + 10, footerY + 7, 8.5, "on")
+        else
+            glColor(0.08, 0.12, 0.18, 0.8)
+            glRect(px1, footerY + 3, px2, footerY + 21)
+            glText(cGray .. presetNames[p], px1 + 10, footerY + 7, 8.5, "on")
+        end
     end
-    
-    glText(cYellow .. "▶ " .. cWhite .. nextActionText, winX + 10, footerY + 18, 9, "on")
-    glText(cGray .. "F8: Toggle HUD  •  Drag header to move", winX + 10, footerY + 5, 8, "on")
 end

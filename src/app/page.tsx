@@ -8,7 +8,6 @@ import {
   Clock,
   Layers,
   Sparkles,
-  Copy,
   Check,
   AlertTriangle,
   Activity,
@@ -20,7 +19,6 @@ import {
   KeyRound,
   ExternalLink,
   X,
-  Wind,
   ShieldAlert,
   Waves,
   MonitorUp,
@@ -30,11 +28,13 @@ import {
   Flame,
   Power,
   ChevronDown,
+  Search,
+  Filter,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { buildPlanResponseSchema, type Faction } from "@/lib/game-data";
+import { buildPlanResponseSchema, type Faction, SCRAPED_BAR_DATABASE, getScrapedUnit, type ScrapedBARUnit } from "@/lib/game-data";
 import { parseBuildStep, type ParsedBuildStep } from "@/lib/timeline-parser";
 import { BarIcon } from "@/components/tactical/BarIcon";
 import { ResourceGraph } from "@/components/tactical/ResourceGraph";
@@ -47,6 +47,7 @@ import { LeaderboardModal } from "@/components/tactical/LeaderboardModal";
 import { MatchHistoryModal } from "@/components/tactical/MatchHistoryModal";
 import { PatchWatchModal } from "@/components/tactical/PatchWatchModal";
 import { LaunchWindow } from "@/components/tactical/LaunchWindow";
+import { UnitDossierModal } from "@/components/tactical/UnitDossierModal";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
 import { useLiveGame, type LiveGameState } from "@/hooks/useLiveGame";
 import { useOverlaySync } from "@/hooks/useOverlaySync";
@@ -55,7 +56,7 @@ const EnergyBoltIcon = ({ className }: { className?: string; style?: React.CSSPr
   <img
     src="/energy.png"
     alt="Energy"
-    className={`${className || "size-3.5"} object-contain pixelated shrink-0 inline-block`}
+    className={`${className || "size-4"} object-contain shrink-0 inline-block`}
   />
 );
 
@@ -164,6 +165,44 @@ export default function BeyondAllReasonConsole() {
 
   // 16-Bit Arcade Launch Window state
   const [isLaunched, setIsLaunched] = useState<boolean>(false);
+
+  // Unit Dossier Modal & Catalog State (377 official BAR assets, Scavengers excluded)
+  const [dossierUnit, setDossierUnit] = useState<ScrapedBARUnit | null>(null);
+  const [catalogSearch, setCatalogSearch] = useState<string>("");
+  const [catalogCategory, setCatalogCategory] = useState<string>("ALL");
+  const [catalogTier, setCatalogTier] = useState<string>("ALL");
+  const [catalogFaction, setCatalogFaction] = useState<Faction>(faction);
+
+  // Sync catalog faction when main faction changes
+  useEffect(() => {
+    setCatalogFaction(faction);
+  }, [faction]);
+
+  // Filter 377 units based on faction, category, tier, and search query
+  const filteredCatalogUnits = useMemo(() => {
+    return SCRAPED_BAR_DATABASE.filter((u) => {
+      // Faction filter
+      if (catalogFaction && u.faction !== catalogFaction) return false;
+
+      // Category filter
+      if (catalogCategory !== "ALL" && u.category !== catalogCategory) return false;
+
+      // Tier filter
+      if (catalogTier !== "ALL" && u.tier !== catalogTier) return false;
+
+      // Search query
+      if (catalogSearch.trim()) {
+        const q = catalogSearch.toLowerCase().trim();
+        const matchesName = u.name.toLowerCase().includes(q);
+        const matchesSlug = u.slug.toLowerCase().includes(q);
+        const matchesRole = u.role.toLowerCase().includes(q);
+        const matchesCategory = u.category.toLowerCase().includes(q);
+        return matchesName || matchesSlug || matchesRole || matchesCategory;
+      }
+
+      return true;
+    });
+  }, [catalogFaction, catalogCategory, catalogTier, catalogSearch]);
 
   // 1-Click In-Game Macro Trigger
   const [isReloadingMacro, setIsReloadingMacro] = useState<boolean>(false);
@@ -649,30 +688,6 @@ export default function BeyondAllReasonConsole() {
             </span>
           </button>
 
-          {/* Copy Macro Shortcut Button */}
-          {object?.openingBuildOrder && object.openingBuildOrder.length > 0 && (
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="pixel-btn text-[9px] py-1.5 px-2.5 gap-1.5"
-              title="Copy build macro to clipboard (Ctrl + C)"
-            >
-              {copied ? (
-                <>
-                  <Check className="size-3 text-emerald-400" />
-                  <span className="text-emerald-400 font-bold">COPIED</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="size-3 text-zinc-400" />
-                  <span>COPY MACRO</span>
-                  <kbd className="hidden sm:inline text-[8px] px-1 py-0.5 bg-[#0a0b10] text-zinc-400 border border-zinc-700 font-pixel-heading">
-                    Ctrl+C
-                  </kbd>
-                </>
-              )}
-            </button>
-          )}
 
           {/* Abort CTA when streaming */}
           {isLoading && (
@@ -784,6 +799,7 @@ export default function BeyondAllReasonConsole() {
             <MapCombobox
               selectedMap={selectedMap}
               onSelectMap={setSelectedMap}
+              faction={faction}
             />
 
             {/* Quick Choke Points & Tactical Preview */}
@@ -1126,8 +1142,14 @@ export default function BeyondAllReasonConsole() {
                           </div>
 
                           {/* Large Prominent RTS Unit/Structure Portrait Frame */}
+                          {/* 16-Bit Hardpoint Unit Portrait with Dossier Click */}
                           <div
-                            className={`w-12 h-12 min-w-[48px] min-h-[48px] pixel-box-inset shrink-0 flex items-center justify-center p-1.5 relative overflow-hidden ${
+                            onClick={() => {
+                              const found = getScrapedUnit(step.itemName, faction);
+                              if (found) setDossierUnit(found);
+                            }}
+                            title={`Inspect ${step.itemName} tactical dossier`}
+                            className={`w-12 h-12 min-w-[48px] min-h-[48px] pixel-box-inset shrink-0 flex items-center justify-center p-1.5 relative overflow-hidden cursor-pointer hover:border-white transition-none ${
                               isArmada
                                 ? "border-[#449bed]/40 shadow-[2px_2px_0px_#000]"
                                 : "border-[#ff2244]/40 shadow-[2px_2px_0px_#000]"
@@ -1145,8 +1167,8 @@ export default function BeyondAllReasonConsole() {
                             <BarIcon
                               name={step.itemName}
                               faction={faction}
-                              size={28}
-                              className="w-full h-full object-contain pixelated"
+                              size={32}
+                              className="w-full h-full object-contain"
                             />
                           </div>
 
@@ -1168,9 +1190,17 @@ export default function BeyondAllReasonConsole() {
                                 {step.entityBadge}
                               </span>
 
-                              <span className="font-pixel-heading text-xs text-white">
-                                {step.count} {step.itemName}
-                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const found = getScrapedUnit(step.itemName, faction);
+                                  if (found) setDossierUnit(found);
+                                }}
+                                title={`Inspect ${step.itemName} tactical dossier`}
+                                className="font-pixel-heading text-xs text-white hover:underline text-left cursor-pointer flex items-center gap-1.5"
+                              >
+                                <span>{step.count} {step.itemName}</span>
+                              </button>
                             </div>
 
                             {/* Bottom Line: Subdued Strategic Description */}
@@ -1194,7 +1224,7 @@ export default function BeyondAllReasonConsole() {
                                 <img
                                   src="/energy.png"
                                   alt="Energy"
-                                  className="size-3 object-contain pixelated shrink-0 inline-block"
+                                  className="size-3.5 object-contain shrink-0 inline-block"
                                 />
                                 {step.energyDelta}
                               </span>
@@ -1233,71 +1263,364 @@ export default function BeyondAllReasonConsole() {
             )}
 
             {/* =================================================================== */}
-            {/* TAB 2: FORCE REQUISITION // TARGET ARMY COMPOSITION MATRIX         */}
+            {/* TAB 2: FORCE REQUISITION & TACTICAL ASSET REPOSITORY               */}
             {/* =================================================================== */}
             {activeTab === "unitComp" && (
-              <div className="max-w-4xl mx-auto space-y-4">
-                {!object?.unitComposition && !isLoading && (
-                  <div className="h-[400px] flex flex-col items-center justify-center text-center p-8 pixel-box-inset">
-                    <Layers className="size-10 text-zinc-600 mb-3" />
-                    <div className="font-pixel-heading text-xs text-zinc-300 uppercase">
-                      NO FORCE REQUISITION RECORDED
-                    </div>
-                    <p className="text-sm text-zinc-500 max-w-sm mt-2 font-pixel-body">
-                      Target unit ratios and production caps will populate here upon simulation.
-                    </p>
-                  </div>
-                )}
-
-                {isLoading && (!object?.unitComposition || object.unitComposition.length === 0) && (
-                  <div className="space-y-2 py-4">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="p-3.5 pixel-box-inset flex items-center justify-between"
-                      >
-                        <Skeleton className="h-4 w-48 bg-zinc-800" />
-                        <Skeleton className="h-4 w-16 bg-zinc-800" />
-                      </div>
-                    ))}
-                  </div>
-                )}
-
+              <div className="max-w-5xl mx-auto space-y-6">
+                {/* 1. ACTIVE STRATEGY SQUADRON REQUISITION (If build plan exists) */}
                 {object?.unitComposition && object.unitComposition.length > 0 && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs font-pixel-heading text-zinc-400 pb-2 border-b-2 border-black">
-                      <span>TARGET COMBAT SQUADRON</span>
-                      <span>FACTION: {faction.toUpperCase()}</span>
+                  <div className="p-4 pixel-box space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b-2 border-black">
+                      <div className="flex items-center gap-2">
+                        <span className="size-2 arcade-blink" style={{ backgroundColor: accentColor }} />
+                        <span className="font-pixel-heading text-xs text-white uppercase tracking-wider">
+                          TARGET COMBAT SQUADRON // {faction.toUpperCase()}
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-pixel-heading px-2 py-0.5 pixel-box-inset text-zinc-400">
+                        {object.unitComposition.length} UNITS REQUISITIONED
+                      </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                       {object.unitComposition.map((comp, idx) => {
                         if (!comp) return null;
+                        const scraped = getScrapedUnit(comp, faction);
                         return (
                           <motion.div
                             key={idx}
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.15, delay: idx * 0.03 }}
-                            className="p-3 pixel-box flex items-center justify-between gap-3"
+                            onClick={() => {
+                              if (scraped) setDossierUnit(scraped);
+                            }}
+                            className="p-2.5 pixel-box flex items-center justify-between gap-3 cursor-pointer hover:border-white transition-none group relative"
                           >
-                            <div className="flex items-center gap-2.5">
-                              <div className="size-8 pixel-box-inset shrink-0 flex items-center justify-center p-1">
-                                <BarIcon name={comp} faction={faction} size={20} className="w-full h-full object-contain pixelated" />
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className="size-11 pixel-box-inset shrink-0 flex items-center justify-center p-1 bg-black/40 relative">
+                                {scraped?.image ? (
+                                  <img
+                                    src={scraped.image}
+                                    alt={scraped.name}
+                                    className="w-full h-full object-contain group-hover:scale-110 transition-transform"
+                                  />
+                                ) : (
+                                  <BarIcon
+                                    name={comp}
+                                    faction={faction}
+                                    size={24}
+                                    className="w-full h-full object-contain pixelated"
+                                  />
+                                )}
+                                {scraped?.icon && (
+                                  <img
+                                    src={scraped.icon}
+                                    alt=""
+                                    className="absolute bottom-0 right-0 size-3.5 object-contain"
+                                  />
+                                )}
                               </div>
-                              <span className="font-pixel-heading text-[11px] text-white">
-                                {comp}
-                              </span>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-pixel-heading text-xs text-white truncate group-hover:underline">
+                                    {scraped?.name || comp}
+                                  </span>
+                                  {scraped?.tier && (
+                                    <span
+                                      className={`text-[8px] font-pixel-heading px-1 py-0.2 border ${
+                                        scraped.tier === "T3"
+                                          ? "text-amber-300 border-amber-500 bg-amber-950/40"
+                                          : scraped.tier === "T2"
+                                          ? "text-[#38bdf8] border-[#38bdf8]/50 bg-[#0c1e33]"
+                                          : "text-zinc-400 border-zinc-700 bg-zinc-900"
+                                      }`}
+                                    >
+                                      {scraped.tier}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[10px] text-zinc-400 font-pixel-body truncate mt-0.5">
+                                  {scraped?.role || `${faction} Combat Unit`}
+                                </div>
+                              </div>
                             </div>
-                            <span className="text-[8px] font-pixel-heading px-2 py-1 pixel-box-inset text-zinc-400 uppercase">
-                              {faction}
-                            </span>
+
+                            {/* Cost pills */}
+                            <div className="shrink-0 flex flex-col items-end gap-1 font-pixel-heading text-[8px]">
+                              {scraped?.metal !== null && scraped?.metal !== undefined ? (
+                                <span className="flex items-center gap-1 text-[#94a3b8]">
+                                  <img
+                                    src="/metal.png"
+                                    alt="Metal"
+                                    className="size-2.5 object-contain pixelated"
+                                  />
+                                  {scraped.metal}
+                                </span>
+                              ) : null}
+                              {scraped?.energy !== null && scraped?.energy !== undefined ? (
+                                <span className="flex items-center gap-1 text-[#fbbf24]">
+                                  <img
+                                    src="/energy.png"
+                                    alt="Energy"
+                                    className="size-2.5 object-contain"
+                                  />
+                                  {scraped.energy}
+                                </span>
+                              ) : null}
+                            </div>
                           </motion.div>
                         );
                       })}
                     </div>
                   </div>
                 )}
+
+                {/* Loading skeleton for build plan unit comp */}
+                {isLoading && (!object?.unitComposition || object.unitComposition.length === 0) && (
+                  <div className="space-y-2 py-2">
+                    <div className="p-3 pixel-box-inset flex items-center gap-2 text-xs font-pixel-heading text-zinc-400">
+                      <span className="size-2 arcade-blink" style={{ backgroundColor: accentColor }} />
+                      <span>Synthesizing optimal unit composition matrix...</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. COMPLETE BEYOND ALL REASON TACTICAL ASSET REPOSITORY (377 UNITS & BUILDINGS) */}
+                <div className="p-4 pixel-box space-y-4">
+                  {/* Header & Subtitle */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b-2 border-black">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Layers className="size-4 text-zinc-300" />
+                        <h2 className="font-pixel-heading text-sm text-white tracking-wide uppercase">
+                          TACTICAL ASSET REPOSITORY
+                        </h2>
+                        <span
+                          className="px-1.5 py-0.5 text-[8.5px] font-pixel-heading font-bold"
+                          style={{ backgroundColor: `${accentColor}25`, color: accentColor, border: `1px solid ${accentColor}60` }}
+                        >
+                          {SCRAPED_BAR_DATABASE.length} UNITS & STRUCTURES
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-pixel-body mt-1">
+                        Official Beyond All Reason Unit Database. Scraped live from wiki archives. Click any asset to open tactical dossier, cost breakdown, and meta guide intel.
+                      </p>
+                    </div>
+
+                    {/* Faction Switcher for Catalog */}
+                    <div className="flex items-center gap-1 shrink-0 p-1 pixel-box-inset bg-black/60 self-start sm:self-auto">
+                      <button
+                        type="button"
+                        onClick={() => setCatalogFaction("Armada")}
+                        className={`px-3 py-1 font-pixel-heading text-[9px] uppercase transition-none flex items-center gap-1.5 ${
+                          catalogFaction === "Armada"
+                            ? "bg-[#0b2545] border-2 border-[#449bed] text-[#38bdf8] font-bold shadow-[1px_1px_0px_#000]"
+                            : "text-zinc-500 hover:text-zinc-300 border border-transparent"
+                        }`}
+                      >
+                        <img src="/armada-logo.png" alt="Armada" className="size-3 object-contain pixelated" />
+                        <span>ARMADA</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCatalogFaction("Cortex")}
+                        className={`px-3 py-1 font-pixel-heading text-[9px] uppercase transition-none flex items-center gap-1.5 ${
+                          catalogFaction === "Cortex"
+                            ? "bg-[#33080d] border-2 border-[#ff2244] text-[#ef4444] font-bold shadow-[1px_1px_0px_#000]"
+                            : "text-zinc-500 hover:text-zinc-300 border border-transparent"
+                        }`}
+                      >
+                        <img src="/cortex-logo.png" alt="Cortex" className="size-3 object-contain pixelated" />
+                        <span>CORTEX</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Search Bar & Tier Filter Row */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                      <Search className="size-4 text-zinc-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={catalogSearch}
+                        onChange={(e) => setCatalogSearch(e.target.value)}
+                        placeholder="Search unit by name, codename, role (e.g. Pawn, Blitz, Solar, Flak)..."
+                        className="w-full bg-[#0d0f17] border-2 border-black pixel-box-inset pl-8 pr-8 py-1.5 text-xs text-zinc-100 placeholder-zinc-500 font-pixel-body focus:outline-none focus:border-zinc-500"
+                      />
+                      {catalogSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setCatalogSearch("")}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white p-0.5"
+                        >
+                          <X className="size-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Tech Tier Filter Pills */}
+                    <div className="flex items-center gap-1 shrink-0">
+                      <span className="text-[9px] font-pixel-heading text-zinc-500 mr-1 uppercase">TIER:</span>
+                      {(["ALL", "T1", "T2", "T3"] as const).map((tier) => (
+                        <button
+                          key={tier}
+                          type="button"
+                          onClick={() => setCatalogTier(tier)}
+                          className={`px-2.5 py-1 text-[9px] font-pixel-heading transition-none ${
+                            catalogTier === tier
+                              ? "bg-zinc-200 text-black font-bold shadow-[1px_1px_0px_#000]"
+                              : "pixel-box-inset text-zinc-400 hover:text-zinc-200 bg-[#0d0f17]"
+                          }`}
+                        >
+                          {tier}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Category Filter Tabs */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar text-[9px] font-pixel-heading">
+                    {[
+                      { id: "ALL", label: "ALL ASSETS" },
+                      { id: "Bots", label: "BOTS" },
+                      { id: "Vehicles", label: "VEHICLES" },
+                      { id: "Aircraft", label: "AIR" },
+                      { id: "Ships", label: "SHIPS" },
+                      { id: "Hovercraft", label: "HOVER" },
+                      { id: "Factories", label: "FACTORIES" },
+                      { id: "Defense Buildings", label: "DEFENSES" },
+                      { id: "Buildings", label: "BUILDINGS" },
+                    ].map((cat) => {
+                      const isActive = catalogCategory === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => setCatalogCategory(cat.id)}
+                          className={`px-3 py-1 shrink-0 uppercase transition-none border ${
+                            isActive
+                              ? "bg-[#142033] text-white border-[#449bed] font-bold shadow-[1px_1px_0px_#000]"
+                              : "bg-[#0c0e14] text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-zinc-200"
+                          }`}
+                          style={isActive ? { borderColor: accentColor, color: accentColor } : undefined}
+                        >
+                          {cat.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Active Count Readout */}
+                  <div className="flex items-center justify-between text-[9px] font-pixel-heading text-zinc-500">
+                    <span>
+                      SHOWING <strong className="text-zinc-300">{filteredCatalogUnits.length}</strong> OF {SCRAPED_BAR_DATABASE.length} UNITS
+                    </span>
+                    {(catalogSearch || catalogCategory !== "ALL" || catalogTier !== "ALL") && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCatalogSearch("");
+                          setCatalogCategory("ALL");
+                          setCatalogTier("ALL");
+                        }}
+                        className="text-zinc-400 hover:text-white underline cursor-pointer"
+                      >
+                        RESET FILTERS
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 377 Unit Cards Grid */}
+                  {filteredCatalogUnits.length === 0 ? (
+                    <div className="p-8 text-center pixel-box-inset space-y-2">
+                      <AlertTriangle className="size-6 text-amber-500 mx-auto" />
+                      <div className="font-pixel-heading text-xs text-zinc-300">NO UNITS MATCH FILTER</div>
+                      <p className="font-pixel-body text-xs text-zinc-500">
+                        Try clearing search terms or selecting &quot;ALL&quot; categories.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                      {filteredCatalogUnits.map((u) => {
+                        return (
+                          <div
+                            key={`${u.faction}-${u.slug}`}
+                            onClick={() => setDossierUnit(u)}
+                            title={`Inspect ${u.name} (${u.slug})`}
+                            className="pixel-box p-2 flex flex-col justify-between cursor-pointer hover:border-white transition-none group relative bg-[#0d0f17] hover:bg-[#121622]"
+                          >
+                            {/* Card Top: Tier and Strategic Icon */}
+                            <div className="flex items-center justify-between gap-1 mb-1">
+                              <span
+                                className={`text-[7.5px] font-pixel-heading px-1 py-0.2 border ${
+                                  u.tier === "T3"
+                                    ? "text-amber-300 border-amber-500 bg-amber-950/40"
+                                    : u.tier === "T2"
+                                    ? "text-[#38bdf8] border-[#38bdf8]/50 bg-[#0c1e33]"
+                                    : "text-zinc-400 border-zinc-700 bg-zinc-900"
+                                }`}
+                              >
+                                {u.tier}
+                              </span>
+                              {u.icon && (
+                                <img
+                                  src={u.icon}
+                                  alt=""
+                                  className="size-4 object-contain shrink-0"
+                                />
+                              )}
+                            </div>
+
+                            {/* Card Center: High-Res 3D Unit Render */}
+                            <div className="h-16 w-full flex items-center justify-center p-1 my-0.5 overflow-hidden">
+                              <img
+                                src={u.image || u.icon || ""}
+                                alt={u.name}
+                                loading="lazy"
+                                className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform pixelated"
+                              />
+                            </div>
+
+                            {/* Card Bottom: Name, Slug, Role, and Resource Costs */}
+                            <div className="space-y-1 mt-1">
+                              <div className="font-pixel-heading text-[10.5px] text-white truncate leading-tight group-hover:underline">
+                                {u.name}
+                              </div>
+                              <div className="text-[8px] text-zinc-500 font-mono truncate leading-none">
+                                {u.slug}
+                              </div>
+                              <div className="text-[9px] text-zinc-400 font-pixel-body truncate leading-tight">
+                                {u.role}
+                              </div>
+
+                              {/* Resource Costs */}
+                              <div className="pt-1 border-t border-black flex items-center justify-between text-[8px] font-pixel-heading">
+                                <span className="flex items-center gap-0.5 text-[#94a3b8]">
+                                  <img
+                                    src="/metal.png"
+                                    alt="M"
+                                    className="size-2 object-contain pixelated"
+                                  />
+                                  {u.metal !== null && u.metal !== undefined ? u.metal : "-"}
+                                </span>
+                                <span className="flex items-center gap-0.5 text-[#fbbf24]">
+                                  <img
+                                    src="/energy.png"
+                                    alt="E"
+                                    className="size-2 object-contain"
+                                  />
+                                  {u.energy !== null && u.energy !== undefined ? u.energy : "-"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -1435,43 +1758,62 @@ export default function BeyondAllReasonConsole() {
                   {/* Telemetry Grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
                     <div className="p-3 pixel-box-inset">
-                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
-                        <SquareSquare className="size-3 text-zinc-400" />
+                      <div className="text-[9px] font-pixel-heading uppercase text-zinc-400 flex items-center gap-2">
+                        <SquareSquare className="size-5 text-zinc-400 shrink-0" />
                         Dimensions
                       </div>
-                      <div className="text-xs font-pixel-heading text-zinc-200 mt-1">
+                      <div className="text-xs sm:text-sm font-pixel-heading text-zinc-200 mt-1">
                         {selectedMap.dimensions}
                       </div>
                       <div className="text-xs font-pixel-body text-zinc-500">Standard Grid</div>
                     </div>
 
                     <div className="p-3 pixel-box-inset">
-                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
-                        <Wind className="size-3 text-[#449bed]" />
+                      <div className="text-[9px] font-pixel-heading uppercase text-zinc-400 flex items-center gap-2">
+                        <img
+                          src={faction === "Cortex" ? "/images/turbines/cortex_turbine_still.png" : "/images/turbines/armada_turbine_still.png"}
+                          alt="Wind Velocity"
+                          className="size-6 object-contain shrink-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]"
+                        />
                         Wind Velocity
                       </div>
-                      <div className="text-xs font-pixel-heading text-[#449bed] mt-1">
-                        {selectedMap.wind.min}–{selectedMap.wind.max} <span className="text-[9px] font-pixel-body text-zinc-500">m/s</span>
+                      <div
+                        className="text-xs sm:text-sm font-pixel-heading mt-1 flex items-center gap-2"
+                        style={{ color: accentColor }}
+                      >
+                        <img
+                          src={faction === "Cortex" ? "/images/turbines/cortex_turbine_still.png" : "/images/turbines/armada_turbine_still.png"}
+                          alt="Wind"
+                          className="size-5 object-contain shrink-0 inline-block drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                        />
+                        <span>{selectedMap.wind.min}–{selectedMap.wind.max} <span className="text-[9px] font-pixel-body text-zinc-400">m/s</span></span>
                       </div>
-                      <div className="text-xs font-pixel-body text-zinc-500">Avg: {selectedMap.wind.avg} m/s</div>
+                      <div className="text-xs font-pixel-body text-zinc-400 flex items-center gap-1.5 mt-0.5">
+                        <img
+                          src={faction === "Cortex" ? "/images/turbines/cortex_turbine_still.png" : "/images/turbines/armada_turbine_still.png"}
+                          alt="Turbine Avg"
+                          className="size-3.5 object-contain shrink-0 inline-block opacity-80"
+                        />
+                        <span>Avg: <strong className="text-zinc-200 font-pixel-heading text-[10px]">{selectedMap.wind.avg} m/s</strong></span>
+                      </div>
                     </div>
 
                     <div className="p-3 pixel-box-inset">
-                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
+                      <div className="text-[9px] font-pixel-heading uppercase text-zinc-400 flex items-center gap-2">
                         <img
                           src="/energy.png"
                           alt="Energy"
-                          className="size-3 object-contain pixelated shrink-0"
+                          className="size-6 object-contain shrink-0"
                         />
                         Tidal Energy
                       </div>
-                      <div className="text-xs font-pixel-heading text-zinc-200 mt-1 flex items-center gap-1">
+                      <div className="text-xs sm:text-sm font-pixel-heading text-zinc-200 mt-1 flex items-center gap-1.5">
                         {selectedMap.tidal > 0 ? (
                           <>
                             <img
                               src="/energy.png"
                               alt="Energy"
-                              className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                              className="size-4.5 object-contain shrink-0 inline-block"
                             />
                             <span>+{selectedMap.tidal} E/s</span>
                           </>
@@ -1485,16 +1827,21 @@ export default function BeyondAllReasonConsole() {
                     </div>
 
                     <div className="p-3 pixel-box-inset">
-                      <div className="text-[8px] font-pixel-heading uppercase text-zinc-500 flex items-center gap-1.5">
+                      <div className="text-[9px] font-pixel-heading uppercase text-zinc-400 flex items-center gap-2">
                         <img
                           src="/metal.png"
                           alt="Metal"
-                          className="size-3 object-contain pixelated shrink-0"
+                          className="size-6 object-contain shrink-0"
                         />
                         Metal Yield
                       </div>
-                      <div className="text-xs font-pixel-heading text-amber-300 mt-1 uppercase">
-                        {selectedMap.metalDensity}
+                      <div className="text-xs sm:text-sm font-pixel-heading text-amber-300 mt-1 uppercase flex items-center gap-1.5">
+                        <img
+                          src="/metal.png"
+                          alt="Metal"
+                          className="size-4.5 object-contain shrink-0 inline-block"
+                        />
+                        <span>{selectedMap.metalDensity}</span>
                       </div>
                       <div className="text-xs font-pixel-body text-zinc-500">Deposit density</div>
                     </div>
@@ -1724,6 +2071,12 @@ export default function BeyondAllReasonConsole() {
         isOpen={isOverlayOpen}
         onClose={() => setIsOverlayOpen(false)}
         accentColor={accentColor}
+      />
+
+      {/* Tactical Asset Dossier & Guide Intel Modal */}
+      <UnitDossierModal
+        unit={dossierUnit}
+        onClose={() => setDossierUnit(null)}
       />
     </div>
   );

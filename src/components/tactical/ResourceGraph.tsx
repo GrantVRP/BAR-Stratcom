@@ -288,8 +288,13 @@ export const ResourceGraph: React.FC<ResourceGraphProps> = ({
           <span className="font-bold text-zinc-100 uppercase tracking-wider">
             OSCILLOSCOPE ECO RUNWAY [0:00 - 5:00]
           </span>
-          <span className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-pixel-body text-xs">
-            WIND: {mapWindAvg} M/S
+          <span className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-pixel-body text-xs flex items-center gap-1.5 shrink-0">
+            <img
+              src={faction?.toLowerCase() === "cortex" ? "/images/turbines/cortex_turbine_still.png" : "/images/turbines/armada_turbine_still.png"}
+              alt="Wind"
+              className="size-4 object-contain shrink-0 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+            />
+            <span>WIND: {mapWindAvg} M/S</span>
           </span>
         </div>
 

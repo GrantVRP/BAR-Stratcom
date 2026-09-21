@@ -11,12 +11,9 @@ import {
   Volume2,
   VolumeX,
   Compass,
-  Wind,
   Layers,
   Check,
   Sparkles,
-  Sliders,
-  Move,
   Tv,
   Swords,
   ShieldAlert,
@@ -121,7 +118,7 @@ const DEFAULT_PRESETS: Record<Faction, Record<string, PresetDefinition>> = {
         "[01:05] Commander: 1x Solar Collector (Factory power reserve)",
         "[01:25] Factory: 2x Raider (Fast raiding tanks)",
         "[01:50] Factory: 1x Construction Vehicle (Con vehicle for expand)",
-        "[02:15] Factory: 4x Stumpy (Medium assault tanks)",
+        "[02:15] Factory: 4x Raider (Medium assault tanks)",
         "[02:50] Constructor: 1x Light Laser Tower (Forward outpost)",
       ],
     },
@@ -241,7 +238,7 @@ export function TacticalOverlay({
   const [isMini, setIsMini] = useState<boolean>(false);
   const [corner, setCorner] = useState<"top-left" | "top-right" | "bottom-left" | "bottom-right">("top-right");
   const [audioAlerts, setAudioAlerts] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<"INTEL" | "QUEUE" | "SPLIT">("INTEL");
+  const [activeTab, setActiveTab] = useState<"INTEL" | "QUEUE" | "SPLIT">("SPLIT");
 
   // Automated in-game step completion checking (enabled by default)
   const [autoCheckEnabled, setAutoCheckEnabled] = useState<boolean>(true);
@@ -516,6 +513,9 @@ export function TacticalOverlay({
 
   if (!isOpen) return null;
 
+  // Check if live game link is offline
+  const isOffline = !liveState?.isRunning || liveState?.gameStatus === "OFFLINE";
+
   // =========================================================================
   // 1. MINIMIZED DISCORD PILL HUD (Compact Float)
   // =========================================================================
@@ -531,18 +531,19 @@ export function TacticalOverlay({
       >
         <div
           onClick={() => setIsMini(false)}
-          className="flex items-center gap-2.5 px-3 py-1.5 bg-[#0a0d14]/95 border-2 rounded-none shadow-[2px_2px_0px_#000] cursor-pointer active:translate-y-0.5"
+          className="flex items-center gap-2 px-2.5 py-1 bg-[#0a0d14]/95 border-2 rounded-none shadow-[2px_2px_0px_#000] cursor-pointer active:translate-y-0.5"
           style={{ borderColor: accentColor }}
         >
-          {/* Faction Emblem */}
-          <span className="size-2 rounded-none" style={{ backgroundColor: accentColor }} />
-          
-          <span
-            className="text-[10px] font-pixel-heading font-bold uppercase"
-            style={{ color: accentColor }}
-          >
-            {faction}
-          </span>
+          {/* BAR StratCom Logo */}
+          <img
+            src={faction === "Armada" ? "/armada-logo.png" : "/cortex-logo.png"}
+            alt="BAR StratCom"
+            className="size-3.5 object-contain pixelated shrink-0"
+          />
+          <div className="flex items-center gap-0.5 font-pixel-heading text-[8.5px] font-bold tracking-tight shrink-0">
+            <span className="text-white">BAR</span>
+            <span style={{ color: accentColor }}>STRATCOM</span>
+          </div>
 
           <span className="text-zinc-600">•</span>
 
@@ -612,23 +613,23 @@ export function TacticalOverlay({
         style={{ borderBottomColor: `${accentColor}40`, WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <div className="flex items-center gap-1.5 min-w-0 mr-2 overflow-hidden">
-          <Move className="size-3 text-zinc-500 shrink-0" />
-          <div className="flex items-center gap-1 min-w-0">
-            <span className="size-2 rounded-none shrink-0" style={{ backgroundColor: accentColor }} />
+          <img
+            src={faction === "Armada" ? "/armada-logo.png" : "/cortex-logo.png"}
+            alt="BAR StratCom"
+            className="size-3.5 object-contain pixelated shrink-0"
+          />
+          <div className="flex items-center gap-1 shrink-0 font-pixel-heading text-[8.5px] font-bold tracking-tight">
+            <span className="text-white drop-shadow-[1px_1px_0px_#000]">BAR</span>
             <span
-              className="font-pixel-heading text-[9px] font-bold uppercase shrink-0"
+              className="drop-shadow-[1px_1px_0px_#000]"
               style={{ color: accentColor }}
             >
-              BAR
-            </span>
-            <span className="text-zinc-600 text-[8px] shrink-0">•</span>
-            <span className="text-zinc-400 font-pixel-heading text-[8px] truncate max-w-[80px]">
-              {selectedMap.name}
+              STRATCOM
             </span>
           </div>
         </div>
 
-        {/* Top Action Controls: Desktop Overlay, PiP, Corner, Minimize, Close */}
+        {/* Top Action Controls: Desktop Overlay, PiP, Minimize, Close */}
         <div className="flex items-center gap-1 shrink-0 text-zinc-400" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
           {/* Native Desktop Mode: Click-Through / Ghost Mode Toggle */}
           {isElectron && (
@@ -658,58 +659,31 @@ export function TacticalOverlay({
             </button>
           )}
 
-          {/* Browser Mode: Corner Cycle Selector */}
-          {!isElectron && (
-            <button
-              type="button"
-              onClick={() => {
-                const corners: ("top-left" | "top-right" | "bottom-right" | "bottom-left")[] = [
-                  "top-right",
-                  "bottom-right",
-                  "bottom-left",
-                  "top-left",
-                ];
-                const nextIdx = (corners.indexOf(corner) + 1) % corners.length;
-                setCorner(corners[nextIdx]);
-              }}
-              title={`Pin corner: Currently ${corner}`}
-              className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 text-[9px] font-pixel-heading"
-            >
-              {corner === "top-right" ? "TR" : corner === "top-left" ? "TL" : corner === "bottom-right" ? "BR" : "BL"}
-            </button>
-          )}
-
-          {/* Minimize / Hide Electron Window */}
-          {isElectron && (
-            <button
-              type="button"
-              onClick={() => window.electronAPI?.minimize?.()}
-              title="Minimize to Windows Taskbar"
-              className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 cursor-pointer"
-            >
-              <Minus className="size-3.5" />
-            </button>
-          )}
-
-          {/* Collapse to Mini HUD Pill */}
+          {/* Minimize / Collapse Button (-) */}
           <button
             type="button"
-            onClick={() => setIsMini(true)}
-            title="Collapse to Mini HUD Pill"
-            className="p-1 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 cursor-pointer"
+            onClick={() => {
+              if (isElectron && window.electronAPI?.minimize) {
+                window.electronAPI.minimize();
+              } else {
+                setIsMini(true);
+              }
+            }}
+            title={isElectron ? "Minimize Overlay" : "Collapse to Mini HUD"}
+            className="px-1.5 py-0.5 border border-zinc-700 bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-none transition-none active:translate-y-0.5 cursor-pointer text-[8px] font-pixel-heading flex items-center justify-center min-w-[18px] h-[18px]"
           >
-            <span className="text-[7.5px] font-pixel-heading px-1 border border-zinc-700 bg-zinc-900 text-zinc-300">HUD</span>
+            <Minus className="size-2.5" />
           </button>
 
-          {/* Unmistakable 1-Click Hide Button */}
+          {/* 1-Click Close / Hide Button */}
           <button
             type="button"
             onClick={onClose}
             title="Toggle / Hide Overlay (Press F8 or Insert to toggle anytime)"
-            className="px-1.5 py-0.5 bg-red-950/80 border border-red-500/80 text-red-300 hover:bg-red-900 rounded-none transition-none active:translate-y-0.5 cursor-pointer text-[8px] font-pixel-heading flex items-center gap-1"
+            className="px-1.5 py-0.5 bg-red-950/80 border border-red-500/80 text-red-300 hover:bg-red-900 hover:text-white rounded-none transition-none active:translate-y-0.5 cursor-pointer text-[8px] font-pixel-heading flex items-center gap-1 h-[18px]"
           >
             <X className="size-2.5" />
-            <span>HIDE [F8]</span>
+            <span>[F8]</span>
           </button>
         </div>
       </div>
@@ -726,15 +700,33 @@ export function TacticalOverlay({
         </div>
 
         {/* Live Wind Speed Readout */}
-        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#141622] border border-zinc-700/80 text-[10px] font-pixel-heading">
-          <Wind className="size-2.5 text-[#449bed]" />
+        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#141622] border border-zinc-700/80 text-[10px] font-pixel-heading shrink-0">
+          <img
+            src={faction === "Cortex" ? "/images/turbines/cortex_turbine_still.png" : "/images/turbines/armada_turbine_still.png"}
+            alt="Wind"
+            className="size-5 object-contain shrink-0 inline-block drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+          />
           <span className="text-zinc-400">WIND:</span>
           <span className="text-zinc-100 font-bold">{selectedMap.wind.avg} <span className="text-[8px] text-zinc-500">M/S</span></span>
         </div>
       </div>
 
-      {/* --- TACTICAL VIEW NAVIGATION TABS --- */}
-      <div className="flex items-center border-b border-zinc-800 bg-[#0d0f17] text-[8.5px] font-pixel-heading">
+      {/* --- OFFLINE ONLY VIEW OR LIVE TACTICAL NAVIGATION TABS --- */}
+      {isOffline ? (
+        <div className="p-2 overflow-y-auto max-h-[calc(100vh-140px)] custom-scrollbar">
+          <BattleIntelCards
+            faction={faction}
+            gameStatus="OFFLINE"
+            battleIntel={undefined}
+            accentColor={accentColor}
+            lobbyName={liveState?.lobbyName}
+            mapName={liveState?.mapName || selectedMap?.name}
+          />
+        </div>
+      ) : (
+        <>
+          {/* --- TACTICAL VIEW NAVIGATION TABS --- */}
+          <div className="flex items-center border-b border-zinc-800 bg-[#0d0f17] text-[8.5px] font-pixel-heading">
         <button
           type="button"
           onClick={() => setActiveTab("INTEL")}
@@ -980,13 +972,13 @@ export function TacticalOverlay({
                     <div className="flex items-center gap-1.5 shrink-0 font-pixel-heading text-[8px]">
                       {step.energyDelta && (
                         <span className="px-1.5 py-0.5 bg-black/60 border border-amber-500/40 text-amber-300 flex items-center gap-1">
-                          <img src="/energy.png" alt="E" className="size-2.5 object-contain pixelated shrink-0 inline-block" />
+                          <img src="/energy.png" alt="E" className="size-3.5 object-contain shrink-0 inline-block" />
                           {step.energyDelta}
                         </span>
                       )}
                       {step.metalDelta && (
                         <span className="px-1.5 py-0.5 bg-black/60 border border-zinc-700 text-zinc-300 flex items-center gap-1">
-                          <img src="/metal.png" alt="M" className="size-2.5 object-contain pixelated shrink-0 inline-block" />
+                          <img src="/metal.png" alt="M" className="size-3.5 object-contain shrink-0 inline-block" />
                           {step.metalDelta}
                         </span>
                       )}
@@ -1093,11 +1085,12 @@ export function TacticalOverlay({
           </div>
         </div>
       )}
+        </>
+      )}
 
       {/* --- BOTTOM CONTROLS & OPACITY ADJUSTER --- */}
       <div className="p-2 border-t border-zinc-800/80 bg-[#0c0e16] flex items-center justify-between text-[9px] font-pixel-heading text-zinc-400">
         <div className="flex items-center gap-2">
-          <Sliders className="size-3 text-zinc-500" />
           <span>OPACITY:</span>
           {[0.5, 0.75, 0.92, 1.0].map((val) => (
             <button
@@ -1115,16 +1108,7 @@ export function TacticalOverlay({
           ))}
         </div>
 
-        <div className="flex items-center gap-1 font-pixel-heading text-[8px]">
-          <button
-            type="button"
-            onClick={onClose}
-            title="Hide Overlay (Press F8 or Insert to toggle anytime)"
-            className="px-1.5 py-0.5 bg-red-950/60 border border-red-800 text-red-300 hover:bg-red-900/80 transition-none active:translate-y-0.5 cursor-pointer flex items-center gap-1"
-          >
-            <span>✕ HIDE [F8 / INSERT]</span>
-          </button>
-        </div>
+
       </div>
     </div>
   );

@@ -196,8 +196,8 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   // Armada - T1 Bot Lab
   // ----------------------------------------------------
   {
-    id: 'armada-paw',
-    name: 'Paw',
+    id: 'armada-pawn',
+    name: 'Pawn',
     codeName: 'armpw',
     faction: 'Armada',
     category: 'Unit',
@@ -205,7 +205,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Raider',
     description: 'Fast, cheap raider bot armed with twin light pulse lasers.',
-    cost: { metal: 45, energy: 450, buildTime: 12 },
+    cost: { metal: 54, energy: 900, buildTime: 1650 },
     combat: { health: 260, speed: 75, range: 200, dps: 48 },
     strengths: ['Early expansion harassment', 'Cheap scouting', 'Flanking unguarded mexes'],
     weaknesses: ['Low health', 'Vulnerable to Riot cannons and Light Laser Towers'],
@@ -222,7 +222,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Scout',
     description: 'Ultra-cheap, fast miniature spider bot for line-of-sight scouting and EMP nuisance.',
-    cost: { metal: 14, energy: 160, buildTime: 4 },
+    cost: { metal: 21, energy: 300, buildTime: 800 },
     combat: { health: 55, speed: 96, range: 130, dps: 8 },
     strengths: ['Extremely cheap', 'High movement speed', 'Mountain/hill climbing'],
     weaknesses: ['Dies to a single shot from almost anything'],
@@ -239,7 +239,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Skirmisher',
     description: 'Mobile rocket skirmisher bot that outranges early static defenses.',
-    cost: { metal: 95, energy: 900, buildTime: 22 },
+    cost: { metal: 120, energy: 1000, buildTime: 2010 },
     combat: { health: 520, speed: 52, range: 420, dps: 58 },
     strengths: ['Outranges Light Laser Towers', 'Good firing arc over hills'],
     weaknesses: ['Slow projectile speed', 'Vulnerable to fast raiders'],
@@ -256,7 +256,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Artillery',
     description: 'Light mobile plasma artillery bot capable of lobbing shells into enemy choke points.',
-    cost: { metal: 120, energy: 1100, buildTime: 26 },
+    cost: { metal: 130, energy: 1300, buildTime: 2200 },
     combat: { health: 640, speed: 45, range: 570, dps: 65 },
     strengths: ['High arc indirect fire', 'Forces stationary defenders to reposition'],
     weaknesses: ['Slow speed', 'High inaccuracy against moving targets'],
@@ -273,12 +273,12 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Anti-Air',
     description: 'Mobile anti-air missile bot providing perimeter air defense.',
-    cost: { metal: 75, energy: 650, buildTime: 18 },
+    cost: { metal: 125, energy: 1100, buildTime: 1830 },
     combat: { health: 380, speed: 60, range: 600, dps: 50 },
     strengths: ['Protects bot groups from early bomber and gunship runs'],
     weaknesses: ['Cannot target ground units'],
     counters: ['Shadow', 'Banshee', 'Tornado'],
-    counteredBy: ['Paw', 'Grunt', 'Flash'],
+    counteredBy: ['Pawn', 'Grunt', 'Flash'],
   },
   {
     id: 'armada-lazarus',
@@ -290,7 +290,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Support',
     description: 'Dedicated resurrection and fast nanolathe bot. Restores wrecks and repairs allies.',
-    cost: { metal: 110, energy: 1300, buildTime: 24 },
+    cost: { metal: 330, energy: 6400, buildTime: 8000 },
     combat: { health: 310, speed: 66 },
     strengths: ['High resurrection build power', 'Reclaims metal wrecks rapidly'],
     weaknesses: ['Unarmed', 'Low durability'],
@@ -311,11 +311,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Raider',
     description: 'High-speed light assault tank armed with twin rapid-fire red lasers. Iconic Armada frontline raider.',
-    cost: { metal: 105, energy: 850, buildTime: 20 },
+    cost: { metal: 110, energy: 900, buildTime: 2000 },
     combat: { health: 620, speed: 82, range: 240, dps: 92 },
     strengths: ['High speed and maneuverability', 'High close-range DPS', 'Deadly in wolfpacks'],
     weaknesses: ['Terrain pathing restrictions', 'Susceptible to riot cannons and EMP'],
-    counters: ['Paw', 'Grunt', 'Rocko', 'Storm'],
+    counters: ['Pawn', 'Grunt', 'Rocko', 'Storm'],
     counteredBy: ['Leveler', 'Stump', 'Light Laser Tower'],
   },
   {
@@ -328,11 +328,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'Medium battle tank with heavy armor and a reliable high-velocity plasma cannon.',
-    cost: { metal: 190, energy: 1650, buildTime: 36 },
+    cost: { metal: 225, energy: 2100, buildTime: 3400 },
     combat: { health: 1250, speed: 50, range: 350, dps: 115 },
     strengths: ['Rugged frontline brawler', 'High durability for T1', 'Consistent cannon damage'],
     weaknesses: ['Moderate speed', 'Struggles against long-range skirmishers without cover'],
-    counters: ['Flash', 'Blitz', 'Raider', 'Paw'],
+    counters: ['Flash', 'Blitz', 'Raider', 'Pawn'],
     counteredBy: ['Wolverine', 'Rocko', 'Banshee'],
   },
   {
@@ -345,7 +345,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Anti-Air',
     description: 'Mobile anti-air missile launcher truck with extended detection radar.',
-    cost: { metal: 115, energy: 1100, buildTime: 25 },
+    cost: { metal: 150, energy: 2100, buildTime: 3420 },
     combat: { health: 580, speed: 62, range: 680, dps: 70 },
     strengths: ['Long-range missile interception against air threats', 'Solid speed'],
     weaknesses: ['Cannot attack ground forces'],
@@ -355,14 +355,14 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   {
     id: 'armada-wolverine',
     name: 'Wolverine',
-    codeName: 'armarty',
+    codeName: 'armmart',
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
     factory: 'Vehicle Plant',
     role: 'Artillery',
     description: 'Light mobile artillery and mine-laying vehicle for siege breaking and area denial.',
-    cost: { metal: 165, energy: 1550, buildTime: 34 },
+    cost: { metal: 320, energy: 4900, buildTime: 5500 },
     combat: { health: 540, speed: 44, range: 650, dps: 75 },
     strengths: ['Breaks static defensive lines', 'Long range indirect barrage'],
     weaknesses: ['Frail armor', 'Requires vision and frontline screens'],
@@ -383,7 +383,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Scout',
     description: 'High-altitude, high-speed reconnaissance plane for early intel gathering.',
-    cost: { metal: 35, energy: 650, buildTime: 9 },
+    cost: { metal: 52, energy: 1550, buildTime: 2800 },
     combat: { health: 80, speed: 175, range: 0, dps: 0 },
     strengths: ['Extreme flight speed', 'Unmatched vision radius'],
     weaknesses: ['Completely unarmed', 'Shot down by any anti-air weapon'],
@@ -400,7 +400,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Fighter',
     description: 'T1 air superiority interceptor equipped with twin air-to-air missiles.',
-    cost: { metal: 85, energy: 1700, buildTime: 20 },
+    cost: { metal: 73, energy: 2900, buildTime: 3500 },
     combat: { health: 240, speed: 150, range: 450, dps: 60 },
     strengths: ['Intercepts enemy scout planes, bombers, and gunships'],
     weaknesses: ['Cannot attack ground units'],
@@ -417,7 +417,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Bomber',
     description: 'Tactical carpet bomber designed to execute pinpoint bombing runs on economy nodes.',
-    cost: { metal: 135, energy: 3200, buildTime: 32 },
+    cost: { metal: 150, energy: 4400, buildTime: 5000 },
     combat: { health: 420, speed: 110, range: 200, dps: 180 },
     strengths: ['High burst explosive damage on static buildings and massed units'],
     weaknesses: ['Vulnerable on turnaround approach', 'Must reload bomb bay'],
@@ -434,28 +434,28 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'Rotary assault gunship capable of hovering and precision pulse fire.',
-    cost: { metal: 180, energy: 3800, buildTime: 38 },
+    cost: { metal: 310, energy: 6200, buildTime: 17000 },
     combat: { health: 680, speed: 88, range: 320, dps: 105 },
     strengths: ['Can hover in place', 'Punishes undefended raiding groups'],
     weaknesses: ['Easily countered by mobile AA'],
-    counters: ['Paw', 'Flash', 'Stump', 'Pyros'],
+    counters: ['Pawn', 'Flash', 'Stump', 'Pyros'],
     counteredBy: ['Jethro', 'Samson', 'Crasher'],
   },
   {
     id: 'armada-brawler',
     name: 'Brawler',
-    codeName: 'armbraw',
+    codeName: 'armbrawl',
     faction: 'Armada',
     category: 'Unit',
     tier: 'T1',
     factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'Iconic T1 heavy tactical gunship with twin rotary pulse lasers. Excels at assassinating constructors and raiding unshielded mexes.',
-    cost: { metal: 280, energy: 4800, buildTime: 36 },
+    cost: { metal: 310, energy: 6200, buildTime: 17000 },
     combat: { health: 1250, speed: 110, range: 450, dps: 180 },
     strengths: ['High sustained DPS', 'Heavy armor for T1 air', 'Dominates unescorted land units'],
     weaknesses: ['Vulnerable to dedicated anti-air swarms (Crasher, Slasher, Avenger)'],
-    counters: ['Grunt', 'Paw', 'Solar Collector', 'Metal Extractor', 'Commander'],
+    counters: ['Grunt', 'Pawn', 'Solar Collector', 'Metal Extractor', 'Commander'],
     counteredBy: ['Avenger', 'Crasher', 'Slasher'],
   },
   {
@@ -468,7 +468,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'EMP paralyzer gunship. Incapacitates high-threat commanders, heavy assault units, and defense turrets.',
-    cost: { metal: 220, energy: 3600, buildTime: 30 },
+    cost: { metal: 1250, energy: 22000, buildTime: 32000 },
     combat: { health: 820, speed: 125, range: 420, dps: 90 },
     strengths: ['Paralyzes heavy units', 'Disables defensive towers before ground push'],
     weaknesses: ['Low lethal damage on its own', 'Requires follow-up combat units'],
@@ -485,7 +485,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Transport',
     description: 'Air transport capable of ferrying commanders, constructors, and heavy assault units across rugged cliffs and waterways.',
-    cost: { metal: 85, energy: 1200, buildTime: 20 },
+    cost: { metal: 68, energy: 1300, buildTime: 3850 },
     combat: { health: 390, speed: 140 },
     strengths: ['Bypasses terrain chokepoints', 'Enables automated ferry routes'],
     weaknesses: ['Unarmed', 'Easily shot down by fighters'],
@@ -506,7 +506,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Shipyard',
     role: 'Scout',
     description: 'Fast scout and patrol boat equipped with a light laser and depth charges.',
-    cost: { metal: 65, energy: 750, buildTime: 16 },
+    cost: { metal: 150, energy: 1000, buildTime: 2700 },
     combat: { health: 320, speed: 90, range: 280, dps: 38 },
     strengths: ['Fast naval scouting', 'Light anti-submarine capability'],
     weaknesses: ['Frail hull'],
@@ -523,7 +523,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Shipyard',
     role: 'Assault',
     description: 'General-purpose naval destroyer armed with twin naval deck guns and sonar.',
-    cost: { metal: 280, energy: 2400, buildTime: 52 },
+    cost: { metal: 880, energy: 6600, buildTime: 10200 },
     combat: { health: 1850, speed: 48, range: 520, dps: 140 },
     strengths: ['Dominates coastal waters', 'High HP pool'],
     weaknesses: ['Vulnerable to torpedo bombers and massed subs'],
@@ -544,7 +544,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Assault',
     description: 'T2 assault bot wielding lightning arc generators with heavy EMP stun capability.',
-    cost: { metal: 460, energy: 4800, buildTime: 65 },
+    cost: { metal: 350, energy: 6100, buildTime: 8000 },
     combat: { health: 2650, speed: 56, range: 280, dps: 240 },
     strengths: ['EMP disables enemy vehicles', 'High burst arc damage'],
     weaknesses: ['Short range', 'Vulnerable to T2 artillery'],
@@ -561,7 +561,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Raider',
     description: 'Hyperspeed T2 raider bot that slips through defensive perimeters to assassinate commanders and fusions.',
-    cost: { metal: 190, energy: 2800, buildTime: 30 },
+    cost: { metal: 160, energy: 3800, buildTime: 5000 },
     combat: { health: 780, speed: 115, range: 220, dps: 135 },
     strengths: ['Blistering speed', 'Devastating backline eco raids'],
     weaknesses: ['Fragile against heavy defensive fire'],
@@ -578,7 +578,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'Massive heavy assault tank boasting twin high-caliber plasma cannons and heavy composite armor.',
-    cost: { metal: 880, energy: 9500, buildTime: 95 },
+    cost: { metal: 950, energy: 13000, buildTime: 23000 },
     combat: { health: 5800, speed: 42, range: 450, dps: 360 },
     strengths: ['Frontline breakthrough', 'Tremendous survivability'],
     weaknesses: ['Slow turn rate', 'Requires AA umbrella against heavy gunships'],
@@ -595,7 +595,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Skirmisher',
     description: 'Fast, high-mobility skirmisher/artillery bot armed with a ballistic gauss cannon.',
-    cost: { metal: 360, energy: 4100, buildTime: 42 },
+    cost: { metal: 285, energy: 6300, buildTime: 6500 },
     combat: { health: 1400, speed: 64, range: 560, dps: 165 },
     strengths: ['Outranges standard T1/T2 defenses', 'Can fire while repositioning', 'High single-target damage'],
     weaknesses: ['Vulnerable to swarming fast raiders (Freaker, Zipper)'],
@@ -612,7 +612,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Sniper',
     description: 'Long-range precision energy sniper bot. Deploys high-alpha beams to one-shot enemy commanders and heavy targets.',
-    cost: { metal: 520, energy: 7800, buildTime: 50 },
+    cost: { metal: 680, energy: 20000, buildTime: 24000 },
     combat: { health: 750, speed: 45, range: 900, dps: 220, damagePerShot: 1800 },
     strengths: ['Outranges almost all ground units', 'Extreme single-shot burst damage', 'Stealth cloak capability'],
     weaknesses: ['Fragile hull', 'High energy drain per shot', 'Poor against massed swarm units'],
@@ -622,14 +622,14 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   {
     id: 'armada-centurion',
     name: 'Centurion',
-    codeName: 'armcent',
+    codeName: 'armwar',
     faction: 'Armada',
     category: 'Unit',
     tier: 'T2',
     factory: 'Bot Lab',
     role: 'Assault',
     description: 'Shield-bearing heavy assault bot built to absorb frontal punishment and breach fortified lines.',
-    cost: { metal: 950, energy: 8600, buildTime: 65 },
+    cost: { metal: 270, energy: 3100, buildTime: 4200 },
     combat: { health: 4800, speed: 48, range: 380, dps: 280 },
     strengths: ['Heavy frontal shield', 'Absorbs plasma barrage', 'Frontline breaker'],
     weaknesses: ['Vulnerable to rear flanking (+100% damage)', 'Heavy build cost'],
@@ -646,7 +646,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Bomber',
     description: 'Advanced precision tactical dive-bomber designed for surgical elimination of enemy tech installations.',
-    cost: { metal: 460, energy: 9800, buildTime: 48 },
+    cost: { metal: 230, energy: 12500, buildTime: 25000 },
     combat: { health: 1600, speed: 185, range: 500, dps: 340 },
     strengths: ['Precision dive-bombing', 'Penetrates perimeter flak', 'High structural burst damage'],
     weaknesses: ['High cost', 'Requires energy grid backing'],
@@ -656,14 +656,14 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   {
     id: 'armada-kestrel',
     name: 'Kestrel',
-    codeName: 'armcybr',
+    codeName: 'armblade',
     faction: 'Armada',
     category: 'Unit',
     tier: 'T2',
     factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'T2 heavy armored flying fortress gunship equipped with twin heavy laser batteries.',
-    cost: { metal: 580, energy: 12400, buildTime: 58 },
+    cost: { metal: 1250, energy: 22000, buildTime: 38000 },
     combat: { health: 2900, speed: 95, range: 480, dps: 310 },
     strengths: ['Sustained heavy laser fire', 'High durability', 'Flies over terrain barriers'],
     weaknesses: ['High energy build cost', 'Vulnerable to concentrated T2 anti-air'],
@@ -684,7 +684,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Raider',
     description: 'Fast, expendable T1 raider bot equipped with twin light lasers.',
-    cost: { metal: 42, energy: 420, buildTime: 11 },
+    cost: { metal: 43, energy: 820, buildTime: 1250 },
     combat: { health: 240, speed: 78, range: 190, dps: 52 },
     strengths: ['Very cost-effective', 'Fast expansion and early eco disruption'],
     weaknesses: ['Low individual health'],
@@ -694,18 +694,18 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   {
     id: 'cortex-thug',
     name: 'Thug',
-    codeName: 'corthug',
+    codeName: 'corthud',
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
     factory: 'Bot Lab',
     role: 'Assault',
     description: 'Tough, armored T1 infantry bot with a reliable plasma cannon.',
-    cost: { metal: 125, energy: 1100, buildTime: 24 },
+    cost: { metal: 140, energy: 1150, buildTime: 2100 },
     combat: { health: 880, speed: 48, range: 300, dps: 82 },
     strengths: ['High durability for a T1 bot', 'Pushes through light defenses'],
     weaknesses: ['Outranged by skirmishers and artillery'],
-    counters: ['Paw', 'Grunt', 'Flash'],
+    counters: ['Pawn', 'Grunt', 'Flash'],
     counteredBy: ['Rocko', 'Storm', 'Hammer'],
   },
   {
@@ -718,7 +718,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Skirmisher',
     description: 'Rocket artillery bot designed to pick apart static defenses from safety.',
-    cost: { metal: 100, energy: 950, buildTime: 22 },
+    cost: { metal: 110, energy: 1150, buildTime: 1950 },
     combat: { health: 500, speed: 50, range: 430, dps: 60 },
     strengths: ['Outranges Light Laser Towers', 'Good firing range'],
     weaknesses: ['Vulnerable to fast flanking raiders'],
@@ -735,11 +735,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Assault',
     description: 'Devastating frontline assault bot armed with a high-temperature flamethrower and self-destruct charge.',
-    cost: { metal: 180, energy: 1900, buildTime: 32 },
+    cost: { metal: 200, energy: 3000, buildTime: 6500 },
     combat: { health: 1100, speed: 64, range: 180, dps: 175 },
     strengths: ['Immense close-quarters AoE flame damage', 'Melts light infantry and structures in seconds'],
     weaknesses: ['Short range', 'Vulnerable to kiting and long-range fire'],
-    counters: ['Paw', 'Grunt', 'Rocko', 'Flash'],
+    counters: ['Pawn', 'Grunt', 'Rocko', 'Flash'],
     counteredBy: ['Rocko', 'Wolverine', 'Banshee'],
   },
   {
@@ -752,12 +752,12 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Anti-Air',
     description: 'Shoulder-mounted anti-air missile infantry bot.',
-    cost: { metal: 78, energy: 680, buildTime: 18 },
+    cost: { metal: 125, energy: 1100, buildTime: 1900 },
     combat: { health: 390, speed: 58, range: 620, dps: 52 },
     strengths: ['Direct mobile air protection for bot columns'],
     weaknesses: ['Cannot attack ground targets'],
     counters: ['Shadow', 'Freedom Fighter', 'Tornado'],
-    counteredBy: ['Grunt', 'Paw', 'Blitz'],
+    counteredBy: ['Grunt', 'Pawn', 'Blitz'],
   },
   {
     id: 'cortex-roach',
@@ -769,7 +769,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Bomb',
     description: 'Crawling suicide bomb bot packed with high explosives. Capable of burrowing or detonating upon contact.',
-    cost: { metal: 70, energy: 1200, buildTime: 16 },
+    cost: { metal: 69, energy: 5800, buildTime: 8000 },
     combat: { health: 180, speed: 72, range: 40, damagePerShot: 1200 },
     strengths: ['Huge area-of-effect suicide explosion', 'Assassination of commanders and factories'],
     weaknesses: ['Low health before detonation', 'Chain-reacts if grouped tightly'],
@@ -786,12 +786,12 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Support',
     description: 'Rapid resurrection and battlefield salvage bot. Reanimates destroyed unit husks into active frontline fighters and vacuums high-value metal wrecks.',
-    cost: { metal: 115, energy: 1350, buildTime: 24 },
+    cost: { metal: 130, energy: 1400, buildTime: 2800 },
     combat: { health: 320, speed: 68 },
     strengths: ['High resurrection build power', 'Restores destroyed enemy and friendly units', 'Fast reclaim speed'],
     weaknesses: ['Unarmed', 'Light armor requires combat escort'],
     counters: [],
-    counteredBy: ['Any combat unit', 'Flash', 'Paw'],
+    counteredBy: ['Any combat unit', 'Flash', 'Pawn'],
   },
 
   // ----------------------------------------------------
@@ -807,11 +807,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Raider',
     description: 'Nimble raider tank equipped with a fast pulse laser. Cortex answer to the Flash.',
-    cost: { metal: 98, energy: 780, buildTime: 18 },
+    cost: { metal: 120, energy: 1100, buildTime: 2300 },
     combat: { health: 580, speed: 84, range: 230, dps: 86 },
     strengths: ['Fast hit-and-run tactics', 'Quick turn and acceleration'],
     weaknesses: ['Light armor', 'Vulnerable to static defenses'],
-    counters: ['Paw', 'Grunt', 'Rocko'],
+    counters: ['Pawn', 'Grunt', 'Rocko'],
     counteredBy: ['Stump', 'Leveler', 'Light Laser Tower'],
   },
   {
@@ -824,11 +824,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'Workhorse T1 medium tank with heavy armor and dependable cannon fire.',
-    cost: { metal: 180, energy: 1500, buildTime: 34 },
+    cost: { metal: 235, energy: 2400, buildTime: 3900 },
     combat: { health: 1180, speed: 52, range: 340, dps: 108 },
     strengths: ['Cost-effective frontline battle line', 'Sturdy armor'],
     weaknesses: ['Struggles against long-range skirmishers'],
-    counters: ['Flash', 'Blitz', 'Paw'],
+    counters: ['Flash', 'Blitz', 'Pawn'],
     counteredBy: ['Wolverine', 'Rocko', 'Banshee'],
   },
   {
@@ -841,11 +841,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Riot',
     description: 'Short-range heavy riot tank armed with a devastating spread-shot riot cannon.',
-    cost: { metal: 220, energy: 1850, buildTime: 40 },
+    cost: { metal: 220, energy: 2600, buildTime: 3100 },
     combat: { health: 1450, speed: 46, range: 260, dps: 160 },
     strengths: ['Absolute counter to swarming light raiders and bots', 'High burst AoE'],
     weaknesses: ['Slow movement', 'Short range makes it easy prey for skirmishers'],
-    counters: ['Flash', 'Paw', 'Grunt', 'Tick'],
+    counters: ['Flash', 'Pawn', 'Grunt', 'Tick'],
     counteredBy: ['Rocko', 'Storm', 'Wolverine'],
   },
   {
@@ -858,7 +858,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Anti-Air',
     description: 'Versatile rocket truck providing both surface-to-air and long-range light ground support.',
-    cost: { metal: 120, energy: 1200, buildTime: 26 },
+    cost: { metal: 75, energy: 1500, buildTime: 1500 },
     combat: { health: 540, speed: 60, range: 650, dps: 65 },
     strengths: ['Mobile AA coverage with auxiliary ground rocket fire'],
     weaknesses: ['Fragile hull', 'Slow reload time'],
@@ -879,7 +879,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Fighter',
     description: 'T1 air superiority interceptor equipped with high-velocity air-to-air laser cannons.',
-    cost: { metal: 82, energy: 1650, buildTime: 19 },
+    cost: { metal: 145, energy: 5100, buildTime: 10500 },
     combat: { health: 230, speed: 155, range: 460, dps: 62 },
     strengths: ['High interception speed', 'Cleanses enemy bombers and scouts'],
     weaknesses: ['Unusable against ground targets'],
@@ -889,14 +889,14 @@ export const BAR_DATABASE: readonly BARUnit[] = [
   {
     id: 'cortex-banshee',
     name: 'Banshee',
-    codeName: 'corbtrans',
+    codeName: 'corape',
     faction: 'Cortex',
     category: 'Unit',
     tier: 'T1',
     factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'Aggressive T1 assault gunship bristling with twin light pulse lasers for surgical ground strikes.',
-    cost: { metal: 175, energy: 3600, buildTime: 36 },
+    cost: { metal: 370, energy: 6800, buildTime: 7200 },
     combat: { health: 650, speed: 86, range: 310, dps: 110 },
     strengths: ['Flies over terrain barriers', 'Punishes unescorted tanks and constructors'],
     weaknesses: ['Shredded by dedicated anti-air vehicles and bots'],
@@ -913,7 +913,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Transport',
     description: 'Rugged aerial transport capable of picking up commanders, siege units, and raider tanks to drop them behind enemy lines.',
-    cost: { metal: 90, energy: 1250, buildTime: 20 },
+    cost: { metal: 74, energy: 1450, buildTime: 4120 },
     combat: { health: 410, speed: 138 },
     strengths: ['Enables rapid cliff bypass and automated ferry lanes', 'High payload capacity'],
     weaknesses: ['Unarmed', 'Vulnerable to anti-air fighters'],
@@ -934,7 +934,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Shipyard',
     role: 'Scout',
     description: 'Fast patrol boat armed with a light laser and sonar for perimeter coastal defense.',
-    cost: { metal: 62, energy: 720, buildTime: 15 },
+    cost: { metal: 210, energy: 1400, buildTime: 2500 },
     combat: { health: 310, speed: 92, range: 270, dps: 36 },
     strengths: ['Inexpensive ocean scouting', 'Submarine hunting'],
     weaknesses: ['Light armor'],
@@ -951,7 +951,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Shipyard',
     role: 'Assault',
     description: 'Heavy naval gunboat equipped with heavy naval plasma cannons and depth charges.',
-    cost: { metal: 290, energy: 2350, buildTime: 50 },
+    cost: { metal: 960, energy: 7200, buildTime: 10600 },
     combat: { health: 1900, speed: 46, range: 530, dps: 145 },
     strengths: ['Formidable coastal bombardment', 'High structural armor'],
     weaknesses: ['Sluggish maneuvers', 'Vulnerable to air torpedo strikes'],
@@ -972,7 +972,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Assault',
     description: 'Heavy armored assault bot encased in impenetrable alloy plating, firing heavy high-energy plasma.',
-    cost: { metal: 620, energy: 6200, buildTime: 75 },
+    cost: { metal: 560, energy: 9300, buildTime: 12000 },
     combat: { health: 4200, speed: 38, range: 350, dps: 280 },
     strengths: ['Immense soak capability', 'Relentless marching frontline anchor'],
     weaknesses: ['Extremely slow movement speed', 'Susceptible to EMP and sniper bots'],
@@ -989,7 +989,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Vehicle Plant',
     role: 'Assault',
     description: 'The iconic Cortex 100-ton super-heavy assault tank. Features devastating heavy twin cannons and fortress-grade armor.',
-    cost: { metal: 1250, energy: 13500, buildTime: 120 },
+    cost: { metal: 1650, energy: 28000, buildTime: 40000 },
     combat: { health: 8200, speed: 36, range: 480, dps: 450 },
     strengths: ['Crushes standard ground units with raw firepower and monstrous HP pool', 'Unstoppable spearhead'],
     weaknesses: ['Very expensive', 'Slow acceleration and vulnerable to heavy air gunships / bombers'],
@@ -1006,7 +1006,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Artillery',
     description: 'Long-range rocket artillery bot with high arc trajectory, devastating static defensive lines from total safety.',
-    cost: { metal: 420, energy: 4600, buildTime: 44 },
+    cost: { metal: 400, energy: 2800, buildTime: 7000 },
     combat: { health: 1200, speed: 50, range: 720, dps: 155 },
     strengths: ['High firing arc over hills', 'Long range siege', 'Cracks static defensive nests'],
     weaknesses: ['Vulnerable at close quarters', 'Requires frontline meat-shield'],
@@ -1023,7 +1023,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Assault',
     description: 'Super-heavy walking fortress bot with twin heavy pulse lasers. Extremely durable frontline anchor unit.',
-    cost: { metal: 1750, energy: 16500, buildTime: 85 },
+    cost: { metal: 2200, energy: 35000, buildTime: 65000 },
     combat: { health: 11000, speed: 28, range: 440, dps: 520 },
     strengths: ['Monstrous health pool (11,000 HP)', 'Twin heavy laser cannons', 'Nearly immovable anchor'],
     weaknesses: ['Very slow speed', 'Vulnerable to long-range artillery and EMP paralyzers (Blade)'],
@@ -1040,7 +1040,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Bot Lab',
     role: 'Raider',
     description: 'Hyper-velocity cyber raider bot. Dances through enemy formations, assassinating commanders and backend tech.',
-    cost: { metal: 290, energy: 3400, buildTime: 34 },
+    cost: { metal: 210, energy: 3800, buildTime: 8000 },
     combat: { health: 980, speed: 115, range: 260, dps: 210 },
     strengths: ['Extreme speed and DPS', 'Assassination of isolated commanders and T2 constructors'],
     weaknesses: ['Light armor', 'Vulnerable to area-of-effect defensive fire'],
@@ -1057,7 +1057,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Gunship',
     description: 'T2 heavy rocket gunship unleashing rapid salvoes of anti-armor rockets against ground armies and commanders.',
-    cost: { metal: 520, energy: 11500, buildTime: 52 },
+    cost: { metal: 145, energy: 5100, buildTime: 10500 },
     combat: { health: 2600, speed: 102, range: 460, dps: 290 },
     strengths: ['High rocket burst damage', 'Heavy armor for air', 'Effective tank hunter'],
     weaknesses: ['High energy cost', 'Vulnerable to advanced interceptors'],
@@ -1074,7 +1074,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     factory: 'Aircraft Plant',
     role: 'Bomber',
     description: 'Advanced tactical nuclear bomber capable of annihilating entire enemy base sectors and eco farms in a single run.',
-    cost: { metal: 680, energy: 15200, buildTime: 62 },
+    cost: { metal: 310, energy: 18500, buildTime: 36000 },
     combat: { health: 2100, speed: 170, range: 550, dps: 550 },
     strengths: ['Tactical nuclear payload', 'Devastating AoE blast', 'Game-ending base snipe capability'],
     weaknesses: ['Slow turn radius', 'Heavy loss if intercepted by air screens'],
@@ -1094,7 +1094,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Energy Production',
     description: 'Standard baseline T1 solar power plant. Generates a consistent +20 energy output.',
-    cost: { metal: 145, energy: 0, buildTime: 25 },
+    cost: { metal: 155, energy: 155, buildTime: 2600 },
     combat: { health: 320 },
     economy: { energyOutput: 20, energyStorage: 50 },
     strengths: ['Stable, reliable 24/7 energy', 'Closes during damage to reduce blast hazard'],
@@ -1111,7 +1111,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Energy Production',
     description: 'Economical wind turbine producing variable energy depending on current wind conditions (0 to 25+).',
-    cost: { metal: 37, energy: 0, buildTime: 10 },
+    cost: { metal: 40, energy: 175, buildTime: 1600 },
     combat: { health: 170 },
     economy: { energyOutput: 12 },
     strengths: ['Extremely fast payback time on high-wind maps', 'Low metal cost'],
@@ -1128,7 +1128,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Metal Extraction',
     description: 'Basic resource extraction facility placed directly over metal deposits to generate continuous income.',
-    cost: { metal: 50, energy: 500, buildTime: 15 },
+    cost: { metal: 50, energy: 500, buildTime: 1800 },
     combat: { health: 420 },
     economy: { metalOutput: 2.0, metalStorage: 50, energyConsumption: 3 },
     strengths: ['Fundamental economic foundation of any BAR strategy'],
@@ -1145,7 +1145,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T2',
     role: 'Metal Extraction',
     description: 'Moho mine exploiting deep metal seams for massive T2 metal yields (4x-5x standard extractor).',
-    cost: { metal: 580, energy: 7200, buildTime: 65 },
+    cost: { metal: 620, energy: 7700, buildTime: 14900 },
     combat: { health: 2400 },
     economy: { metalOutput: 10.0, metalStorage: 250, energyConsumption: 30 },
     strengths: ['Huge metal multiplier on high-value spots'],
@@ -1162,7 +1162,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Energy Conversion',
     description: 'Converts surplus grid energy into precious refined metal at a standard exchange ratio.',
-    cost: { metal: 1, energy: 900, buildTime: 14 },
+    cost: { metal: 1, energy: 1150, buildTime: 2600 },
     combat: { health: 120 },
     economy: { metalConversionRate: 70, energyConsumption: 70 },
     strengths: ['Prevents energy overflow waste', 'Translates excess solar/wind into army production'],
@@ -1179,7 +1179,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T2',
     role: 'Energy Production',
     description: 'Massive thermonuclear fusion power plant producing a tremendous +1050 clean energy output.',
-    cost: { metal: 4400, energy: 28000, buildTime: 240 },
+    cost: { metal: 3350, energy: 3350, buildTime: 54000 },
     combat: { health: 4800 },
     economy: { energyOutput: 1050, energyStorage: 2500 },
     strengths: ['Powers T2 mass production and heavy energy conversion complexes'],
@@ -1200,7 +1200,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Energy Production',
     description: 'Heavy reinforced T1 solar generator producing a constant +20 energy stream.',
-    cost: { metal: 150, energy: 0, buildTime: 26 },
+    cost: { metal: 150, energy: 150, buildTime: 2800 },
     combat: { health: 340 },
     economy: { energyOutput: 20, energyStorage: 50 },
     strengths: ['Guaranteed base power', 'Tougher frame than wind turbines'],
@@ -1217,13 +1217,13 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Energy Production',
     description: 'Lightweight Cortex wind dynamo supplying dynamic wind-driven power (0 to 25+).',
-    cost: { metal: 38, energy: 0, buildTime: 10 },
+    cost: { metal: 43, energy: 175, buildTime: 1680 },
     combat: { health: 165 },
     economy: { energyOutput: 12 },
     strengths: ['Extremely cheap metal cost', 'Quick initial opening setup'],
     weaknesses: ['Unreliable on calm maps', 'Chain explosions in packed grids'],
     counters: [],
-    counteredBy: ['Paw', 'Grunt'],
+    counteredBy: ['Pawn', 'Grunt'],
   },
   {
     id: 'cortex-metal-extractor',
@@ -1234,7 +1234,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Metal Extraction',
     description: 'Fundamental Cortex metal rig installed onto ore veins to secure resource flow.',
-    cost: { metal: 52, energy: 520, buildTime: 15 },
+    cost: { metal: 50, energy: 500, buildTime: 1870 },
     combat: { health: 430 },
     economy: { metalOutput: 2.0, metalStorage: 50, energyConsumption: 3 },
     strengths: ['Core building block for tech advancement and military expansion'],
@@ -1251,7 +1251,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T2',
     role: 'Metal Extraction',
     description: 'Heavy Moho mining rig extracting deep-core subterranean metal veins for high-volume T2 production.',
-    cost: { metal: 600, energy: 7400, buildTime: 68 },
+    cost: { metal: 640, energy: 8100, buildTime: 14100 },
     combat: { health: 2500 },
     economy: { metalOutput: 10.0, metalStorage: 250, energyConsumption: 32 },
     strengths: ['Exponentially accelerates T2/T3 unit manufacturing'],
@@ -1268,7 +1268,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Energy Conversion',
     description: 'Matter synthesizer that converts excess power into raw metal stock.',
-    cost: { metal: 1, energy: 950, buildTime: 15 },
+    cost: { metal: 1, energy: 1250, buildTime: 2680 },
     combat: { health: 125 },
     economy: { metalConversionRate: 70, energyConsumption: 70 },
     strengths: ['Absorbs unspent energy surges and turns them into units'],
@@ -1285,7 +1285,7 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T2',
     role: 'Energy Production',
     description: 'Industrial heavy fusion generator pumping +1080 energy into the Cortex grid.',
-    cost: { metal: 4600, energy: 29000, buildTime: 250 },
+    cost: { metal: 3600, energy: 3600, buildTime: 59000 },
     combat: { health: 5000 },
     economy: { energyOutput: 1080, energyStorage: 2600 },
     strengths: ['Powers heavy industry, shields, and superweapons'],
@@ -1306,11 +1306,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Point Defense',
     description: 'Rapid-firing defensive turret designed to deny light bot and vehicle raids.',
-    cost: { metal: 90, energy: 950, buildTime: 20 },
+    cost: { metal: 85, energy: 680, buildTime: 2400 },
     combat: { health: 650, range: 430, dps: 110 },
-    strengths: ['Shreds T1 raiders like Paw, Grunt, Blitz, and Flash'],
+    strengths: ['Shreds T1 raiders like Pawn, Grunt, Blitz, and Flash'],
     weaknesses: ['Outranged by Rocko, Storm, and mobile artillery'],
-    counters: ['Paw', 'Grunt', 'Flash', 'Blitz', 'Tick'],
+    counters: ['Pawn', 'Grunt', 'Flash', 'Blitz', 'Tick'],
     counteredBy: ['Rocko', 'Storm', 'Hammer', 'Wolverine'],
   },
   {
@@ -1322,11 +1322,11 @@ export const BAR_DATABASE: readonly BARUnit[] = [
     tier: 'T1',
     role: 'Point Defense',
     description: 'Armored turret armed with a high-cadence red laser beam for base perimeter security.',
-    cost: { metal: 95, energy: 980, buildTime: 21 },
+    cost: { metal: 90, energy: 700, buildTime: 2500 },
     combat: { health: 680, range: 430, dps: 115 },
     strengths: ['Stops light scout and raider incursions in their tracks'],
     weaknesses: ['Vulnerable to artillery and skirmisher rockets'],
-    counters: ['Paw', 'Grunt', 'Flash', 'Blitz', 'Tick'],
+    counters: ['Pawn', 'Grunt', 'Flash', 'Blitz', 'Tick'],
     counteredBy: ['Rocko', 'Storm', 'Hammer', 'Wolverine'],
   },
 ] as const;
@@ -1383,8 +1383,8 @@ export const FACTION_EQUIVALENTS: Record<string, { armada: string; cortex: strin
   // Raiders
   flash: { armada: 'Flash', cortex: 'Blitz' },
   blitz: { armada: 'Flash', cortex: 'Blitz' },
-  paw: { armada: 'Paw', cortex: 'Grunt' },
-  grunt: { armada: 'Paw', cortex: 'Grunt' },
+  paw: { armada: 'Pawn', cortex: 'Grunt' },
+  grunt: { armada: 'Pawn', cortex: 'Grunt' },
   // Skirmishers
   rocko: { armada: 'Rocko', cortex: 'Storm' },
   storm: { armada: 'Rocko', cortex: 'Storm' },
@@ -1619,4 +1619,101 @@ export function getUnitCounters(unitName: string): string[] {
 export function getUnitCounteredBy(unitName: string): string[] {
   const unit = getUnitByName(unitName);
   return unit?.counteredBy ?? [];
+}
+
+import barUnitsData from './bar_units_database.json';
+
+export interface ScrapedBARUnit {
+  slug: string;
+  name: string;
+  faction: Faction;
+  category: string;
+  tier: string;
+  role: string;
+  image: string | null;
+  icon: string | null;
+  metal: number | null;
+  energy: number | null;
+  buildTime: number | null;
+  aliases?: string[];
+}
+
+export const SCRAPED_BAR_DATABASE: ScrapedBARUnit[] = barUnitsData as unknown as ScrapedBARUnit[];
+
+/**
+ * Find a scraped unit or building by display name, engine slug, or build order action text.
+ */
+export function getScrapedUnit(nameOrSlug: string, faction?: Faction): ScrapedBARUnit | undefined {
+  if (!nameOrSlug) return undefined;
+  const target = nameOrSlug.toLowerCase().trim();
+  const fac = faction ? (faction.toLowerCase().includes('arm') ? 'Armada' : 'Cortex') : undefined;
+
+  // 1. Exact match on slug
+  let found = SCRAPED_BAR_DATABASE.find(
+    (u) => u.slug.toLowerCase() === target && (!fac || u.faction === fac)
+  );
+  if (found) return found;
+
+  // 2. Exact match on name with faction filter
+  found = SCRAPED_BAR_DATABASE.find(
+    (u) => u.name.toLowerCase() === target && (!fac || u.faction === fac)
+  );
+  if (found) return found;
+
+  // 3. Exact match on aliases with faction filter
+  found = SCRAPED_BAR_DATABASE.find(
+    (u) => u.aliases && u.aliases.some((a) => a.toLowerCase() === target) && (!fac || u.faction === fac)
+  );
+  if (found) return found;
+
+  // 4. Strip build order prefixes, counts, parentheticals, and trailing descriptions
+  const stripped = target
+    .replace(/^(?:construct|build|queue|produce|order|deploy|advance to forward choke and build|advance to forward choke and establish|advance to|set to follow behind combat bots|set to|continuous queue of|continuous production of)\s+/i, '')
+    .replace(/^\d+(?:-\d+)?x?\s+/i, '')
+    .replace(/\s*\([^)]*\)/g, '')
+    .replace(/\s+(?:on|for|to|at|against|into|angled|oriented|set)\s+.*$/i, '')
+    .trim();
+
+  if (stripped && stripped !== target) {
+    found = SCRAPED_BAR_DATABASE.find(
+      (u) =>
+        (u.slug.toLowerCase() === stripped ||
+          u.name.toLowerCase() === stripped ||
+          (u.aliases && u.aliases.some((a) => a.toLowerCase() === stripped))) &&
+        (!fac || u.faction === fac)
+    );
+    if (found) return found;
+
+    // Cross-faction fallback if not found under specified faction
+    found = SCRAPED_BAR_DATABASE.find(
+      (u) =>
+        u.slug.toLowerCase() === stripped ||
+        u.name.toLowerCase() === stripped ||
+        (u.aliases && u.aliases.some((a) => a.toLowerCase() === stripped))
+    );
+    if (found) return found;
+  }
+
+  // 5. Keyword search in aliases, name, or slug with faction filter
+  found = SCRAPED_BAR_DATABASE.find((u) => {
+    const matchesFaction = !fac || u.faction === fac;
+    if (!matchesFaction) return false;
+    const uName = u.name.toLowerCase();
+    const uSlug = u.slug.toLowerCase();
+    if (target.includes(uName) || target.includes(uSlug)) return true;
+    if (u.aliases && u.aliases.some((a) => target.includes(a.toLowerCase()))) return true;
+    return false;
+  });
+  if (found) return found;
+
+  // 6. Global substring / keyword match across factions
+  found = SCRAPED_BAR_DATABASE.find((u) => {
+    const uName = u.name.toLowerCase();
+    const uSlug = u.slug.toLowerCase();
+    if (target.includes(uName) || target.includes(uSlug)) return true;
+    if (u.aliases && u.aliases.some((a) => target.includes(a.toLowerCase()))) return true;
+    return false;
+  });
+
+  return found;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { getScrapedUnit, type Faction } from "@/lib/game-data";
 
 export interface BarIconProps {
   name: string;
@@ -85,28 +86,67 @@ export const BarIcon: React.FC<BarIconProps> = ({
   }
 
 
-  // 2. Wind Turbine / Generator (Armada or Cortex official Beyond All Reason render)
+  // 2. Wind Turbine / Generator (Armada or Cortex official Beyond All Reason 3D unit render)
   if (cleanName.includes("wind") || cleanName.includes("turbine")) {
-    if (isArmada || cleanName.includes("armada")) {
-      return (
-        <img
-          src="/armada-wind.png"
-          alt={name}
-          width={size || 32}
-          height={size || 32}
-          className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
-        />
-      );
-    }
-
-    // Cortex Wind Turbine official render
+    const scraped = getScrapedUnit(isArmada ? "armwin" : "corwin", (isArmada ? "Armada" : "Cortex") as Faction);
+    const turbineImg =
+      scraped?.image ||
+      (isArmada ? "/images/turbines/armada_turbine_still.png" : "/images/turbines/cortex_turbine_still.png");
     return (
       <img
-        src="/cortex-wind.png"
+        src={turbineImg}
         alt={name}
         width={size || 32}
         height={size || 32}
-        className={`${className || "w-full h-full"} object-contain pixelated drop-shadow-[2px_2px_0px_#000000]`}
+        className={`${className || "w-full h-full"} object-contain drop-shadow-[2px_2px_0px_#000000]`}
+      />
+    );
+  }
+
+  // 2.2 Reclaim / Boulder / Rock Salvage Action
+  if (
+    cleanName.includes("reclaim") ||
+    cleanName.includes("boulder") ||
+    cleanName.includes("tree") ||
+    cleanName.includes("salvage")
+  ) {
+    return (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+      >
+        <title>{name}</title>
+        <path d="M7 11V7H11" stroke="#10b981" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M7 7L3.5 10.5C5.5 5 11 3.5 16 5.5" stroke="#10b981" strokeWidth="1.4" strokeLinecap="round" />
+        <path d="M17 13V17H13" stroke="#10b981" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M17 17L20.5 13.5C18.5 19 13 20.5 8 18.5" stroke="#10b981" strokeWidth="1.4" strokeLinecap="round" />
+        <circle cx="12" cy="12" r="2" fill="#10b981" />
+      </svg>
+    );
+  }
+
+  // 2.5 Scraped Official Beyond All Reason Units & Buildings (377 items, Scavengers excluded)
+  const scraped =
+    getScrapedUnit(name, (isArmada ? "Armada" : "Cortex") as Faction) ||
+    getScrapedUnit(cleanName, (isArmada ? "Armada" : "Cortex") as Faction);
+  if (scraped && (scraped.image || scraped.icon)) {
+    return (
+      <img
+        src={scraped.image || scraped.icon || ""}
+        alt={scraped.name}
+        width={size || 32}
+        height={size || 32}
+        className={`${className || "w-full h-full"} object-contain drop-shadow-[2px_2px_0px_#000000]`}
+        loading="lazy"
+        onError={(e) => {
+          if (scraped.icon && e.currentTarget.src !== scraped.icon) {
+            e.currentTarget.src = scraped.icon;
+          }
+        }}
       />
     );
   }

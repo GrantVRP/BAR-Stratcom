@@ -1,20 +1,27 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Search, ChevronDown, Check, Compass, Wind, Waves } from "lucide-react";
+import { Search, ChevronDown, Check, Compass, Waves } from "lucide-react";
 import { type MapData, MAP_DATABASE } from "@/lib/map-data";
+import { type Faction } from "@/lib/game-data";
 
 export interface MapComboboxProps {
   selectedMap: MapData;
   onSelectMap: (map: MapData) => void;
   className?: string;
+  faction?: Faction;
 }
 
 export function MapCombobox({
   selectedMap,
   onSelectMap,
   className = "",
+  faction = "Armada",
 }: MapComboboxProps) {
+  const isCortex = faction === "Cortex";
+  const turbineImg = isCortex
+    ? "/images/turbines/cortex_turbine_still.png"
+    : "/images/turbines/armada_turbine_still.png";
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -164,32 +171,38 @@ export function MapCombobox({
                 {selectedMap.dimensions}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5 font-pixel-body">
-              <span className="flex items-center gap-1">
-                <Wind className="size-3 text-zinc-500" />
-                {selectedMap.wind.min}–{selectedMap.wind.max} M/S
+            <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5 font-pixel-body flex-wrap sm:flex-nowrap">
+              <span className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
+                <img
+                  src={turbineImg}
+                  alt="Wind"
+                  className="size-5 object-contain shrink-0 inline-block drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                />
+                <span className="font-pixel-heading text-[10px] text-zinc-200">
+                  {selectedMap.wind.min}–{selectedMap.wind.max} <span className="text-zinc-400 font-pixel-body text-[9px]">M/S</span>
+                </span>
               </span>
               <span>•</span>
               <span
-                className={`px-1 py-0.2 text-[9px] font-pixel-heading uppercase border flex items-center gap-1 ${getMetalBadgeColor(
+                className={`px-1.5 py-0.5 text-[9px] font-pixel-heading uppercase border flex items-center gap-1 whitespace-nowrap shrink-0 ${getMetalBadgeColor(
                   selectedMap.metalDensity
                 )}`}
               >
                 <img
                   src="/metal.png"
                   alt="Metal"
-                  className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                  className="size-3.5 object-contain shrink-0 inline-block"
                 />
                 {selectedMap.metalDensity}
               </span>
               {selectedMap.tidal > 0 && (
                 <>
                   <span>•</span>
-                  <span className="text-[#fbbf24] flex items-center gap-1">
+                  <span className="text-[#fbbf24] flex items-center gap-1 whitespace-nowrap shrink-0 font-pixel-heading text-[9px]">
                     <img
                       src="/energy.png"
                       alt="Energy"
-                      className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                      className="size-3.5 object-contain shrink-0 inline-block"
                     />
                     +{selectedMap.tidal}E
                   </span>
@@ -281,10 +294,16 @@ export function MapCombobox({
                           {map.dimensions}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs font-pixel-body text-zinc-400">
-                        <span className="flex items-center gap-1">
-                          <Wind className="size-2.5 text-zinc-500" />
-                          {map.wind.min}–{map.wind.max} m/s (avg {map.wind.avg})
+                      <div className="flex items-center gap-2 text-xs font-pixel-body text-zinc-400 flex-wrap sm:flex-nowrap">
+                        <span className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
+                          <img
+                            src={turbineImg}
+                            alt="Wind"
+                            className="size-4.5 object-contain shrink-0 inline-block drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                          />
+                          <span className="text-zinc-200 font-pixel-heading text-[9px]">
+                            {map.wind.min}–{map.wind.max} <span className="text-zinc-400 font-pixel-body text-[8px]">m/s</span> (avg {map.wind.avg})
+                          </span>
                         </span>
                         <span>•</span>
                         <span
@@ -295,7 +314,7 @@ export function MapCombobox({
                           <img
                             src="/metal.png"
                             alt="Metal"
-                            className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                            className="size-3 object-contain shrink-0 inline-block"
                           />
                           {map.metalDensity}
                         </span>
@@ -306,7 +325,7 @@ export function MapCombobox({
                               <img
                                 src="/energy.png"
                                 alt="Energy"
-                                className="size-2.5 object-contain pixelated shrink-0 inline-block"
+                                className="size-3 object-contain shrink-0 inline-block"
                               />
                               +{map.tidal}E
                             </span>

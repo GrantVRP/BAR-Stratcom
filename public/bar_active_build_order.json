@@ -1,7 +1,7 @@
 {
-  "strategyTitle": "Bot Skirmish (Standard Frontline)",
-  "faction": "Armada",
-  "timestamp": 1789788640244,
+  "strategyTitle": "Early Tank Raider Rush",
+  "faction": "Cortex",
+  "timestamp": 1790012968684,
   "steps": [
     {
       "time": "00:00",
@@ -9,71 +9,95 @@
       "unit": "Solar Collector",
       "count": 1,
       "cumulative": 1,
-      "note": "Base power generation"
+      "note": "+20E baseline"
     },
     {
-      "time": "00:25",
+      "time": "00:20",
       "builder": "commander",
       "unit": "Metal Extractor",
       "count": 2,
       "cumulative": 2,
-      "note": "Initial metal supply"
+      "note": "+4.4M/s"
     },
     {
-      "time": "00:50",
+      "time": "00:42",
+      "builder": "commander",
+      "unit": "Solar Collector",
+      "count": 2,
+      "cumulative": 3,
+      "note": "+60E threshold reached"
+    },
+    {
+      "time": "01:06",
       "builder": "commander",
       "unit": "Bot Lab",
       "count": 1,
       "cumulative": 1,
-      "note": "Infantry factory"
+      "note": "Primary production facility for mobile vanguard"
     },
     {
-      "time": "01:15",
+      "time": "01:30",
       "builder": "commander",
-      "unit": "Solar Collector",
-      "count": 1,
+      "unit": "Wind Turbine",
+      "count": 2,
       "cumulative": 2,
-      "note": "Power stabilizer"
+      "note": "Sustaining 100E:10M ratio"
     },
     {
-      "time": "01:35",
+      "time": "01:48",
       "builder": "factory",
-      "unit": "Pawn",
-      "count": 1,
-      "cumulative": 1,
-      "note": "Early radar scout"
-    },
-    {
-      "time": "01:50",
-      "builder": "factory",
-      "unit": "Construction Bot",
-      "count": 1,
-      "cumulative": 1,
-      "note": "Expansion builder"
+      "unit": "Grunt",
+      "count": 4,
+      "cumulative": 4,
+      "note": "Fast Raider Bot"
     },
     {
       "time": "02:10",
       "builder": "factory",
-      "unit": "Rocko",
-      "count": 3,
-      "cumulative": 3,
-      "note": "Skirmish rocket artillery"
-    },
-    {
-      "time": "02:40",
-      "builder": "constructor",
-      "unit": "Metal Extractor",
-      "count": 2,
+      "unit": "Storm",
+      "count": 4,
       "cumulative": 4,
-      "note": "Perimeter mex expansion"
+      "note": "Rocket Skirmisher"
     },
     {
-      "time": "03:10",
-      "builder": "constructor",
+      "time": "02:32",
+      "builder": "commander",
+      "unit": "Reclaim large boulder clusters",
+      "count": 280,
+      "cumulative": 280,
+      "note": "+280 instant metal injection"
+    },
+    {
+      "time": "02:55",
+      "builder": "factory",
+      "unit": "Necro",
+      "count": 2,
+      "cumulative": 2,
+      "note": "Resurrection Bot"
+    },
+    {
+      "time": "03:20",
+      "builder": "commander",
+      "unit": "Solar Collector",
+      "count": 1,
+      "cumulative": 4,
+      "note": "+150 metal refunded into heavy armor"
+    },
+    {
+      "time": "03:45",
+      "builder": "commander",
       "unit": "Light Laser Tower",
       "count": 1,
       "cumulative": 1,
-      "note": "Chokepoint defense"
+      "note": "LLT"
+    },
+    {
+      "time": "04:10",
+      "builder": "factory",
+      "unit": "Pyros",
+      "count": 2,
+      "cumulative": 2,
+      "note": "Flame Assault Bot"
     }
   ]
 }

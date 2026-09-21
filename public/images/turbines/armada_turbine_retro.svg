@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-19 -19 38 38" width="512" height="512" fill="none">
+  <defs>
+    <linearGradient id="armadaBladeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="60%" stop-color="#cbd5e1" />
+      <stop offset="100%" stop-color="#64748b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Nacelle Swivel Housing (Backing) -->
+  <polygon points="-2.5,-3.5 2.5,-3.5 2.5,1.5 -2.5,1.5" fill="#27272a" stroke="#3f3f46" stroke-width="0.6" />
+
+  <!-- Blade 1 (North: 0 deg) -->
+  <g>
+    <polygon points="0,0 -1.8,-4 -2.2,-13 0,-16 1.8,-13 1,-4" fill="url(#armadaBladeGrad)" />
+    <path d="M0,0 L-2.2,-13 L0,-16 L-0.6,-5 Z" fill="#09090b" opacity="0.6" />
+    <line x1="-1.6" y1="-7" x2="1.3" y2="-7" stroke="#475569" stroke-width="0.5" />
+    <line x1="-2.0" y1="-10.5" x2="1.6" y2="-10.5" stroke="#475569" stroke-width="0.5" />
+  </g>
+
+  <!-- Blade 2 (120 deg) -->
+  <g transform="rotate(120)">
+    <polygon points="0,0 -1.8,-4 -2.2,-13 0,-16 1.8,-13 1,-4" fill="url(#armadaBladeGrad)" />
+    <path d="M0,0 L-2.2,-13 L0,-16 L-0.6,-5 Z" fill="#09090b" opacity="0.6" />
+    <line x1="-1.6" y1="-7" x2="1.3" y2="-7" stroke="#475569" stroke-width="0.5" />
+    <line x1="-2.0" y1="-10.5" x2="1.6" y2="-10.5" stroke="#475569" stroke-width="0.5" />
+  </g>
+
+  <!-- Blade 3 (240 deg) -->
+  <g transform="rotate(240)">
+    <polygon points="0,0 -1.8,-4 -2.2,-13 0,-16 1.8,-13 1,-4" fill="url(#armadaBladeGrad)" />
+    <path d="M0,0 L-2.2,-13 L0,-16 L-0.6,-5 Z" fill="#09090b" opacity="0.6" />
+    <line x1="-1.6" y1="-7" x2="1.3" y2="-7" stroke="#475569" stroke-width="0.5" />
+    <line x1="-2.0" y1="-10.5" x2="1.6" y2="-10.5" stroke="#475569" stroke-width="0.5" />
+  </g>
+
+  <!-- Center Hub with Cobalt Core -->
+  <circle cx="0" cy="0" r="1.6" fill="#09090b" />
+  <circle cx="0" cy="0" r="0.9" fill="#3b82f6" />
+</svg>

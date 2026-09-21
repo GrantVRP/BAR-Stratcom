@@ -1,4 +1,4 @@
-import { type Faction } from './game-data';
+import { type Faction, getScrapedUnit } from './game-data';
 
 export interface ParsedBuildStep {
   id: string;
@@ -15,56 +15,71 @@ export interface ParsedBuildStep {
 
 // Resource lookup dictionary for rapid delta estimation
 const RESOURCE_DELTAS: Record<string, { metal: string; energy: string }> = {
-  'solar collector': { metal: '-145 M', energy: '+20 E' },
-  'solar': { metal: '-145 M', energy: '+20 E' },
-  'wind turbine': { metal: '-35 M', energy: '+14 E' },
-  'wind generator': { metal: '-35 M', energy: '+14 E' },
-  'turbine': { metal: '-35 M', energy: '+14 E' },
-  'wind': { metal: '-35 M', energy: '+14 E' },
-  'fusion reactor': { metal: '-4600 M', energy: '+1050 E' },
-  'fusion': { metal: '-4600 M', energy: '+1050 E' },
-  'metal extractor': { metal: '+2.0 M', energy: '-3 E' },
-  'mex': { metal: '+2.0 M', energy: '-3 E' },
-  'energy converter': { metal: '+5.7 M', energy: '-70 E' },
-  'energy storage': { metal: '-110 M', energy: '+1000 E' },
-  'metal storage': { metal: '+1000 M', energy: '-0 E' },
-  'vehicle plant': { metal: '-680 M', energy: '-1250 E' },
-  'vplant': { metal: '-680 M', energy: '-1250 E' },
-  'vehicle factory': { metal: '-680 M', energy: '-1250 E' },
-  'bot lab': { metal: '-600 M', energy: '-1100 E' },
-  'botlab': { metal: '-600 M', energy: '-1100 E' },
-  'aircraft plant': { metal: '-720 M', energy: '-1500 E' },
-  'aircraftplant': { metal: '-720 M', energy: '-1500 E' },
-  'air plant': { metal: '-720 M', energy: '-1500 E' },
-  'airplant': { metal: '-720 M', energy: '-1500 E' },
-  'shipyard': { metal: '-650 M', energy: '-1300 E' },
-  'light laser tower': { metal: '-90 M', energy: '-950 E' },
-  'llt': { metal: '-90 M', energy: '-950 E' },
-  'flash': { metal: '-110 M', energy: '-1200 E' },
-  'stump': { metal: '-210 M', energy: '-1800 E' },
-  'blitz': { metal: '-135 M', energy: '-1400 E' },
-  'raider': { metal: '-225 M', energy: '-1950 E' },
-  'paw': { metal: '-45 M', energy: '-450 E' },
-  'grunt': { metal: '-50 M', energy: '-500 E' },
-  'rocko': { metal: '-115 M', energy: '-980 E' },
-  'storm': { metal: '-120 M', energy: '-1020 E' },
-  'hammer': { metal: '-140 M', energy: '-1100 E' },
-  'thug': { metal: '-155 M', energy: '-1250 E' },
-  'pyros': { metal: '-165 M', energy: '-1350 E' },
-  'samson': { metal: '-125 M', energy: '-1100 E' },
-  'slasher': { metal: '-130 M', energy: '-1150 E' },
-  'wolverine': { metal: '-180 M', energy: '-1600 E' },
-  'leveler': { metal: '-240 M', energy: '-2100 E' },
-  'lazarus': { metal: '-130 M', energy: '-1500 E' },
-  'construction vehicle': { metal: '-210 M', energy: '-2100 E' },
-  'construction bot': { metal: '-190 M', energy: '-1900 E' },
-  'beaver': { metal: '-210 M', energy: '-2100 E' },
-  'reclaim': { metal: '+250 M', energy: '+100 E' },
-  'roach': { metal: '-65 M', energy: '-800 E' },
-  'tick': { metal: '-25 M', energy: '-200 E' },
-  'sparrow': { metal: '-40 M', energy: '-850 E' },
-  'tornado': { metal: '-190 M', energy: '-2600 E' },
-  'shadow': { metal: '-175 M', energy: '-3100 E' },
+  'solar collector': { metal: '-155 M', energy: '+20 E' },
+  'solar': { metal: '-155 M', energy: '+20 E' },
+  'advanced solar': { metal: '-350 M', energy: '+80 E' },
+  'wind turbine': { metal: '-40 M', energy: '+14 E' },
+  'wind generator': { metal: '-40 M', energy: '+14 E' },
+  'turbine': { metal: '-40 M', energy: '+14 E' },
+  'wind': { metal: '-40 M', energy: '+14 E' },
+  'fusion reactor': { metal: '-3350 M', energy: '+750 E' },
+  'fusion': { metal: '-3350 M', energy: '+750 E' },
+  'advanced fusion': { metal: '-9700 M', energy: '+3000 E' },
+  'afus': { metal: '-9700 M', energy: '+3000 E' },
+  'metal extractor': { metal: '-50 M', energy: '-3 E' },
+  'mex': { metal: '-50 M', energy: '-3 E' },
+  'energy converter': { metal: '-1 M', energy: '-70 E' },
+  'advanced energy converter': { metal: '-380 M', energy: '-3600 E' },
+  'energy storage': { metal: '-170 M', energy: '+1000 E' },
+  'metal storage': { metal: '-330 M', energy: '+0 E' },
+  'vehicle plant': { metal: '-590 M', energy: '-1550 E' },
+  'vplant': { metal: '-590 M', energy: '-1550 E' },
+  'vehicle factory': { metal: '-590 M', energy: '-1550 E' },
+  'bot lab': { metal: '-500 M', energy: '-950 E' },
+  'botlab': { metal: '-500 M', energy: '-950 E' },
+  'aircraft plant': { metal: '-650 M', energy: '-1100 E' },
+  'aircraftplant': { metal: '-650 M', energy: '-1100 E' },
+  'air plant': { metal: '-650 M', energy: '-1100 E' },
+  'airplant': { metal: '-650 M', energy: '-1100 E' },
+  'shipyard': { metal: '-450 M', energy: '-950 E' },
+  'light laser tower': { metal: '-85 M', energy: '-680 E' },
+  'llt': { metal: '-85 M', energy: '-680 E' },
+  'flash': { metal: '-110 M', energy: '-900 E' },
+  'stump': { metal: '-225 M', energy: '-2100 E' },
+  'blitz': { metal: '-110 M', energy: '-900 E' },
+  'raider': { metal: '-235 M', energy: '-2400 E' },
+  'paw': { metal: '-54 M', energy: '-900 E' },
+  'pawn': { metal: '-54 M', energy: '-900 E' },
+  'grunt': { metal: '-43 M', energy: '-820 E' },
+  'rocko': { metal: '-120 M', energy: '-1000 E' },
+  'storm': { metal: '-110 M', energy: '-1150 E' },
+  'hammer': { metal: '-130 M', energy: '-1300 E' },
+  'thug': { metal: '-140 M', energy: '-1150 E' },
+  'pyros': { metal: '-200 M', energy: '-3000 E' },
+  'pyro': { metal: '-200 M', energy: '-3000 E' },
+  'samson': { metal: '-150 M', energy: '-2100 E' },
+  'slasher': { metal: '-170 M', energy: '-2300 E' },
+  'wolverine': { metal: '-170 M', energy: '-2500 E' },
+  'leveler': { metal: '-220 M', energy: '-2600 E' },
+  'lazarus': { metal: '-130 M', energy: '-1400 E' },
+  'necro': { metal: '-130 M', energy: '-1400 E' },
+  'construction vehicle': { metal: '-135 M', energy: '-1950 E' },
+  'construction bot': { metal: '-110 M', energy: '-1600 E' },
+  'beaver': { metal: '-150 M', energy: '-3100 E' },
+  'reclaim': { metal: '+250 M', energy: '+0 E' },
+  'roach': { metal: '-69 M', energy: '-5800 E' },
+  'tick': { metal: '-21 M', energy: '-300 E' },
+  'sparrow': { metal: '-52 M', energy: '-1550 E' },
+  'brawler': { metal: '-310 M', energy: '-6200 E' },
+  'freedom fighter': { metal: '-73 M', energy: '-2900 E' },
+  'avenger': { metal: '-73 M', energy: '-2800 E' },
+  'valkyrie': { metal: '-74 M', energy: '-1450 E' },
+  'atlas': { metal: '-68 M', energy: '-1300 E' },
+  'bulldog': { metal: '-950 M', energy: '-13000 E' },
+  'can': { metal: '-560 M', energy: '-9300 E' },
+  'sumo': { metal: '-2200 M', energy: '-35000 E' },
+  'crasher': { metal: '-125 M', energy: '-1100 E' },
+  'jethro': { metal: '-125 M', energy: '-1100 E' },
 };
 
 /**
@@ -176,14 +191,19 @@ export function parseBuildStep(rawStep: string, index: number, _faction: Faction
   }
 
   // 5. Clean up Item Name
-  // Strip action verbs: "Queue 2x Flash", "Construct 1x Solar Collector", "Build 2x Wind"
+  // Strip action verbs, movement directions, and complex prefixes
   let cleanItem = text
-    .replace(/^(?:queue|construct|build|deploy|produce|advance to|continuous queue of|continuous production of)\s+/i, '')
+    .replace(/^(?:queue|construct|build|deploy|produce|set|order|advance to forward choke and build|advance to forward choke and establish|advance to choke point and establish|advance to choke point and build|advance to|continuous queue of|continuous production of)\s+/i, '')
     .replace(/^\d+(?:-\d+)?x?\s+/i, '')
     .trim();
 
-  // If there's an "on ...", "for ...", "to ...", or "at ...", extract secondary text if explanation was empty
-  const trailingReasonMatch = cleanItem.match(/\s+(on|for|to|at|against|into|angled)\s+(.*)$/i);
+  // If compound step with multiple units separated by "+", pick the primary unit
+  if (cleanItem.includes('+')) {
+    cleanItem = cleanItem.split('+')[0].trim();
+  }
+
+  // If there's an "on ...", "for ...", "to ...", "at ...", "set to ...", extract secondary text if explanation was empty
+  const trailingReasonMatch = cleanItem.match(/\s+(on|for|to|at|against|into|angled|oriented|set to|set)\s+(.*)$/i);
   if (trailingReasonMatch) {
     if (!explanation) {
       explanation = `${trailingReasonMatch[1]} ${trailingReasonMatch[2]}`.trim();
@@ -191,22 +211,101 @@ export function parseBuildStep(rawStep: string, index: number, _faction: Faction
     cleanItem = cleanItem.substring(0, trailingReasonMatch.index).trim();
   }
 
+  // Cross-reference with our comprehensive 377-asset BAR database (Scavengers excluded)
+  const matchedUnit = getScrapedUnit(cleanItem, _faction) || getScrapedUnit(text, _faction);
+  if (matchedUnit) {
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes('rocko')) cleanItem = 'Rocko';
+    else if (lowerText.includes('hammer')) cleanItem = 'Hammer';
+    else if (lowerText.includes('paw')) cleanItem = 'Pawn';
+    else if (lowerText.includes('light laser tower') || lowerText.includes('llt')) cleanItem = 'Light Laser Tower';
+    else if (lowerText.includes('storm')) cleanItem = 'Storm';
+    else if (lowerText.includes('thug')) cleanItem = 'Thug';
+    else if (lowerText.includes('lazarus')) cleanItem = 'Lazarus';
+    else if (lowerText.includes('solar')) cleanItem = 'Solar Collector';
+    else if (lowerText.includes('wind') || lowerText.includes('turbine')) cleanItem = 'Wind Turbine';
+    else if (lowerText.includes('metal extractor') || lowerText.includes('mex')) cleanItem = 'Metal Extractor';
+    else if (lowerText.includes('bot lab') || lowerText.includes('botlab')) cleanItem = 'Bot Lab';
+    else if (lowerText.includes('vehicle plant') || lowerText.includes('vplant')) cleanItem = 'Vehicle Plant';
+    else if (lowerText.includes('aircraft plant') || lowerText.includes('airplant')) cleanItem = 'Aircraft Plant';
+    else if (lowerText.includes('atlas')) cleanItem = 'Atlas';
+    else if (lowerText.includes('valkyrie')) cleanItem = 'Valkyrie';
+    else if (lowerText.includes('sparrow')) cleanItem = 'Sparrow';
+    else if (lowerText.includes('brawler')) cleanItem = 'Brawler';
+    else if (lowerText.includes('freedom fighter')) cleanItem = 'Freedom Fighter';
+    else if (lowerText.includes('shadow')) cleanItem = 'Shadow';
+    else if (lowerText.includes('avenger')) cleanItem = 'Avenger';
+    else if (lowerText.includes('bulldog')) cleanItem = 'Bulldog';
+    else if (lowerText.includes('blitz')) cleanItem = 'Blitz';
+    else if (lowerText.includes('flash')) cleanItem = 'Flash';
+    else if (lowerText.includes('raider')) cleanItem = 'Raider';
+    else if (lowerText.includes('stump')) cleanItem = 'Stump';
+    else if (lowerText.includes('samson')) cleanItem = 'Samson';
+    else if (lowerText.includes('wolverine')) cleanItem = 'Wolverine';
+    else if (lowerText.includes('leveler')) cleanItem = 'Leveler';
+    else if (lowerText.includes('slasher')) cleanItem = 'Slasher';
+    else if (lowerText.includes('pyros') || lowerText.includes('pyro')) cleanItem = 'Pyros';
+    else if (lowerText.includes('necro')) cleanItem = 'Necro';
+    else if (lowerText.includes('crasher')) cleanItem = 'Crasher';
+    else if (lowerText.includes('roach')) cleanItem = 'Roach';
+    else cleanItem = matchedUnit.name;
+  }
+
   // Capitalize properly
   if (!cleanItem || cleanItem.length < 2) {
     cleanItem = text || 'Strategic Unit';
   }
 
-  // Check database for canonical item name
+  // Check database for canonical item name & accurate costs
   const lowerItem = cleanItem.toLowerCase();
+  const lowerRaw = rawStep.toLowerCase();
   let metalDelta = '-100 M';
   let energyDelta = '-1000 E';
 
-  // Check known deltas
-  for (const [key, delta] of Object.entries(RESOURCE_DELTAS)) {
-    if (lowerItem.includes(key)) {
-      metalDelta = delta.metal;
-      energyDelta = delta.energy;
-      break;
+  // 1. If step is a reclaim or salvage action
+  if (lowerRaw.includes('reclaim') || lowerItem.includes('reclaim') || lowerRaw.includes('salvage')) {
+    const mMatch = rawStep.match(/\+(\d+(?:\.\d+)?)\s*(?:m|metal)/i);
+    metalDelta = mMatch ? `+${mMatch[1]} M` : '+250 M';
+    energyDelta = '+0 E';
+  } else if (matchedUnit && matchedUnit.metal !== undefined && matchedUnit.energy !== undefined) {
+    // 2. Exact match in scraped Beyond All Reason unit database
+    if (lowerItem.includes('solar collector') || lowerItem === 'solar') {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = '+20 E';
+    } else if (lowerItem.includes('advanced solar')) {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = '+80 E';
+    } else if (lowerItem.includes('wind') || lowerItem.includes('turbine')) {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = '+14 E';
+    } else if (lowerItem.includes('metal extractor') || lowerItem.includes('mex')) {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = '-3 E';
+    } else if (lowerItem.includes('advanced fusion') || lowerItem.includes('afus')) {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = '+3000 E';
+    } else if (lowerItem.includes('fusion')) {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = _faction === 'Cortex' ? '+850 E' : '+750 E';
+    } else if (lowerItem.includes('energy storage')) {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = '+1000 E';
+    } else if (lowerItem.includes('energy converter')) {
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = '-70 E';
+    } else {
+      // Standard units, factories, defenses, etc.
+      metalDelta = `-${matchedUnit.metal} M`;
+      energyDelta = `-${matchedUnit.energy} E`;
+    }
+  } else {
+    // 3. Fallback to dictionary
+    for (const [key, delta] of Object.entries(RESOURCE_DELTAS)) {
+      if (lowerItem.includes(key)) {
+        metalDelta = delta.metal;
+        energyDelta = delta.energy;
+        break;
+      }
     }
   }
 

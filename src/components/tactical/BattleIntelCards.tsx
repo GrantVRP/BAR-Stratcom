@@ -227,6 +227,107 @@ export function BattleIntelCards({
     return () => cancelAnimationFrame(animId);
   }, [isGame, isOffline, enemyCount, enemyPush]);
 
+  // When offline, render a single clean window displaying offline status and usage instructions
+  if (isOffline) {
+    return (
+      <div className={`flex flex-col gap-2 font-pixel-body select-none ${className}`}>
+        {/* SINGLE UNIFIED OFFLINE & INSTRUCTIONS WINDOW */}
+        <div className="relative rounded-lg overflow-hidden border-2 border-zinc-700/80 bg-[#090b12]/95 shadow-[0_8px_20px_rgba(0,0,0,0.7)] p-3 space-y-2.5">
+          {/* Top Status Badges */}
+          <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+            <div className="flex items-center gap-2">
+              <div className="size-5 rounded bg-[#1e2029] border border-zinc-700 flex items-center justify-center text-zinc-400 shadow">
+                <Radio className="size-3 text-zinc-400" />
+              </div>
+              <div>
+                <div className="text-[9px] font-pixel-heading font-bold text-zinc-200">
+                  SYSTEM STATUS: OFFLINE
+                </div>
+                <div className="text-[7.5px] font-pixel-heading text-zinc-500">
+                  AWAITING ENGINE LINK
+                </div>
+              </div>
+            </div>
+
+            <span className="text-[7.5px] px-1.5 py-0.5 rounded bg-black/60 border border-zinc-800 text-zinc-400 font-pixel-heading font-bold">
+              STANDBY
+            </span>
+          </div>
+
+          {/* Banner message */}
+          <div className="p-2 rounded bg-black/60 border border-zinc-800/90 text-center font-pixel-heading text-[8px] space-y-0.5">
+            <div className="flex items-center justify-center gap-1.5 text-zinc-300 font-bold">
+              <span className="size-1.5 rounded-full bg-zinc-600" />
+              <span>NO LIVE MATCH CONNECTED</span>
+            </div>
+            <div className="text-[7.5px] text-zinc-500 font-pixel-body">
+              Launch Beyond All Reason or connect bridge to stream real-time telemetry.
+            </div>
+          </div>
+
+          {/* Instructions to Use */}
+          <div className="space-y-1.5">
+            <div className="text-[8px] font-pixel-heading text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 px-0.5">
+              <Activity className="size-2.5 text-zinc-400" />
+              <span>HOW TO USE THE TACTICAL HUD:</span>
+            </div>
+
+            <div className="space-y-1 text-[8px] font-pixel-heading">
+              <div className="px-2 py-1.5 rounded bg-black/50 border border-zinc-800/80 flex items-start gap-2">
+                <span className="text-cyan-400 font-bold">1.</span>
+                <div className="min-w-0">
+                  <span className="text-zinc-200 font-bold">LAUNCH BEYOND ALL REASON</span>
+                  <div className="text-[7.5px] text-zinc-400 font-pixel-body">
+                    Start or join any skirmish vs AI, multiplayer lobby, or replay.
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-2 py-1.5 rounded bg-black/50 border border-zinc-800/80 flex items-start gap-2">
+                <span className="text-amber-400 font-bold">2.</span>
+                <div className="min-w-0">
+                  <span className="text-zinc-200 font-bold">IN-GAME HUD [F8]</span>
+                  <div className="text-[7.5px] text-zinc-400 font-pixel-body">
+                    The tactical overlay automatically docks on your screen. Press [F8] or [Insert] to toggle.
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-2 py-1.5 rounded bg-black/50 border border-zinc-800/80 flex items-start gap-2">
+                <span className="text-emerald-400 font-bold">3.</span>
+                <div className="min-w-0">
+                  <span className="text-zinc-200 font-bold">REAL-TIME AUTO-CHECK</span>
+                  <div className="text-[7.5px] text-zinc-400 font-pixel-body">
+                    Build order steps automatically check off [✓] as you build units in-game.
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-2 py-1.5 rounded bg-black/50 border border-zinc-800/80 flex items-start gap-2">
+                <span className="text-purple-400 font-bold">4.</span>
+                <div className="min-w-0">
+                  <span className="text-zinc-200 font-bold">LIVE BATTLE INTEL</span>
+                  <div className="text-[7.5px] text-zinc-400 font-pixel-body">
+                    Friendly unit census, commander armor status, and enemy radar sweeps activate as soon as the match starts.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer bridge link pill */}
+          <div className="pt-1.5 border-t border-zinc-800/80 flex items-center justify-between text-[7px] text-zinc-500 font-pixel-heading">
+            <span className="flex items-center gap-1 text-emerald-400">
+              <span className="size-1.5 rounded-full bg-emerald-400 arcade-blink" />
+              BRIDGE ACTIVE (PORT 5050)
+            </span>
+            <span className="text-zinc-400 font-pixel-heading">READY FOR GAME LINK</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex flex-col gap-2.5 font-pixel-body select-none ${className}`}>
       {/* ========================================================================= */}
@@ -378,7 +479,7 @@ export function BattleIntelCards({
                             +{tm.metalIncome}
                           </span>
                           <span className="text-amber-400 flex items-center gap-0.5">
-                            <img src="/energy.png" alt="E" className="size-2.5 object-contain pixelated inline-block" />
+                            <img src="/energy.png" alt="E" className="size-3.5 object-contain inline-block" />
                             +{tm.energyIncome}
                           </span>
                         </div>
@@ -402,11 +503,11 @@ export function BattleIntelCards({
                   </div>
                   <div className="flex items-center gap-2 font-bold text-[8px] shrink-0">
                     <span className="text-[#94a3b8] flex items-center gap-0.5">
-                      <img src="/metal.png" alt="M" className="size-2.5 object-contain pixelated inline-block" />
+                      <img src="/metal.png" alt="M" className="size-3.5 object-contain inline-block" />
                       +{playerMetalIncome}
                     </span>
                     <span className="text-amber-400 flex items-center gap-0.5">
-                      <img src="/energy.png" alt="E" className="size-2.5 object-contain pixelated inline-block" />
+                      <img src="/energy.png" alt="E" className="size-3.5 object-contain inline-block" />
                       +{playerEnergyIncome}
                     </span>
                   </div>

@@ -153,7 +153,8 @@ function normalizeUnitKey(name: string): string {
 const UNIT_KEY_ALIASES: Record<string, string[]> = {
   solarcollector: ["solarcollector", "armsolar", "corsolar", "solar", "solar collector"],
   metalextractor: ["metalextractor", "armmex", "cormex", "mex", "metal extractor"],
-  windgenerator: ["windgenerator", "windturbine", "armwin", "corwin", "wind", "wind generator"],
+  windgenerator: ["windgenerator", "windturbine", "armwin", "corwin", "wind", "wind generator", "wind turbine", "turbine"],
+  windturbine: ["windgenerator", "windturbine", "armwin", "corwin", "wind", "wind generator", "wind turbine", "turbine"],
   botlab: ["botlab", "armlab", "corlab", "lab", "bot lab", "infantry factory"],
   vehicleplant: ["vehicleplant", "armvp", "corvp", "plant", "factory", "vehicle plant", "light vehicle factory"],
   aircraftplant: ["aircraftplant", "armap", "corap", "airplant", "air plant", "aircraft plant"],
@@ -176,7 +177,69 @@ const UNIT_KEY_ALIASES: Record<string, string[]> = {
   sharpshooter: ["sharpshooter", "armsnipe"],
   brawler: ["brawler", "armbraw"],
   blade: ["blade", "armblade"],
+  advancedmetalextractor: ["advancedmetalextractor", "armamex", "coramex", "mohomine", "moho", "amex", "advanced metal extractor", "moho mine"],
+  mohomine: ["advancedmetalextractor", "armamex", "coramex", "mohomine", "moho", "amex", "advanced metal extractor", "moho mine"],
+  advancedsolarcollector: ["advancedsolarcollector", "armadvsol", "coradvsol", "advsolar", "advanced solar collector", "adv solar"],
+  fusionreactor: ["fusionreactor", "armfus", "corfus", "fusion", "fusion reactor"],
+  advancedfusionreactor: ["advancedfusionreactor", "armafus", "corafus", "afus", "advanced fusion reactor", "advanced fusion"],
+  advancedbotlab: ["advancedbotlab", "armalab", "coralab", "alab", "advanced bot lab", "adv bot lab", "t2 bot lab"],
+  advancedvehicleplant: ["advancedvehicleplant", "armavp", "coravp", "avp", "advanced vehicle plant", "adv vehicle plant", "t2 vehicle plant"],
+  advancedaircraftplant: ["advancedaircraftplant", "armaap", "coraap", "aap", "advanced aircraft plant", "adv aircraft plant", "t2 aircraft plant"],
+  advancedconstructionbot: ["advancedconstructionbot", "armack", "corack", "ack", "advanced construction bot", "adv con bot", "t2 con bot"],
+  advancedconstructionvehicle: ["advancedconstructionvehicle", "armacv", "coracv", "acv", "advanced construction vehicle", "adv con vehicle", "t2 con vehicle"],
+  advancedenergyconverter: ["advancedenergyconverter", "armmmkr", "cormmkr", "mmkr", "moho metal maker", "advanced energy converter"],
+  constructionturret: [
+    "constructionturret",
+    "armnanotc",
+    "cornanotc",
+    "nanotower",
+    "nano tower",
+    "nanoturret",
+    "nano turret",
+    "nano",
+    "build turret",
+    "construction turret",
+    "caretaker",
+    "hive"
+  ],
+  nanotower: [
+    "constructionturret",
+    "armnanotc",
+    "cornanotc",
+    "nanotower",
+    "nano tower",
+    "nanoturret",
+    "nano turret",
+    "nano",
+    "build turret",
+    "construction turret",
+    "caretaker",
+    "hive"
+  ],
 };
+
+function isAdvancedUnitKey(str: string): boolean {
+  if (!str) return false;
+  const s = str.toLowerCase();
+  return (
+    s.includes("adv") ||
+    s.includes("moho") ||
+    s.includes("amex") ||
+    s.includes("afus") ||
+    s.includes("t2") ||
+    s.includes("tier2") ||
+    s.includes("armamex") ||
+    s.includes("coramex") ||
+    s.includes("armalab") ||
+    s.includes("coralab") ||
+    s.includes("armavp") ||
+    s.includes("coravp") ||
+    s.includes("armack") ||
+    s.includes("corack") ||
+    s.includes("armafus") ||
+    s.includes("corafus")
+  );
+}
 
 function getCompletedCountForUnit(
   itemName: string,
@@ -184,25 +247,50 @@ function getCompletedCountForUnit(
 ): number {
   if (!itemName || !completedUnits) return 0;
   const norm = normalizeUnitKey(itemName);
+  const targetIsAdv = isAdvancedUnitKey(norm) || isAdvancedUnitKey(itemName);
 
-  // Exact direct match
-  if (completedUnits[itemName] !== undefined) return completedUnits[itemName];
-  if (completedUnits[norm] !== undefined) return completedUnits[norm];
+  // Exact direct match (only if tier matches)
+  if (completedUnits[itemName] !== undefined && isAdvancedUnitKey(itemName) === targetIsAdv) {
+    return completedUnits[itemName];
+  }
+  if (completedUnits[norm] !== undefined && isAdvancedUnitKey(norm) === targetIsAdv) {
+    return completedUnits[norm];
+  }
 
   // Normalized key match
   for (const [key, count] of Object.entries(completedUnits)) {
-    if (normalizeUnitKey(key) === norm) {
+    const keyNorm = normalizeUnitKey(key);
+    const keyIsAdv = isAdvancedUnitKey(keyNorm) || isAdvancedUnitKey(key);
+    if (keyNorm === norm && keyIsAdv === targetIsAdv) {
       return count;
     }
   }
 
-  // Alias lookup
+  // Alias lookup with strict tier protection
   for (const [canon, aliases] of Object.entries(UNIT_KEY_ALIASES)) {
-    const isTarget = norm === canon || aliases.some((a) => normalizeUnitKey(a) === norm || norm.includes(normalizeUnitKey(a)));
+    const canonIsAdv = isAdvancedUnitKey(canon);
+    if (canonIsAdv !== targetIsAdv) continue;
+
+    const isTarget =
+      norm === canon ||
+      aliases.some((a) => {
+        const aNorm = normalizeUnitKey(a);
+        return aNorm === norm || (norm.includes(aNorm) && isAdvancedUnitKey(aNorm) === targetIsAdv);
+      });
+
     if (isTarget) {
       for (const [key, count] of Object.entries(completedUnits)) {
         const keyNorm = normalizeUnitKey(key);
-        if (keyNorm === canon || aliases.some((a) => normalizeUnitKey(a) === keyNorm || keyNorm.includes(normalizeUnitKey(a)))) {
+        const keyIsAdv = isAdvancedUnitKey(keyNorm) || isAdvancedUnitKey(key);
+        if (keyIsAdv !== targetIsAdv) continue;
+
+        if (
+          keyNorm === canon ||
+          aliases.some((a) => {
+            const aNorm = normalizeUnitKey(a);
+            return aNorm === keyNorm || (keyNorm.includes(aNorm) && isAdvancedUnitKey(aNorm) === keyIsAdv);
+          })
+        ) {
           return count;
         }
       }
@@ -331,6 +419,8 @@ export function TacticalOverlay({
     if (!effectiveSteps || effectiveSteps.length === 0) return;
     const formattedSteps = effectiveSteps.map((s, idx) => {
       const req = cumulativeRequirements[idx];
+      const norm = normalizeUnitKey(s.itemName || "unit");
+      const aliases = UNIT_KEY_ALIASES[norm] || [];
       return {
         time: s.timestamp ? s.timestamp.replace(/\[|\]/g, "") : "00:00",
         builder: s.entityType || "Commander",
@@ -338,6 +428,7 @@ export function TacticalOverlay({
         count: parseStepCount(s.count),
         cumulative: req?.requiredCount || parseStepCount(s.count),
         note: s.explanation || "",
+        codes: [norm, ...aliases],
       };
     });
 
@@ -571,7 +662,7 @@ export function TacticalOverlay({
             </span>
           ) : (
             <span className="text-zinc-300 font-pixel-body text-xs line-clamp-1 max-w-[140px]">
-              {liveState?.gameStatus === "IN_LOBBY" ? "LOBBY STAGING" : !liveState?.isRunning ? "ENGINE OFFLINE" : (nextStep ? `NEXT: ${nextStep.raw.replace(/^\[\d+:\d+\]\s*/, "")}` : "MACRO RUNWAY")}
+              {liveState?.gameStatus === "IN_LOBBY" ? "LOBBY STAGING" : !liveState?.isRunning ? "ENGINE OFFLINE" : (nextStep ? `NEXT: ${(nextStep.raw || nextStep.itemName || "").replace(/^\[\d+:\d+\]\s*/, "")}` : "MACRO RUNWAY")}
             </span>
           )}
 
@@ -711,22 +802,22 @@ export function TacticalOverlay({
         </div>
       </div>
 
-      {/* --- OFFLINE ONLY VIEW OR LIVE TACTICAL NAVIGATION TABS --- */}
-      {isOffline ? (
-        <div className="p-2 overflow-y-auto max-h-[calc(100vh-140px)] custom-scrollbar">
-          <BattleIntelCards
-            faction={faction}
-            gameStatus="OFFLINE"
-            battleIntel={undefined}
-            accentColor={accentColor}
-            lobbyName={liveState?.lobbyName}
-            mapName={liveState?.mapName || selectedMap?.name}
-          />
-        </div>
-      ) : (
-        <>
-          {/* --- TACTICAL VIEW NAVIGATION TABS --- */}
-          <div className="flex items-center border-b border-zinc-800 bg-[#0d0f17] text-[8.5px] font-pixel-heading">
+      {/* --- TACTICAL VIEW NAVIGATION TABS --- */}
+      <div className="flex items-center border-b border-zinc-800 bg-[#0d0f17] text-[8.5px] font-pixel-heading">
+        <button
+          type="button"
+          onClick={() => setActiveTab("SPLIT")}
+          className={`flex-1 py-1.5 px-2 text-center transition-none flex items-center justify-center gap-1.5 border-b-2 ${
+            activeTab === "SPLIT"
+              ? "bg-[#141824] font-bold"
+              : "text-zinc-400 border-transparent hover:text-zinc-200 hover:bg-zinc-900/40"
+          }`}
+          style={activeTab === "SPLIT" ? { borderColor: accentColor, color: accentColor } : {}}
+        >
+          <Sparkles className="size-3" />
+          <span>SPLIT</span>
+        </button>
+
         <button
           type="button"
           onClick={() => setActiveTab("INTEL")}
@@ -754,20 +845,6 @@ export function TacticalOverlay({
           <Layers className="size-3" />
           <span>BUILD QUEUE</span>
         </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab("SPLIT")}
-          className={`flex-1 py-1.5 px-2 text-center transition-none flex items-center justify-center gap-1.5 border-b-2 ${
-            activeTab === "SPLIT"
-              ? "bg-[#141824] font-bold"
-              : "text-zinc-400 border-transparent hover:text-zinc-200 hover:bg-zinc-900/40"
-          }`}
-          style={activeTab === "SPLIT" ? { borderColor: accentColor, color: accentColor } : {}}
-        >
-          <Sparkles className="size-3" />
-          <span>SPLIT</span>
-        </button>
       </div>
 
       {/* --- VIEW 1: INTEL STREAM FEEDS --- */}
@@ -790,20 +867,18 @@ export function TacticalOverlay({
           {/* Preset Selector & Auto-Check Bar */}
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#0b0e16] border-b border-zinc-800 text-[8px] font-pixel-heading overflow-x-auto custom-scrollbar">
             <span className="text-zinc-400 shrink-0 uppercase">Preset:</span>
-            {steps.length > 0 && (
-              <button
-                type="button"
-                onClick={() => handleSelectPreset("custom")}
-                className={`px-2 py-0.5 rounded-none border transition-none active:translate-y-0.5 shrink-0 flex items-center gap-1 ${
-                  selectedPreset === "custom"
-                    ? "bg-[#142033] border-[#449bed] text-white"
-                    : "bg-black/60 border-zinc-800 text-zinc-400 hover:text-zinc-200"
-                }`}
-                style={selectedPreset === "custom" ? { borderColor: accentColor, color: accentColor } : {}}
-              >
-                <span>[ACTIVE: {steps.length}]</span>
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => handleSelectPreset("custom")}
+              className={`px-2 py-0.5 rounded-none border transition-none active:translate-y-0.5 shrink-0 flex items-center gap-1 ${
+                selectedPreset === "custom"
+                  ? "bg-[#142033] border-[#449bed] text-white font-bold"
+                  : "bg-black/60 border-zinc-800 text-zinc-400 hover:text-zinc-200"
+              }`}
+              style={selectedPreset === "custom" ? { borderColor: accentColor, color: accentColor } : {}}
+            >
+              <span>{steps && steps.length > 0 ? `[APP: ${steps.length}]` : "[APP]"}</span>
+            </button>
             <button
               type="button"
               onClick={() => handleSelectPreset("bot_skirmish")}
@@ -871,7 +946,7 @@ export function TacticalOverlay({
                   UPCOMING AT {nextStep.timestamp}:
                 </div>
                 <div className="text-xs font-pixel-heading text-white truncate mt-0.5">
-                  {nextStep.raw.replace(/^\[\d+:\d+\]\s*/, "")}
+                  {(nextStep.raw || nextStep.itemName || "").replace(/^\[\d+:\d+\]\s*/, "")}
                 </div>
               </div>
 
@@ -963,7 +1038,7 @@ export function TacticalOverlay({
                           })()}
                         </div>
                         <div className={`font-pixel-body text-xs line-clamp-1 ${isDone ? "line-through text-zinc-500" : "text-zinc-200"}`}>
-                          {step.raw.replace(/^\[\d+:\d+\]\s*/, "")}
+                          {(step.raw || step.itemName || "").replace(/^\[\d+:\d+\]\s*/, "")}
                         </div>
                       </div>
                     </div>
@@ -1074,7 +1149,7 @@ export function TacticalOverlay({
                           </span>
                         )}
                         <span className={`font-pixel-body text-[11px] line-clamp-1 ${isDone ? "line-through text-zinc-500" : "text-zinc-200"}`}>
-                          {step.raw.replace(/^\[\d+:\d+\]\s*/, "")}
+                          {(step.raw || step.itemName || "").replace(/^\[\d+:\d+\]\s*/, "")}
                         </span>
                       </div>
                     </div>
@@ -1084,8 +1159,6 @@ export function TacticalOverlay({
             </div>
           </div>
         </div>
-      )}
-        </>
       )}
 
       {/* --- BOTTOM CONTROLS & OPACITY ADJUSTER --- */}

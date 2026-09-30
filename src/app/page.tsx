@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Image from "next/image";
 import { useObject } from "@ai-sdk/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,6 +9,7 @@ import {
   Layers,
   Sparkles,
   Check,
+  Copy,
   AlertTriangle,
   Activity,
   Crosshair,
@@ -29,7 +30,11 @@ import {
   Power,
   ChevronDown,
   Search,
-  Filter,
+  CheckSquare,
+  Square,
+  MapPin,
+  Keyboard,
+  Lightbulb,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -64,67 +69,67 @@ const EnergyBoltIcon = ({ className }: { className?: string; style?: React.CSSPr
 const STRATEGY_PRESETS = [
   {
     id: "early-tank-rush",
-    title: "Early Tank Raider Rush",
+    title: "T1 Raider Flank & Mex Deny",
     tag: "T1 // AGGRESSION",
-    timingWindow: "02:30 - 03:45",
-    description: "Vehicle Plant rush. Flank 4-6 Flash/Blitz into enemy metal extractors.",
+    timingWindow: "02:15 - 03:30",
+    description: "Vehicle Plant rush. Line-drag 4-6 Flash/Blitz into enemy rear (+100% flank dmg) to eliminate perimeter mexes.",
     icon: Crosshair,
   },
   {
     id: "bot-swarm-choke",
     title: "Bot Skirmish & LLT Creep",
-    tag: "T1 // SKIRMISH",
-    timingWindow: "03:15 - 05:00",
-    description: "Rocko/Storm rocket bot poke outranging LLTs, locking down choke points.",
+    tag: "T1 // CHOKE POKE",
+    timingWindow: "03:00 - 04:45",
+    description: "Rocko/Storm rocket bot poke outranging LLTs behind radar blip spotting. Secure chokepoints with Dragon's Teeth.",
     icon: Layers,
   },
   {
     id: "solar-reclaim-eco",
-    title: "Anti-Chain Solars & Reclaim Rush",
+    title: "Anti-Chain Solar to T2 Slingshot",
     tag: "T1-T2 // RECLAIM META",
-    timingWindow: "04:00 - 06:30",
-    description: "Spaced solars avoid chain explosions; 100% metal reclaim fuels instant T2 transition.",
+    timingWindow: "03:45 - 06:00",
+    description: "Spaced solars hedge against wind lulls; 100% metal reclaim of early power finances instant T2 transition.",
     icon: RefreshCw,
   },
   {
     id: "flank-rez-micro",
     title: "Flank Assault & Rez-Bot Scavenge",
-    tag: "T1 // FLANK & REZ",
-    timingWindow: "03:00 - 05:30",
-    description: "Pin frontline while flanking rear (+100% dmg). Lazarus/Necro resurrect battlefield wrecks.",
+    tag: "T1 // THE THREE R'S",
+    timingWindow: "02:45 - 05:15",
+    description: "Pin enemy front while raiders flank. Lazarus/Necro (Fight+ALT) resurrect battlefield husks at 0 metal cost.",
     icon: Cpu,
   },
   {
     id: "dedicated-eco-afus",
-    title: "Dedicated Backline Eco & AFUS",
+    title: "Dedicated Backline AFUS & Nanotowers",
     tag: "T2-T3 // ECO SLINGSHOT",
-    timingWindow: "07:30 - 11:00",
-    description: "Fast T2 lab into Advanced Fusion (+1050E/s), 70E:1M converters, dumping metal to frontline.",
+    timingWindow: "07:00 - 10:30",
+    description: "Fast T2 into spaced AFUS (+3000E/s), 70E:1M converters, 3+ nanotowers, dumping +100M/s overflow to team.",
     icon: EnergyBoltIcon,
   },
   {
     id: "air-superiority-strike",
     title: "Air Superiority & Surgical Gunships",
     tag: "T1-T2 // AIR DOMINANCE",
-    timingWindow: "03:30 - 06:00",
-    description: "Sparrow/Swift scouts into fighter screen; Brawler/Blade gunships snipe exposed constructors.",
+    timingWindow: "03:15 - 05:45",
+    description: "Fighter screen denies enemy vision and bombers; Brawler/Blade surgical strikes snipe exposed commanders.",
     icon: Compass,
   },
   {
-    id: "airdrop-heavy-armor",
-    title: "Automated Air-Drop Heavy Siege",
-    tag: "T2 // AIR-FERRY SIEGE",
-    timingWindow: "09:00 - 12:30",
-    description: "Automated Atlas/Valkyrie ferry routes drop slow heavy armor (Can, Sumo, Bulldog) over cliffs.",
-    icon: Waves,
+    id: "cloaked-demolition",
+    title: "Cloaked Skuttle & Comm Snipe",
+    tag: "T2 // STEALTH ASSASSIN",
+    timingWindow: "06:30 - 09:00",
+    description: "Infiltrate cloaked Skuttle/Roach crawling bombs past radar screens to detonate enemy commanders and AFUS grids.",
+    icon: ShieldAlert,
   },
   {
-    id: "heavy-turtle",
-    title: "Fortified Turtle into T2/T3",
-    tag: "T2 // HEAVY ARMOR",
-    timingWindow: "09:00 - 11:30",
-    description: "Defend early mexes with LLT, bank metal for Bulldog, Goliath, or T3 Behemoths.",
-    icon: ShieldAlert,
+    id: "naval-fleet-dominance",
+    title: "Naval Superiority & Flagship Siege",
+    tag: "T1-T2 // NAVAL THEATER",
+    timingWindow: "08:00 - 12:00",
+    description: "Frigate and sub screening, hovercraft raider raids, teching into Epoch forward battery or Black Hydra broadside.",
+    icon: Waves,
   },
 ];
 
@@ -418,6 +423,9 @@ export default function BeyondAllReasonConsole() {
       .map((step, idx) => parseBuildStep(step, idx, faction));
   }, [object, faction]);
 
+  // Checked step tracking for interactive timeline
+  const [checkedStepIds, setCheckedStepIds] = useState<Record<string, boolean>>({});
+
   const isArmada = faction === "Armada";
 
   // Faction Accent Color Tokens (16-Bit Armada Cerulean #449bed vs Cortex Flame #ff2244)
@@ -425,7 +433,25 @@ export default function BeyondAllReasonConsole() {
 
   // Tactical Overlay state & cross-tab sync
   const { broadcastState } = useOverlaySync(true);
-  const [isOverlayOpen, setIsOverlayOpen] = useState<boolean>(false);
+  const [isOverlayOpen, setIsOverlayOpen] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("bar_tactical_overlay_open");
+      if (saved !== null) return saved === "true";
+    }
+    return false;
+  });
+
+  const toggleOverlay = useCallback((open?: boolean) => {
+    setIsOverlayOpen((prev) => {
+      const next = typeof open === "boolean" ? open : !prev;
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("bar_tactical_overlay_open", String(next));
+        } catch {}
+      }
+      return next;
+    });
+  }, []);
 
   // Sync state to overlay whenever key dependencies change
   useEffect(() => {
@@ -435,8 +461,9 @@ export default function BeyondAllReasonConsole() {
       steps: parsedSteps,
       liveState,
       strategyTitle: currentStrategy?.title,
+      isOpen: isOverlayOpen,
     });
-  }, [faction, selectedMap, parsedSteps, liveState, currentStrategy, broadcastState]);
+  }, [faction, selectedMap, parsedSteps, liveState, currentStrategy, isOverlayOpen, broadcastState]);
 
   // Global hotkey: Shift + O or ~ to toggle overlay
   useEffect(() => {
@@ -450,13 +477,13 @@ export default function BeyondAllReasonConsole() {
 
       if ((e.shiftKey && e.key.toLowerCase() === "o") || e.key === "`" || e.key === "~") {
         e.preventDefault();
-        setIsOverlayOpen((prev) => !prev);
+        toggleOverlay();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [toggleOverlay]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-[#0c0c14] text-zinc-100 font-pixel-body select-none relative">
@@ -649,7 +676,7 @@ export default function BeyondAllReasonConsole() {
           {/* Discord-Style Tactical Overlay Toggle Button */}
           <button
             type="button"
-            onClick={() => setIsOverlayOpen((prev) => !prev)}
+            onClick={() => toggleOverlay()}
             className={`pixel-btn text-[9px] py-1.5 px-2.5 gap-1.5 ${
               isOverlayOpen
                 ? isArmada
@@ -1099,7 +1126,7 @@ export default function BeyondAllReasonConsole() {
 
                 {/* Vertical Gantt-Style Timeline */}
                 {parsedSteps.length > 0 && (
-                  <div className="relative pl-6 space-y-2.5">
+                  <div className="relative pl-6 space-y-3">
                     {/* Vertical Guideline / Timeline Rail */}
                     <div className="absolute left-[47px] top-4 bottom-4 w-[2px] bg-black shadow-[1px_0_0_0_#222536] pointer-events-none" />
 
@@ -1119,30 +1146,60 @@ export default function BeyondAllReasonConsole() {
                         lowerName.includes("tower") ||
                         lowerName.includes("llt");
 
+                      const isChecked = Boolean(checkedStepIds[step.id]);
+
+                      const toggleStepCheck = () => {
+                        setCheckedStepIds((prev) => ({
+                          ...prev,
+                          [step.id]: !prev[step.id],
+                        }));
+                      };
+
                       return (
                         <motion.div
                           key={step.id || idx}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.18, delay: idx * 0.02 }}
-                          className="relative flex items-center gap-3.5 p-3 pixel-box hover:bg-[#161822] transition-none group min-h-[64px]"
+                          className={`relative flex items-start gap-3.5 p-3 pixel-box transition-all group ${
+                            isChecked
+                              ? "bg-[#0c1017]/80 opacity-75"
+                              : "hover:bg-[#161822]"
+                          }`}
                         >
-                          {/* Monospace Timestamp Pill pinned to the guideline */}
-                          <div className="relative shrink-0 flex items-center gap-2 z-10 w-[62px] justify-between">
-                            <span className="w-[48px] py-1 pixel-box-inset font-pixel-heading text-[9px] text-zinc-300 text-center tracking-tighter">
+                          {/* Left: Monospace Timestamp & Node Marker */}
+                          <div className="relative shrink-0 flex items-center gap-2 z-10 w-[62px] justify-between mt-1">
+                            <span className="w-[48px] py-1 pixel-box-inset font-pixel-heading text-[9px] text-center tracking-tighter text-zinc-300">
                               {step.timestamp}
                             </span>
                             {/* Guideline Node Marker (Chunky Square Pixel) */}
                             <span
                               className="size-2.5 border-2 border-black shrink-0"
                               style={{
-                                backgroundColor: idx === 0 ? accentColor : "#52525b",
+                                backgroundColor: isChecked
+                                  ? "#10b981"
+                                  : idx === 0
+                                  ? accentColor
+                                  : "#52525b",
                               }}
                             />
                           </div>
 
+                          {/* Interactive Checkbox Button */}
+                          <button
+                            type="button"
+                            onClick={toggleStepCheck}
+                            className="mt-1 text-zinc-400 hover:text-white cursor-pointer shrink-0"
+                            title={isChecked ? "Mark step uncompleted" : "Mark step completed"}
+                          >
+                            {isChecked ? (
+                              <CheckSquare className="size-4 text-emerald-400" />
+                            ) : (
+                              <Square className="size-4 text-zinc-600 hover:text-zinc-400" />
+                            )}
+                          </button>
+
                           {/* Large Prominent RTS Unit/Structure Portrait Frame */}
-                          {/* 16-Bit Hardpoint Unit Portrait with Dossier Click */}
                           <div
                             onClick={() => {
                               const found = getScrapedUnit(step.itemName, faction);
@@ -1153,13 +1210,8 @@ export default function BeyondAllReasonConsole() {
                               isArmada
                                 ? "border-[#449bed]/40 shadow-[2px_2px_0px_#000]"
                                 : "border-[#ff2244]/40 shadow-[2px_2px_0px_#000]"
-                            } ${
-                              isStructure
-                                ? "bg-[#18120a]"
-                                : "bg-[#0f1118]"
-                            }`}
+                            } ${isStructure ? "bg-[#18120a]" : "bg-[#0f1118]"}`}
                           >
-                            {/* Tactical Military Pixel Corner Accent */}
                             <div
                               className="absolute top-0 right-0 size-2"
                               style={{ backgroundColor: accentColor }}
@@ -1172,10 +1224,10 @@ export default function BeyondAllReasonConsole() {
                             />
                           </div>
 
-                          {/* Text Stack: Vertical flex column with Entity, Title, and Strategic Description */}
-                          <div className="flex flex-col justify-center gap-1 min-w-0 flex-1">
-                            {/* Top Line: Entity badge, count, and bold unit/building name */}
-                            <div className="flex items-center gap-2 flex-wrap">
+                          {/* Text Stack: Vertical flex column with Entity, Title, Tags, and Strategic Description */}
+                          <div className="flex flex-col justify-center gap-1.5 min-w-0 flex-1">
+                            {/* Top Line: Entity badge, count, and bold unit/building name + meta pills */}
+                            <div className="flex items-center gap-1.5 flex-wrap">
                               <span
                                 className={`px-1.5 py-0.5 text-[8px] font-pixel-heading border ${
                                   step.entityBadge === "[CDR]"
@@ -1197,52 +1249,108 @@ export default function BeyondAllReasonConsole() {
                                   if (found) setDossierUnit(found);
                                 }}
                                 title={`Inspect ${step.itemName} tactical dossier`}
-                                className="font-pixel-heading text-xs text-white hover:underline text-left cursor-pointer flex items-center gap-1.5"
+                                className={`font-pixel-heading text-xs hover:underline text-left cursor-pointer flex items-center gap-1.5 ${
+                                  isChecked ? "line-through text-zinc-400" : "text-white"
+                                }`}
                               >
-                                <span>{step.count} {step.itemName}</span>
+                                <span>
+                                  {step.count} {step.itemName}
+                                </span>
                               </button>
+
+                              {/* Unit Tier & Role Pill */}
+                              {step.unitRole && (
+                                <span className="text-[8px] font-pixel-heading px-1.5 py-0.5 bg-black/60 text-zinc-400 border border-zinc-800">
+                                  {step.tier || "T1"} // {step.unitRole}
+                                </span>
+                              )}
+
+                              {/* Tactical Placement Pill */}
+                              {step.placementTag && (
+                                <span className="text-[7.5px] font-pixel-heading px-1.5 py-0.5 bg-cyan-950/40 text-cyan-300 border border-cyan-800/80 flex items-center gap-1">
+                                  <MapPin className="size-2 text-cyan-400" />
+                                  <span>{step.placementTag}</span>
+                                </span>
+                              )}
+
+                              {/* Pro Hotkey Badge */}
+                              {step.hotkey && (
+                                <span className="text-[7.5px] font-pixel-heading px-1.5 py-0.5 bg-purple-950/40 text-purple-300 border border-purple-800/80 flex items-center gap-1">
+                                  <Keyboard className="size-2 text-purple-400" />
+                                  <span>{step.hotkey}</span>
+                                </span>
+                              )}
+
+                              {/* Build Duration */}
+                              {step.estimatedBuildDuration && (
+                                <span className="text-[7.5px] font-mono text-zinc-400">
+                                  ⏱ {step.estimatedBuildDuration}
+                                </span>
+                              )}
                             </div>
 
-                            {/* Bottom Line: Subdued Strategic Description */}
+                            {/* Line 2: Strategic Description */}
                             {step.explanation && (
                               <p className="text-sm text-zinc-300 font-pixel-body leading-tight line-clamp-2">
                                 {step.explanation}
                               </p>
                             )}
+
+                            {/* Line 3: Pro Micro Advice Callout */}
+                            {step.proTip && (
+                              <div className="mt-0.5 flex items-start gap-1.5 px-2 py-1 bg-[#0a0d16] border border-zinc-800/80 text-[11px] text-zinc-300">
+                                <Lightbulb className="size-3 text-amber-400 shrink-0 mt-0.5" />
+                                <span className="leading-snug">
+                                  <strong className="text-amber-300 font-pixel-heading text-[8px] uppercase tracking-wider mr-1">
+                                    PRO MICRO:
+                                  </strong>
+                                  {step.proTip}
+                                </span>
+                              </div>
+                            )}
                           </div>
 
-                          {/* Resource Delta Badges pushed to the far right */}
-                          <div className="ml-auto shrink-0 flex items-center gap-2 font-pixel-heading text-[8px]">
-                            {step.energyDelta && (
-                              <span
-                                className={`px-2 py-1 pixel-box-inset flex items-center gap-1 font-bold ${
-                                  step.energyDelta.startsWith("+")
-                                    ? "text-[#fbbf24] border-[#fbbf24]/50"
-                                    : "text-zinc-400"
-                                }`}
-                              >
-                                <img
-                                  src="/energy.png"
-                                  alt="Energy"
-                                  className="size-3.5 object-contain shrink-0 inline-block"
-                                />
-                                {step.energyDelta}
-                              </span>
-                            )}
-                            {step.metalDelta && (
-                              <span
-                                className={`px-2 py-1 pixel-box-inset flex items-center gap-1 font-bold ${
-                                  step.metalDelta.startsWith("+")
-                                    ? "text-[#94a3b8] border-[#94a3b8]/50"
-                                    : "text-zinc-400"
-                                }`}
-                              >
-                                <img
-                                  src="/metal.png"
-                                  alt="Metal"
-                                  className="size-3 object-contain pixelated shrink-0 inline-block"
-                                />
-                                {step.metalDelta}
+                          {/* Far Right: Deltas & Active Status */}
+                          <div className="ml-auto shrink-0 flex flex-col items-end gap-1.5 font-pixel-heading text-[8px]">
+                            <div className="flex items-center gap-1.5">
+                              {step.energyDelta && (
+                                <span
+                                  className={`px-2 py-1 pixel-box-inset flex items-center gap-1 font-bold ${
+                                    step.energyDelta.startsWith("+")
+                                      ? "text-[#fbbf24] border-[#fbbf24]/50"
+                                      : "text-zinc-400"
+                                  }`}
+                                >
+                                  <img
+                                    src="/energy.png"
+                                    alt="Energy"
+                                    className="size-3.5 object-contain shrink-0 inline-block"
+                                  />
+                                  {step.energyDelta}
+                                </span>
+                              )}
+                              {step.metalDelta && (
+                                <span
+                                  className={`px-2 py-1 pixel-box-inset flex items-center gap-1 font-bold ${
+                                    step.metalDelta.startsWith("+")
+                                      ? "text-[#94a3b8] border-[#94a3b8]/50"
+                                      : "text-zinc-400"
+                                  }`}
+                                >
+                                  <img
+                                    src="/metal.png"
+                                    alt="Metal"
+                                    className="size-3 object-contain pixelated shrink-0 inline-block"
+                                  />
+                                  {step.metalDelta}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Active Timing Status Badge */}
+                            {isChecked && (
+                              <span className="text-[8px] text-emerald-400 font-pixel-heading px-1.5 py-0.5 bg-emerald-950/40 border border-emerald-800">
+                                [DONE ✓]
                               </span>
                             )}
                           </div>
@@ -2069,7 +2177,7 @@ export default function BeyondAllReasonConsole() {
         liveState={liveState}
         strategyTitle={currentStrategy?.title}
         isOpen={isOverlayOpen}
-        onClose={() => setIsOverlayOpen(false)}
+        onClose={() => toggleOverlay(false)}
         accentColor={accentColor}
       />
 

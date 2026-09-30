@@ -28,5 +28,117 @@
     "title": "Crucial Commander Control & Building Tips",
     "url": "https://www.youtube.com/watch?v=_KSbQkz7qDM",
     "transcript": "Beyond All Reason is a fun and free realtime strategy game with lots of powerful mechanics and hotkeys. In this guide, I'll explain things I wish I knew about the commander, selecting and using units, building tips, and more. Here's what you need to know to unlock the commander's potential while keeping it safe from harm. Press tab to select your commander. It has much better build power than your tier 1 constructor, so have it help buildings or units in the early game. It also has its own radar range and attacks both land and air, making it helpful in dealing with small armies. Should you be in danger, you can toggle cloak by pressing K. Standing still like this costs 100 energy per second, but moving will drain a,000 per second. Be aware that cloaked units still appear on the radar. Attacking or getting too close to the enemy, as well as the intrusion countermeasure system buildings will reveal you. The commander also has the D gun. Press D and get a short range attack which costs 500 energy per shot. It can kill anything in one hit. In a pinch, you might be able to cloak and position the commander in range of a threatening T3 unit to dgun it down. Finally, losing all commanders on a team loses the game. However, if you're on a team, you might consider initiating self-destruct sequence control plus B, which creates a massive explosion, but also leaves behind wreckage. It's the only unit that leaves wreckage when self-destructing. There's some strategy to doing this on a team to feed a ton of metal to tech [music] up fast. Here's some helpful tips and reminders when building. Presstrl+ tab to cycle through your idle workers. Construction units can one-click things like metal extractors and geothermal power plants. Just right click on the resource spot and upgrade these buildings the same way. If you want to use wind energy, hover over the wind icon at the top of the screen to see if it's a viable option on this map. You can rotate building placements with the square bracket keys. Build in a line by holding shift or press shift plus alt to make a grid. While doing this, you can press Z or X to increase or reduce the space between buildings. Cue up lots of actions by holding shift when making commands. If you want to insert an action in the middle of a long string, hold spacebar to add it to the front of the queue. And you can press N to skip an action in the queue. Finally, if you're building groups of units, you can send a new unit to the front of the queue by pressing Alt + leftclick. If you want to have a factory building units over and over, press T to turn repeat on. Pressing Alt plus leftclick in this state will add a unit to be built next and then remove it from the queue. After that, here's some helpful tips to make selecting and using units in bar easier. Double click a unit or select units and press Q to select all the units of that type in view. If you want to do this across the map without zooming out, select the units you want and press Ctrl W. You can also select units and press Alt plus a number to automatically auto assign all current and future produced units of that type to that control group. With an army selected, click and drag in a line to place units. Pressing Alt plus rightclick slightly spreads the units out, helping you avoid splash damage. If you want to walk your units in formation and move only as fast as the slowest unit in the selection, try controll plus rightclick. Another important hotkey is using F when you're clicking your units around. This will make them stop and attack when in range. Great for units that you don't want to be too close to the enemy. If there's a group of targets, but you want to focus down one, press S and click on something to make it a preferred target when in weapons range, and press G to stop all actions. Units do increased damage when hitting enemies from behind. Here's a graphic to help with this. If the last hit was in the front, attacking further and further all the way to the opposite side will increase damage. And this [music] works in 3D space, meaning air units attacking alongside ground will benefit from this buff as [music] well. Lots of actions like reclaim, repair, resurrect, attack can all be set to an area by clicking and dragging. And finally, you can draw on the map for strategic planning using [music] the TY. Press tildy plus left mouse to draw, tildy plus right mouse to >> [music] >> erase, and tildy plus middle click to ping. Now for some general tips I wish I knew when I started playing Beyond All Reason. When you hear an alert, press F5 to go to it. Relying on one unit type can leave you vulnerable. It's helpful to have fastmoving units to run ahead and provide sight for long range ones. And the fast units can surround enemies, helping with extra damage from multiple angles buff. Notice the symbol in the top left of the unit build icon. The pink triangle means it attacks air. Red means it attacks land and blue means [music] it can attack underwater. Bots can traverse terrain more easily than vehicles with the exception of amphibious vehicles, [music] which can also get around tough terrain. Not only can hovercrafts travel over water and land, but they can't be attacked by underwater weapons such as torpedoes. Higher unit ranks reduces reload time [music] and increases health. All lasers do 50% damage at max range and increase up to 100% damage [music] when up close. Reclaim metal or use resurrection bots when there's wreckage near you or shoot and degraded so that the enemy can't do the same. Once you started upgrading to higher tier power buildings [music] and energy converters, you can recycle older, less efficient buildings to boost your metal as you tech up. Radar towers rely on line of sight. Try building them on high ground for max visibility. Speaking of high ground, both range and accuracy are boosted for many attacks when shooting from up here. When using bombers, try pressing A plus right click and drag to set a larger area for them to drop their payload. This prevents them from dropping all their devastating attack on one spot. Self-destruct does damage in an area and leaves behind no metal for reclamation. But don't forget that buildings can self-destruct, too. Picture this, a lone metal extractor being killed by a measly scout. Select the extractor and press controlB to take the scout out with it. And note that EMPs will pause a self-destruct cooldown, giving you time to make space and save your army. Finally, targeting facilities improve aim when firing beyond vision, but the benefit gets smaller after each one. For this reason, an entire team only needs a max of three buildings. Like and subscribe if you like my easy guides, and check out some of my quick reviews that don't waste your time."
+  },
+  {
+    "video_id": "rcBp8tFvwnM",
+    "title": "Beyond All Reason 101: Beginner's Guide (2026)",
+    "author": "Infinite Respawn",
+    "url": "https://www.youtube.com/watch?v=rcBp8tFvwnM",
+    "transcript": "Welcome to Beyond All Reason 101 for the 2026 meta landscape. In BAR, every second counts from the moment your Commander spawns. First rule of competitive play: never let metal or energy overflow to waste, and never starve your construction queue into an energy brownout. Your Commander's initial build order dictates the next ten minutes of the match. Queue two metal extractors, then immediately construct power—either a solar collector or wind generators if the map average wind is high. Crucially, do not drop your first factory (Bot Lab or Vehicle Plant) until your energy generation hits at least +60. Without +60 energy, your factory build speed is halved, delaying your combat screen. Use right-click drag to deploy units in line formation to maximize firing arcs, and maintain a constant forward radar line to detect raiders early."
+  },
+  {
+    "video_id": "8i2jWyHXHw4",
+    "title": "The Art of BAR: Wind vs Advanced Solar",
+    "author": "CONQUER",
+    "url": "https://www.youtube.com/watch?v=8i2jWyHXHw4",
+    "transcript": "In this guide, we analyze the mathematical reality of Wind Turbines versus Advanced Solar using the BAR Wind Simulator. Wind generators have a theoretical high return on investment because they only cost 40 metal. However, wind velocity is subject to stochastic troughs. On maps with low average wind (under 8 m/s) or high volatility, wind drops to 1-2 m/s can cause catastrophic grid collapse, shutting down radar and Point Defense towers. Advanced Solar provides a rock-solid, guaranteed +80 to +90 energy generation regardless of weather. Furthermore, standard solar collectors act as 100% metal storage: when you transition to T2 or need an emergency cash injection, you can reclaim your early solars with your Commander to recover their full 145-155 metal value to instantly fund your Advanced Factory."
+  },
+  {
+    "video_id": "Z1a5trrJrUk",
+    "title": "The Art of BAR: Base Design & Simplifying T1 Scaling",
+    "author": "CONQUER",
+    "url": "https://www.youtube.com/watch?v=Z1a5trrJrUk",
+    "transcript": "Base design in Beyond All Reason is governed by one cardinal rule: SPREAD YOUR WINDS, SPREAD YOUR SOLARS, SPREAD YOUR FUSIONS, SPREAD YOUR BUILD POWER. Every power building in BAR explodes violently upon destruction, causing devastating chain reactions. A single stray raider penetrating your perimeter can detonate your entire base if your energy generators are touching. Always leave at least two grid spaces between power structures. Secondly, do not waste metal building multiple T1 factories. One factory surrounded by three or four Construction Turrets (nanotowers) gives you vastly more modular, scalable build power for a fraction of the cost. Nanotowers can assist construction, repair returning units, and reclaim wreckage."
+  },
+  {
+    "video_id": "9XZOpD9XNBY",
+    "title": "The Art of BAR: Defenses & Dragon's Teeth",
+    "author": "CONQUER",
+    "url": "https://www.youtube.com/watch?v=9XZOpD9XNBY",
+    "transcript": "Static defenses in BAR are force multipliers, not win conditions. Never fall into the 'porcupine trap' of dumping all your metal into static turrets while neglecting mobile army composition. A Light Laser Tower (LLT) placed at an elevation choke point can halt early raiders, but only if supported by Dragon's Teeth (DT) funnels. Dragon's teeth force enemy bots and vehicles into tight kill zones where your LLT or plasma artillery can inflict maximum area-of-effect damage. Always ensure every defense cluster is covered by radar coverage and guarded by a resurrection bot to scavenge and rebuild fallen turrets instantly."
+  },
+  {
+    "video_id": "H_00sBprHzU",
+    "title": "Starting Economy & Build Order in a Grand Scale RTS",
+    "author": "perafilozof",
+    "url": "https://www.youtube.com/watch?v=H_00sBprHzU",
+    "transcript": "Mastering the first three minutes of BAR: 1. Pre-queue Commander orders before game launch: Mex, Mex, Solar, Wind, Wind, Factory. 2. As soon as the factory completes, queue your first Constructor, followed by 3-5 scout raiders (Pawns or Grunts) to claim territory and secure forward metal extractors. 3. Send your factory constructor forward to establish perimeter radar and drop defensive LLTs at key chokepoints. 4. Meanwhile, your Commander should assist factory fabrication or eat nearby stone features and tree clusters for 200-300 bonus metal."
+  },
+  {
+    "video_id": "itGiKl3pJ9c",
+    "title": "Beyond All Reason Beginner Frontline Guide",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=itGiKl3pJ9c",
+    "transcript": "Frontline play is about territory control, trading efficiency, and husk recovery. If you are playing the frontline in an 8v8 or 1v1 match, your job is to keep your opponent honest and deny their expansion. Never send units in a single file conga line—hold right-click and drag a wide firing line. Use 'Y' targeting to command your artillery and skirmishers to focus-fire high-priority targets like enemy constructors and commanders. Crucially, always have at least two Resurrection Bots (Lazarus or Necro) operating directly behind your frontline. A resurrection bot brings back dead enemy tanks and heavy bots at 100% metal discount and 50% energy cost. If you win a skirmish and resurrect the wreckage, you effectively double your army value while stealing the enemy's investment."
+  },
+  {
+    "video_id": "YZyZJ7D9J6U",
+    "title": "Comprehensive Guide to Air Superiority",
+    "author": "SuperKitowiec",
+    "url": "https://www.youtube.com/watch?v=YZyZJ7D9J6U",
+    "transcript": "The dedicated Air player in 8v8 has one primary mandate: establish total Air Superiority to protect the team from devastating bomber runs and surgical gunship strikes. In T1, produce an immediate scout plane (Sparrow/Finch) to sweep the entire enemy base and reveal their opening tech choices. Next, build a continuous screen of 10-15 fighters on patrol across the central front. Do not invest in early bombers until you have air control; bombers without fighter escorts are wasted metal. Once T2 air is unlocked, transition into high-speed interceptors, automated transport ferry lines to lift slow heavy tanks over mountains, and stealth gunships (Brawlers/Blades) to assassinate exposed enemy commanders and energy clusters."
+  },
+  {
+    "video_id": "qYiMVPH1_G8",
+    "title": "Master the Eco Role in BAR - Tips, Build, and Strategies",
+    "author": "SuperKitowiec",
+    "url": "https://www.youtube.com/watch?v=qYiMVPH1_G8",
+    "transcript": "The dedicated Backline Eco role in 8v8 games is the team's engine. If the eco player fails, the frontline collapses at minute 12. The optimal eco build: 1. Clean Commander opening: 2 mex, 2 solar, Bot Lab. 2. Produce 1 constructor, then queue T2 lab as fast as possible. 3. Reclaim early solars to recover metal. 4. Once T2 constructor spawns, rush the Advanced Fusion Reactor (AFUS). 5. Surround the AFUS with Advanced Energy Converters (converting at 70E -> 1M). 6. Build a bank of Nanotowers to achieve 2,000+ build power. 7. Crucial teamplay rule: do not hoard metal! Set your overflow slider or trade window to dump +50 to +100 metal per second directly to your frontline and air players so they can flood the map with T2 armor."
+  },
+  {
+    "video_id": "M4Y1ZT44_Ag",
+    "title": "Stop Wasting Time - Base Automation in Beyond All Reason",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=M4Y1ZT44_Ag",
+    "transcript": "Automation separates good players from grandmasters. In BAR, you can automate virtually your entire production loop. Enable 'Repeat' on your primary factory and establish a waypoint rally line directly to the frontline. Use 'Area Mex' by holding the metal extractor hotkey and dragging a circle over a sector: your constructor will automatically path to every metal spot in the area. Use 'Area Reclaim' and 'Area Repair' to keep battlefield zones clean. Set dedicated constructors to 'Guard' (assist) key factories or patrol energy farms to automatically extinguish fire and repair damage."
+  },
+  {
+    "video_id": "ZaXGlBqIx6Y",
+    "title": "Beyond All Reason Beginner Guide - Unit Control & Flanking",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=ZaXGlBqIx6Y",
+    "transcript": "Unit micro in BAR features a realistic physics and damage model. Most importantly: FLANKING DAMAGE. Units in BAR take up to +100% additional damage (double damage!) when struck from the rear, and +50% from the flanks. Always pin the enemy's frontline with long-range rocket bots or heavy tanks, while maneuvering fast raiders (Flash, Blitz, Pawn, Grunt) around their flanks into their rear armor. Use the 'Fight' command instead of standard Move commands so units engage at maximum weapon range and auto-kite retreating foes."
+  },
+  {
+    "video_id": "QJu0ZgNlFGA",
+    "title": "Advanced Custom Keybinds - Beyond All Reason Guide",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=QJu0ZgNlFGA",
+    "transcript": "Optimize your commands with custom keybindings. Ensure your camera hotkeys (F1-F4) are bound to your base, frontline chokepoint, and enemy base. Use 'Y' for high-priority target designation, 'E' for manual reclaim, and 'Ctrl+Z' to select all units of the current type on screen. Set up quick build queues using spacebar drag commands."
+  },
+  {
+    "video_id": "Sq8gkhLVQeQ",
+    "title": "10 Features You Want To Use - Beyond All Reason Guide",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=Sq8gkhLVQeQ",
+    "transcript": "Key features every competitive player must leverage: 1. Always Show Prices setting. 2. Line of sight and weapon range visualization circles. 3. Automated air transport ferry routes (ferry points). 4. Area reclaim and resurrect commands. 5. Holding ALT during Fight/Patrol with resurrection bots to prioritize resurrecting wrecks and repairing allies while reclaiming useless debris. 6. Energy stall alert notifications. 7. Eco share thresholds."
+  },
+  {
+    "video_id": "dYtQPyWWAjg",
+    "title": "Make Solars Not Winds - Beyond All Reason Economy Guide",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=dYtQPyWWAjg",
+    "transcript": "Why top players often prefer Solars over Winds: on any map with unpredictable wind or average wind below 9 m/s, wind turbines introduce unacceptable risk. A sudden wind lull stalls your construction and leaves your frontline undefended. Solars provide a fixed +20 energy output, and their metal cost is completely recyclable. When you hit minute 4, you can reclaim your early solars with 100% metal refund to finance your T2 transition with zero wasted investment."
+  },
+  {
+    "video_id": "Y4EPMGgek8M",
+    "title": "Unlucky Skuttles - Stealth Demolition & Commander Snipes",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=Y4EPMGgek8M",
+    "transcript": "Tactical cloaked demolition units: the Skuttle (Armada) and Roach (Cortex). These small stealth crawling bombs can bypass enemy radar when cloaked and detonate for massive concentrated damage. A single cloaked Skuttle or pair of Roaches detonated under an enemy Commander or Advanced Fusion Reactor results in an instantaneous catastrophic kill, swinging the match irreversibly. Counter with radar jammers and decloak scout units."
+  },
+  {
+    "video_id": "OFVI5NK5s04",
+    "title": "Never Surrender - Macro Comeback & Defensive Anchors",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=OFVI5NK5s04",
+    "transcript": "How to execute a macro comeback when your frontline is overrun: Do not panic-build scattered units that die one by one. Fall back immediately to a secondary chokepoint behind Dragon's Teeth. Consolidate your remaining forces, prioritize energy stability, and use resurrection bots to secretly scavenge metal from the battlefield edge. Pivot into high-impact T3 game-enders (Titans, Juggernauts, or Long-Range Plasma Cannons like Ragnarok/Calamity) to break enemy sieges."
+  },
+  {
+    "video_id": "287fBCdndIA",
+    "title": "A Small Gamble - Timing Attacks & Scouting Gambits",
+    "author": "SuperKitowiec2",
+    "url": "https://www.youtube.com/watch?v=287fBCdndIA",
+    "transcript": "Competitive timing attacks: reading the window when an opponent transitions to Tier 2. When a player invests 2,000+ metal into a T2 factory and Advanced Constructor, their frontline army production halts for 90-120 seconds. If your radar detects this tech pivot, immediately launch a full T1 raider and skirmish surge across all lanes. You can overrun their light defense and destroy their unassisted T2 lab before their first T2 tank rolls out."
   }
 ]

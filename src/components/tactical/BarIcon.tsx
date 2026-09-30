@@ -652,7 +652,15 @@ export const BarIcon: React.FC<BarIconProps> = ({
   }
 
   // 15. Reclaim (recycling / resource magnet extraction)
-  if (cleanName.includes("reclaim") || cleanName.includes("boulder") || cleanName.includes("tree")) {
+  if (
+    cleanName.includes("reclaim") ||
+    cleanName.includes("boulder") ||
+    cleanName.includes("salvage") ||
+    cleanName.includes("scrap") ||
+    cleanName.includes("wreckage") ||
+    (cleanName.includes("rock") && !cleanName.includes("rocko")) ||
+    cleanName.includes("tree")
+  ) {
     return (
       <svg
         width={size}

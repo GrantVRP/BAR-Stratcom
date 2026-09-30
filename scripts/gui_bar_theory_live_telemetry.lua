@@ -58,7 +58,7 @@ local isGameOver = false
 
 -- Navigation & View Modes: "SPLIT" (default), "INTEL", "QUEUE"
 local activeTab = "SPLIT"
-local activePreset = 1 -- 1: BOT, 2: VEH, 3: ECO, 4: APP
+local activePreset = 1 -- 1: APP, 2: BOT, 3: VEH, 4: ECO
 local scrollOffset = 0
 local radarAngle = 0
 
@@ -125,6 +125,69 @@ local UNIT_NAME_TRANSLATIONS = {
     armblade = "Blade",
     armrad = "Radar Tower",
     corrad = "Radar Tower",
+    -- T2 / Advanced Units & Structures
+    armamex = "Advanced Metal Extractor",
+    coramex = "Advanced Metal Extractor",
+    armadvsol = "Advanced Solar Collector",
+    coradvsol = "Advanced Solar Collector",
+    armfus = "Fusion Reactor",
+    corfus = "Fusion Reactor",
+    armafus = "Advanced Fusion Reactor",
+    corafus = "Advanced Fusion Reactor",
+    armalab = "Advanced Bot Lab",
+    coralab = "Advanced Bot Lab",
+    armavp = "Advanced Vehicle Plant",
+    coravp = "Advanced Vehicle Plant",
+    armaap = "Advanced Aircraft Plant",
+    coraap = "Advanced Aircraft Plant",
+    armack = "Advanced Construction Bot",
+    corack = "Advanced Construction Bot",
+    armacv = "Advanced Construction Vehicle",
+    coracv = "Advanced Construction Vehicle",
+    armaca = "Advanced Construction Aircraft",
+    coraca = "Advanced Construction Aircraft",
+    armmmkr = "Advanced Energy Converter",
+    cormmkr = "Advanced Energy Converter",
+    armsnipe = "Sharpshooter",
+    corsumo = "Centurion",
+    armnanotc = "Construction Turret",
+    cornanotc = "Construction Turret",
+    armfnanotc = "Floating Construction Turret",
+    corfnanotc = "Floating Construction Turret",
+}
+
+local UNIT_ALIASES = {
+    windgenerator       = { "windturbine", "wind turbine", "turbine", "wind", "armwin", "corwin", "wind generator" },
+    windturbine         = { "windgenerator", "wind turbine", "turbine", "wind", "armwin", "corwin", "wind generator" },
+    solarcollector      = { "solar", "solar collector", "armsolar", "corsolar" },
+    advancedsolarcollector = { "adv solar", "advsolar", "advanced solar", "armadvsol", "coradvsol", "advanced solar collector" },
+    advancedsolargenerator = { "adv solar", "advsolar", "advanced solar", "armadvsol", "coradvsol", "advanced solar collector", "advanced solar generator" },
+    metalextractor      = { "mex", "metal extractor", "armmex", "cormex" },
+    advancedmetalextractor = { "moho mine", "mohomine", "moho", "amex", "armamex", "coramex", "advanced metal extractor" },
+    mohomine            = { "moho mine", "mohomine", "moho", "amex", "armamex", "coramex", "advanced metal extractor" },
+    botlab              = { "lab", "bot lab", "bot factory", "armlab", "corlab" },
+    advancedbotlab      = { "alab", "advanced bot lab", "adv bot lab", "t2 lab", "armalab", "coralab" },
+    vehicleplant        = { "plant", "vehicle plant", "factory", "tank plant", "armvp", "corvp" },
+    advancedvehicleplant = { "avp", "advanced vehicle plant", "adv vehicle plant", "t2 plant", "armavp", "coravp" },
+    aircraftplant       = { "air plant", "airplant", "aircraft plant", "armap", "corap" },
+    advancedaircraftplant = { "aap", "advanced aircraft plant", "adv aircraft plant", "t2 aircraft plant", "armaap", "coraap" },
+    lightlasertower     = { "llt", "laser tower", "light laser tower", "armllt", "corllt" },
+    constructionbot     = { "conbot", "con bot", "construction bot", "armck", "corck" },
+    advancedconstructionbot = { "ack", "adv con bot", "advanced con bot", "t2 con", "armack", "corack", "advanced construction bot" },
+    constructionvehicle = { "convehicle", "con vehicle", "construction vehicle", "beaver", "armcv", "corcv", "armbeaver" },
+    advancedconstructionvehicle = { "acv", "adv con vehicle", "t2 con vehicle", "armacv", "coracv", "advanced construction vehicle" },
+    constructionturret  = { "nanotower", "nano tower", "nano turret", "nanoturret", "nano", "build turret", "armnanotc", "cornanotc", "construction turret", "caretaker", "hive" },
+    nanotower           = { "constructionturret", "construction turret", "nano tower", "nano turret", "nanoturret", "nano", "build turret", "armnanotc", "cornanotc", "caretaker", "hive" },
+    nanoturret          = { "constructionturret", "construction turret", "nanotower", "nano tower", "nano turret", "nano", "build turret", "armnanotc", "cornanotc", "caretaker", "hive" },
+    armnanotc           = { "constructionturret", "construction turret", "nanotower", "nano tower", "nano turret", "nanoturret", "nano", "build turret", "armnanotc", "cornanotc", "caretaker", "hive" },
+    cornanotc           = { "constructionturret", "construction turret", "nanotower", "nano tower", "nano turret", "nanoturret", "nano", "build turret", "armnanotc", "cornanotc", "caretaker", "hive" },
+    energyconverter     = { "converter", "energy converter", "armmakr", "cormakr" },
+    advancedenergyconverter = { "mmkr", "moho maker", "moho metal maker", "armmmkr", "cormmkr", "advanced energy converter" },
+    fusionreactor       = { "fusion", "fusion reactor", "armfus", "corfus" },
+    advancedfusionreactor = { "afus", "advanced fusion", "armafus", "corafus", "advanced fusion reactor" },
+    energystorage       = { "estor", "energy storage", "armestor", "corestor" },
+    metalstorage        = { "mstor", "metal storage", "armmstor", "cormmstor" },
+    radartower          = { "radar", "radar tower", "armrad", "corrad" },
 }
 
 --------------------------------------------------------------------------------
@@ -277,42 +340,229 @@ local function recordUnit(tbl, def)
     local code = def.name and tostring(def.name):lower() or ""
     local human = UNIT_NAME_TRANSLATIONS[code] or def.humanName or def.name
     
-    if human and #human > 0 then
-        tbl[human] = (tbl[human] or 0) + 1
-        local normH = tostring(human):lower():gsub("[^a-z0-9]", "")
-        if #normH > 0 and normH ~= human then
-            tbl[normH] = (tbl[normH] or 0) + 1
+    local keysToInc = {}
+    local function addKey(k)
+        if not k or #k == 0 then return end
+        keysToInc[k] = true
+        local norm = (tostring(k):lower():gsub("[^a-z0-9]", ""))
+        if #norm > 0 then
+            keysToInc[norm] = true
+        end
+    end
+
+    addKey(human)
+    addKey(code)
+    
+    local normC = (code:gsub("[^a-z0-9]", ""))
+    local normH = (tostring(human):lower():gsub("[^a-z0-9]", ""))
+    
+    local aliases = UNIT_ALIASES[normC] or UNIT_ALIASES[normH]
+    if aliases then
+        for _, a in ipairs(aliases) do
+            addKey(a)
         end
     end
     
-    if code and #code > 0 then
-        tbl[code] = (tbl[code] or 0) + 1
-        local normC = code:gsub("[^a-z0-9]", "")
-        if #normC > 0 and normC ~= code then
-            tbl[normC] = (tbl[normC] or 0) + 1
-        end
+    -- Explicit cross-mapping for Wind Turbine / Generator
+    if normC == "armwin" or normC == "corwin" or normH:find("wind") or normH:find("turbine") then
+        addKey("Wind Turbine")
+        addKey("windturbine")
+        addKey("Wind Generator")
+        addKey("windgenerator")
+        addKey("armwin")
+        addKey("corwin")
+        addKey("turbine")
+    end
+
+    -- Explicit cross-mapping for Construction Turret / Nanotower
+    if normC == "armnanotc" or normC == "cornanotc" or normC == "armfnanotc" or normC == "corfnanotc" or normH:find("nanotc") or normH:find("nanotower") or (normH:find("con") and normH:find("turret")) then
+        addKey("Construction Turret")
+        addKey("constructionturret")
+        addKey("Nanotower")
+        addKey("nanotower")
+        addKey("Nano Turret")
+        addKey("nanoturret")
+        addKey("armnanotc")
+        addKey("cornanotc")
+        addKey("nano")
+    end
+    
+    for k, _ in pairs(keysToInc) do
+        tbl[k] = (tbl[k] or 0) + 1
     end
 end
 
 local function getUnitCount(unitName, codes)
     local best = 0
-    if unitName then
-        local c1 = finishedCounts[unitName] or 0
-        local c2 = currentCounts[unitName] or 0
-        best = math.max(c1, c2)
-        local norm = tostring(unitName):lower():gsub("[^a-z0-9]", "")
-        if norm and #norm > 0 then
+    local function checkTbl(key)
+        if not key then return end
+        local c1 = finishedCounts[key] or 0
+        local c2 = currentCounts[key] or 0
+        if c1 > best then best = c1 end
+        if c2 > best then best = c2 end
+        local norm = (tostring(key):lower():gsub("[^a-z0-9]", ""))
+        if #norm > 0 and norm ~= key then
             local n1 = finishedCounts[norm] or 0
             local n2 = currentCounts[norm] or 0
-            best = math.max(best, n1, n2)
+            if n1 > best then best = n1 end
+            if n2 > best then best = n2 end
         end
     end
-    if codes then
+
+    checkTbl(unitName)
+
+    local isAdvTarget = false
+    if unitName then
+        local norm = (tostring(unitName):lower():gsub("[^a-z0-9]", ""))
+        isAdvTarget = norm:find("adv") ~= nil or norm:find("moho") ~= nil or norm:find("amex") ~= nil or norm:find("t2") ~= nil or norm:find("afus") ~= nil
+
+        if norm:find("wind") or norm:find("turbine") then
+            checkTbl("windturbine")
+            checkTbl("windgenerator")
+            checkTbl("Wind Turbine")
+            checkTbl("Wind Generator")
+            checkTbl("armwin")
+            checkTbl("corwin")
+            checkTbl("turbine")
+        elseif norm:find("solar") then
+            if isAdvTarget then
+                checkTbl("advancedsolarcollector")
+                checkTbl("Advanced Solar Collector")
+                checkTbl("armadvsol")
+                checkTbl("coradvsol")
+                checkTbl("advsolar")
+            else
+                checkTbl("solarcollector")
+                checkTbl("Solar Collector")
+                checkTbl("armsolar")
+                checkTbl("corsolar")
+                checkTbl("solar")
+            end
+        elseif norm:find("mex") or norm:find("metalextract") then
+            if isAdvTarget then
+                checkTbl("advancedmetalextractor")
+                checkTbl("Advanced Metal Extractor")
+                checkTbl("armamex")
+                checkTbl("coramex")
+                checkTbl("mohomine")
+                checkTbl("Moho Mine")
+                checkTbl("amex")
+            else
+                checkTbl("metalextractor")
+                checkTbl("Metal Extractor")
+                checkTbl("armmex")
+                checkTbl("cormex")
+                checkTbl("mex")
+            end
+        elseif norm:find("botlab") or (norm:find("lab") and not norm:find("flak")) then
+            if isAdvTarget or norm:find("alab") then
+                checkTbl("advancedbotlab")
+                checkTbl("Advanced Bot Lab")
+                checkTbl("armalab")
+                checkTbl("coralab")
+                checkTbl("alab")
+            else
+                checkTbl("botlab")
+                checkTbl("Bot Lab")
+                checkTbl("armlab")
+                checkTbl("corlab")
+                checkTbl("lab")
+            end
+        elseif norm:find("vehicleplant") or norm:find("plant") then
+            if isAdvTarget or norm:find("avp") then
+                checkTbl("advancedvehicleplant")
+                checkTbl("Advanced Vehicle Plant")
+                checkTbl("armavp")
+                checkTbl("coravp")
+                checkTbl("avp")
+            else
+                checkTbl("vehicleplant")
+                checkTbl("Vehicle Plant")
+                checkTbl("armvp")
+                checkTbl("corvp")
+                checkTbl("plant")
+            end
+        elseif norm:find("con") and norm:find("bot") then
+            if isAdvTarget or norm:find("ack") then
+                checkTbl("advancedconstructionbot")
+                checkTbl("Advanced Construction Bot")
+                checkTbl("armack")
+                checkTbl("corack")
+                checkTbl("ack")
+            else
+                checkTbl("constructionbot")
+                checkTbl("Construction Bot")
+                checkTbl("armck")
+                checkTbl("corck")
+                checkTbl("conbot")
+            end
+        elseif norm:find("con") and (norm:find("veh") or norm:find("beaver")) then
+            if isAdvTarget or norm:find("acv") then
+                checkTbl("advancedconstructionvehicle")
+                checkTbl("Advanced Construction Vehicle")
+                checkTbl("armacv")
+                checkTbl("coracv")
+                checkTbl("acv")
+            else
+                checkTbl("constructionvehicle")
+                checkTbl("Construction Vehicle")
+                checkTbl("armcv")
+                checkTbl("corcv")
+                checkTbl("armbeaver")
+                checkTbl("corbeaver")
+                checkTbl("beaver")
+            end
+        elseif norm:find("fus") then
+            if isAdvTarget or norm:find("afus") then
+                checkTbl("advancedfusionreactor")
+                checkTbl("Advanced Fusion Reactor")
+                checkTbl("armafus")
+                checkTbl("corafus")
+                checkTbl("afus")
+            else
+                checkTbl("fusionreactor")
+                checkTbl("Fusion Reactor")
+                checkTbl("armfus")
+                checkTbl("corfus")
+                checkTbl("fus")
+            end
+        elseif (norm:find("turret") and (norm:find("con") or norm:find("build") or norm:find("nano"))) or norm:find("nanotc") or norm:find("nanotower") or norm:find("nanoturret") then
+            checkTbl("constructionturret")
+            checkTbl("Construction Turret")
+            checkTbl("nanotower")
+            checkTbl("Nanotower")
+            checkTbl("nanoturret")
+            checkTbl("Nano Turret")
+            checkTbl("armnanotc")
+            checkTbl("cornanotc")
+            checkTbl("nano")
+        end
+        
+        local aliases = UNIT_ALIASES[norm]
+        if aliases then
+            for _, a in ipairs(aliases) do
+                checkTbl(a)
+            end
+        end
+    end
+
+    if codes and type(codes) == "table" then
         for _, code in ipairs(codes) do
-            local lc = code:lower()
-            local c1 = finishedCounts[lc] or 0
-            local c2 = currentCounts[lc] or 0
-            best = math.max(best, c1, c2)
+            if type(code) == "string" then
+                local codeNorm = (tostring(code):lower():gsub("[^a-z0-9]", ""))
+                local isAdvCode = codeNorm:find("adv") ~= nil or codeNorm:find("moho") ~= nil or codeNorm:find("amex") ~= nil or codeNorm:find("armamex") ~= nil or codeNorm:find("coramex") ~= nil or codeNorm:find("t2") ~= nil or codeNorm:find("armalab") ~= nil or codeNorm:find("coralab") ~= nil or codeNorm:find("armavp") ~= nil or codeNorm:find("coravp") ~= nil or codeNorm:find("armack") ~= nil or codeNorm:find("corack") ~= nil or codeNorm:find("armafus") ~= nil or codeNorm:find("corafus") ~= nil
+                
+                -- Strict tier guard: never allow T1 codes to satisfy an Adv target, and never allow Adv codes to satisfy a T1 target
+                local isT1Code = codeNorm == "armmex" or codeNorm == "cormex" or codeNorm == "mex" or codeNorm == "metalextractor" or codeNorm == "armsolar" or codeNorm == "corsolar" or codeNorm == "armlab" or codeNorm == "corlab" or codeNorm == "armvp" or codeNorm == "corvp" or codeNorm == "armck" or codeNorm == "corck" or codeNorm == "armfus" or codeNorm == "corfus"
+                
+                if isAdvTarget and isT1Code then
+                    -- skip T1 code for advanced target!
+                elseif (not isAdvTarget) and isAdvCode then
+                    -- skip Adv code for T1 target!
+                else
+                    checkTbl(code)
+                end
+            end
         end
     end
     return best
@@ -341,13 +591,164 @@ local function checkAppBuildOrderSync()
         local cumN  = tonumber(stepStr:match('"cumulative"%s*:%s*(%d+)')) or cNum
         
         if uName then
+            local cleanCode = (tostring(uName):lower():gsub("%s+", ""))
+            local cleanNorm = (tostring(uName):lower():gsub("[^a-z0-9]", ""))
+            local stepCodes = { tostring(cleanCode), tostring(cleanNorm) }
+            local isAdv = cleanNorm:find("adv") ~= nil or cleanNorm:find("moho") ~= nil or cleanNorm:find("amex") ~= nil or cleanNorm:find("t2") ~= nil or cleanNorm:find("afus") ~= nil
+            
+            if cleanNorm:find("wind") or cleanNorm:find("turbine") then
+                table.insert(stepCodes, "armwin")
+                table.insert(stepCodes, "corwin")
+                table.insert(stepCodes, "windgenerator")
+                table.insert(stepCodes, "windturbine")
+                table.insert(stepCodes, "turbine")
+                table.insert(stepCodes, "Wind Turbine")
+                table.insert(stepCodes, "Wind Generator")
+            elseif cleanNorm:find("solar") then
+                if isAdv then
+                    table.insert(stepCodes, "armadvsol")
+                    table.insert(stepCodes, "coradvsol")
+                    table.insert(stepCodes, "advancedsolarcollector")
+                    table.insert(stepCodes, "advsolar")
+                    table.insert(stepCodes, "Advanced Solar Collector")
+                else
+                    table.insert(stepCodes, "armsolar")
+                    table.insert(stepCodes, "corsolar")
+                    table.insert(stepCodes, "solarcollector")
+                    table.insert(stepCodes, "solar")
+                    table.insert(stepCodes, "Solar Collector")
+                end
+            elseif cleanNorm:find("mex") or cleanNorm:find("metalextract") then
+                if isAdv then
+                    table.insert(stepCodes, "armamex")
+                    table.insert(stepCodes, "coramex")
+                    table.insert(stepCodes, "advancedmetalextractor")
+                    table.insert(stepCodes, "mohomine")
+                    table.insert(stepCodes, "amex")
+                    table.insert(stepCodes, "Advanced Metal Extractor")
+                    table.insert(stepCodes, "Moho Mine")
+                else
+                    table.insert(stepCodes, "armmex")
+                    table.insert(stepCodes, "cormex")
+                    table.insert(stepCodes, "metalextractor")
+                    table.insert(stepCodes, "mex")
+                    table.insert(stepCodes, "Metal Extractor")
+                end
+            elseif cleanNorm:find("botlab") or (cleanNorm:find("lab") and not cleanNorm:find("flak")) then
+                if isAdv or cleanNorm:find("alab") then
+                    table.insert(stepCodes, "armalab")
+                    table.insert(stepCodes, "coralab")
+                    table.insert(stepCodes, "advancedbotlab")
+                    table.insert(stepCodes, "alab")
+                    table.insert(stepCodes, "Advanced Bot Lab")
+                else
+                    table.insert(stepCodes, "armlab")
+                    table.insert(stepCodes, "corlab")
+                    table.insert(stepCodes, "botlab")
+                    table.insert(stepCodes, "lab")
+                    table.insert(stepCodes, "Bot Lab")
+                end
+            elseif cleanNorm:find("vehicleplant") or cleanNorm:find("plant") then
+                if isAdv or cleanNorm:find("avp") then
+                    table.insert(stepCodes, "armavp")
+                    table.insert(stepCodes, "coravp")
+                    table.insert(stepCodes, "advancedvehicleplant")
+                    table.insert(stepCodes, "avp")
+                    table.insert(stepCodes, "Advanced Vehicle Plant")
+                else
+                    table.insert(stepCodes, "armvp")
+                    table.insert(stepCodes, "corvp")
+                    table.insert(stepCodes, "vehicleplant")
+                    table.insert(stepCodes, "plant")
+                    table.insert(stepCodes, "Vehicle Plant")
+                end
+            elseif cleanNorm:find("con") and cleanNorm:find("bot") then
+                if isAdv or cleanNorm:find("ack") then
+                    table.insert(stepCodes, "armack")
+                    table.insert(stepCodes, "corack")
+                    table.insert(stepCodes, "advancedconstructionbot")
+                    table.insert(stepCodes, "ack")
+                    table.insert(stepCodes, "Advanced Construction Bot")
+                else
+                    table.insert(stepCodes, "armck")
+                    table.insert(stepCodes, "corck")
+                    table.insert(stepCodes, "constructionbot")
+                    table.insert(stepCodes, "conbot")
+                    table.insert(stepCodes, "Construction Bot")
+                end
+            elseif cleanNorm:find("con") and (cleanNorm:find("veh") or cleanNorm:find("beaver")) then
+                if isAdv or cleanNorm:find("acv") then
+                    table.insert(stepCodes, "armacv")
+                    table.insert(stepCodes, "coracv")
+                    table.insert(stepCodes, "advancedconstructionvehicle")
+                    table.insert(stepCodes, "acv")
+                    table.insert(stepCodes, "Advanced Construction Vehicle")
+                else
+                    table.insert(stepCodes, "armcv")
+                    table.insert(stepCodes, "corcv")
+                    table.insert(stepCodes, "constructionvehicle")
+                    table.insert(stepCodes, "armbeaver")
+                    table.insert(stepCodes, "corbeaver")
+                    table.insert(stepCodes, "beaver")
+                    table.insert(stepCodes, "Construction Vehicle")
+                end
+            elseif cleanNorm:find("fus") then
+                if isAdv or cleanNorm:find("afus") then
+                    table.insert(stepCodes, "armafus")
+                    table.insert(stepCodes, "corafus")
+                    table.insert(stepCodes, "advancedfusionreactor")
+                    table.insert(stepCodes, "afus")
+                    table.insert(stepCodes, "Advanced Fusion Reactor")
+                else
+                    table.insert(stepCodes, "armfus")
+                    table.insert(stepCodes, "corfus")
+                    table.insert(stepCodes, "fusionreactor")
+                    table.insert(stepCodes, "fus")
+                    table.insert(stepCodes, "Fusion Reactor")
+                end
+            elseif (cleanNorm:find("turret") and (cleanNorm:find("con") or cleanNorm:find("build") or cleanNorm:find("nano"))) or cleanNorm:find("nanotc") or cleanNorm:find("nanotower") or cleanNorm:find("nanoturret") then
+                table.insert(stepCodes, "armnanotc")
+                table.insert(stepCodes, "cornanotc")
+                table.insert(stepCodes, "constructionturret")
+                table.insert(stepCodes, "nanotower")
+                table.insert(stepCodes, "nanoturret")
+                table.insert(stepCodes, "Construction Turret")
+                table.insert(stepCodes, "Nanotower")
+                table.insert(stepCodes, "Nano Turret")
+                table.insert(stepCodes, "nano")
+            end
+            
+            local aliases = UNIT_ALIASES[cleanNorm]
+            if aliases then
+                for _, a in ipairs(aliases) do
+                    table.insert(stepCodes, a)
+                end
+            end
+
+            local codesStr = stepStr:match('"codes"%s*:%s*%[([^%]]+)%]')
+            if codesStr then
+                for c in codesStr:gmatch('"([^"]+)"') do
+                    local cNorm = (tostring(c):lower():gsub("[^a-z0-9]", ""))
+                    local isT1C = cNorm == "armmex" or cNorm == "cormex" or cNorm == "mex" or cNorm == "metalextractor" or cNorm == "armsolar" or cNorm == "corsolar" or cNorm == "armlab" or cNorm == "corlab" or cNorm == "armvp" or cNorm == "corvp" or cNorm == "armck" or cNorm == "corck" or cNorm == "armfus" or cNorm == "corfus"
+                    local isAdvC = cNorm:find("adv") ~= nil or cNorm:find("moho") ~= nil or cNorm:find("amex") ~= nil or cNorm:find("armamex") ~= nil or cNorm:find("coramex") ~= nil or cNorm:find("t2") ~= nil or cNorm:find("armalab") ~= nil or cNorm:find("coralab") ~= nil or cNorm:find("armavp") ~= nil or cNorm:find("coravp") ~= nil or cNorm:find("armack") ~= nil or cNorm:find("corack") ~= nil or cNorm:find("armafus") ~= nil or cNorm:find("corafus") ~= nil
+                    
+                    if isAdv and isT1C then
+                        -- skip T1 code for advanced step
+                    elseif (not isAdv) and isAdvC then
+                        -- skip Adv code for T1 step
+                    else
+                        table.insert(stepCodes, c)
+                    end
+                end
+            end
+            
             table.insert(steps, {
                 time = timeS,
-                builder = bldS:sub(1, 4),
+                builder = tostring(bldS):sub(1, 4),
                 unit = uName,
                 count = cNum,
                 cumulative = cumN,
-                codes = { uName:lower():gsub("%s+", "") }
+                codes = stepCodes
             })
         end
     end
@@ -359,6 +760,7 @@ local function checkAppBuildOrderSync()
             title = titleMatch or "Custom Strategy (Theory-App)",
             steps = steps
         }
+        activePreset = 1
     end
 end
 
@@ -441,6 +843,7 @@ function widget:SetConfigData(data)
 end
 
 local triggerCounter = 0
+local appSyncCounter = 0
 function widget:Update()
     radarAngle = (radarAngle + 0.04) % (math.pi * 2)
 
@@ -454,6 +857,12 @@ function widget:Update()
             Spring.SendCommands("clear")
             Spring.SendCommands("luaui reload")
         end
+    end
+
+    appSyncCounter = appSyncCounter + 1
+    if appSyncCounter >= 30 then
+        appSyncCounter = 0
+        checkAppBuildOrderSync()
     end
 end
 
@@ -716,27 +1125,27 @@ function widget:MousePress(mx, my, button)
             return true
         end
         
-        -- 4. Tactical View Navigation Tabs Bar
+        -- 4. Tactical View Navigation Tabs Bar: SPLIT | INTEL | QUEUE
         local tabY1 = headerY - 3 - 28 - 4 - 24
         local tabY2 = tabY1 + 24
         if my >= tabY1 and my <= tabY2 then
             local tW = (winW - 12) / 3
             if mx >= (winX + 6) and mx <= (winX + 6 + tW) then
-                activeTab = "INTEL"
+                activeTab = "SPLIT"
                 scrollOffset = 0
                 return true
             elseif mx > (winX + 6 + tW) and mx <= (winX + 6 + tW * 2) then
-                activeTab = "QUEUE"
+                activeTab = "INTEL"
                 scrollOffset = 0
                 return true
             elseif mx > (winX + 6 + tW * 2) and mx <= (winX + winW - 6) then
-                activeTab = "SPLIT"
+                activeTab = "QUEUE"
                 scrollOffset = 0
                 return true
             end
         end
 
-        -- 5. Footer preset buttons: BOT, VEH, ECO, APP
+        -- 5. Footer preset buttons: APP, BOT, VEH, ECO
         local footerY = winY + 6
         if my >= footerY and my <= (footerY + 24) then
             local pW = 42
@@ -796,7 +1205,7 @@ end
 --------------------------------------------------------------------------------
 -- 2D OpenGL Screen Drawing
 --------------------------------------------------------------------------------
-function widget:DrawScreen()
+local function drawScreenInternal()
     if isGameOver then return end
 
     -- MINIMIZED FLOATING PILL
@@ -893,13 +1302,13 @@ function widget:DrawScreen()
     glText(cCyan .. "💨 WIND: " .. cWhite .. string.format("%.1f", liveStats.wind) .. cDarkGray .. " M/S", rightX1 + 8, subY1 + 8, 9, "on")
 
     ----------------------------------------------------------------------------
-    -- 4. TACTICAL VIEW NAVIGATION TABS (INTEL FEEDS | BUILD QUEUE | ✨ SPLIT)
+    -- 4. TACTICAL VIEW NAVIGATION TABS (✨ SPLIT | INTEL FEEDS | BUILD QUEUE)
     ----------------------------------------------------------------------------
     local tabY2 = subY1 - 4
     local tabY1 = tabY2 - 24
     local tabW = (winW - 12) / 3
-    local tabLabels = { "INTEL FEEDS", "BUILD QUEUE", "✨ SPLIT" }
-    local tabKeys   = { "INTEL", "QUEUE", "SPLIT" }
+    local tabLabels = { "✨ SPLIT", "INTEL FEEDS", "BUILD QUEUE" }
+    local tabKeys   = { "SPLIT", "INTEL", "QUEUE" }
 
     for t = 1, 3 do
         local tx1 = winX + 6 + (t - 1) * tabW
@@ -926,10 +1335,16 @@ function widget:DrawScreen()
     local factionPresets = DEFAULT_PRESETS[liveStats.faction] or DEFAULT_PRESETS.Armada
     local currentPreset = nil
     
-    if activePreset == 4 and appCustomPreset then
-        currentPreset = appCustomPreset
+    if activePreset == 1 then
+        currentPreset = appCustomPreset or factionPresets[1]
+    elseif activePreset == 2 then
+        currentPreset = factionPresets[1]
+    elseif activePreset == 3 then
+        currentPreset = factionPresets[2] or factionPresets[1]
+    elseif activePreset == 4 then
+        currentPreset = factionPresets[3] or factionPresets[1]
     else
-        currentPreset = factionPresets[math.min(activePreset, #factionPresets)] or factionPresets[1]
+        currentPreset = appCustomPreset or factionPresets[1]
     end
     local steps = currentPreset.steps or {}
 
@@ -1290,7 +1705,7 @@ function widget:DrawScreen()
 
     -- Preset Switcher
     glText(cDarkGray .. "PRESET:", winX + 12, footerY + 8, 8, "on")
-    local presetNames = { "BOT", "VEH", "ECO", "APP" }
+    local presetNames = { "APP", "BOT", "VEH", "ECO" }
     local pW = 42
     local pStartX = winX + 68
 
@@ -1312,5 +1727,19 @@ function widget:DrawScreen()
             glRect(px1, footerY + 3, px2, footerY + 21)
             glText(cGray .. presetNames[p], px1 + 10, footerY + 7, 8.5, "on")
         end
+    end
+end
+
+function widget:DrawScreen()
+    if isGameOver then return end
+    local ok, err = pcall(drawScreenInternal)
+    if not ok then
+        pcall(function()
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+            glLineWidth(1)
+            glColor(0.25, 0.05, 0.05, 0.9)
+            glRect(winX or 10, winY or 10, (winX or 10) + 380, (winY or 10) + 26)
+            glText(cRed .. "[HUD Recovered] " .. tostring(err):sub(1, 45), (winX or 10) + 6, (winY or 10) + 8, 8, "on")
+        end)
     end
 end

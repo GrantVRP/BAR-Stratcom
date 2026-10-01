@@ -38,6 +38,7 @@ local spGetUnitCurrentBuildPower = Spring.GetUnitCurrentBuildPower
 local spGetUnitCommands = Spring.GetUnitCommands
 local spGetUnitCommandCount = Spring.GetUnitCommandCount
 local spGetFactoryCommands = Spring.GetFactoryCommands
+local spGetFactoryCommandCount = Spring.GetFactoryCommandCount
 local spGetVisibleUnits = Spring.GetVisibleUnits
 local spGetWind = Spring.GetWind
 local spEcho = Spring.Echo
@@ -598,8 +599,18 @@ local function writeSensorState()
             end
           elseif def.isFactory then
             factoriesTotal = factoriesTotal + 1
-            local factoryCmds = spGetFactoryCommands and spGetFactoryCommands(u, 0)
-            local hasQueue = (cmdCount > 0) or (factoryCmds and #factoryCmds > 0)
+            local factoryCmdCount = 0
+            if spGetFactoryCommandCount then
+              factoryCmdCount = spGetFactoryCommandCount(u) or 0
+            elseif spGetFactoryCommands then
+              local res = spGetFactoryCommands(u)
+              if type(res) == "number" then
+                factoryCmdCount = res
+              elseif type(res) == "table" then
+                factoryCmdCount = #res
+              end
+            end
+            local hasQueue = (cmdCount > 0) or (factoryCmdCount > 0)
             if not hasQueue and not isBuildingSomething then
               factoriesIdle = factoriesIdle + 1
             end
@@ -1129,9 +1140,14 @@ end
 
 function widget:GameFrame(n)
   if n % 30 == 0 then
-    writeSensorState()
-    flushEvents()
-    writeHeartbeat()
+    local ok, err = pcall(function()
+      writeSensorState()
+      flushEvents()
+      writeHeartbeat()
+    end)
+    if not ok and spEcho then
+      spEcho("BAR StratCom GameFrame error: " .. tostring(err))
+    end
   end
 end
 

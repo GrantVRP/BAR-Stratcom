@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`planToDiscordText > matches snapshot for canonical plan Discord text 1`] = `
+"**Rocketeer Rush** (armada)
+0:00  Commander  1× Solar Collector
+0:22  Commander  2× Metal Extractor
+1:05  Commander  1× Bot Lab
+2:00  Bot Lab  3× Paw
+2:30  Construction Kbot #2  1× Solar Collector
+0:00  Commander  Reclaim
+0:00  Commander  Assist
+0:00  Commander  Note: Scout expansion choke
+
+BSC1.pVTLbtswEPwVgWcrEJXKbXXrpUCvcdBDixzW1EYmJJICuWptGPr3LOUosgIHMWBAF-5jZnbI1VEEtUMDv9EH7awo5UroSpQCvIEKUu9Ug4ToU9-HXZpJsRKkqUUueZhyyQPnOFFhUF53NAKJnxAo2TpKoK49hgifaEsuecMM3PMMKtb_mjk5WIPBN0VCZsWdvJNpXhQZJ41jHlH-FfKfFE8r4d2o5tk7S5wOjW5bPm-x1tai55Dr0Gpbx6CLJcjh-rChw9gYXAuxKrjeKw4cRaNtlGPA9tByRnkEwuoHcTDP8nWafWcnHrOsHL8_YuBuwi6qOp7si8c0msXjOX8Gqpxh3Ip1cdNp9qir123F1b3VNFkx6VKu58HixRD4GulRG1aZDatzqvwmKoP7mShfEuX5kun-JqYWth-OtC6WTF8uMMXn4vzhIipX8Byl_ExD93-WcL-UIPN3vhYXNIyY48M6R1XNLIEtu-VuZfFOxfpqzz2qFrRZQE8x7jVI_KLLdTYtAT8k3tveQ-zfoGJHhiX316u5gXc8xP2aqU-hDeOMk79e65Lg29UE1hEuTcN93MkNRyjBfQd2_MuonWtQDE_DCw.0a7ec1db"
+`;

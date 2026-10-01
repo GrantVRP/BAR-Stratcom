@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "factions": [
+    {
+      "id": "armada",
+      "displayName": "Armada",
+      "unitPrefix": "arm",
+      "enabled": true,
+      "accent": "#449bed",
+      "commanderIds": ["armcom"]
+    },
+    {
+      "id": "cortex",
+      "displayName": "Cortex",
+      "unitPrefix": "cor",
+      "enabled": true,
+      "accent": "#ff2244",
+      "commanderIds": ["corcom"]
+    },
+    {
+      "id": "legion",
+      "displayName": "Legion",
+      "unitPrefix": "leg",
+      "enabled": false,
+      "accent": "#2ec4b6",
+      "commanderIds": ["legcom"]
+    }
+  ]
+}

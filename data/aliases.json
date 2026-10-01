@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "aliases": [
+    {
+      "alias": "Advanced Mex",
+      "unitId": "armamex",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Armada Bomber",
+      "unitId": "armthund",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Armada Fighter",
+      "unitId": "armfig",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Armada Gunship",
+      "unitId": "armbrawl",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Armada Scout Plane",
+      "unitId": "armpeep",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Armada Transport",
+      "unitId": "armatlas",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Atlas",
+      "unitId": "armatlas",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Avenger",
+      "unitId": "corveng",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Brawler",
+      "unitId": "armbrawl",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Bulldog",
+      "unitId": "armbull",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Can",
+      "unitId": "corcan",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Care Taker",
+      "unitId": "armnanotc",
+      "kind": "nickname"
+    },
+    {
+      "alias": "Cortex Bomber",
+      "unitId": "corshad",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Cortex Fighter",
+      "unitId": "corveng",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Cortex Gunship",
+      "unitId": "corape",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Cortex Scout Plane",
+      "unitId": "corfink",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Cortex Transport",
+      "unitId": "corvalk",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Crasher",
+      "unitId": "corcrash",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Diplomat",
+      "unitId": "corvroc",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Fav",
+      "unitId": "corfav",
+      "kind": "nickname"
+    },
+    {
+      "alias": "Fido",
+      "unitId": "armfido",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Fink",
+      "unitId": "corfink",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Flash",
+      "unitId": "armflash",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Flea",
+      "unitId": "armflea",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Freedom Fighter",
+      "unitId": "armfig",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Gator",
+      "unitId": "corgator",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Goliath",
+      "unitId": "corgol",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Hammer",
+      "unitId": "armham",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Hawk",
+      "unitId": "armhawk",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Hurricane",
+      "unitId": "corhurc",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Instigator",
+      "unitId": "corgator",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Jethro",
+      "unitId": "armjeth",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Kamikaze",
+      "unitId": "armkam",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Lance",
+      "unitId": "armlance",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Lazarus Rez Bot",
+      "unitId": "armrectr",
+      "kind": "nickname"
+    },
+    {
+      "alias": "Leveler",
+      "unitId": "corlevlr",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Moho Mine",
+      "unitId": "armamex",
+      "kind": "nickname"
+    },
+    {
+      "alias": "Nano",
+      "unitId": "cornanotc",
+      "kind": "nickname"
+    },
+    {
+      "alias": "Necro",
+      "unitId": "cornecro",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Paw",
+      "unitId": "armpw",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Pyro",
+      "unitId": "corpyro",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Pyros",
+      "unitId": "corpyro",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Rapier",
+      "unitId": "corape",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Roach",
+      "unitId": "corroach",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Rocko",
+      "unitId": "armrock",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Samson",
+      "unitId": "armsam",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Sparrow",
+      "unitId": "armpeep",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Storm",
+      "unitId": "corstorm",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Stump",
+      "unitId": "armstump",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Con Vehicle",
+      "unitId": "coracv",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Thunderbird",
+      "unitId": "armthund",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Valkyrie",
+      "unitId": "corvalk",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Vampire",
+      "unitId": "corvamp",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Warrior",
+      "unitId": "armwar",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Zeus",
+      "unitId": "armzeus",
+      "kind": "legacy-name"
+    }
+  ]
+}

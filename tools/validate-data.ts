@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { AliasesFileSchema, FactionsFileSchema } from '../src/core/schemas';
 
 function findJsonFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) {
@@ -28,12 +29,22 @@ if (jsonFiles.length === 0) {
 
 let hasErrors = false;
 for (const file of jsonFiles) {
+  const relPath = path.relative(process.cwd(), file);
   try {
     const content = fs.readFileSync(file, 'utf-8');
-    JSON.parse(content);
-    console.log(`validate:data: OK ${path.relative(process.cwd(), file)}`);
+    const parsed: unknown = JSON.parse(content);
+
+    if (file.endsWith('factions.json')) {
+      FactionsFileSchema.parse(parsed);
+      console.log(`validate:data: OK (factions schema) ${relPath}`);
+    } else if (file.endsWith('aliases.json')) {
+      AliasesFileSchema.parse(parsed);
+      console.log(`validate:data: OK (aliases schema) ${relPath}`);
+    } else {
+      console.log(`validate:data: OK (json) ${relPath}`);
+    }
   } catch (err) {
-    console.error(`validate:data: ERROR ${path.relative(process.cwd(), file)}:`, err);
+    console.error(`validate:data: ERROR ${relPath}:`, err);
     hasErrors = true;
   }
 }

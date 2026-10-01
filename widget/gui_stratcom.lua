@@ -1102,6 +1102,10 @@ function widget:Initialize()
       end
     end)
   end
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  if frame > 0 and not gameStarted then
+    widget:GameStart()
+  end
   writeHeartbeat()
 end
 
@@ -1139,6 +1143,9 @@ function widget:GameOver(winners)
 end
 
 function widget:GameFrame(n)
+  if not gameStarted and n > 0 then
+    widget:GameStart()
+  end
   if n % 30 == 0 then
     local ok, err = pcall(function()
       writeSensorState()

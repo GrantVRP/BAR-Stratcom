@@ -52,7 +52,10 @@ describe('ESLint architectural boundaries (02 §3)', () => {
   });
 
   it('allows valid pure imports in src/core', async () => {
-    const messages = await lintCode("export const add = (a: number, b: number): number => a + b;", 'src/core/sample.ts');
+    const messages = await lintCode(
+      'export const add = (a: number, b: number): number => a + b;',
+      'src/core/sample.ts'
+    );
     expect(messages.filter((m) => m.severity === 2)).toHaveLength(0);
   });
 });

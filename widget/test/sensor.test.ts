@@ -279,4 +279,50 @@ describe('Widget Sensor state.json (05 §6, 03 §7.2, T02.4)', () => {
       harness.close();
     }
   });
+
+  it('debug recording switch: appends snapshots to state-<sessionId>.ndjson only when record_state.flag exists', async () => {
+    const scenario = createScenario();
+    const harness = await createWidgetHarness(scenario);
+    try {
+      // 1. Without record_state.flag: no state-*.ndjson is written
+      harness.callin('Initialize');
+      harness.callin('GameStart');
+      harness.setFrame(30);
+      harness.callin('GameFrame', 30);
+
+      const stateFilesNoFlag = harness.fs.list('stratcom/state-');
+      expect(stateFilesNoFlag.length).toBe(0);
+
+      // 2. Create record_state.flag
+      harness.fs.write('stratcom/record_state.flag', '');
+
+      // Frame 60 snapshot
+      harness.setFrame(60);
+      harness.callin('GameFrame', 60);
+
+      const stateFilesWithFlag = harness.fs.list('stratcom/state-');
+      expect(stateFilesWithFlag.length).toBe(1);
+
+      const ndjsonPath = stateFilesWithFlag[0]!;
+      expect(ndjsonPath).toMatch(/^stratcom\/state-.*\.ndjson$/);
+
+      // Frame 90 snapshot
+      harness.setFrame(90);
+      harness.callin('GameFrame', 90);
+
+      const content = harness.fs.read(ndjsonPath) ?? '';
+      const lines = content.trim().split('\n').filter(Boolean);
+      expect(lines.length).toBe(2);
+
+      // Each line must parse with StateDocSchema
+      const doc1 = StateDocSchema.parse(JSON.parse(lines[0]!));
+      const doc2 = StateDocSchema.parse(JSON.parse(lines[1]!));
+      expect(doc1.frame).toBe(60);
+      expect(doc1.seq).toBe(3);
+      expect(doc2.frame).toBe(90);
+      expect(doc2.seq).toBe(4);
+    } finally {
+      harness.close();
+    }
+  });
 });

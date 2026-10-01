@@ -19,6 +19,15 @@ local function json_encode(val)
   elseif t == "table" then
     local mt = getmetatable(val)
     local forced_array = mt and (mt.__jsontype == "array" or mt.__array == true)
+    if forced_array then
+      local n = #val
+      if n == 0 then return "[]" end
+      local parts = {}
+      for i = 1, n do
+        parts[i] = json_encode(val[i])
+      end
+      return "[" .. table.concat(parts, ",") .. "]"
+    end
     local is_array = true
     local max_i = 0
     local count = 0
@@ -30,9 +39,7 @@ local function json_encode(val)
         is_array = false
       end
     end
-    if forced_array and count == 0 then
-      return "[]"
-    elseif is_array and max_i == count and count > 0 then
+    if is_array and max_i == count and count > 0 then
       local parts = {}
       for i = 1, max_i do
         parts[i] = json_encode(val[i])

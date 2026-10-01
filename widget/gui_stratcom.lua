@@ -121,12 +121,13 @@ local function safeDecode(str)
   return nil
 end
 
+local arrayMt = { __jsontype = "array" }
 local function makeArray(tbl)
   tbl = tbl or {}
   if type(Json) == "table" and type(Json.array) == "function" then
     return Json.array(tbl)
   end
-  return setmetatable(tbl, { __jsontype = "array" })
+  return setmetatable(tbl, arrayMt)
 end
 
 local function detectMode()
@@ -189,9 +190,23 @@ local function getResources(teamId)
   return { metal = readRes("metal"), energy = readRes("energy") }
 end
 
-local function resolveWindInfo(wMin, wMax)
+local cachedWindFunctions = false
+local function getWindFunctions()
+  if cachedWindFunctions ~= false then
+    return cachedWindFunctions
+  end
   local ok, wf = pcall(require, "common/wind_functions")
-  if not ok or (type(wf) ~= "table" and type(wf) ~= "userdata") then
+  if ok and (type(wf) == "table" or type(wf) == "userdata") then
+    cachedWindFunctions = wf
+  else
+    cachedWindFunctions = nil
+  end
+  return cachedWindFunctions
+end
+
+local function resolveWindInfo(wMin, wMax)
+  local wf = getWindFunctions()
+  if not wf then
     return nil, nil
   end
 
@@ -216,11 +231,8 @@ local function resolveWindInfo(wMin, wMax)
 end
 
 local function runProbe()
-  local okWind = false
-  local okReq, wf = pcall(require, "common/wind_functions")
-  if okReq and (type(wf) == "table" or type(wf) == "userdata") then
-    okWind = true
-  end
+  local wf = getWindFunctions()
+  local okWind = (wf ~= nil)
 
   local probe = {
     protocol = PROTOCOL,
@@ -628,6 +640,19 @@ local function writeSensorState()
 
   atomicWrite("state.json", stateDoc)
 
+  -- Debug state recording switch (T02.7)
+  local flagFile = io.open(DIR .. "record_state.flag", "r")
+  if flagFile then
+    flagFile:close()
+    if currentSessionId then
+      local sf = io.open(DIR .. "state-" .. currentSessionId .. ".ndjson", "a")
+      if sf then
+        sf:write(Json.encode(stateDoc) .. "\n")
+        sf:close()
+      end
+    end
+  end
+
   local t1 = spGetTimer and spGetTimer()
   if t0 and t1 and spDiffTimers then
     lastSnapshotMs = spDiffTimers(t1, t0)
@@ -668,6 +693,8 @@ local function exportUnitdefs()
 
   local unitsList = makeArray({})
   local foundAny = {}
+  local foundCount = 0
+  local totalTrackedFields = #TRACKED_RAW_FIELDS
 
   for _, def in pairs(UnitDefs) do
     if type(def) == "table" or type(def) == "userdata" then
@@ -718,17 +745,24 @@ local function exportUnitdefs()
         table.insert(unitsList, u)
 
         -- Track field presence for missingFields
-        for _, fieldName in ipairs(TRACKED_RAW_FIELDS) do
-          if fieldName == "sightDistance" then
-            if def.sightDistance ~= nil or def.losRadius ~= nil then
-              foundAny["sightDistance"] = true
+        if foundCount < totalTrackedFields then
+          for _, fieldName in ipairs(TRACKED_RAW_FIELDS) do
+            if not foundAny[fieldName] then
+              if fieldName == "sightDistance" then
+                if def.sightDistance ~= nil or def.losRadius ~= nil then
+                  foundAny["sightDistance"] = true
+                  foundCount = foundCount + 1
+                end
+              elseif fieldName == "radarDistance" then
+                if def.radarDistance ~= nil or def.radarRadius ~= nil then
+                  foundAny["radarDistance"] = true
+                  foundCount = foundCount + 1
+                end
+              elseif def[fieldName] ~= nil then
+                foundAny[fieldName] = true
+                foundCount = foundCount + 1
+              end
             end
-          elseif fieldName == "radarDistance" then
-            if def.radarDistance ~= nil or def.radarRadius ~= nil then
-              foundAny["radarDistance"] = true
-            end
-          elseif def[fieldName] ~= nil then
-            foundAny[fieldName] = true
           end
         end
       end
@@ -746,7 +780,7 @@ local function exportUnitdefs()
 
   -- Sort units deterministically by name
   table.sort(unitsList, function(a, b)
-    return tostring(a.name) < tostring(b.name)
+    return a.name < b.name
   end)
 
   local doc = {
@@ -769,8 +803,8 @@ local function exportWindLookup()
     return true
   end
 
-  local ok, wf = pcall(require, "common/wind_functions")
-  if not ok or (type(wf) ~= "table" and type(wf) ~= "userdata") then
+  local wf = getWindFunctions()
+  if not wf or (type(wf) ~= "table" and type(wf) ~= "userdata") then
     return false
   end
 

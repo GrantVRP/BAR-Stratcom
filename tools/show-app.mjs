@@ -32,6 +32,29 @@ try {
 const electronBin =
   process.platform === 'win32' ? path.resolve(cwd, 'node_modules/electron/dist/electron.exe') : 'electron';
 
+if (process.platform === 'win32') {
+  try {
+    const taskName = 'StratComShow';
+    const tr = `"${electronBin}" "${cwd}"`;
+    execFileSync(
+      'schtasks',
+      ['/create', '/tn', taskName, '/tr', tr, '/sc', 'once', '/st', '23:59', '/f', '/it'],
+      {
+        stdio: 'ignore'
+      }
+    );
+    execFileSync('schtasks', ['/run', '/tn', taskName], { stdio: 'ignore' });
+    execFileSync('powershell', ['-NoProfile', '-Command', 'Start-Sleep -Milliseconds 500'], {
+      stdio: 'ignore'
+    });
+    execFileSync('schtasks', ['/delete', '/tn', taskName, '/f'], { stdio: 'ignore' });
+    console.log('StratCom opened on interactive desktop. Close the window when done.');
+    process.exit(0);
+  } catch (err) {
+    console.warn('schtasks launch failed, falling back to spawn:', err);
+  }
+}
+
 const child = spawn(electronBin, ['.'], {
   detached: true,
   stdio: 'ignore',

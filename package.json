@@ -19,8 +19,8 @@
     "coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "show": "node tools/show-app.mjs",
-    "format": "prettier --write --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx,css,json}\" \"tools/**/*.{ts,js,mjs}\" \"tests/**/*.{ts,js}\" \"docs/**/*.json\"",
-    "format:check": "prettier --check --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx,css,json}\" \"tools/**/*.{ts,js,mjs}\" \"tests/**/*.{ts,js}\" \"docs/**/*.json\"",
+    "format": "prettier --write --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx,css,json}\" \"tools/**/*.{ts,js,mjs}\" \"tests/**/*.{ts,js}\" \"docs/**/*.json\" \"widget/**/*.{ts,tsx,json}\"",
+    "format:check": "prettier --check --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx,css,json}\" \"tools/**/*.{ts,js,mjs}\" \"tests/**/*.{ts,js}\" \"docs/**/*.json\" \"widget/**/*.{ts,tsx,json}\"",
     "golden:update": "node -e \"console.log('No golden files to update.')\"",
     "verify": "npm run typecheck && npm run lint && npm run lint:lua && npm run validate:data && vitest run && npm run build && npm run test:e2e"
   },
@@ -61,6 +61,7 @@
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.71.0",
     "vite": "^7.3.6",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "wasmoon": "^1.16.0"
   }
 }

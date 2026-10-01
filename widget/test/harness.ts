@@ -1,0 +1,282 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { LuaFactory, type LuaEngine } from 'wasmoon';
+import { InMemoryFs } from './fs';
+import { LUA_IO_OS_BOOTSTRAP, LUA_JSON_BOOTSTRAP, LUA_SPRING_BOOTSTRAP } from './lua-bootstrap';
+import { createScenario, type Scenario } from './scenario';
+
+export { InMemoryFs };
+
+export interface DrawCall {
+  name: string;
+  args: unknown[];
+}
+
+export interface WidgetHarness {
+  engine: LuaEngine;
+  scenario: Scenario;
+  fs: InMemoryFs;
+  callin: (name: string, ...args: unknown[]) => unknown;
+  setFrame: (frame: number) => void;
+  drawCalls: () => DrawCall[];
+  echoMessages: () => string[];
+  actions: () => Map<string, unknown>;
+  close: () => void;
+}
+
+export async function createWidgetHarness(
+  scenario: Scenario = createScenario(),
+  widgetSource?: string
+): Promise<WidgetHarness> {
+  const factory = new LuaFactory();
+  const engine = await factory.createEngine();
+
+  const inMemFs = new InMemoryFs();
+  const recordedDrawCalls: DrawCall[] = [];
+  const recordedEchoMessages: string[] = [];
+  const recordedActions = new Map<string, unknown>();
+
+  // 1. Shims for Lua 5.1
+  engine.doStringSync(`
+    unpack = table.unpack
+    loadstring = load
+    WG = {}
+  `);
+
+  // 2. Pure Lua JSON
+  engine.doStringSync(LUA_JSON_BOOTSTRAP);
+
+  // 3. Mount in-memory IO and OS
+  engine.global.set('__fs_write', (p: string, c: string) => inMemFs.write(p, c));
+  engine.global.set('__fs_read', (p: string) => inMemFs.read(p) ?? null);
+  engine.global.set('__fs_exists', (p: string) => inMemFs.exists(p));
+  engine.global.set('__fs_remove', (p: string) => inMemFs.delete(p));
+  engine.global.set('__fs_rename', (o: string, n: string) => inMemFs.rename(o, n));
+  engine.global.set('__fs_create_dir', (d: string) => inMemFs.createDir(d));
+
+  engine.doStringSync(LUA_IO_OS_BOOTSTRAP);
+
+  // 4. Spring mock with multi-return wrappers
+  engine.global.set('__sp_create_dir', (dir: string) => inMemFs.createDir(dir));
+  engine.global.set('__sp_get_game_frame', () => scenario.currentFrame);
+  engine.global.set('__sp_get_game_seconds', () => scenario.currentFrame / 30);
+  engine.global.set('__sp_is_replay', () => scenario.isReplay);
+  engine.global.set('__sp_get_spectating_state', () => scenario.isSpectating);
+  engine.global.set('__sp_get_my_team_id', () => scenario.myTeamId);
+  engine.global.set('__sp_get_my_ally_team_id', () => scenario.myAllyTeamId);
+  engine.global.set('__sp_get_my_player_id', () => 0);
+  engine.global.set('__sp_get_player_info', () => [
+    scenario.myPlayerName,
+    true,
+    false,
+    scenario.myTeamId,
+    scenario.myAllyTeamId
+  ]);
+  engine.global.set('__sp_get_team_resources', (teamId: number, type: string) => {
+    const t = scenario.teams.get(teamId);
+    if (type === 'metal') {
+      return [t?.metal ?? 1000, t?.metalStorage ?? 1000, 0, t?.metalIncome ?? 0, 0, 0, 0, 0];
+    }
+    return [t?.energy ?? 1000, t?.energyStorage ?? 1000, 0, t?.energyIncome ?? 0, 0, 0, 0, 0];
+  });
+  engine.global.set('__sp_get_team_rules_param', (teamId: number, param: string) => {
+    const t = scenario.teams.get(teamId);
+    if (param === 'startUnit') return t?.startUnit ?? 'armcom';
+    return null;
+  });
+  engine.global.set('__sp_get_team_units', (teamId: number) => {
+    const ids: number[] = [];
+    for (const u of scenario.units.values()) {
+      if (u.teamId === teamId) ids.push(u.id);
+    }
+    return ids;
+  });
+  engine.global.set('__sp_get_team_units_counts', (teamId: number) => {
+    const counts: Record<number, number> = {};
+    for (const u of scenario.units.values()) {
+      if (u.teamId === teamId) {
+        counts[u.defId] = (counts[u.defId] ?? 0) + 1;
+      }
+    }
+    return counts;
+  });
+  engine.global.set('__sp_get_unit_def_id', (unitId: number) => {
+    return scenario.units.get(unitId)?.defId ?? 0;
+  });
+  engine.global.set('__sp_get_unit_health', (unitId: number) => {
+    const u = scenario.units.get(unitId);
+    if (!u) return [0, 0, 0, 0, 0];
+    return [u.health, u.maxHealth, 0, 0, u.buildProgress];
+  });
+  engine.global.set('__sp_get_unit_position', (unitId: number) => {
+    const u = scenario.units.get(unitId);
+    return u ? [u.position.x, u.position.y, u.position.z] : [0, 0, 0];
+  });
+  engine.global.set('__sp_get_unit_is_being_built', (unitId: number) => {
+    return scenario.units.get(unitId)?.isBeingBuilt ?? false;
+  });
+  engine.global.set('__sp_get_unit_current_build_power', (unitId: number) => {
+    return scenario.units.get(unitId)?.currentBuildPower ?? 0;
+  });
+  engine.global.set('__sp_echo', (text: string) => recordedEchoMessages.push(text));
+  engine.global.set('__sp_get_wind', () => [1, 0, 0, (scenario.windMin + scenario.windMax) / 2]);
+
+  engine.doStringSync(LUA_SPRING_BOOTSTRAP);
+
+  // 5. UnitDefs & UnitDefNames pure Lua tables
+  const unitDefsMap: Record<string, unknown> = {};
+
+  scenario.unitDefsById.forEach((record, defId) => {
+    unitDefsMap[String(defId)] = {
+      name: record.id,
+      translatedHumanName: record.name,
+      translatedTooltip: record.tooltip,
+      metalCost: record.metalCost,
+      energyCost: record.energyCost,
+      buildTime: record.buildTime,
+      buildSpeed: record.buildSpeed,
+      isBuilder: record.isBuilder,
+      isFactory: record.isFactory,
+      isBuilding: record.isBuilding,
+      canFly: record.canFly,
+      canMove: record.canMove,
+      speed: record.combat.speed,
+      health: record.combat.health,
+      maxWeaponRange: record.combat.maxWeaponRange,
+      sightDistance: record.combat.sightDistance,
+      radarDistance: record.combat.radarDistance,
+      energyMake: record.economy.energyMake,
+      metalMake: record.economy.metalMake,
+      energyUpkeep: record.economy.energyUpkeep,
+      metalUpkeep: record.economy.metalUpkeep,
+      extractsMetal: record.economy.extractsMetal,
+      windGenerator: record.economy.windGenerator,
+      tidalGenerator: record.economy.tidalGenerator,
+      energyStorage: record.economy.energyStorage,
+      metalStorage: record.economy.metalStorage,
+      buildOptions: record.buildOptions,
+      customParams: {
+        techlevel: String(record.techLevel ?? 1),
+        unitgroup: record.unitGroup ?? 'other',
+        iscommander: record.isCommander ? '1' : '0'
+      }
+    };
+  });
+
+  engine.global.set('__unitdefs_json', JSON.stringify(unitDefsMap));
+  engine.doStringSync(`
+    UnitDefs = {}
+    UnitDefNames = {}
+    local rawDefs = Json.decode(__unitdefs_json)
+    for defIdStr, def in pairs(rawDefs) do
+      local defId = tonumber(defIdStr)
+      UnitDefs[defId] = def
+      UnitDefNames[def.name:lower()] = def
+    end
+  `);
+
+  // 6. Game & Engine mocks
+  engine.global.set('Game', {
+    mapName: scenario.mapName,
+    gameVersion: scenario.gameVersion,
+    windMin: scenario.windMin,
+    windMax: scenario.windMax,
+    tidal: scenario.tidal
+  });
+
+  engine.global.set('Engine', {
+    version: scenario.engineVersion
+  });
+
+  // 7. gl mock
+  engine.global.set('__record_draw_call', (name: string, args: unknown[]) => {
+    recordedDrawCalls.push({ name, args });
+  });
+
+  engine.doStringSync(`
+    gl = {}
+    local glMethods = {
+      "Color", "Text", "Rect", "BeginText", "EndText",
+      "PushMatrix", "PopMatrix", "Translate", "Scale", "LineWidth", "Shape"
+    }
+    for _, name in ipairs(glMethods) do
+      gl[name] = function(...)
+        __record_draw_call(name, { ... })
+      end
+    end
+  `);
+
+  // 8. widgetHandler mock
+  engine.global.set('__record_action', (name: string, fn: unknown) => {
+    recordedActions.set(name, fn);
+  });
+
+  engine.doStringSync(`
+    widgetHandler = {
+      actionHandler = {
+        AddAction = function(self, name, fn)
+          __record_action(name, fn)
+        end
+      }
+    }
+  `);
+
+  // 9. require mock
+  const originalRequire = engine.global.get('require');
+  engine.global.set('__custom_require', (mod: string) => {
+    if (mod === 'common/wind_functions') {
+      return (
+        scenario.windFunctions ?? {
+          averageWindLookup: { '0': { '15': 7.5 } },
+          getWindRisk: () => 1,
+          isNoWind: () => false
+        }
+      );
+    }
+    if (typeof originalRequire === 'function') {
+      return originalRequire(mod);
+    }
+    throw new Error(`Module not found: ${mod}`);
+  });
+
+  engine.doStringSync(`
+    require = function(mod)
+      return __custom_require(mod)
+    end
+  `);
+
+  // 10. widget table initialization
+  engine.doStringSync(`
+    widget = {
+      canControlUnits = true
+    }
+  `);
+
+  // 11. Load widget source
+  const src =
+    widgetSource ?? fs.readFileSync(path.resolve(process.cwd(), 'widget/gui_stratcom.lua'), 'utf-8');
+
+  engine.doStringSync(src);
+
+  return {
+    engine,
+    scenario,
+    fs: inMemFs,
+    callin: (name: string, ...args: unknown[]) => {
+      const widget = engine.global.get('widget');
+      if (!widget || typeof widget[name] !== 'function') {
+        return undefined;
+      }
+      return widget[name](widget, ...args);
+    },
+    setFrame: (frame: number) => {
+      scenario.setFrame(frame);
+    },
+    drawCalls: () => [...recordedDrawCalls],
+    echoMessages: () => [...recordedEchoMessages],
+    actions: () => new Map(recordedActions),
+    close: () => {
+      engine.global.close();
+    }
+  };
+}

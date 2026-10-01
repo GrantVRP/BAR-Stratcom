@@ -49,9 +49,14 @@ local function json_encode(val)
       return "{}"
     else
       local parts = {}
+      local pCount = 0
       for k, v in pairs(val) do
-        local ks = tostring(k):gsub('\\\\', '\\\\\\\\'):gsub('"', '\\\\"')
-        table.insert(parts, '"' .. ks .. '":' .. json_encode(v))
+        pCount = pCount + 1
+        local ks = tostring(k)
+        if ks:find('[\\"]') then
+          ks = ks:gsub('\\\\', '\\\\\\\\'):gsub('"', '\\\\"')
+        end
+        parts[pCount] = '"' .. ks .. '":' .. json_encode(v)
       end
       return "{" .. table.concat(parts, ",") .. "}"
     end

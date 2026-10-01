@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { AliasesFileSchema, FactionsFileSchema } from '../src/core/schemas';
+import { AliasesFileSchema, FactionsFileSchema, MapsFileSchema } from '../src/core/schemas';
 
 function findJsonFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) {
@@ -40,6 +40,9 @@ for (const file of jsonFiles) {
     } else if (file.endsWith('aliases.json')) {
       AliasesFileSchema.parse(parsed);
       console.log(`validate:data: OK (aliases schema) ${relPath}`);
+    } else if (file.endsWith('maps.json')) {
+      MapsFileSchema.parse(parsed);
+      console.log(`validate:data: OK (maps schema) ${relPath}`);
     } else {
       console.log(`validate:data: OK (json) ${relPath}`);
     }

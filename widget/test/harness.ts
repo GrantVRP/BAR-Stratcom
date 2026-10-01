@@ -175,18 +175,27 @@ export async function createWidgetHarness(
     end
   `);
 
-  // 6. Game & Engine mocks
-  engine.global.set('Game', {
-    mapName: scenario.mapName,
-    gameVersion: scenario.gameVersion,
-    windMin: scenario.windMin,
-    windMax: scenario.windMax,
-    tidal: scenario.tidal
-  });
-
-  engine.global.set('Engine', {
-    version: scenario.engineVersion
-  });
+  // 6. Game & Engine mocks (native Lua tables)
+  engine.global.set(
+    '__game_json',
+    JSON.stringify({
+      mapName: scenario.mapName,
+      gameVersion: scenario.gameVersion,
+      windMin: scenario.windMin,
+      windMax: scenario.windMax,
+      tidal: scenario.tidal
+    })
+  );
+  engine.global.set(
+    '__engine_json',
+    JSON.stringify({
+      version: scenario.engineVersion
+    })
+  );
+  engine.doStringSync(`
+    Game = Json.decode(__game_json)
+    Engine = Json.decode(__engine_json)
+  `);
 
   // 7. gl mock
   engine.global.set('__record_draw_call', (name: string, args: unknown[]) => {
@@ -221,18 +230,19 @@ export async function createWidgetHarness(
     }
   `);
 
-  // 9. require mock
+  // 9. require mock (common/wind_functions as native Lua table)
+  const windFuncsData = scenario.windFunctions?.averageWindLookup ?? { '0': { '15': 7.5 } };
+  engine.global.set('__wind_lookup_json', JSON.stringify(windFuncsData));
+  engine.doStringSync(`
+    __common_wind_functions = {
+      averageWindLookup = Json.decode(__wind_lookup_json),
+      getWindRisk = function() return 1 end,
+      isNoWind = function() return false end
+    }
+  `);
+
   const originalRequire = engine.global.get('require');
   engine.global.set('__custom_require', (mod: string) => {
-    if (mod === 'common/wind_functions') {
-      return (
-        scenario.windFunctions ?? {
-          averageWindLookup: { '0': { '15': 7.5 } },
-          getWindRisk: () => 1,
-          isNoWind: () => false
-        }
-      );
-    }
     if (typeof originalRequire === 'function') {
       return originalRequire(mod);
     }
@@ -241,6 +251,9 @@ export async function createWidgetHarness(
 
   engine.doStringSync(`
     require = function(mod)
+      if mod == "common/wind_functions" then
+        return __common_wind_functions
+      end
       return __custom_require(mod)
     end
   `);

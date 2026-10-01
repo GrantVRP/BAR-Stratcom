@@ -1,10 +1,14 @@
 export const LUA_JSON_BOOTSTRAP = `
 local json = {}
+local json_null = {}
+json.null = json_null
 
 local function json_encode(val)
+  if val == nil or val == json_null or (type(Json) == "table" and val == Json.null) then
+    return "null"
+  end
   local t = type(val)
-  if t == "nil" then return "null"
-  elseif t == "boolean" then return val and "true" or "false"
+  if t == "boolean" then return val and "true" or "false"
   elseif t == "number" then return tostring(val)
   elseif t == "string" then
     local s = val:gsub('\\\\', '\\\\\\\\'):gsub('"', '\\\\"'):gsub('\\n', '\\\\n'):gsub('\\r', '\\\\r'):gsub('\\t', '\\\\t')
@@ -239,6 +243,7 @@ Spring = {
   GetModOptions = function()
     return { allowuserwidgets = "1", allowunitcontrolwidgets = "1" }
   end,
+  GetActiveCmdDescs = function() return {} end,
   SetActiveCommand = function() return true end,
   GiveOrderToUnit = function() return true end
 }

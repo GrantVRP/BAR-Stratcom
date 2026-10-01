@@ -1076,10 +1076,19 @@ function widget:Initialize()
   exportUnitdefs()
   exportWindLookup()
   readCoach()
-  if widgetHandler and widgetHandler.actionHandler and widgetHandler.actionHandler.AddAction then
-    widgetHandler.actionHandler:AddAction("stratcom_hud_toggle", function()
-      config.hudVisible = not config.hudVisible
-      return true
+  if widgetHandler then
+    pcall(function()
+      if widgetHandler.AddAction then
+        widgetHandler:AddAction("stratcom_hud_toggle", function()
+          config.hudVisible = not config.hudVisible
+          return true
+        end)
+      elseif widgetHandler.actionHandler and widgetHandler.actionHandler.AddAction then
+        widgetHandler.actionHandler:AddAction(widget, "stratcom_hud_toggle", function()
+          config.hudVisible = not config.hudVisible
+          return true
+        end)
+      end
     end)
   end
   writeHeartbeat()
@@ -1143,8 +1152,14 @@ function widget:Update(dt)
 end
 
 function widget:Shutdown()
-  if widgetHandler and widgetHandler.actionHandler and widgetHandler.actionHandler.RemoveAction then
-    pcall(function() widgetHandler.actionHandler:RemoveAction("stratcom_hud_toggle") end)
+  if widgetHandler then
+    pcall(function()
+      if widgetHandler.RemoveAction then
+        widgetHandler:RemoveAction("stratcom_hud_toggle")
+      elseif widgetHandler.actionHandler and widgetHandler.actionHandler.RemoveAction then
+        widgetHandler.actionHandler:RemoveAction(widget, "stratcom_hud_toggle")
+      end
+    end)
   end
   flushEvents()
   writeHeartbeat()

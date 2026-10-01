@@ -257,9 +257,20 @@ export async function createWidgetHarness(
 
   engine.doStringSync(`
     widgetHandler = {
+      AddAction = function(self, name, fn)
+        __record_action(name, fn)
+      end,
+      RemoveAction = function(self, name)
+      end,
       actionHandler = {
-        AddAction = function(self, name, fn)
-          __record_action(name, fn)
+        AddAction = function(self, arg1, arg2, arg3)
+          if type(arg1) == "string" then
+            __record_action(arg1, arg2)
+          else
+            __record_action(arg2, arg3)
+          end
+        end,
+        RemoveAction = function(self, arg1, arg2)
         end
       }
     }

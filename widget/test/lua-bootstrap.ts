@@ -187,6 +187,9 @@ os.rename = function(oldpath, newpath)
 end
 
 os.time = function()
+  if __os_time then
+    return __os_time()
+  end
   return math.floor(os.clock())
 end
 `;
@@ -285,6 +288,8 @@ Spring = {
   end,
   GetActiveCmdDescs = function() return {} end,
   SetActiveCommand = function() return true end,
-  GiveOrderToUnit = function() return true end
+  GiveOrderToUnit = function() return true end,
+  GetViewGeometry = function() return 1920, 1080 end,
+  GetConfigFloat = function(name, defaultVal) return defaultVal or 1.0 end
 }
 `;

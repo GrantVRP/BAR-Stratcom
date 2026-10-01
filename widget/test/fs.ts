@@ -17,6 +17,10 @@ export class InMemoryFs {
     this.files.set(norm, content);
   }
 
+  writeJson(filePath: string, data: unknown): void {
+    this.write(filePath, JSON.stringify(data));
+  }
+
   read(filePath: string): string | undefined {
     const norm = filePath.replace(/\\/g, '/');
     return this.files.get(norm);

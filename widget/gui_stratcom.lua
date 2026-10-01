@@ -68,6 +68,25 @@ local lastSnapshotMs = 0
 local startRecorded = false
 local eventBuffer = {}
 
+local lastCoachSeq = -1
+local currentCoachDoc = nil
+local timeSinceCoachRead = 0
+local seenEchoIds = {}
+local seenEchoQueue = {}
+local MAX_SEEN_ECHOS = 64
+local lastDrawMs = 0
+local isDragging = false
+local dragOffsetX = 0
+local dragOffsetY = 0
+
+local TONE_COLORS = {
+  info = { 203 / 255, 213 / 255, 225 / 255, 1.0 },   -- #cbd5e1
+  good = { 74 / 255, 222 / 255, 128 / 255, 1.0 },    -- #4ade80
+  warn = { 251 / 255, 191 / 255, 36 / 255, 1.0 },    -- #fbbf24
+  danger = { 248 / 255, 113 / 255, 113 / 255, 1.0 }, -- #f87171
+  dim = { 113 / 255, 113 / 255, 122 / 255, 1.0 }     -- #71717a
+}
+
 local config = {
   hudX = nil,
   hudY = nil,
@@ -242,10 +261,10 @@ local function writeHeartbeat()
   local avgWind, windRisk = resolveWindInfo(wMin, wMax)
 
   local perfData = jsonNull
-  if lastSnapshotMs > 0 then
+  if lastSnapshotMs > 0 or lastDrawMs > 0 then
     perfData = {
       frameMs = 0,
-      drawMs = 0,
+      drawMs = lastDrawMs,
       snapshotMs = lastSnapshotMs
     }
   end
@@ -783,16 +802,252 @@ local function exportWindLookup()
   return atomicWrite("wind-lookup.json", doc)
 end
 
+-- Coach & HUD (05 §8.1-§8.3)
+local function readCoach()
+  local f = io.open(DIR .. "coach.json", "r")
+  if not f then
+    return
+  end
+  local content = f:read("*a")
+  f:close()
+  if not content or content == "" then
+    return
+  end
+  local doc = safeDecode(content)
+  if type(doc) ~= "table" and type(doc) ~= "userdata" then
+    return
+  end
+  if doc.protocol ~= PROTOCOL then
+    return
+  end
+  if type(doc.seq) ~= "number" or doc.seq <= lastCoachSeq then
+    return
+  end
+
+  lastCoachSeq = doc.seq
+  currentCoachDoc = doc
+
+  -- Process echo entries (05 §8.2)
+  if (type(doc.echo) == "table" or type(doc.echo) == "userdata") and #doc.echo > 0 then
+    for i = 1, #doc.echo do
+      local item = doc.echo[i]
+      if (type(item) == "table" or type(item) == "userdata") and type(item.id) == "string" and type(item.text) == "string" then
+        if not seenEchoIds[item.id] then
+          seenEchoIds[item.id] = true
+          table.insert(seenEchoQueue, item.id)
+          if #seenEchoQueue > MAX_SEEN_ECHOS then
+            local oldest = table.remove(seenEchoQueue, 1)
+            if oldest then
+              seenEchoIds[oldest] = nil
+            end
+          end
+          if spEcho then
+            spEcho("[StratCom] " .. item.text)
+          end
+        end
+      end
+    end
+  end
+end
+
+local function getCapturedTeamCount()
+  local teamList = (spGetTeamList and spGetTeamList()) or {}
+  local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
+  local count = 0
+  for _, tId in ipairs(teamList) do
+    if tId ~= gaiaTeam then
+      count = count + 1
+    end
+  end
+  if count == 0 then
+    count = 2
+  end
+  return count
+end
+
+local function drawHud()
+  local t0 = spGetTimer and spGetTimer()
+
+  if gameOver then
+    return
+  end
+  if config.hudVisible == false then
+    return
+  end
+  if not currentCoachDoc then
+    return
+  end
+  if currentCoachDoc.mode == "off" then
+    return
+  end
+  if not currentCoachDoc.hud or currentCoachDoc.hud.visible == false then
+    return
+  end
+
+  local mode = detectMode()
+  local isSpec = (mode == "spectator" or mode == "replay")
+
+  local nowSec = (os.time and os.time()) or 0
+  local genSec = (type(currentCoachDoc.generatedAtSec) == "number" and currentCoachDoc.generatedAtSec) or 0
+  local isStale = (nowSec - genSec > 5)
+
+  local vsx, vsy = 1920, 1080
+  if Spring and Spring.GetViewGeometry then
+    local gx, gy = Spring.GetViewGeometry()
+    if gx and gy and gx > 0 and gy > 0 then
+      vsx, vsy = gx, gy
+    end
+  end
+
+  local uiScale = 1.0
+  if Spring and Spring.GetConfigFloat then
+    uiScale = Spring.GetConfigFloat("ui_scale", 1.0) or 1.0
+  end
+
+  local hudScale = config.hudScale or 1.0
+  local scale = (vsy / 1080) * uiScale * hudScale
+  if scale < 0.5 then
+    scale = 0.5
+  end
+
+  local paddingX = 12 * scale
+  local paddingY = 8 * scale
+  local titleHeight = 24 * scale
+  local panelWidth = 320 * scale
+
+  local itemsToDraw = {}
+  if isStale then
+    table.insert(itemsToDraw, { text = "STRATCOM OFFLINE", tone = "dim", big = false })
+  elseif isSpec then
+    local nTeams = getCapturedTeamCount()
+    table.insert(itemsToDraw, { text = "REC \226\151\143 capturing " .. nTeams .. " teams", tone = "danger", big = false })
+  else
+    local rawLines = (currentCoachDoc.hud and currentCoachDoc.hud.lines) or {}
+    local maxLines = math.min(4, #rawLines)
+    for i = 1, maxLines do
+      local l = rawLines[i]
+      if type(l) == "table" or type(l) == "userdata" then
+        table.insert(itemsToDraw, {
+          text = tostring(l.text or ""),
+          tone = l.tone or "info",
+          big = (l.big == true)
+        })
+      end
+    end
+  end
+
+  local contentHeight = 0
+  for _, item in ipairs(itemsToDraw) do
+    contentHeight = contentHeight + (item.big and (24 * scale) or (20 * scale))
+  end
+  if contentHeight == 0 then
+    contentHeight = 20 * scale
+  end
+
+  local panelHeight = titleHeight + contentHeight + paddingY * 2
+
+  local defaultX = vsx * 0.65
+  local defaultY = vsy - (60 * scale)
+  local hudX = math.max(0, math.min(vsx - panelWidth, config.hudX or defaultX))
+  local hudY = math.max(panelHeight, math.min(vsy, config.hudY or defaultY))
+
+  if gl then
+    -- Background: #0a0c14 at 85% opacity
+    gl.Color(10 / 255, 12 / 255, 20 / 255, 0.85)
+    gl.Rect(hudX, hudY - panelHeight, hudX + panelWidth, hudY)
+
+    -- Faction accent border (2 px)
+    local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
+    local myFaction = resolveFaction(myTeam)
+    local borderR, borderG, borderB = 68 / 255, 155 / 255, 237 / 255 -- Armada default
+    if myFaction == "cortex" then
+      borderR, borderG, borderB = 255 / 255, 34 / 255, 68 / 255
+    elseif myFaction == "legion" then
+      borderR, borderG, borderB = 46 / 255, 196 / 255, 182 / 255
+    end
+
+    local bw = 2 * scale
+    gl.Color(borderR, borderG, borderB, 1.0)
+    gl.Rect(hudX, hudY - bw, hudX + panelWidth, hudY)
+    gl.Rect(hudX, hudY - panelHeight, hudX + panelWidth, hudY - panelHeight + bw)
+    gl.Rect(hudX, hudY - panelHeight, hudX + bw, hudY)
+    gl.Rect(hudX + panelWidth - bw, hudY - panelHeight, hudX + panelWidth, hudY)
+
+    -- Divider between title and content
+    gl.Color(borderR, borderG, borderB, 0.4)
+    gl.Rect(hudX, hudY - titleHeight, hudX + panelWidth, hudY - titleHeight + bw)
+
+    -- Title
+    local titleText = "STRATCOM"
+    if not isStale and currentCoachDoc.hud and currentCoachDoc.hud.title then
+      titleText = string.upper(tostring(currentCoachDoc.hud.title))
+      if currentCoachDoc.hud.progress then
+        local p = currentCoachDoc.hud.progress
+        if type(p.done) == "number" and type(p.total) == "number" then
+          titleText = titleText .. "  " .. tostring(p.done) .. "/" .. tostring(p.total)
+        end
+      end
+    end
+
+    local assistTag = ""
+    if not isStale and currentCoachDoc.assist and currentCoachDoc.assist.enabled then
+      local en = currentCoachDoc.assist.enabled
+      if en.armNext or en.factoryQueue then
+        assistTag = "ASSIST ON"
+      end
+    end
+
+    local titleY = hudY - titleHeight + (6 * scale)
+    gl.Color(228 / 255, 228 / 255, 231 / 255, 1.0)
+    gl.Text(titleText, hudX + paddingX, titleY, 14 * scale, "o")
+
+    if assistTag ~= "" then
+      gl.Color(74 / 255, 222 / 255, 128 / 255, 1.0)
+      gl.Text(assistTag, hudX + panelWidth - paddingX - (70 * scale), titleY, 11 * scale, "o")
+    end
+
+    -- Lines
+    local curY = hudY - titleHeight - paddingY
+    for _, item in ipairs(itemsToDraw) do
+      local isBig = item.big
+      local fontSize = isBig and (20 * scale) or (16 * scale)
+      local stepY = isBig and (24 * scale) or (20 * scale)
+      curY = curY - stepY
+
+      local col = TONE_COLORS[item.tone] or TONE_COLORS.info
+      gl.Color(col[1], col[2], col[3], col[4])
+      gl.Text(item.text, hudX + paddingX, curY + (3 * scale), fontSize, "o")
+    end
+  end
+
+  if t0 and spDiffTimers and spGetTimer then
+    local dt = spDiffTimers(spGetTimer(), t0)
+    if lastDrawMs == 0 then
+      lastDrawMs = dt
+    else
+      lastDrawMs = lastDrawMs * 0.9 + dt * 0.1
+    end
+  end
+end
+
 -- Call-ins (05 §4)
 function widget:Initialize()
   startRecorded = false
   eventBuffer = {}
+  timeSinceCoachRead = 0
   if spCreateDir then
     spCreateDir("stratcom")
   end
   runProbe()
   exportUnitdefs()
   exportWindLookup()
+  readCoach()
+  if widgetHandler and widgetHandler.actionHandler and widgetHandler.actionHandler.AddAction then
+    widgetHandler.actionHandler:AddAction("stratcom_hud_toggle", function()
+      config.hudVisible = not config.hudVisible
+      return true
+    end)
+  end
   writeHeartbeat()
 end
 
@@ -838,6 +1093,12 @@ function widget:GameFrame(n)
 end
 
 function widget:Update(dt)
+  timeSinceCoachRead = timeSinceCoachRead + (dt or 0)
+  if timeSinceCoachRead >= 0.5 then
+    timeSinceCoachRead = 0
+    readCoach()
+  end
+
   if not gameStarted then
     timeSinceHeartbeat = timeSinceHeartbeat + (dt or 0)
     if timeSinceHeartbeat >= 1.0 then
@@ -848,6 +1109,9 @@ function widget:Update(dt)
 end
 
 function widget:Shutdown()
+  if widgetHandler and widgetHandler.actionHandler and widgetHandler.actionHandler.RemoveAction then
+    pcall(function() widgetHandler.actionHandler:RemoveAction("stratcom_hud_toggle") end)
+  end
   flushEvents()
   writeHeartbeat()
 end
@@ -954,5 +1218,100 @@ function widget:SetConfigData(data)
     if type(data.hudY) == "number" then config.hudY = data.hudY end
     if type(data.hudVisible) == "boolean" then config.hudVisible = data.hudVisible end
     if type(data.hudScale) == "number" then config.hudScale = data.hudScale end
+  end
+end
+
+function widget:DrawScreen()
+  drawHud()
+end
+
+function widget:MousePress(mx, my, button)
+  if button ~= 1 then
+    return false
+  end
+  if gameOver or config.hudVisible == false or not currentCoachDoc or currentCoachDoc.mode == "off" then
+    return false
+  end
+  if not currentCoachDoc.hud or currentCoachDoc.hud.visible == false then
+    return false
+  end
+
+  local vsx, vsy = 1920, 1080
+  if Spring and Spring.GetViewGeometry then
+    local gx, gy = Spring.GetViewGeometry()
+    if gx and gy and gx > 0 and gy > 0 then
+      vsx, vsy = gx, gy
+    end
+  end
+  local uiScale = (Spring and Spring.GetConfigFloat and Spring.GetConfigFloat("ui_scale", 1.0)) or 1.0
+  local hudScale = config.hudScale or 1.0
+  local scale = (vsy / 1080) * uiScale * hudScale
+  if scale < 0.5 then
+    scale = 0.5
+  end
+
+  local panelWidth = 320 * scale
+  local titleHeight = 24 * scale
+  local defaultX = vsx * 0.65
+  local defaultY = vsy - (60 * scale)
+  local hudX = math.max(0, math.min(vsx - panelWidth, config.hudX or defaultX))
+  local hudY = math.max(titleHeight, math.min(vsy, config.hudY or defaultY))
+
+  if mx >= hudX and mx <= (hudX + panelWidth) and my <= hudY and my >= (hudY - titleHeight) then
+    isDragging = true
+    dragOffsetX = mx - hudX
+    dragOffsetY = my - hudY
+    return true
+  end
+  return false
+end
+
+function widget:MouseMove(mx, my, dx, dy, button)
+  if not isDragging then
+    return false
+  end
+  local vsx, vsy = 1920, 1080
+  if Spring and Spring.GetViewGeometry then
+    local gx, gy = Spring.GetViewGeometry()
+    if gx and gy and gx > 0 and gy > 0 then
+      vsx, vsy = gx, gy
+    end
+  end
+  local uiScale = (Spring and Spring.GetConfigFloat and Spring.GetConfigFloat("ui_scale", 1.0)) or 1.0
+  local hudScale = config.hudScale or 1.0
+  local scale = (vsy / 1080) * uiScale * hudScale
+  if scale < 0.5 then
+    scale = 0.5
+  end
+
+  local panelWidth = 320 * scale
+  local titleHeight = 24 * scale
+
+  local newX = mx - dragOffsetX
+  local newY = my - dragOffsetY
+  config.hudX = math.max(0, math.min(vsx - panelWidth, newX))
+  config.hudY = math.max(titleHeight, math.min(vsy, newY))
+  return true
+end
+
+function widget:MouseRelease(mx, my, button)
+  if isDragging and button == 1 then
+    isDragging = false
+    return true
+  end
+  return false
+end
+
+function widget:ViewResize(vsx, vsy)
+  if config.hudX and vsx and vsx > 0 then
+    local panelWidth = 320
+    if config.hudX > vsx - panelWidth then
+      config.hudX = math.max(0, vsx - panelWidth)
+    end
+  end
+  if config.hudY and vsy and vsy > 0 then
+    if config.hudY > vsy then
+      config.hudY = vsy
+    end
   end
 end

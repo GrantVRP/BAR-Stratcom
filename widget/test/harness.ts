@@ -18,6 +18,9 @@ export interface WidgetHarness {
   fs: InMemoryFs;
   callin: (name: string, ...args: unknown[]) => unknown;
   setFrame: (frame: number) => void;
+  setTime: (sec: number) => void;
+  clearDrawCalls: () => void;
+  clearEchoMessages: () => void;
   drawCalls: () => DrawCall[];
   echoMessages: () => string[];
   actions: () => Map<string, unknown>;
@@ -148,6 +151,8 @@ export async function createWidgetHarness(
   engine.global.set('__sp_get_unit_current_build_power', (unitId: number) => {
     return scenario.units.get(unitId)?.currentBuildPower ?? 0;
   });
+  let currentNowSec = Math.floor(Date.now() / 1000);
+  engine.global.set('__os_time', () => currentNowSec);
   engine.global.set('__sp_echo', (text: string) => recordedEchoMessages.push(text));
   engine.global.set('__sp_get_wind', () => [1, 0, 0, (scenario.windMin + scenario.windMax) / 2]);
 
@@ -314,6 +319,15 @@ export async function createWidgetHarness(
     },
     setFrame: (frame: number) => {
       scenario.setFrame(frame);
+    },
+    setTime: (sec: number) => {
+      currentNowSec = sec;
+    },
+    clearDrawCalls: () => {
+      recordedDrawCalls.length = 0;
+    },
+    clearEchoMessages: () => {
+      recordedEchoMessages.length = 0;
     },
     drawCalls: () => [...recordedDrawCalls],
     echoMessages: () => [...recordedEchoMessages],

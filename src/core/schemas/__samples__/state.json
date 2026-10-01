@@ -1,0 +1,62 @@
+{
+  "protocol": 1,
+  "sessionId": "20261004-183012-a1f3",
+  "seq": 42,
+  "frame": 1800,
+  "gameSeconds": 60,
+  "me": {
+    "teamId": 0,
+    "allyTeamId": 0,
+    "factionId": "arm",
+    "startUnitId": "armcom",
+    "playerName": "CommanderPlayer"
+  },
+  "wind": {
+    "current": 11.2
+  },
+  "res": {
+    "metal": {
+      "current": 250,
+      "storage": 1000,
+      "pull": 15,
+      "income": 20,
+      "expense": 15,
+      "share": 0,
+      "sent": 0,
+      "received": 0
+    },
+    "energy": {
+      "current": 500,
+      "storage": 1000,
+      "pull": 50,
+      "income": 75,
+      "expense": 50,
+      "share": 0,
+      "sent": 0,
+      "received": 0
+    }
+  },
+  "counts": {
+    "armcom": { "alive": 1, "building": 0 },
+    "armsolar": { "alive": 2, "building": 1 }
+  },
+  "builders": {
+    "total": 1,
+    "idle": 0
+  },
+  "factories": {
+    "total": 0,
+    "idle": 0
+  },
+  "commander": {
+    "alive": true,
+    "idle": false
+  },
+  "bp": {
+    "total": 300,
+    "active": 300
+  },
+  "enemies": {
+    "corcom": 1
+  }
+}

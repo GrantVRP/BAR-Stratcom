@@ -1,0 +1,35 @@
+{
+  "protocol": 1,
+  "seq": 10,
+  "sessionId": "20261004-183012-a1f3",
+  "mode": "live",
+  "generatedAtSec": 1727740060,
+  "hud": {
+    "visible": true,
+    "title": "ARMADA // ROCKETEER RUSH",
+    "lines": [
+      { "text": "NEXT 1x Solar Collector", "tone": "good", "big": true },
+      { "text": "PLAN +3s AHEAD", "tone": "info" },
+      { "text": "ENERGY EMPTY IN 8s", "tone": "warn" }
+    ],
+    "progress": {
+      "done": 3,
+      "total": 12
+    }
+  },
+  "echo": [{ "id": "echo-1", "text": "Start rocketeer queue" }],
+  "assist": {
+    "armNext": {
+      "unitId": "armsolar",
+      "stepId": "step-1"
+    },
+    "factoryQueue": {
+      "factoryUnitId": "armlab",
+      "items": [{ "unitId": "armpw", "count": 5 }]
+    },
+    "enabled": {
+      "armNext": false,
+      "factoryQueue": false
+    }
+  }
+}

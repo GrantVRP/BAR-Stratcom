@@ -1,12 +1,16 @@
 /// <reference types="vite/client" />
-
-export interface StratcomInfo {
-  version: string;
-  platform: string;
-}
+import type {
+  IpcChannel,
+  IpcEventChannel,
+  IpcEventData,
+  IpcRequest,
+  IpcResponse,
+  IpcResponseData
+} from '../../shared';
 
 export interface StratcomAPI {
-  getInfo: () => Promise<StratcomInfo>;
+  invoke: <C extends IpcChannel>(channel: C, req?: IpcRequest<C>) => Promise<IpcResponse<IpcResponseData<C>>>;
+  on: <E extends IpcEventChannel>(event: E, cb: (data: IpcEventData<E>) => void) => () => void;
 }
 
 declare global {

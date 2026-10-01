@@ -1,2 +1,2 @@
 // Shared contracts and IPC schemas
-export {};
+export * from './ipc';

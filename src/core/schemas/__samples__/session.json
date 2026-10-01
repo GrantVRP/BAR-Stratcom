@@ -1,0 +1,30 @@
+{
+  "protocol": 1,
+  "kind": "session",
+  "sessionId": "20261004-183012-a1f3",
+  "mode": "player",
+  "gameVersion": "105.1.1-2550",
+  "engineVersion": "2026.01.1",
+  "map": {
+    "scriptName": "Supreme Isthmus v2.1",
+    "windMin": 2,
+    "windMax": 18,
+    "tidal": 15
+  },
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "CommanderPlayer",
+      "factionId": "arm",
+      "isAI": false,
+      "isMe": true
+    }
+  ],
+  "start": {
+    "metal": 1000,
+    "energy": 1000,
+    "metalStorage": 1000,
+    "energyStorage": 1000
+  }
+}

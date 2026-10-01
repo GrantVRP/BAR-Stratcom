@@ -1,5 +1,6 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
+import { handle } from './ipc/register';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -63,10 +64,14 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     // Register IPC handler
-    ipcMain.handle('app:getInfo', () => {
+    handle('app:getInfo', () => {
       return {
         version: app.getVersion(),
-        platform: process.platform
+        platform: process.platform,
+        dataPaths: {
+          userData: app.getPath('userData'),
+          barData: null
+        }
       };
     });
 

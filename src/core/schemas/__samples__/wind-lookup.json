@@ -1,0 +1,10 @@
+{
+  "protocol": 1,
+  "kind": "wind-lookup",
+  "gameVersion": "105.1.1-2550",
+  "table": {
+    "2": {
+      "18": 9.5
+    }
+  }
+}

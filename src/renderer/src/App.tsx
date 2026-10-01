@@ -4,13 +4,17 @@ export function App(): React.JSX.Element {
   const [version, setVersion] = useState<string>('');
 
   useEffect(() => {
-    if (window.stratcom?.getInfo) {
+    if (window.stratcom?.invoke) {
       window.stratcom
-        .getInfo()
-        .then((info) => {
-          setVersion(info.version);
+        .invoke('app:getInfo')
+        .then((res) => {
+          if (res.ok) {
+            setVersion(res.data.version);
+          } else {
+            console.error('Failed to get app info:', res.message);
+          }
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.error('Failed to get app info:', err);
         });
     }

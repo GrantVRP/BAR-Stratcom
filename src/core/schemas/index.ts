@@ -10,3 +10,4 @@ export * from './session';
 export * from './report';
 export * from './benchmark';
 export * from './settings';
+export * from './protocol';

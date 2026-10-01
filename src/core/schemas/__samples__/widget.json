@@ -1,0 +1,27 @@
+{
+  "protocol": 1,
+  "widgetVersion": "3.0.0",
+  "engineVersion": "2026.01.1",
+  "gameVersion": "105.1.1-2550",
+  "sessionId": "20261004-183012-a1f3",
+  "mode": "player",
+  "canControlUnits": true,
+  "frame": 900,
+  "gameStarted": true,
+  "gameOver": false,
+  "map": {
+    "scriptName": "Supreme Isthmus v2.1",
+    "windMin": 2,
+    "windMax": 18,
+    "avgWind": 9.5,
+    "windRisk": 0.2,
+    "tidal": 15
+  },
+  "perf": {
+    "frameMs": 1.2,
+    "drawMs": 0.8,
+    "snapshotMs": 0.4
+  },
+  "degraded": false,
+  "heartbeat": 1727740000
+}

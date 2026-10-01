@@ -48,7 +48,7 @@ export async function createWidgetHarness(
 
   // 3. Mount in-memory IO and OS
   engine.global.set('__fs_write', (p: string, c: string) => inMemFs.write(p, c));
-  engine.global.set('__fs_read', (p: string) => inMemFs.read(p) ?? null);
+  engine.global.set('__fs_read', (p: string) => inMemFs.read(p) ?? undefined);
   engine.global.set('__fs_exists', (p: string) => inMemFs.exists(p));
   engine.global.set('__fs_remove', (p: string) => inMemFs.delete(p));
   engine.global.set('__fs_rename', (o: string, n: string) => inMemFs.rename(o, n));
@@ -65,13 +65,18 @@ export async function createWidgetHarness(
   engine.global.set('__sp_get_my_team_id', () => scenario.myTeamId);
   engine.global.set('__sp_get_my_ally_team_id', () => scenario.myAllyTeamId);
   engine.global.set('__sp_get_my_player_id', () => 0);
-  engine.global.set('__sp_get_player_info', () => [
-    scenario.myPlayerName,
-    true,
-    false,
-    scenario.myTeamId,
-    scenario.myAllyTeamId
-  ]);
+  engine.global.set('__sp_get_player_info', (playerId?: number) => {
+    const t =
+      (playerId !== undefined ? scenario.teams.get(playerId) : undefined) ??
+      scenario.teams.get(scenario.myTeamId);
+    return [
+      t?.playerName ?? scenario.myPlayerName,
+      true,
+      false,
+      t?.teamId ?? scenario.myTeamId,
+      t?.allyTeamId ?? scenario.myAllyTeamId
+    ];
+  });
   engine.global.set('__sp_get_team_resources', (teamId: number, type: string) => {
     const t = scenario.teams.get(teamId);
     if (type === 'metal') {
@@ -82,7 +87,7 @@ export async function createWidgetHarness(
   engine.global.set('__sp_get_team_rules_param', (teamId: number, param: string) => {
     const t = scenario.teams.get(teamId);
     if (param === 'startUnit') return t?.startUnit ?? 'armcom';
-    return null;
+    return undefined;
   });
   engine.global.set('__sp_get_team_units', (teamId: number) => {
     const ids: number[] = [];
@@ -91,17 +96,18 @@ export async function createWidgetHarness(
     }
     return ids;
   });
-  engine.global.set('__sp_get_team_units_counts', (teamId: number) => {
+  engine.global.set('__sp_get_team_units_counts_json', (teamId: number) => {
     const counts: Record<number, number> = {};
     for (const u of scenario.units.values()) {
       if (u.teamId === teamId) {
         counts[u.defId] = (counts[u.defId] ?? 0) + 1;
       }
     }
-    return counts;
+    return JSON.stringify(counts);
   });
   engine.global.set('__sp_get_unit_def_id', (unitId: number) => {
-    return scenario.units.get(unitId)?.defId ?? 0;
+    const defId = scenario.units.get(unitId)?.defId;
+    return defId && defId > 0 ? defId : undefined;
   });
   engine.global.set('__sp_get_unit_health', (unitId: number) => {
     const u = scenario.units.get(unitId);
@@ -115,6 +121,30 @@ export async function createWidgetHarness(
   engine.global.set('__sp_get_unit_is_being_built', (unitId: number) => {
     return scenario.units.get(unitId)?.isBeingBuilt ?? false;
   });
+  engine.global.set('__sp_get_unit_is_building', (unitId: number) => {
+    return scenario.units.get(unitId)?.isUnitBuilding ? 1 : undefined;
+  });
+  engine.global.set('__sp_get_unit_command_count', (unitId: number) => {
+    return scenario.units.get(unitId)?.commandCount ?? 0;
+  });
+  engine.global.set('__sp_get_factory_commands', (unitId: number) => {
+    return scenario.units.get(unitId)?.factoryCommands ?? [];
+  });
+  engine.global.set('__sp_get_unit_team', (unitId: number) => {
+    return scenario.units.get(unitId)?.teamId ?? 0;
+  });
+  engine.global.set('__sp_get_unit_ally_team', (unitId: number) => {
+    const u = scenario.units.get(unitId);
+    if (!u) return 0;
+    return scenario.teams.get(u.teamId)?.allyTeamId ?? 0;
+  });
+  engine.global.set('__sp_get_team_list', () => Array.from(scenario.teams.keys()));
+  engine.global.set('__sp_get_team_info', (teamId: number) => {
+    const t = scenario.teams.get(teamId);
+    return [teamId, teamId, false, t?.isAI ?? false, t?.factionId ?? 'armada', t?.allyTeamId ?? 0];
+  });
+  engine.global.set('__sp_get_gaia_team_id', () => 999);
+  engine.global.set('__sp_get_visible_units', () => Array.from(scenario.units.keys()));
   engine.global.set('__sp_get_unit_current_build_power', (unitId: number) => {
     return scenario.units.get(unitId)?.currentBuildPower ?? 0;
   });

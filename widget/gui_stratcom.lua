@@ -46,6 +46,11 @@ local spDiffTimers = Spring.DiffTimers
 local spGetModOptions = Spring.GetModOptions
 local spSetActiveCommand = Spring.SetActiveCommand
 local spGetActiveCmdDescs = Spring.GetActiveCmdDescs
+local spGetUnitTeam = Spring.GetUnitTeam
+local spGetUnitAllyTeam = Spring.GetUnitAllyTeam
+local spGetTeamList = Spring.GetTeamList
+local spGetTeamInfo = Spring.GetTeamInfo
+local spGetGaiaTeamID = Spring.GetGaiaTeamID
 
 -- Constants & State
 local PROTOCOL = 1
@@ -58,6 +63,8 @@ local gameStarted = false
 local gameOver = false
 local currentSessionId = nil
 local timeSinceHeartbeat = 0
+local snapshotSeq = 0
+local lastSnapshotMs = 0
 
 local config = {
   hudX = nil,
@@ -111,6 +118,76 @@ local function detectMode()
   else
     return "player"
   end
+end
+
+local function resolveFaction(teamId)
+  local startUnitName = nil
+  if spGetTeamRulesParam then
+    startUnitName = spGetTeamRulesParam(teamId, "startUnit")
+  end
+
+  if not startUnitName and spGetTeamUnits and (type(UnitDefs) == "table" or type(UnitDefs) == "userdata") then
+    local teamUnits = spGetTeamUnits(teamId) or {}
+    for _, uId in ipairs(teamUnits) do
+      local defId = spGetUnitDefID and spGetUnitDefID(uId)
+      local def = defId and UnitDefs[defId]
+      if def and def.customParams and def.customParams.iscommander == "1" then
+        startUnitName = def.name
+        break
+      end
+    end
+  end
+
+  local factionId = nil
+  if startUnitName then
+    local lowerName = string.lower(startUnitName)
+    local pfx = string.sub(lowerName, 1, 3)
+    if pfx == "arm" then
+      factionId = "armada"
+    elseif pfx == "cor" then
+      factionId = "cortex"
+    elseif pfx == "leg" then
+      factionId = "legion"
+    end
+  end
+
+  return factionId, startUnitName
+end
+
+local function getResources(teamId)
+  if not spGetTeamResources then
+    local zeroRes = {
+      current = 0, storage = 0, pull = 0, income = 0,
+      expense = 0, share = 0, sent = 0, received = 0
+    }
+    return { metal = zeroRes, energy = zeroRes }
+  end
+
+  local mc, ms, mp, mi, me, msh, mse, mr = spGetTeamResources(teamId, "metal")
+  local ec, es, ep, ei, ee, esh, ese, er = spGetTeamResources(teamId, "energy")
+
+  return {
+    metal = {
+      current = mc or 0,
+      storage = ms or 0,
+      pull = mp or 0,
+      income = mi or 0,
+      expense = me or 0,
+      share = msh or 0,
+      sent = mse or 0,
+      received = mr or 0
+    },
+    energy = {
+      current = ec or 0,
+      storage = es or 0,
+      pull = ep or 0,
+      income = ei or 0,
+      expense = ee or 0,
+      share = esh or 0,
+      sent = ese or 0,
+      received = er or 0
+    }
+  }
 end
 
 local function resolveWindInfo(wMin, wMax)
@@ -184,6 +261,15 @@ local function writeHeartbeat()
   local mapName = (Game and Game.mapName) or "unknown"
   local avgWind, windRisk = resolveWindInfo(wMin, wMax)
 
+  local perfData = jsonNull
+  if lastSnapshotMs > 0 then
+    perfData = {
+      frameMs = 0,
+      drawMs = 0,
+      snapshotMs = lastSnapshotMs
+    }
+  end
+
   local heartbeatData = {
     protocol = PROTOCOL,
     widgetVersion = WIDGET_VERSION,
@@ -203,12 +289,231 @@ local function writeHeartbeat()
       windRisk = windRisk or jsonNull,
       tidal = tidal
     },
-    perf = jsonNull,
+    perf = perfData,
     degraded = false,
     heartbeat = os.time()
   }
 
   atomicWrite("widget.json", heartbeatData)
+end
+
+local function writeSensorState()
+  local t0 = spGetTimer and spGetTimer()
+  snapshotSeq = snapshotSeq + 1
+
+  if not currentSessionId then
+    currentSessionId = string.format("%s-%04x", os.date("!%Y%m%d-%H%M%S"), math.random(0, 0xffff))
+  end
+
+  local mode = detectMode()
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  local gameSec = (spGetGameSeconds and spGetGameSeconds()) or 0
+
+  local windSpeed = 0
+  if spGetWind then
+    local _, _, _, w = spGetWind()
+    windSpeed = w or 0
+  end
+
+  local stateDoc = {
+    protocol = PROTOCOL,
+    sessionId = currentSessionId,
+    seq = snapshotSeq,
+    frame = frame,
+    gameSeconds = gameSec,
+    wind = { current = windSpeed },
+    counts = {},
+    builders = { total = 0, idle = 0 },
+    factories = { total = 0, idle = 0 },
+    commander = { alive = false, idle = false },
+    bp = { total = 0, active = 0 },
+    enemies = {}
+  }
+
+  if mode == "spectator" or mode == "replay" then
+    stateDoc.me = jsonNull
+    stateDoc.res = jsonNull
+
+    local teamsList = makeArray({})
+    local teamList = (spGetTeamList and spGetTeamList()) or {}
+    local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
+    local numTeams = #teamList
+
+    for _, tId in ipairs(teamList) do
+      if tId ~= gaiaTeam then
+        local allyTeamId = 0
+        local leaderId = nil
+        if spGetTeamInfo then
+          local _, lId, _, _, _, aId = spGetTeamInfo(tId)
+          leaderId = lId
+          allyTeamId = aId or 0
+        end
+
+        local playerName = "Player " .. tostring(tId)
+        if leaderId and spGetPlayerInfo then
+          local pName = spGetPlayerInfo(leaderId)
+          if pName and pName ~= "" then
+            playerName = pName
+          end
+        end
+
+        local tFaction = resolveFaction(tId)
+        local tRes = getResources(tId)
+
+        local tCounts = {}
+        if spGetTeamUnitsCounts then
+          local rawCounts = spGetTeamUnitsCounts(tId) or {}
+          for dId, cnt in pairs(rawCounts) do
+            local d = UnitDefs and UnitDefs[dId]
+            if d and d.name then
+              tCounts[d.name] = { alive = cnt, building = 0 }
+            end
+          end
+        end
+
+        local computeBp = (numTeams <= 8) or (snapshotSeq % 5 == 0)
+        local tBpTotal = 0
+        local tBpActive = 0
+        if computeBp and spGetTeamUnits then
+          for _, u in ipairs(spGetTeamUnits(tId) or {}) do
+            local defId = spGetUnitDefID and spGetUnitDefID(u)
+            local def = defId and UnitDefs and UnitDefs[defId]
+            if def and (def.isBuilder or def.isFactory or (def.customParams and def.customParams.iscommander == "1")) then
+              local beingBuilt = spGetUnitIsBeingBuilt and spGetUnitIsBeingBuilt(u)
+              if not beingBuilt and def.buildSpeed and def.buildSpeed > 0 then
+                tBpTotal = tBpTotal + def.buildSpeed
+                local curP = (spGetUnitCurrentBuildPower and spGetUnitCurrentBuildPower(u)) or 0
+                tBpActive = tBpActive + (def.buildSpeed * curP)
+              end
+            end
+          end
+        end
+
+        table.insert(teamsList, {
+          teamId = tId,
+          allyTeamId = allyTeamId,
+          playerName = playerName,
+          factionId = tFaction or jsonNull,
+          res = tRes,
+          counts = tCounts,
+          bp = { total = tBpTotal, active = tBpActive }
+        })
+      end
+    end
+
+    table.sort(teamsList, function(a, b) return a.teamId < b.teamId end)
+    stateDoc.teams = teamsList
+  else
+    local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
+    local myAlly = (spGetMyAllyTeamID and spGetMyAllyTeamID()) or 0
+
+    local myPlayerName = "CommanderPlayer"
+    local myPlayerId = (spGetMyPlayerID and spGetMyPlayerID()) or 0
+    if spGetPlayerInfo then
+      local pName = spGetPlayerInfo(myPlayerId)
+      if pName and pName ~= "" then
+        myPlayerName = pName
+      end
+    end
+
+    local myFaction, myStartUnit = resolveFaction(myTeam)
+
+    stateDoc.me = {
+      teamId = myTeam,
+      allyTeamId = myAlly,
+      factionId = myFaction or jsonNull,
+      startUnitId = myStartUnit or jsonNull,
+      playerName = myPlayerName
+    }
+
+    stateDoc.res = getResources(myTeam)
+
+    local counts = {}
+    local buildersTotal = 0
+    local buildersIdle = 0
+    local factoriesTotal = 0
+    local factoriesIdle = 0
+    local commanderAlive = false
+    local commanderIdle = false
+    local bpTotal = 0
+    local bpActive = 0
+
+    local teamUnits = (spGetTeamUnits and spGetTeamUnits(myTeam)) or {}
+    for _, u in ipairs(teamUnits) do
+      local defId = spGetUnitDefID and spGetUnitDefID(u)
+      local def = defId and UnitDefs and UnitDefs[defId]
+      if def and def.name then
+        local defName = def.name
+        if not counts[defName] then
+          counts[defName] = { alive = 0, building = 0 }
+        end
+
+        local beingBuilt = spGetUnitIsBeingBuilt and spGetUnitIsBeingBuilt(u)
+        if beingBuilt then
+          counts[defName].building = counts[defName].building + 1
+        else
+          counts[defName].alive = counts[defName].alive + 1
+
+          local isCommander = (def.customParams and def.customParams.iscommander == "1")
+          local cmdCount = (spGetUnitCommandCount and spGetUnitCommandCount(u)) or 0
+          local isBuildingSomething = (spGetUnitIsBuilding and spGetUnitIsBuilding(u)) ~= nil
+
+          if isCommander then
+            commanderAlive = true
+            commanderIdle = (cmdCount == 0 and not isBuildingSomething)
+          elseif def.isBuilder and not def.isBuilding then
+            buildersTotal = buildersTotal + 1
+            if cmdCount == 0 and not isBuildingSomething then
+              buildersIdle = buildersIdle + 1
+            end
+          elseif def.isFactory then
+            factoriesTotal = factoriesTotal + 1
+            local factoryCmds = spGetFactoryCommands and spGetFactoryCommands(u, 0)
+            local hasQueue = (cmdCount > 0) or (factoryCmds and #factoryCmds > 0)
+            if not hasQueue and not isBuildingSomething then
+              factoriesIdle = factoriesIdle + 1
+            end
+          end
+
+          if (def.isBuilder or def.isFactory or isCommander) and def.buildSpeed and def.buildSpeed > 0 then
+            local bSpeed = def.buildSpeed
+            bpTotal = bpTotal + bSpeed
+            local curPower = (spGetUnitCurrentBuildPower and spGetUnitCurrentBuildPower(u)) or 0
+            bpActive = bpActive + (bSpeed * curPower)
+          end
+        end
+      end
+    end
+
+    stateDoc.counts = counts
+    stateDoc.builders = { total = buildersTotal, idle = buildersIdle }
+    stateDoc.factories = { total = factoriesTotal, idle = factoriesIdle }
+    stateDoc.commander = { alive = commanderAlive, idle = commanderIdle }
+    stateDoc.bp = { total = bpTotal, active = bpActive }
+
+    local enemies = {}
+    local visibleUnits = (spGetVisibleUnits and spGetVisibleUnits()) or {}
+    for _, u in ipairs(visibleUnits) do
+      local uAlly = spGetUnitAllyTeam and spGetUnitAllyTeam(u)
+      if uAlly and uAlly ~= myAlly then
+        local defId = spGetUnitDefID and spGetUnitDefID(u)
+        if defId and defId > 0 and UnitDefs and UnitDefs[defId] then
+          local def = UnitDefs[defId]
+          if def and def.name then
+            enemies[def.name] = (enemies[def.name] or 0) + 1
+          end
+        end
+      end
+    end
+    stateDoc.enemies = enemies
+  end
+
+  atomicWrite("state.json", stateDoc)
+
+  local t1 = spGetTimer and spGetTimer()
+  if t0 and t1 and spDiffTimers then
+    lastSnapshotMs = spDiffTimers(t1, t0)
+  end
 end
 
 -- Exporters (05 §5)
@@ -438,6 +743,10 @@ end
 
 function widget:GameStart()
   gameStarted = true
+  if not currentSessionId then
+    currentSessionId = string.format("%s-%04x", os.date("!%Y%m%d-%H%M%S"), math.random(0, 0xffff))
+  end
+  writeSensorState()
   writeHeartbeat()
 end
 
@@ -448,6 +757,7 @@ end
 
 function widget:GameFrame(n)
   if n % 30 == 0 then
+    writeSensorState()
     writeHeartbeat()
   end
 end

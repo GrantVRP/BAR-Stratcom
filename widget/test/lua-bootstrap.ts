@@ -216,7 +216,16 @@ Spring = {
     return __sp_get_team_units(teamId)
   end,
   GetTeamUnitsCounts = function(teamId)
-    return __sp_get_team_units_counts(teamId)
+    local s = __sp_get_team_units_counts_json(teamId)
+    if s and s ~= "" then
+      local raw = Json.decode(s)
+      local res = {}
+      for k, v in pairs(raw) do
+        res[tonumber(k) or k] = v
+      end
+      return res
+    end
+    return {}
   end,
   GetUnitDefID = function(unitId)
     return __sp_get_unit_def_id(unitId)
@@ -232,14 +241,38 @@ Spring = {
   GetUnitIsBeingBuilt = function(unitId)
     return __sp_get_unit_is_being_built(unitId)
   end,
-  GetUnitIsBuilding = function() return nil end,
+  GetUnitIsBuilding = function(unitId)
+    return __sp_get_unit_is_building(unitId)
+  end,
   GetUnitCurrentBuildPower = function(unitId)
     return __sp_get_unit_current_build_power(unitId)
   end,
   GetUnitCommands = function() return {} end,
-  GetUnitCommandCount = function() return 0 end,
-  GetFactoryCommands = function() return {} end,
-  GetVisibleUnits = function(teamId) return __sp_get_team_units(teamId) end,
+  GetUnitCommandCount = function(unitId)
+    return __sp_get_unit_command_count(unitId)
+  end,
+  GetFactoryCommands = function(unitId, count)
+    return __sp_get_factory_commands(unitId, count)
+  end,
+  GetUnitTeam = function(unitId)
+    return __sp_get_unit_team(unitId)
+  end,
+  GetUnitAllyTeam = function(unitId)
+    return __sp_get_unit_ally_team(unitId)
+  end,
+  GetTeamList = function()
+    return __sp_get_team_list()
+  end,
+  GetTeamInfo = function(teamId)
+    local r = __sp_get_team_info(teamId)
+    return r[1], r[2], r[3], r[4], r[5], r[6]
+  end,
+  GetGaiaTeamID = function()
+    return __sp_get_gaia_team_id()
+  end,
+  GetVisibleUnits = function()
+    return __sp_get_visible_units()
+  end,
   GetWind = function()
     local r = __sp_get_wind()
     return r[1], r[2], r[3], r[4]

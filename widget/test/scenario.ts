@@ -15,6 +15,9 @@ export interface ScenarioUnit {
   buildProgress: number;
   currentBuildPower: number;
   position: { x: number; y: number; z: number };
+  commandCount?: number;
+  isUnitBuilding?: boolean;
+  factoryCommands?: unknown[];
 }
 
 export interface ScenarioTeam {

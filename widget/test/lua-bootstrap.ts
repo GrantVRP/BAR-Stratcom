@@ -3,6 +3,9 @@ local json = {}
 local json_null = {}
 json.null = json_null
 
+local array_mt = { __jsontype = "array" }
+json.array = function(t) return setmetatable(t or {}, array_mt) end
+
 local function json_encode(val)
   if val == nil or val == json_null or (type(Json) == "table" and val == Json.null) then
     return "null"
@@ -14,6 +17,8 @@ local function json_encode(val)
     local s = val:gsub('\\\\', '\\\\\\\\'):gsub('"', '\\\\"'):gsub('\\n', '\\\\n'):gsub('\\r', '\\\\r'):gsub('\\t', '\\\\t')
     return '"' .. s .. '"'
   elseif t == "table" then
+    local mt = getmetatable(val)
+    local forced_array = mt and (mt.__jsontype == "array" or mt.__array == true)
     local is_array = true
     local max_i = 0
     local count = 0
@@ -25,7 +30,9 @@ local function json_encode(val)
         is_array = false
       end
     end
-    if is_array and max_i == count and count > 0 then
+    if forced_array and count == 0 then
+      return "[]"
+    elseif is_array and max_i == count and count > 0 then
       local parts = {}
       for i = 1, max_i do
         parts[i] = json_encode(val[i])

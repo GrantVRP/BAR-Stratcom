@@ -93,6 +93,14 @@ local function safeDecode(str)
   return nil
 end
 
+local function makeArray(tbl)
+  tbl = tbl or {}
+  if type(Json) == "table" and type(Json.array) == "function" then
+    return Json.array(tbl)
+  end
+  return setmetatable(tbl, { __jsontype = "array" })
+end
+
 local function detectMode()
   if spIsReplay and spIsReplay() then
     return "replay"
@@ -203,12 +211,228 @@ local function writeHeartbeat()
   atomicWrite("widget.json", heartbeatData)
 end
 
+-- Exporters (05 §5)
+local TRACKED_RAW_FIELDS = {
+  "name",
+  "translatedHumanName",
+  "translatedTooltip",
+  "metalCost",
+  "energyCost",
+  "buildTime",
+  "buildSpeed",
+  "isBuilder",
+  "isFactory",
+  "isBuilding",
+  "canFly",
+  "canMove",
+  "speed",
+  "health",
+  "maxWeaponRange",
+  "sightDistance",
+  "radarDistance",
+  "energyMake",
+  "metalMake",
+  "energyUpkeep",
+  "metalUpkeep",
+  "extractsMetal",
+  "windGenerator",
+  "tidalGenerator",
+  "energyStorage",
+  "metalStorage",
+  "buildOptions"
+}
+
+local ALLOWED_CUSTOM_PARAM_KEYS = {
+  "techlevel",
+  "unitgroup",
+  "iscommander",
+  "energyconv_capacity",
+  "energyconv_efficiency",
+  "faction"
+}
+
+local function getSafeGameVersion()
+  local gv = (Game and Game.gameVersion) or "unknown"
+  return string.gsub(gv, "[^%w%.%-]", "_")
+end
+
+local function exportUnitdefs()
+  local realGameVersion = (Game and Game.gameVersion) or "unknown"
+  local safeVersion = getSafeGameVersion()
+  local filename = "unitdefs-" .. safeVersion .. ".json"
+  local checkFile = io.open(DIR .. filename, "r")
+  if checkFile then
+    checkFile:close()
+    return true
+  end
+
+  if type(UnitDefs) ~= "table" and type(UnitDefs) ~= "userdata" then
+    return false
+  end
+
+  local unitsList = makeArray({})
+  local foundAny = {}
+
+  for _, def in pairs(UnitDefs) do
+    if type(def) == "table" or type(def) == "userdata" then
+      if def.name then
+        -- Convert buildOptions from defIDs to names
+        local convertedBuildOptions = makeArray({})
+        if type(def.buildOptions) == "table" or type(def.buildOptions) == "userdata" then
+          for _, opt in ipairs(def.buildOptions) do
+            if type(opt) == "number" then
+              local bDef = UnitDefs and UnitDefs[opt]
+              if bDef and bDef.name then
+                table.insert(convertedBuildOptions, bDef.name)
+              else
+                table.insert(convertedBuildOptions, tostring(opt))
+              end
+            elseif type(opt) == "string" then
+              table.insert(convertedBuildOptions, opt)
+            end
+          end
+        end
+
+        local u = {
+          name = def.name,
+          translatedHumanName = def.translatedHumanName,
+          translatedTooltip = def.translatedTooltip,
+          metalCost = def.metalCost,
+          energyCost = def.energyCost,
+          buildTime = def.buildTime,
+          buildSpeed = def.buildSpeed,
+          isBuilder = def.isBuilder,
+          isFactory = def.isFactory,
+          isBuilding = def.isBuilding,
+          canFly = def.canFly,
+          canMove = def.canMove,
+          speed = def.speed,
+          health = def.health,
+          maxWeaponRange = def.maxWeaponRange,
+          sightDistance = def.sightDistance or def.losRadius,
+          radarDistance = def.radarDistance or def.radarRadius,
+          energyMake = def.energyMake,
+          metalMake = def.metalMake,
+          energyUpkeep = def.energyUpkeep,
+          metalUpkeep = def.metalUpkeep,
+          extractsMetal = def.extractsMetal,
+          windGenerator = def.windGenerator,
+          tidalGenerator = def.tidalGenerator,
+          energyStorage = def.energyStorage,
+          metalStorage = def.metalStorage,
+          buildOptions = convertedBuildOptions
+        }
+
+        -- Whitelist customParams keys
+        if type(def.customParams) == "table" or type(def.customParams) == "userdata" then
+          local cp = {}
+          local hasCp = false
+          for _, k in ipairs(ALLOWED_CUSTOM_PARAM_KEYS) do
+            if def.customParams[k] ~= nil then
+              cp[k] = def.customParams[k]
+              hasCp = true
+            end
+          end
+          if hasCp then
+            u.customParams = cp
+          end
+        end
+
+        table.insert(unitsList, u)
+
+        -- Track field presence for missingFields
+        for _, fieldName in ipairs(TRACKED_RAW_FIELDS) do
+          if fieldName == "sightDistance" then
+            if def.sightDistance ~= nil or def.losRadius ~= nil then
+              foundAny["sightDistance"] = true
+            end
+          elseif fieldName == "radarDistance" then
+            if def.radarDistance ~= nil or def.radarRadius ~= nil then
+              foundAny["radarDistance"] = true
+            end
+          elseif def[fieldName] ~= nil then
+            foundAny[fieldName] = true
+          end
+        end
+      end
+    end
+  end
+
+  -- Determine missing fields (absent on ALL defs)
+  local missingFields = makeArray({})
+  for _, fieldName in ipairs(TRACKED_RAW_FIELDS) do
+    if not foundAny[fieldName] then
+      table.insert(missingFields, fieldName)
+    end
+  end
+  table.sort(missingFields)
+
+  -- Sort units deterministically by name
+  table.sort(unitsList, function(a, b)
+    return tostring(a.name) < tostring(b.name)
+  end)
+
+  local doc = {
+    protocol = PROTOCOL,
+    kind = "unitdefs",
+    gameVersion = realGameVersion,
+    engineVersion = (Engine and Engine.version) or "unknown",
+    units = unitsList,
+    missingFields = missingFields
+  }
+
+  return atomicWrite(filename, doc)
+end
+
+local function exportWindLookup()
+  local path = DIR .. "wind-lookup.json"
+  local checkFile = io.open(path, "r")
+  if checkFile then
+    checkFile:close()
+    return true
+  end
+
+  local ok, wf = pcall(require, "common/wind_functions")
+  if not ok or (type(wf) ~= "table" and type(wf) ~= "userdata") then
+    return false
+  end
+
+  if type(wf.averageWindLookup) ~= "table" and type(wf.averageWindLookup) ~= "userdata" then
+    return false
+  end
+
+  local exportTable = {}
+  for minKey, maxMap in pairs(wf.averageWindLookup) do
+    local sMin = tostring(minKey)
+    exportTable[sMin] = {}
+    if type(maxMap) == "table" or type(maxMap) == "userdata" then
+      for maxKey, val in pairs(maxMap) do
+        local sMax = tostring(maxKey)
+        if type(val) == "number" then
+          exportTable[sMin][sMax] = val
+        end
+      end
+    end
+  end
+
+  local doc = {
+    protocol = PROTOCOL,
+    kind = "wind-lookup",
+    gameVersion = (Game and Game.gameVersion) or "unknown",
+    table = exportTable
+  }
+
+  return atomicWrite("wind-lookup.json", doc)
+end
+
 -- Call-ins (05 §4)
 function widget:Initialize()
   if spCreateDir then
     spCreateDir("stratcom")
   end
   runProbe()
+  exportUnitdefs()
+  exportWindLookup()
   writeHeartbeat()
 end
 

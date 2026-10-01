@@ -438,6 +438,45 @@
       "missing": []
     },
     {
+      "id": "corllt",
+      "name": "Light Laser Tower",
+      "tooltip": "Basic anti-ground defense",
+      "factionId": "cortex",
+      "techLevel": 1,
+      "unitGroup": "defense",
+      "metalCost": 80,
+      "energyCost": 400,
+      "buildTime": 1000,
+      "buildSpeed": 0,
+      "isBuilder": false,
+      "isFactory": false,
+      "isBuilding": true,
+      "isCommander": false,
+      "canFly": false,
+      "canMove": false,
+      "buildOptions": [],
+      "economy": {
+        "energyMake": 0,
+        "metalMake": 0,
+        "energyUpkeep": 0,
+        "metalUpkeep": 0,
+        "extractsMetal": 0,
+        "windGenerator": 0,
+        "tidalGenerator": 0,
+        "energyStorage": 0,
+        "metalStorage": 0,
+        "converter": null
+      },
+      "combat": {
+        "health": 600,
+        "speed": 0,
+        "maxWeaponRange": 430,
+        "sightDistance": 450,
+        "radarDistance": 0
+      },
+      "missing": []
+    },
+    {
       "id": "armpw",
       "name": "Pawn",
       "tooltip": "Fast light infantry bot",
@@ -571,7 +610,7 @@
       "isCommander": true,
       "canFly": false,
       "canMove": true,
-      "buildOptions": ["cormex", "corlab"],
+      "buildOptions": ["cormex", "corlab", "corllt"],
       "economy": {
         "energyMake": 25,
         "metalMake": 1,

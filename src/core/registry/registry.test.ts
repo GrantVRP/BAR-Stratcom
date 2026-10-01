@@ -41,6 +41,7 @@ const testAliases: AliasesFile = {
   aliases: [
     { alias: 'Pawn', unitId: 'armpw', kind: 'legacy-name' },
     { alias: 'LLT', unitId: 'armllt', kind: 'abbreviation' },
+    { alias: 'LLT', unitId: 'corllt', kind: 'abbreviation' },
     { alias: 'Mex', unitId: 'armmex', kind: 'nickname' },
     { alias: 'Mex', unitId: 'cormex', kind: 'nickname' },
     { alias: 'GhostUnit', unitId: 'nonexistent', kind: 'nickname' }
@@ -82,19 +83,46 @@ describe('Registry', () => {
     });
 
     it('resolves exact current name (case-insensitive, whitespace collapsed)', () => {
-      const res = registry.resolve('  Light   Laser   Tower  ');
+      const res = registry.resolve('  Light   Laser   Tower  ', 'armada');
       expect(res.kind).toBe('unit');
       if (res.kind === 'unit') {
         expect(res.unit.id).toBe('armllt');
       }
     });
 
-    it('resolves exact alias', () => {
-      const res = registry.resolve('LLT');
+    it('resolves exact alias when unique', () => {
+      const res = registry.resolve('Pawn');
       expect(res.kind).toBe('unit');
       if (res.kind === 'unit') {
-        expect(res.unit.id).toBe('armllt');
+        expect(res.unit.id).toBe('armpw');
       }
+    });
+
+    it('resolves cross-faction alias when narrowed by faction (03 §3, T01.7)', () => {
+      const resArm = registry.resolve('LLT', 'armada');
+      expect(resArm.kind).toBe('unit');
+      if (resArm.kind === 'unit') {
+        expect(resArm.unit.id).toBe('armllt');
+      }
+
+      const resCor = registry.resolve('LLT', 'cortex');
+      expect(resCor.kind).toBe('unit');
+      if (resCor.kind === 'unit') {
+        expect(resCor.unit.id).toBe('corllt');
+      }
+    });
+
+    it('returns ambiguous for cross-faction alias without faction (03 §3, T01.7)', () => {
+      const res = registry.resolve('LLT');
+      expect(res.kind).toBe('ambiguous');
+      if (res.kind === 'ambiguous') {
+        expect(res.candidates.map((c) => c.id).sort()).toEqual(['armllt', 'corllt']);
+      }
+    });
+
+    it('returns none for dropped same-faction ambiguous alias (T01.7)', () => {
+      const res = registry.resolve('Raider', 'cortex');
+      expect(res.kind).toBe('none');
     });
 
     it('returns ambiguous when multiple units share the same current name without faction', () => {

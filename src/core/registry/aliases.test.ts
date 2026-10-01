@@ -15,15 +15,50 @@ describe('data/aliases.json validation and invariants (03 §3, T01.4)', () => {
     expect(aliasesFile.aliases.length).toBeGreaterThan(0);
   });
 
-  it('enforces that all aliases are unique after normalization', () => {
+  function factionOf(unitId: string): string {
+    const lower = unitId.toLowerCase();
+    for (const f of factionsFile.factions) {
+      if (lower.startsWith(f.unitPrefix.toLowerCase())) return f.id;
+    }
+    return 'unknown';
+  }
+
+  it('enforces that all aliases are unique per (normalized alias, faction)', () => {
     const seen = new Map<string, string>();
     for (const entry of aliasesFile.aliases) {
       const norm = normalizeLookupKey(entry.alias);
+      const faction = factionOf(entry.unitId);
+      const key = `${norm}::${faction}`;
       expect(
-        seen.has(norm),
-        `Duplicate alias found after normalization: "${entry.alias}" (key: "${norm}") already mapped to ${seen.get(norm)}`
+        seen.has(key),
+        `Duplicate alias found for faction ${faction}: "${entry.alias}" (key: "${norm}") already mapped to ${seen.get(key)}`
       ).toBe(false);
-      seen.set(norm, entry.unitId);
+      seen.set(key, entry.unitId);
+    }
+  });
+
+  it('enforces that no alias maps to two units within one faction', () => {
+    const aliasToFactions = new Map<string, Map<string, Set<string>>>();
+    for (const entry of aliasesFile.aliases) {
+      const norm = normalizeLookupKey(entry.alias);
+      const faction = factionOf(entry.unitId);
+      if (!aliasToFactions.has(norm)) {
+        aliasToFactions.set(norm, new Map());
+      }
+      const factionMap = aliasToFactions.get(norm)!;
+      if (!factionMap.has(faction)) {
+        factionMap.set(faction, new Set());
+      }
+      factionMap.get(faction)!.add(entry.unitId);
+    }
+
+    for (const [norm, factionMap] of aliasToFactions.entries()) {
+      for (const [faction, units] of factionMap.entries()) {
+        expect(
+          units.size,
+          `Alias "${norm}" maps to multiple units in faction ${faction}: ${Array.from(units).join(', ')}`
+        ).toBe(1);
+      }
     }
   });
 

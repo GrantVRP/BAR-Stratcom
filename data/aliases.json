@@ -2,8 +2,78 @@
   "schemaVersion": 1,
   "aliases": [
     {
+      "alias": "Advanced Fusion",
+      "unitId": "armafus",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Advanced Fusion",
+      "unitId": "corafus",
+      "kind": "legacy-name"
+    },
+    {
       "alias": "Advanced Mex",
       "unitId": "armamex",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Advanced Solar",
+      "unitId": "armadvsol",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Advanced Solar",
+      "unitId": "coradvsol",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Advanced Solar Generator",
+      "unitId": "armadvsol",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Advanced Solar Generator",
+      "unitId": "coradvsol",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "AFUS",
+      "unitId": "armafus",
+      "kind": "abbreviation"
+    },
+    {
+      "alias": "AFUS",
+      "unitId": "corafus",
+      "kind": "abbreviation"
+    },
+    {
+      "alias": "Air Plant",
+      "unitId": "armap",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Air Plant",
+      "unitId": "corap",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Air Transport",
+      "unitId": "armatlas",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Air Transport",
+      "unitId": "corvalk",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Aircraft Factory",
+      "unitId": "armap",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Aircraft Factory",
+      "unitId": "corap",
       "kind": "legacy-name"
     },
     {
@@ -62,6 +132,36 @@
       "kind": "nickname"
     },
     {
+      "alias": "Con Air",
+      "unitId": "armca",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Con Air",
+      "unitId": "corca",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Con Bot",
+      "unitId": "armck",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Con Bot",
+      "unitId": "corck",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Con Vehicle",
+      "unitId": "armcv",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Con Vehicle",
+      "unitId": "corcv",
+      "kind": "legacy-name"
+    },
+    {
       "alias": "Cortex Bomber",
       "unitId": "corshad",
       "kind": "legacy-name"
@@ -97,6 +197,26 @@
       "kind": "legacy-name"
     },
     {
+      "alias": "Dragon's Teeth",
+      "unitId": "armdrag",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Dragon's Teeth",
+      "unitId": "cordrag",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Dragons Teeth",
+      "unitId": "armdrag",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Dragons Teeth",
+      "unitId": "cordrag",
+      "kind": "legacy-name"
+    },
+    {
       "alias": "Fav",
       "unitId": "corfav",
       "kind": "nickname"
@@ -124,6 +244,16 @@
     {
       "alias": "Freedom Fighter",
       "unitId": "armfig",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Fusion",
+      "unitId": "armfus",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Fusion",
+      "unitId": "corfus",
       "kind": "legacy-name"
     },
     {
@@ -182,12 +312,52 @@
       "kind": "legacy-name"
     },
     {
+      "alias": "Light Laser Tower",
+      "unitId": "armllt",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Light Laser Tower",
+      "unitId": "corllt",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "LLT",
+      "unitId": "armllt",
+      "kind": "abbreviation"
+    },
+    {
+      "alias": "LLT",
+      "unitId": "corllt",
+      "kind": "abbreviation"
+    },
+    {
+      "alias": "Mex",
+      "unitId": "armmex",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Mex",
+      "unitId": "cormex",
+      "kind": "legacy-name"
+    },
+    {
       "alias": "Moho Mine",
       "unitId": "armamex",
       "kind": "nickname"
     },
     {
       "alias": "Nano",
+      "unitId": "cornanotc",
+      "kind": "nickname"
+    },
+    {
+      "alias": "Nano Turret",
+      "unitId": "armnanotc",
+      "kind": "nickname"
+    },
+    {
+      "alias": "Nano Turret",
       "unitId": "cornanotc",
       "kind": "nickname"
     },
@@ -212,6 +382,16 @@
       "kind": "legacy-name"
     },
     {
+      "alias": "Radar",
+      "unitId": "armrad",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Radar",
+      "unitId": "corrad",
+      "kind": "legacy-name"
+    },
+    {
       "alias": "Rapier",
       "unitId": "corape",
       "kind": "legacy-name"
@@ -232,6 +412,26 @@
       "kind": "legacy-name"
     },
     {
+      "alias": "Shadow",
+      "unitId": "armthund",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Shadow",
+      "unitId": "corshad",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Solar",
+      "unitId": "armsolar",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Solar",
+      "unitId": "corsolar",
+      "kind": "legacy-name"
+    },
+    {
       "alias": "Sparrow",
       "unitId": "armpeep",
       "kind": "legacy-name"
@@ -247,8 +447,58 @@
       "kind": "legacy-name"
     },
     {
+      "alias": "T2 Aircraft Plant",
+      "unitId": "armaap",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Aircraft Plant",
+      "unitId": "coraap",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Bot Lab",
+      "unitId": "armalab",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Bot Lab",
+      "unitId": "coralab",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Con Air",
+      "unitId": "armaca",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Con Air",
+      "unitId": "coraca",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Con Bot",
+      "unitId": "armack",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Con Bot",
+      "unitId": "corack",
+      "kind": "legacy-name"
+    },
+    {
       "alias": "T2 Con Vehicle",
       "unitId": "coracv",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Vehicle Plant",
+      "unitId": "armavp",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "T2 Vehicle Plant",
+      "unitId": "coravp",
       "kind": "legacy-name"
     },
     {
@@ -269,6 +519,26 @@
     {
       "alias": "Warrior",
       "unitId": "armwar",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Wind",
+      "unitId": "armwin",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Wind",
+      "unitId": "corwin",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Wind Generator",
+      "unitId": "armwin",
+      "kind": "legacy-name"
+    },
+    {
+      "alias": "Wind Generator",
+      "unitId": "corwin",
       "kind": "legacy-name"
     },
     {

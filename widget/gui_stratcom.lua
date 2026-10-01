@@ -65,6 +65,8 @@ local currentSessionId = nil
 local timeSinceHeartbeat = 0
 local snapshotSeq = 0
 local lastSnapshotMs = 0
+local startRecorded = false
+local eventBuffer = {}
 
 local config = {
   hudX = nil,
@@ -155,39 +157,17 @@ local function resolveFaction(teamId)
 end
 
 local function getResources(teamId)
-  if not spGetTeamResources then
-    local zeroRes = {
-      current = 0, storage = 0, pull = 0, income = 0,
-      expense = 0, share = 0, sent = 0, received = 0
+  local function readRes(resType)
+    if not spGetTeamResources then
+      return { current = 0, storage = 0, pull = 0, income = 0, expense = 0, share = 0, sent = 0, received = 0 }
+    end
+    local c, s, p, i, e, sh, se, r = spGetTeamResources(teamId, resType)
+    return {
+      current = c or 0, storage = s or 0, pull = p or 0, income = i or 0,
+      expense = e or 0, share = sh or 0, sent = se or 0, received = r or 0
     }
-    return { metal = zeroRes, energy = zeroRes }
   end
-
-  local mc, ms, mp, mi, me, msh, mse, mr = spGetTeamResources(teamId, "metal")
-  local ec, es, ep, ei, ee, esh, ese, er = spGetTeamResources(teamId, "energy")
-
-  return {
-    metal = {
-      current = mc or 0,
-      storage = ms or 0,
-      pull = mp or 0,
-      income = mi or 0,
-      expense = me or 0,
-      share = msh or 0,
-      sent = mse or 0,
-      received = mr or 0
-    },
-    energy = {
-      current = ec or 0,
-      storage = es or 0,
-      pull = ep or 0,
-      income = ei or 0,
-      expense = ee or 0,
-      share = esh or 0,
-      sent = ese or 0,
-      received = er or 0
-    }
-  }
+  return { metal = readRes("metal"), energy = readRes("energy") }
 end
 
 local function resolveWindInfo(wMin, wMax)
@@ -297,12 +277,147 @@ local function writeHeartbeat()
   atomicWrite("widget.json", heartbeatData)
 end
 
+-- Recorder & Session (05 §7, 03 §7.3, §7.7)
+local function recordEvent(evt)
+  table.insert(eventBuffer, evt)
+end
+
+local function flushEvents()
+  if #eventBuffer == 0 or not currentSessionId then
+    return
+  end
+  local path = DIR .. "events-" .. currentSessionId .. ".ndjson"
+  local f = io.open(path, "a")
+  if not f then
+    return
+  end
+  for _, evt in ipairs(eventBuffer) do
+    f:write(Json.encode(evt) .. "\n")
+  end
+  f:close()
+  eventBuffer = {}
+end
+
+local function isTrackedTeam(teamId)
+  if type(teamId) ~= "number" then
+    return false
+  end
+  local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
+  if teamId == gaiaTeam then
+    return false
+  end
+  local isReplay = (spIsReplay and spIsReplay()) or false
+  local isSpec = (spGetSpectatingState and spGetSpectatingState()) or false
+  if isSpec or isReplay then
+    return true
+  end
+  local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
+  return teamId == myTeam
+end
+
+local function getTeamInfoDetails(tId)
+  local allyTeamId, leaderId, isAiTeam = 0, nil, false
+  if spGetTeamInfo then
+    local _, lId, _, isAi, _, aId = spGetTeamInfo(tId)
+    leaderId, isAiTeam, allyTeamId = lId, (isAi == true), aId or 0
+  end
+  local playerName = "Player " .. tostring(tId)
+  if leaderId and spGetPlayerInfo then
+    local pName = spGetPlayerInfo(leaderId)
+    if pName and pName ~= "" then playerName = pName end
+  end
+  return allyTeamId, isAiTeam, playerName, resolveFaction(tId)
+end
+
+local function writeSessionFile(hasStart)
+  if not currentSessionId then
+    return
+  end
+  local mode = detectMode()
+  if mode == "pregame" then
+    mode = "player"
+  end
+
+  local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
+  local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
+  local teamList = (spGetTeamList and spGetTeamList()) or {}
+  local teamsList = makeArray({})
+
+  for _, tId in ipairs(teamList) do
+    if tId ~= gaiaTeam then
+      local allyTeamId, isAiTeam, playerName, tFaction = getTeamInfoDetails(tId)
+      table.insert(teamsList, {
+        teamId = tId,
+        allyTeamId = allyTeamId,
+        playerName = playerName,
+        factionId = tFaction or jsonNull,
+        isAI = isAiTeam,
+        isMe = (mode == "player" and tId == myTeam)
+      })
+    end
+  end
+
+  if #teamsList == 0 then
+    table.insert(teamsList, {
+      teamId = myTeam,
+      allyTeamId = (spGetMyAllyTeamID and spGetMyAllyTeamID()) or 0,
+      playerName = "Player " .. tostring(myTeam),
+      factionId = resolveFaction(myTeam) or jsonNull,
+      isAI = false,
+      isMe = (mode == "player")
+    })
+  end
+
+  table.sort(teamsList, function(a, b) return a.teamId < b.teamId end)
+
+  local startObj = jsonNull
+  if hasStart and mode == "player" then
+    local mc, ms, ec, es = 0, 0, 0, 0
+    if spGetTeamResources then
+      local rM1, rM2 = spGetTeamResources(myTeam, "metal")
+      local rE1, rE2 = spGetTeamResources(myTeam, "energy")
+      mc, ms = rM1 or 0, rM2 or 0
+      ec, es = rE1 or 0, rE2 or 0
+    end
+    startObj = {
+      metal = mc,
+      energy = ec,
+      metalStorage = ms,
+      energyStorage = es
+    }
+  end
+
+  local sessionDoc = {
+    protocol = PROTOCOL,
+    kind = "session",
+    sessionId = currentSessionId,
+    mode = mode,
+    gameVersion = (Game and Game.gameVersion) or "unknown",
+    engineVersion = (Engine and Engine.version) or "unknown",
+    map = {
+      scriptName = (Game and Game.mapName) or "unknown",
+      windMin = (Game and Game.windMin) or 0,
+      windMax = (Game and Game.windMax) or 0,
+      tidal = (Game and Game.tidal) or 0
+    },
+    teams = teamsList,
+    start = startObj
+  }
+
+  atomicWrite("session-" .. currentSessionId .. ".json", sessionDoc)
+end
+
 local function writeSensorState()
   local t0 = spGetTimer and spGetTimer()
   snapshotSeq = snapshotSeq + 1
 
   if not currentSessionId then
     currentSessionId = string.format("%s-%04x", os.date("!%Y%m%d-%H%M%S"), math.random(0, 0xffff))
+  end
+
+  if not startRecorded then
+    startRecorded = true
+    writeSessionFile(true)
   end
 
   local mode = detectMode()
@@ -341,23 +456,7 @@ local function writeSensorState()
 
     for _, tId in ipairs(teamList) do
       if tId ~= gaiaTeam then
-        local allyTeamId = 0
-        local leaderId = nil
-        if spGetTeamInfo then
-          local _, lId, _, _, _, aId = spGetTeamInfo(tId)
-          leaderId = lId
-          allyTeamId = aId or 0
-        end
-
-        local playerName = "Player " .. tostring(tId)
-        if leaderId and spGetPlayerInfo then
-          local pName = spGetPlayerInfo(leaderId)
-          if pName and pName ~= "" then
-            playerName = pName
-          end
-        end
-
-        local tFaction = resolveFaction(tId)
+        local allyTeamId, _, playerName, tFaction = getTeamInfoDetails(tId)
         local tRes = getResources(tId)
 
         local tCounts = {}
@@ -518,42 +617,15 @@ end
 
 -- Exporters (05 §5)
 local TRACKED_RAW_FIELDS = {
-  "name",
-  "translatedHumanName",
-  "translatedTooltip",
-  "metalCost",
-  "energyCost",
-  "buildTime",
-  "buildSpeed",
-  "isBuilder",
-  "isFactory",
-  "isBuilding",
-  "canFly",
-  "canMove",
-  "speed",
-  "health",
-  "maxWeaponRange",
-  "sightDistance",
-  "radarDistance",
-  "energyMake",
-  "metalMake",
-  "energyUpkeep",
-  "metalUpkeep",
-  "extractsMetal",
-  "windGenerator",
-  "tidalGenerator",
-  "energyStorage",
-  "metalStorage",
-  "buildOptions"
+  "name", "translatedHumanName", "translatedTooltip", "metalCost", "energyCost",
+  "buildTime", "buildSpeed", "isBuilder", "isFactory", "isBuilding", "canFly", "canMove",
+  "speed", "health", "maxWeaponRange", "sightDistance", "radarDistance", "energyMake",
+  "metalMake", "energyUpkeep", "metalUpkeep", "extractsMetal", "windGenerator",
+  "tidalGenerator", "energyStorage", "metalStorage", "buildOptions"
 }
 
 local ALLOWED_CUSTOM_PARAM_KEYS = {
-  "techlevel",
-  "unitgroup",
-  "iscommander",
-  "energyconv_capacity",
-  "energyconv_efficiency",
-  "faction"
+  "techlevel", "unitgroup", "iscommander", "energyconv_capacity", "energyconv_efficiency", "faction"
 }
 
 local function getSafeGameVersion()
@@ -599,33 +671,14 @@ local function exportUnitdefs()
         end
 
         local u = {
-          name = def.name,
-          translatedHumanName = def.translatedHumanName,
-          translatedTooltip = def.translatedTooltip,
-          metalCost = def.metalCost,
-          energyCost = def.energyCost,
-          buildTime = def.buildTime,
-          buildSpeed = def.buildSpeed,
-          isBuilder = def.isBuilder,
-          isFactory = def.isFactory,
-          isBuilding = def.isBuilding,
-          canFly = def.canFly,
-          canMove = def.canMove,
-          speed = def.speed,
-          health = def.health,
-          maxWeaponRange = def.maxWeaponRange,
-          sightDistance = def.sightDistance or def.losRadius,
-          radarDistance = def.radarDistance or def.radarRadius,
-          energyMake = def.energyMake,
-          metalMake = def.metalMake,
-          energyUpkeep = def.energyUpkeep,
-          metalUpkeep = def.metalUpkeep,
-          extractsMetal = def.extractsMetal,
-          windGenerator = def.windGenerator,
-          tidalGenerator = def.tidalGenerator,
-          energyStorage = def.energyStorage,
-          metalStorage = def.metalStorage,
-          buildOptions = convertedBuildOptions
+          name = def.name, translatedHumanName = def.translatedHumanName, translatedTooltip = def.translatedTooltip,
+          metalCost = def.metalCost, energyCost = def.energyCost, buildTime = def.buildTime, buildSpeed = def.buildSpeed,
+          isBuilder = def.isBuilder, isFactory = def.isFactory, isBuilding = def.isBuilding, canFly = def.canFly, canMove = def.canMove,
+          speed = def.speed, health = def.health, maxWeaponRange = def.maxWeaponRange,
+          sightDistance = def.sightDistance or def.losRadius, radarDistance = def.radarDistance or def.radarRadius,
+          energyMake = def.energyMake, metalMake = def.metalMake, energyUpkeep = def.energyUpkeep, metalUpkeep = def.metalUpkeep,
+          extractsMetal = def.extractsMetal, windGenerator = def.windGenerator, tidalGenerator = def.tidalGenerator,
+          energyStorage = def.energyStorage, metalStorage = def.metalStorage, buildOptions = convertedBuildOptions
         }
 
         -- Whitelist customParams keys
@@ -732,6 +785,8 @@ end
 
 -- Call-ins (05 §4)
 function widget:Initialize()
+  startRecorded = false
+  eventBuffer = {}
   if spCreateDir then
     spCreateDir("stratcom")
   end
@@ -746,18 +801,38 @@ function widget:GameStart()
   if not currentSessionId then
     currentSessionId = string.format("%s-%04x", os.date("!%Y%m%d-%H%M%S"), math.random(0, 0xffff))
   end
+  writeSessionFile(false)
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  recordEvent({ f = frame, e = "gamestart" })
   writeSensorState()
   writeHeartbeat()
 end
 
 function widget:GameOver(winners)
   gameOver = true
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  local evt = { f = frame, e = "gameover" }
+  if type(winners) == "table" or type(winners) == "userdata" then
+    local wList = makeArray({})
+    for i = 1, #winners do
+      local w = winners[i]
+      if type(w) == "number" then
+        table.insert(wList, w)
+      end
+    end
+    if #wList > 0 then
+      evt.w = wList
+    end
+  end
+  recordEvent(evt)
+  flushEvents()
   writeHeartbeat()
 end
 
 function widget:GameFrame(n)
   if n % 30 == 0 then
     writeSensorState()
+    flushEvents()
     writeHeartbeat()
   end
 end
@@ -773,7 +848,95 @@ function widget:Update(dt)
 end
 
 function widget:Shutdown()
+  flushEvents()
   writeHeartbeat()
+end
+
+function widget:UnitCreated(unitID, unitDefID, unitTeam, builderID)
+  if not isTrackedTeam(unitTeam) then
+    return
+  end
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  local def = UnitDefs and UnitDefs[unitDefID]
+  local dName = (def and def.name) or ""
+  local evt = {
+    f = frame,
+    e = "created",
+    u = unitID,
+    d = dName,
+    tm = unitTeam
+  }
+  if type(builderID) == "number" then
+    evt.b = builderID
+    local bDefId = spGetUnitDefID and spGetUnitDefID(builderID)
+    local bDef = bDefId and UnitDefs and UnitDefs[bDefId]
+    evt.bd = (bDef and bDef.name) or jsonNull
+  end
+  recordEvent(evt)
+end
+
+function widget:UnitFinished(unitID, unitDefID, unitTeam)
+  if not isTrackedTeam(unitTeam) then
+    return
+  end
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  local def = UnitDefs and UnitDefs[unitDefID]
+  local dName = (def and def.name) or ""
+  recordEvent({
+    f = frame,
+    e = "finished",
+    u = unitID,
+    d = dName,
+    tm = unitTeam
+  })
+end
+
+function widget:UnitDestroyed(unitID, unitDefID, unitTeam, attackerID, attackerDefID, attackerTeam)
+  if not isTrackedTeam(unitTeam) then
+    return
+  end
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  local def = UnitDefs and UnitDefs[unitDefID]
+  local dName = (def and def.name) or ""
+  recordEvent({
+    f = frame,
+    e = "destroyed",
+    u = unitID,
+    d = dName,
+    tm = unitTeam
+  })
+end
+
+function widget:UnitGiven(unitID, unitDefID, newTeam, oldTeam)
+  if not isTrackedTeam(newTeam) then
+    return
+  end
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  local def = UnitDefs and UnitDefs[unitDefID]
+  local dName = (def and def.name) or ""
+  recordEvent({
+    f = frame,
+    e = "given",
+    u = unitID,
+    d = dName,
+    tm = newTeam
+  })
+end
+
+function widget:UnitTaken(unitID, unitDefID, oldTeam, newTeam)
+  if not isTrackedTeam(oldTeam) then
+    return
+  end
+  local frame = (spGetGameFrame and spGetGameFrame()) or 0
+  local def = UnitDefs and UnitDefs[unitDefID]
+  local dName = (def and def.name) or ""
+  recordEvent({
+    f = frame,
+    e = "taken",
+    u = unitID,
+    d = dName,
+    tm = oldTeam
+  })
 end
 
 function widget:GetConfigData()

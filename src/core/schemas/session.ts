@@ -54,7 +54,8 @@ export const SessionMetaSchema = z
     planId: z.string().optional(),
     source: SessionSourceSchema,
     anonymized: z.boolean(),
-    replay: SessionReplaySchema.optional()
+    replay: SessionReplaySchema.optional(),
+    notes: z.string().optional()
   })
   .strict();
 

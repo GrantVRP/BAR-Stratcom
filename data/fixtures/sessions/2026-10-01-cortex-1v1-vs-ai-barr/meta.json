@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-01-cortex-1v1-vs-ai-barr",
+  "mode": "player",
+  "gameVersion": "test-31479-433a460",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "BarR 1.1",
+  "durationSec": 899.000061,
+  "startedAt": "2026-10-01T22:13:16.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "Player",
+      "factionId": "cortex",
+      "isMe": true
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "AI",
+      "factionId": null,
+      "isMe": false
+    }
+  ],
+  "start": {
+    "metal": 1000,
+    "energy": 1000,
+    "metalStorage": 1000,
+    "energyStorage": 1000
+  },
+  "source": "fixture",
+  "anonymized": true,
+  "notes": "repaired factionId and startUnitId; repaired AI team playerName"
+}

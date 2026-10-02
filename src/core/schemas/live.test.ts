@@ -108,6 +108,24 @@ describe('live schemas', () => {
       expect(LiveSnapshotSchema.parse(specSnapshot)).toEqual(specSnapshot);
     });
 
+    it('normalizes empty array counts and enemies to empty record (Lua JSON compatibility)', () => {
+      const withEmptyArrays = {
+        ...validSnapshot,
+        counts: [],
+        enemies: [],
+        teams: [
+          {
+            ...validTeamState,
+            counts: []
+          }
+        ]
+      };
+      const parsed = LiveSnapshotSchema.parse(withEmptyArrays);
+      expect(parsed.counts).toEqual({});
+      expect(parsed.enemies).toEqual({});
+      expect(parsed.teams?.[0]?.counts).toEqual({});
+    });
+
     it('rejects invalid snapshot', () => {
       expect(LiveSnapshotSchema.safeParse({ ...validSnapshot, frame: 1.5 }).success).toBe(false);
       expect(LiveSnapshotSchema.safeParse({ ...validSnapshot, commander: { alive: true } }).success).toBe(

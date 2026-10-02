@@ -15,6 +15,9 @@ export const ResSchema = z
 
 export type Res = z.infer<typeof ResSchema>;
 
+const emptyArrayToRecord = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((val) => (Array.isArray(val) && val.length === 0 ? {} : val), schema);
+
 export const TeamStateSchema = z
   .object({
     teamId: z.number().int(),
@@ -27,14 +30,16 @@ export const TeamStateSchema = z
         energy: ResSchema
       })
       .strict(),
-    counts: z.record(
-      z.string(),
-      z
-        .object({
-          alive: z.number().int(),
-          building: z.number().int()
-        })
-        .strict()
+    counts: emptyArrayToRecord(
+      z.record(
+        z.string(),
+        z
+          .object({
+            alive: z.number().int(),
+            building: z.number().int()
+          })
+          .strict()
+      )
     ),
     bp: z
       .object({
@@ -76,14 +81,16 @@ export const LiveSnapshotSchema = z
       })
       .strict()
       .nullable(),
-    counts: z.record(
-      z.string(),
-      z
-        .object({
-          alive: z.number().int(),
-          building: z.number().int()
-        })
-        .strict()
+    counts: emptyArrayToRecord(
+      z.record(
+        z.string(),
+        z
+          .object({
+            alive: z.number().int(),
+            building: z.number().int()
+          })
+          .strict()
+      )
     ),
     builders: z
       .object({
@@ -109,7 +116,7 @@ export const LiveSnapshotSchema = z
         active: z.number()
       })
       .strict(),
-    enemies: z.record(z.string(), z.number().int()),
+    enemies: emptyArrayToRecord(z.record(z.string(), z.number().int())),
     teams: z.array(TeamStateSchema).optional()
   })
   .strict();

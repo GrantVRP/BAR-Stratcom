@@ -96,6 +96,11 @@ describe('session schemas', () => {
       expect(SessionMetaSchema.parse(minimalSession)).toEqual(minimalSession);
     });
 
+    it('accepts optional notes string in session meta', () => {
+      const withNotes = { ...validSessionMeta, notes: 'repaired factionId; owner game vs AI' };
+      expect(SessionMetaSchema.parse(withNotes).notes).toBe('repaired factionId; owner game vs AI');
+    });
+
     it('rejects invalid session meta', () => {
       expect(SessionMetaSchema.safeParse({ ...validSessionMeta, schemaVersion: 2 }).success).toBe(false);
       expect(SessionMetaSchema.safeParse({ ...validSessionMeta, source: 'unknown' }).success).toBe(false);

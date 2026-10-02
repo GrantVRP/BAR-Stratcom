@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-02-multi-large-team-owner-vs-ai-dworld",
+  "mode": "replay",
+  "gameVersion": "test-31320-e17e8b7",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "DWorld_V4",
+  "durationSec": 899.000061,
+  "startedAt": "2026-10-02T16:18:08.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "Player",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 4,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 5,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 6,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 7,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 8,
+      "allyTeamId": 0,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 9,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 10,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 11,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 12,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 13,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 14,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 15,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 16,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 17,
+      "allyTeamId": 1,
+      "playerName": "millr",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "notes": "repaired factionId and startUnitId; owner game vs AI, not a pro reference; widget-3.0.0 replay team names may be unreliable"
+}

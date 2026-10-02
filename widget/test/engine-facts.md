@@ -40,3 +40,9 @@ Per **Standing Order S-7**, test doubles, harnesses, and scenario builders **mus
 4. **Replay Auto-Start**:
    - In replays or mid-game loads, `Spring.GetGameFrame()` can be `> 0` at `Initialize`.
    - Widget must trigger session initialization immediately when `frame > 0`.
+
+5. **JSON Serialization of Empty Tables (`Json.encode`)**:
+   - Empty Lua tables (`{}`) have no keys, and the Recoil engine's `Json.encode({})` encodes them as `[]` (empty JSON array), never `{}`.
+   - Any record/map field (`counts`, `enemies`, `teams[].counts`) that may be empty in Lua will appear as `[]` in raw JSON exports.
+   - Domain schemas accept `[]` via Zod preprocess and normalize it to `{}`.
+

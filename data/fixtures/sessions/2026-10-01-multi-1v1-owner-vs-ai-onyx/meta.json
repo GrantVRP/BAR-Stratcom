@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-01-multi-1v1-owner-vs-ai-onyx",
+  "mode": "replay",
+  "gameVersion": "test-31479-433a460",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Onyx Cauldron 2.2.2",
+  "durationSec": 899.000061,
+  "startedAt": "2026-10-01T21:38:12.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "Player",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "AI",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "notes": "repaired factionId and startUnitId; repaired AI team playerName; owner game vs AI, not a pro reference; widget-3.0.0 replay team names may be unreliable"
+}

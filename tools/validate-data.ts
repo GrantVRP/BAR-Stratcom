@@ -4,9 +4,13 @@ import {
   AliasesFileSchema,
   FactionsFileSchema,
   MapsFileSchema,
+  SessionMetaSchema,
   SnapshotIndexSchema,
-  UnitSnapshotSchema
+  StateDocSchema,
+  UnitSnapshotSchema,
+  WidgetEventSchema
 } from '../src/core/schemas';
+import { getStateFilePath, readStateLines } from './lib/state-reader';
 
 function findJsonFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) {
@@ -55,12 +59,83 @@ for (const file of jsonFiles) {
     } else if (relPath.replace(/\\/g, '/').includes('snapshots/') && file.endsWith('units.json')) {
       UnitSnapshotSchema.parse(parsed);
       console.log(`validate:data: OK (unit snapshot schema) ${relPath}`);
+    } else if (relPath.replace(/\\/g, '/').includes('fixtures/sessions/') && file.endsWith('meta.json')) {
+      SessionMetaSchema.parse(parsed);
+      console.log(`validate:data: OK (session meta schema) ${relPath}`);
     } else {
       console.log(`validate:data: OK (json) ${relPath}`);
     }
   } catch (err) {
     console.error(`validate:data: ERROR ${relPath}:`, err);
     hasErrors = true;
+  }
+}
+
+// Fixture sessions validation (T03.2)
+const fixturesDir = path.resolve(dataDir, 'fixtures', 'sessions');
+if (fs.existsSync(fixturesDir)) {
+  const sessionDirs = fs.readdirSync(fixturesDir, { withFileTypes: true }).filter((d) => d.isDirectory());
+  for (const sessionDir of sessionDirs) {
+    const fixturePath = path.join(fixturesDir, sessionDir.name);
+    const relFixturePath = path.relative(process.cwd(), fixturePath);
+
+    // 0. meta.json
+    const metaPath = path.join(fixturePath, 'meta.json');
+    if (!fs.existsSync(metaPath)) {
+      console.error(`validate:data: ERROR missing meta.json in ${relFixturePath}`);
+      hasErrors = true;
+    }
+
+    // 1. events.ndjson validation
+    const eventsPath = path.join(fixturePath, 'events.ndjson');
+    if (!fs.existsSync(eventsPath)) {
+      console.error(`validate:data: ERROR missing events.ndjson in ${relFixturePath}`);
+      hasErrors = true;
+    } else {
+      try {
+        const eventsContent = fs.readFileSync(eventsPath, 'utf-8');
+        const lines = eventsContent.split(/\r?\n/).filter((l) => l.trim().length > 0);
+        for (let i = 0; i < lines.length; i++) {
+          WidgetEventSchema.parse(JSON.parse(lines[i]!));
+        }
+        console.log(`validate:data: OK (${lines.length} events) ${path.join(relFixturePath, 'events.ndjson')}`);
+      } catch (err) {
+        console.error(`validate:data: ERROR invalid events in ${relFixturePath}:`, err);
+        hasErrors = true;
+      }
+    }
+
+    // 2. state.ndjson / state.ndjson.gz validation via readStateLines
+    try {
+      const stateFile = getStateFilePath(fixturePath);
+      const stateLines = readStateLines(fixturePath);
+      for (let i = 0; i < stateLines.length; i++) {
+        StateDocSchema.parse(JSON.parse(stateLines[i]!));
+      }
+      console.log(
+        `validate:data: OK (${stateLines.length} state docs, ${stateFile.isGzip ? 'gzip' : 'plain'}) ${path.relative(process.cwd(), stateFile.path)}`
+      );
+    } catch (err) {
+      console.error(`validate:data: ERROR invalid state in ${relFixturePath}:`, err);
+      hasErrors = true;
+    }
+
+    // 3. Size guard: each fixture <= 5 MB
+    let totalSizeBytes = 0;
+    for (const f of fs.readdirSync(fixturePath)) {
+      totalSizeBytes += fs.statSync(path.join(fixturePath, f)).size;
+    }
+    const maxSizeBytes = 5 * 1024 * 1024;
+    if (totalSizeBytes > maxSizeBytes) {
+      console.error(
+        `validate:data: ERROR size guard exceeded in ${relFixturePath}: ${(totalSizeBytes / 1024 / 1024).toFixed(2)} MB > 5 MB`
+      );
+      hasErrors = true;
+    } else {
+      console.log(
+        `validate:data: OK (size guard ${(totalSizeBytes / 1024 / 1024).toFixed(2)} MB <= 5 MB) ${relFixturePath}`
+      );
+    }
   }
 }
 

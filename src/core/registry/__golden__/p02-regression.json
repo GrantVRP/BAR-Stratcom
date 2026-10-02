@@ -1,0 +1,30 @@
+{
+  "armflash": {
+    "name": "Blitz",
+    "factionId": "armada"
+  },
+  "armkam": {
+    "name": "Banshee",
+    "factionId": "armada"
+  },
+  "corwolv": {
+    "name": "Wolverine",
+    "factionId": "cortex"
+  },
+  "armliche": {
+    "name": "Liche",
+    "factionId": "armada"
+  },
+  "armzeus": {
+    "name": "Welder",
+    "factionId": "armada"
+  },
+  "armrectr": {
+    "name": "Lazarus",
+    "factionId": "armada"
+  },
+  "cornecro": {
+    "name": "Graverobber",
+    "factionId": "cortex"
+  }
+}

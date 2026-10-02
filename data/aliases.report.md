@@ -1,6 +1,6 @@
 # Harvested Aliases Report
 
-Total valid aliases preserved: **109**
+Total valid aliases preserved: **107**
 
 ## Kept Cross-Faction Aliases (Resolved by Faction)
 
@@ -18,7 +18,6 @@ These aliases appear in multiple factions and are resolved in-game by the player
 | `Con Air` | `armca` (armada), `corca` (cortex) |
 | `Con Bot` | `armck` (armada), `corck` (cortex) |
 | `Con Vehicle` | `armcv` (armada), `corcv` (cortex) |
-| `Dragon's Teeth` | `armdrag` (armada), `cordrag` (cortex) |
 | `Dragons Teeth` | `armdrag` (armada), `cordrag` (cortex) |
 | `Fusion` | `armfus` (armada), `corfus` (cortex) |
 | `Light Laser Tower` | `armllt` (armada), `corllt` (cortex) |

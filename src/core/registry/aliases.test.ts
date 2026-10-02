@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import aliasesData from '../../../data/aliases.json';
 import factionsData from '../../../data/factions.json';
-import legacyUnitsData from '../../../legacy/data/bar_units_database.json';
-import { AliasesFileSchema, FactionsFileSchema } from '../schemas';
+import defaultSnapshotData from '../../../data/snapshots/test-31479-433a460/units.json';
+import { AliasesFileSchema, FactionsFileSchema, UnitSnapshotSchema } from '../schemas';
 import { normalizeLookupKey } from './registry';
 
-describe('data/aliases.json validation and invariants (03 §3, T01.4)', () => {
+describe('data/aliases.json validation and invariants against real snapshot (03 §3, T01.4, T03.4)', () => {
   const aliasesFile = AliasesFileSchema.parse(aliasesData);
   const factionsFile = FactionsFileSchema.parse(factionsData);
-  const legacyUnits = legacyUnitsData as Array<{ slug: string; name: string }>;
+  const snapshot = UnitSnapshotSchema.parse(defaultSnapshotData);
 
   it('validates against AliasesFileSchema', () => {
     expect(aliasesFile.schemaVersion).toBe(1);
@@ -22,6 +22,16 @@ describe('data/aliases.json validation and invariants (03 §3, T01.4)', () => {
     }
     return 'unknown';
   }
+
+  it('enforces that all alias unitIds exist in the real snapshot', () => {
+    const snapshotIds = new Set(snapshot.units.map((u) => u.id.toLowerCase()));
+    for (const entry of aliasesFile.aliases) {
+      expect(
+        snapshotIds.has(entry.unitId.toLowerCase()),
+        `Alias "${entry.alias}" references unitId "${entry.unitId}" which does not exist in real snapshot`
+      ).toBe(true);
+    }
+  });
 
   it('enforces that all aliases are unique per (normalized alias, faction)', () => {
     const seen = new Map<string, string>();
@@ -62,15 +72,14 @@ describe('data/aliases.json validation and invariants (03 §3, T01.4)', () => {
     }
   });
 
-  it("enforces that no alias equals another unit's current name", () => {
-    // Map normalized current display names to their slugs
+  it("enforces that no alias equals another unit's current name in the real snapshot", () => {
     const currentNameMap = new Map<string, Set<string>>();
-    for (const u of legacyUnits) {
+    for (const u of snapshot.units) {
       const normName = normalizeLookupKey(u.name);
       if (!currentNameMap.has(normName)) {
         currentNameMap.set(normName, new Set());
       }
-      currentNameMap.get(normName)!.add(u.slug);
+      currentNameMap.get(normName)!.add(u.id.toLowerCase());
     }
 
     for (const entry of aliasesFile.aliases) {
@@ -78,10 +87,10 @@ describe('data/aliases.json validation and invariants (03 §3, T01.4)', () => {
       if (currentNameMap.has(normAlias)) {
         const conflictingSlugs = Array.from(currentNameMap.get(normAlias)!);
         // An alias is allowed to match its own unit name if identical, but must NOT match a different unit's name
-        const conflictingOtherUnits = conflictingSlugs.filter((s) => s !== entry.unitId);
+        const conflictingOtherUnits = conflictingSlugs.filter((s) => s !== entry.unitId.toLowerCase());
         expect(
           conflictingOtherUnits.length,
-          `Alias "${entry.alias}" for ${entry.unitId} collides with current name of other unit(s): ${conflictingOtherUnits.join(', ')}`
+          `Alias "${entry.alias}" for ${entry.unitId} collides with current real name of other unit(s): ${conflictingOtherUnits.join(', ')}`
         ).toBe(0);
       }
     }

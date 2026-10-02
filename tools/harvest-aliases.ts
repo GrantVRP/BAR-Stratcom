@@ -1,6 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { type AliasEntry, AliasesFileSchema } from '../src/core/schemas';
+import {
+  type AliasEntry,
+  AliasesFileSchema,
+  type SnapshotIndex,
+  type UnitDefRecord,
+  type UnitSnapshot
+} from '../src/core/schemas';
 
 // Copied directly from legacy/scripts/enrich-aliases.js (do not import/require that script)
 const ALIASES_MAP: Record<string, string[]> = {
@@ -142,6 +148,16 @@ function classifyKind(alias: string): 'legacy-name' | 'abbreviation' | 'nickname
   return 'legacy-name';
 }
 
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
 function factionOf(unitId: string): string {
   const lower = unitId.toLowerCase();
   if (lower.startsWith('arm')) return 'armada';
@@ -150,7 +166,7 @@ function factionOf(unitId: string): string {
   return 'unknown';
 }
 
-export function harvestAliases(): {
+export function harvestAliases(snapshotPath?: string): {
   aliases: AliasEntry[];
   keptCrossFaction: Array<{ alias: string; units: Array<{ faction: string; slug: string }> }>;
   droppedSameFactionMulti: Array<{ alias: string; faction: string; slugs: string[] }>;
@@ -160,28 +176,66 @@ export function harvestAliases(): {
   const rawDb = fs.readFileSync(dbPath, 'utf8');
   const units: LegacyUnit[] = JSON.parse(rawDb);
 
+  // Load real unit snapshot if available (T03.4)
+  let snapshot: UnitSnapshot | undefined;
+  const snapshotIndexPath = path.resolve(process.cwd(), 'data/snapshots/index.json');
+  if (snapshotPath && fs.existsSync(snapshotPath)) {
+    snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8'));
+  } else if (fs.existsSync(snapshotIndexPath)) {
+    const index: SnapshotIndex = JSON.parse(fs.readFileSync(snapshotIndexPath, 'utf8'));
+    const defaultSnapshotPath = path.resolve(process.cwd(), 'data/snapshots', index.default, 'units.json');
+    if (fs.existsSync(defaultSnapshotPath)) {
+      snapshot = JSON.parse(fs.readFileSync(defaultSnapshotPath, 'utf8'));
+    }
+  }
+
   // Map normalized current display names to slugs
   const currentNames = new Map<string, Set<string>>();
-  for (const u of units) {
-    const key = normalizeKey(u.name);
-    if (!currentNames.has(key)) {
-      currentNames.set(key, new Set());
+  const snapshotUnits = new Map<string, UnitDefRecord>();
+
+  if (snapshot) {
+    for (const u of snapshot.units) {
+      snapshotUnits.set(u.id.toLowerCase(), u);
+      const key = normalizeKey(u.name);
+      if (!currentNames.has(key)) {
+        currentNames.set(key, new Set());
+      }
+      currentNames.get(key)!.add(u.id.toLowerCase());
     }
-    currentNames.get(key)!.add(u.slug);
+  } else {
+    for (const u of units) {
+      const key = normalizeKey(u.name);
+      if (!currentNames.has(key)) {
+        currentNames.set(key, new Set());
+      }
+      currentNames.get(key)!.add(u.slug.toLowerCase());
+    }
   }
 
   // Gather unique (alias, slug) pairs grouped by: normalized alias -> faction -> Map<slug, rawAlias>
   const aliasByFaction = new Map<string, Map<string, Map<string, string>>>();
 
   for (const u of units) {
-    const slug = u.slug;
+    const slug = u.slug.toLowerCase();
+    let currentUnitName = u.name;
+
+    if (snapshot) {
+      const realUnit = snapshotUnits.get(slug);
+      if (!realUnit) {
+        // Drop aliases whose unitId does not exist in real snapshot
+        continue;
+      }
+      currentUnitName = realUnit.name;
+    }
+
     const rawAliases = new Set<string>([...(u.aliases || []), ...(ALIASES_MAP[slug] || [])]);
 
     for (const rawAlias of rawAliases) {
-      const trimmed = rawAlias.trim();
+      const decoded = decodeHtmlEntities(rawAlias);
+      const trimmed = decoded.trim();
       if (!trimmed) continue;
-      // Skip if alias equals current name
-      if (normalizeKey(trimmed) === normalizeKey(u.name)) continue;
+      // Skip if alias equals current real name
+      if (normalizeKey(trimmed) === normalizeKey(currentUnitName)) continue;
       // Skip if alias equals unit's own slug
       if (normalizeKey(trimmed) === normalizeKey(slug)) continue;
 
@@ -268,7 +322,6 @@ export function harvestAliases(): {
 function run(): void {
   const result = harvestAliases();
 
-  // Validate output conforms to schema
   const fileData = {
     schemaVersion: 1,
     aliases: result.aliases
@@ -279,77 +332,57 @@ function run(): void {
   fs.writeFileSync(outJsonPath, JSON.stringify(fileData, null, 2) + '\n', 'utf8');
   console.log(`Wrote ${result.aliases.length} aliases to data/aliases.json`);
 
-  // Build markdown report
-  const lines: string[] = [
-    '# Harvested Aliases Report',
-    '',
-    `Total valid aliases preserved: **${result.aliases.length}**`,
-    '',
-    '## Kept Cross-Faction Aliases (Resolved by Faction)',
-    '',
-    'These aliases appear in multiple factions and are resolved in-game by the player’s active faction (03 §3).',
-    '',
-    '| Alias | Matched Units |',
-    '|-------|---------------|'
-  ];
+  const crossFactionRows = result.keptCrossFaction
+    .map((i) => `| \`${i.alias}\` | ${i.units.map((u) => `\`${u.slug}\` (${u.faction})`).join(', ')} |`)
+    .join('\n');
 
-  for (const item of result.keptCrossFaction) {
-    const formattedUnits = item.units.map((u) => `\`${u.slug}\` (${u.faction})`).join(', ');
-    lines.push(`| \`${item.alias}\` | ${formattedUnits} |`);
-  }
+  const sameFactionRows = result.droppedSameFactionMulti
+    .map((i) => `| \`${i.alias}\` | ${i.faction} | \`${i.slugs.join('`, `')}\` |`)
+    .join('\n');
 
-  lines.push('');
-  lines.push('## Dropped Aliases: Same-Faction Ambiguities (Maps to 2+ Units Within One Faction)');
-  lines.push('');
-  lines.push(
-    'These aliases were dropped because they resolve to more than one unitId within the same faction.'
-  );
-  lines.push('');
-  lines.push('| Alias | Faction | Matched Units |');
-  lines.push('|-------|---------|---------------|');
+  const nameConflictRows = result.droppedNameConflict
+    .map((i) => `| \`${i.alias}\` | \`${i.slug}\` | \`${i.conflictingUnits.join('`, `')}\` |`)
+    .join('\n');
 
-  for (const item of result.droppedSameFactionMulti) {
-    lines.push(`| \`${item.alias}\` | ${item.faction} | \`${item.slugs.join('`, `')}\` |`);
-  }
+  const report = `# Harvested Aliases Report
 
-  lines.push('');
-  lines.push('## Dropped Aliases: Collisions with Existing Unit Names');
-  lines.push('');
-  lines.push(
-    'These aliases were dropped because the alias string equals the current official display name of a different unit.'
-  );
-  lines.push('');
-  lines.push('| Alias | Unit for Which it was an Alias | Conflicts With Unit(s) Having this Current Name |');
-  lines.push(
-    '|-------|---------------------------------|--------------------------------------------------|'
-  );
+Total valid aliases preserved: **${result.aliases.length}**
 
-  for (const item of result.droppedNameConflict) {
-    lines.push(`| \`${item.alias}\` | \`${item.slug}\` | \`${item.conflictingUnits.join('`, `')}\` |`);
-  }
+## Kept Cross-Faction Aliases (Resolved by Faction)
 
-  lines.push('');
-  lines.push('## Historical Notes on Known Conflicts');
-  lines.push('');
-  lines.push(
-    '- **Blitz / corgator**: In legacy data, `corgator` was nicknamed "Blitz", but "Blitz" is the official current name of Armada\'s `armflash`. Dropped by collision rule.'
-  );
-  lines.push(
-    '- **Sumo / corsumo / corcan**: In legacy scraped data, `corcan` was erroneously labeled "Sumo" while `corsumo` was labeled "Mammoth". Aliases mapping `Sumo` to `corsumo` conflict with `corcan`\'s scraped name and map to multiple units within Cortex. Dropped.'
-  );
-  lines.push(
-    '- **Shadow / armthund / corshad**: "Shadow" was mapped to both the Armada bomber (`armthund`) and the Cortex bomber (`corshad`). It is preserved as a cross-faction alias resolved by faction.'
-  );
-  lines.push(
-    '- **Raider / corraid / corfav**: "Raider" was mapped to both Cortex Raider (`corraid`) and Cortex Rascal (`corfav`) within Cortex. Dropped as same-faction ambiguous.'
-  );
-  lines.push(
-    '- **Can / corcan**: "Can" represents the original TA/BAR unit name for `corcan`. In legacy data where `corcan` was mislabeled "Sumo", "Can" served as an alias; with the legacy `corcan`/`corsumo` mismatch resolved, exact unit definition takes precedence.'
-  );
-  lines.push('');
+These aliases appear in multiple factions and are resolved in-game by the player’s active faction (03 §3).
+
+| Alias | Matched Units |
+|-------|---------------|
+${crossFactionRows}
+
+## Dropped Aliases: Same-Faction Ambiguities (Maps to 2+ Units Within One Faction)
+
+These aliases were dropped because they resolve to more than one unitId within the same faction.
+
+| Alias | Faction | Matched Units |
+|-------|---------|---------------|
+${sameFactionRows}
+
+## Dropped Aliases: Collisions with Existing Unit Names
+
+These aliases were dropped because the alias string equals the current official display name of a different unit.
+
+| Alias | Unit for Which it was an Alias | Conflicts With Unit(s) Having this Current Name |
+|-------|---------------------------------|--------------------------------------------------|
+${nameConflictRows}
+
+## Historical Notes on Known Conflicts
+
+- **Blitz / corgator**: In legacy data, \`corgator\` was nicknamed "Blitz", but "Blitz" is the official current name of Armada's \`armflash\`. Dropped by collision rule.
+- **Sumo / corsumo / corcan**: In legacy scraped data, \`corcan\` was erroneously labeled "Sumo" while \`corsumo\` was labeled "Mammoth". Aliases mapping \`Sumo\` to \`corsumo\` conflict with \`corcan\`'s scraped name and map to multiple units within Cortex. Dropped.
+- **Shadow / armthund / corshad**: "Shadow" was mapped to both the Armada bomber (\`armthund\`) and the Cortex bomber (\`corshad\`). It is preserved as a cross-faction alias resolved by faction.
+- **Raider / corraid / corfav**: "Raider" was mapped to both Cortex Raider (\`corraid\`) and Cortex Rascal (\`corfav\`) within Cortex. Dropped as same-faction ambiguous.
+- **Can / corcan**: "Can" represents the original TA/BAR unit name for \`corcan\`. In legacy data where \`corcan\` was mislabeled "Sumo", "Can" served as an alias; with the legacy \`corcan\`/\`corsumo\` mismatch resolved, exact unit definition takes precedence.
+`;
 
   const outReportPath = path.resolve(process.cwd(), 'data/aliases.report.md');
-  fs.writeFileSync(outReportPath, lines.join('\n') + '\n', 'utf8');
+  fs.writeFileSync(outReportPath, report, 'utf8');
   console.log(`Wrote dropped aliases report to data/aliases.report.md`);
 }
 

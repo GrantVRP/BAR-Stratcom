@@ -1,0 +1,2358 @@
+{
+  "samples": [
+    {
+      "t": 0,
+      "metal": {
+        "current": 1000,
+        "storage": 1500,
+        "income": 1,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1000,
+        "storage": 1500,
+        "income": 25,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 1,
+      "metal": {
+        "current": 993.5,
+        "storage": 1500,
+        "income": 1,
+        "spend": 15
+      },
+      "energy": {
+        "current": 950,
+        "storage": 1500,
+        "income": 25,
+        "spend": 150
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 2,
+      "metal": {
+        "current": 987,
+        "storage": 1500,
+        "income": 1,
+        "spend": 15
+      },
+      "energy": {
+        "current": 900,
+        "storage": 1500,
+        "income": 25,
+        "spend": 150
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 3,
+      "metal": {
+        "current": 980.5,
+        "storage": 1500,
+        "income": 1,
+        "spend": 15
+      },
+      "energy": {
+        "current": 850,
+        "storage": 1500,
+        "income": 25,
+        "spend": 150
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 4,
+      "metal": {
+        "current": 980,
+        "storage": 1550,
+        "income": 3,
+        "spend": 0
+      },
+      "energy": {
+        "current": 848.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 5,
+      "metal": {
+        "current": 983,
+        "storage": 1550,
+        "income": 3,
+        "spend": 0
+      },
+      "energy": {
+        "current": 870.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 6,
+      "metal": {
+        "current": 986,
+        "storage": 1550,
+        "income": 3,
+        "spend": 0
+      },
+      "energy": {
+        "current": 892.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 7,
+      "metal": {
+        "current": 989,
+        "storage": 1550,
+        "income": 3,
+        "spend": 0
+      },
+      "energy": {
+        "current": 914.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 8,
+      "metal": {
+        "current": 992,
+        "storage": 1550,
+        "income": 3,
+        "spend": 0
+      },
+      "energy": {
+        "current": 936.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 9,
+      "metal": {
+        "current": 995,
+        "storage": 1550,
+        "income": 3,
+        "spend": 0
+      },
+      "energy": {
+        "current": 958.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 10,
+      "metal": {
+        "current": 998,
+        "storage": 1550,
+        "income": 3,
+        "spend": 0
+      },
+      "energy": {
+        "current": 980.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 11,
+      "metal": {
+        "current": 993.5,
+        "storage": 1550,
+        "income": 3,
+        "spend": 15
+      },
+      "energy": {
+        "current": 927.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 150
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 12,
+      "metal": {
+        "current": 989,
+        "storage": 1550,
+        "income": 3,
+        "spend": 15
+      },
+      "energy": {
+        "current": 874.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 150
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 13,
+      "metal": {
+        "current": 984.5,
+        "storage": 1550,
+        "income": 3,
+        "spend": 15
+      },
+      "energy": {
+        "current": 821.5,
+        "storage": 1550,
+        "income": 22,
+        "spend": 150
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 14,
+      "metal": {
+        "current": 986,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 817,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 15,
+      "metal": {
+        "current": 991,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 836,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 16,
+      "metal": {
+        "current": 996,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 855,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 17,
+      "metal": {
+        "current": 1001,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 874,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 18,
+      "metal": {
+        "current": 1006,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 893,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 19,
+      "metal": {
+        "current": 1011,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 912,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 20,
+      "metal": {
+        "current": 1016,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 931,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 21,
+      "metal": {
+        "current": 998.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 45
+      },
+      "energy": {
+        "current": 950,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 22,
+      "metal": {
+        "current": 981,
+        "storage": 1600,
+        "income": 5,
+        "spend": 45
+      },
+      "energy": {
+        "current": 969,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 23,
+      "metal": {
+        "current": 963.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 45
+      },
+      "energy": {
+        "current": 988,
+        "storage": 1600,
+        "income": 19,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 24,
+      "metal": {
+        "current": 961,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1017,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 25,
+      "metal": {
+        "current": 966,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1056,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 26,
+      "metal": {
+        "current": 971,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1095,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 27,
+      "metal": {
+        "current": 976,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1134,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 28,
+      "metal": {
+        "current": 981,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1173,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 29,
+      "metal": {
+        "current": 986,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1212,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 30,
+      "metal": {
+        "current": 991,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1251,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 31,
+      "metal": {
+        "current": 996,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1290,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 32,
+      "metal": {
+        "current": 1001,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1329,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 33,
+      "metal": {
+        "current": 1006,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1368,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 34,
+      "metal": {
+        "current": 1011,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1407,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 35,
+      "metal": {
+        "current": 1016,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1446,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 36,
+      "metal": {
+        "current": 998.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 45
+      },
+      "energy": {
+        "current": 1485,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 37,
+      "metal": {
+        "current": 981,
+        "storage": 1600,
+        "income": 5,
+        "spend": 45
+      },
+      "energy": {
+        "current": 1524,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 38,
+      "metal": {
+        "current": 963.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 45
+      },
+      "energy": {
+        "current": 1563,
+        "storage": 1650,
+        "income": 39,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 39,
+      "metal": {
+        "current": 961,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1612,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 40,
+      "metal": {
+        "current": 966,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1671,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 41,
+      "metal": {
+        "current": 971,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 42,
+      "metal": {
+        "current": 976,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 43,
+      "metal": {
+        "current": 981,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 44,
+      "metal": {
+        "current": 986,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 45,
+      "metal": {
+        "current": 991,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 46,
+      "metal": {
+        "current": 996,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 47,
+      "metal": {
+        "current": 1001,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 48,
+      "metal": {
+        "current": 1006,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 49,
+      "metal": {
+        "current": 1011,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 50,
+      "metal": {
+        "current": 1016,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 300,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 51,
+      "metal": {
+        "current": 931,
+        "storage": 1600,
+        "income": 5,
+        "spend": 180
+      },
+      "energy": {
+        "current": 1579,
+        "storage": 1700,
+        "income": 59,
+        "spend": 360
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 52,
+      "metal": {
+        "current": 846,
+        "storage": 1600,
+        "income": 5,
+        "spend": 180
+      },
+      "energy": {
+        "current": 1458,
+        "storage": 1700,
+        "income": 59,
+        "spend": 360
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 53,
+      "metal": {
+        "current": 761,
+        "storage": 1600,
+        "income": 5,
+        "spend": 180
+      },
+      "energy": {
+        "current": 1337,
+        "storage": 1700,
+        "income": 59,
+        "spend": 360
+      },
+      "bpTotal": 300,
+      "bpActive": 300,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 54,
+      "metal": {
+        "current": 736,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1336,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 55,
+      "metal": {
+        "current": 741,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1395,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 56,
+      "metal": {
+        "current": 746,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1454,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 57,
+      "metal": {
+        "current": 751,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1513,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 58,
+      "metal": {
+        "current": 756,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1572,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 59,
+      "metal": {
+        "current": 761,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1631,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 60,
+      "metal": {
+        "current": 766,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1690,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 61,
+      "metal": {
+        "current": 771,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 62,
+      "metal": {
+        "current": 776,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 63,
+      "metal": {
+        "current": 781,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 64,
+      "metal": {
+        "current": 786,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 65,
+      "metal": {
+        "current": 791,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 66,
+      "metal": {
+        "current": 796,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 67,
+      "metal": {
+        "current": 801,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 68,
+      "metal": {
+        "current": 806,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 69,
+      "metal": {
+        "current": 811,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 70,
+      "metal": {
+        "current": 816,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 71,
+      "metal": {
+        "current": 818.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 72,
+      "metal": {
+        "current": 821,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 73,
+      "metal": {
+        "current": 823.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 74,
+      "metal": {
+        "current": 826,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 75,
+      "metal": {
+        "current": 828.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 76,
+      "metal": {
+        "current": 831,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 77,
+      "metal": {
+        "current": 833.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 78,
+      "metal": {
+        "current": 836,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 79,
+      "metal": {
+        "current": 838.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 80,
+      "metal": {
+        "current": 841,
+        "storage": 1600,
+        "income": 5,
+        "spend": 4.999999999999972
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 69.9999999999996
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 81,
+      "metal": {
+        "current": 843.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 82,
+      "metal": {
+        "current": 846,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 83,
+      "metal": {
+        "current": 848.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 84,
+      "metal": {
+        "current": 851,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 85,
+      "metal": {
+        "current": 853.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 86,
+      "metal": {
+        "current": 856,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 87,
+      "metal": {
+        "current": 858.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 88,
+      "metal": {
+        "current": 861,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 89,
+      "metal": {
+        "current": 863.5,
+        "storage": 1600,
+        "income": 5,
+        "spend": 5
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 70
+      },
+      "bpTotal": 400,
+      "bpActive": 100,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 90,
+      "metal": {
+        "current": 866,
+        "storage": 1600,
+        "income": 5,
+        "spend": 4.999999999999972
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 69.9999999999996
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 91,
+      "metal": {
+        "current": 871,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 92,
+      "metal": {
+        "current": 876,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 93,
+      "metal": {
+        "current": 881,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 94,
+      "metal": {
+        "current": 886,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 95,
+      "metal": {
+        "current": 891,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 96,
+      "metal": {
+        "current": 896,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 97,
+      "metal": {
+        "current": 901,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 98,
+      "metal": {
+        "current": 906,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 99,
+      "metal": {
+        "current": 911,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 100,
+      "metal": {
+        "current": 916,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 101,
+      "metal": {
+        "current": 921,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 102,
+      "metal": {
+        "current": 926,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 103,
+      "metal": {
+        "current": 931,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 104,
+      "metal": {
+        "current": 936,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 105,
+      "metal": {
+        "current": 941,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 106,
+      "metal": {
+        "current": 946,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 107,
+      "metal": {
+        "current": 951,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 108,
+      "metal": {
+        "current": 956,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 109,
+      "metal": {
+        "current": 961,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 110,
+      "metal": {
+        "current": 966,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 111,
+      "metal": {
+        "current": 971,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 112,
+      "metal": {
+        "current": 976,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 113,
+      "metal": {
+        "current": 981,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 114,
+      "metal": {
+        "current": 986,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 115,
+      "metal": {
+        "current": 991,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 116,
+      "metal": {
+        "current": 996,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 117,
+      "metal": {
+        "current": 1001,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 118,
+      "metal": {
+        "current": 1006,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 119,
+      "metal": {
+        "current": 1011,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    },
+    {
+      "t": 120,
+      "metal": {
+        "current": 1016,
+        "storage": 1600,
+        "income": 5,
+        "spend": 0
+      },
+      "energy": {
+        "current": 1700,
+        "storage": 1700,
+        "income": 59,
+        "spend": 0
+      },
+      "bpTotal": 400,
+      "bpActive": 0,
+      "stallMetal": false,
+      "stallEnergy": false
+    }
+  ],
+  "steps": [
+    {
+      "stepId": "s1",
+      "start": 0,
+      "finish": 3.5
+    },
+    {
+      "stepId": "s2",
+      "start": 10,
+      "finish": 13.5
+    },
+    {
+      "stepId": "s3",
+      "start": 20,
+      "finish": 23.5
+    },
+    {
+      "stepId": "s4",
+      "start": 35,
+      "finish": 38.5
+    },
+    {
+      "stepId": "s5",
+      "start": 50,
+      "finish": 53.5
+    },
+    {
+      "stepId": "s6",
+      "start": 70,
+      "finish": 90
+    }
+  ],
+  "intervals": {
+    "metalStall": [],
+    "energyStall": [],
+    "metalFloat": [],
+    "energyFloat": [
+      {
+        "start": 40,
+        "end": 50
+      },
+      {
+        "start": 59.5,
+        "end": 120
+      }
+    ]
+  },
+  "totals": {
+    "metalStallSec": 0,
+    "energyStallSec": 0,
+    "idleBpSec": 36250
+  },
+  "flags": [
+    "mexYieldEstimated"
+  ]
+}

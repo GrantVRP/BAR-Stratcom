@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "id": "plan-player-archsims-canyon-bot",
+  "title": "Bot solar // archsims-canyon",
+  "factionId": "armada",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "intermediate",
+  "opening": "bot",
+  "energyStyle": "solar",
+  "source": {
+    "kind": "replay-capture",
+    "sessionId": "synth-01",
+    "player": "Player",
+    "map": "Archsims Canyon",
+    "capturedAt": "2026-10-02T12:00:00Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 6
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 24
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armlab",
+      "count": 1,
+      "targetTime": 36
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 3,
+      "targetTime": 62
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 1,
+      "targetTime": 80
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 93.3
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays."
+}

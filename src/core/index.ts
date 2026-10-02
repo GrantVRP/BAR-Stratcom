@@ -4,3 +4,4 @@ export * from './registry';
 export * from './maps';
 export * from './sharecode';
 export * from './plans';
+export * from './sim';

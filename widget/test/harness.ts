@@ -89,7 +89,16 @@ export async function createWidgetHarness(
   });
   engine.global.set('__sp_get_team_rules_param', (teamId: number, param: string) => {
     const t = scenario.teams.get(teamId);
-    if (param === 'startUnit') return t?.startUnit ?? 'armcom';
+    if (param === 'startUnit') {
+      if (t?.startUnit === null) return undefined;
+      if (typeof t?.startUnit === 'number') return t.startUnit;
+      if (typeof t?.startUnit === 'string') {
+        const found = scenario.unitDefsByName.get(t.startUnit.toLowerCase());
+        if (found) return found.defId;
+      }
+      const defaultCom = t?.factionId === 'cortex' ? 'corcom' : 'armcom';
+      return scenario.unitDefsByName.get(defaultCom)?.defId ?? 1;
+    }
     return undefined;
   });
   engine.global.set('__sp_get_team_units', (teamId: number) => {
@@ -144,7 +153,14 @@ export async function createWidgetHarness(
   engine.global.set('__sp_get_team_list', () => Array.from(scenario.teams.keys()));
   engine.global.set('__sp_get_team_info', (teamId: number) => {
     const t = scenario.teams.get(teamId);
-    return [teamId, teamId, false, t?.isAI ?? false, t?.factionId ?? 'armada', t?.allyTeamId ?? 0];
+    const leader = t?.isAI ? 0 : teamId;
+    return [teamId, leader, false, t?.isAI ?? false, t?.factionId ?? 'armada', t?.allyTeamId ?? 0];
+  });
+  engine.global.set('__sp_get_ai_info', (teamId: number) => {
+    const t = scenario.teams.get(teamId);
+    if (!t?.isAI) return undefined;
+    const name = t.aiName ?? (t.playerName && t.playerName !== scenario.myPlayerName ? t.playerName : 'BARbarian');
+    return [0, name, 0, 'BARb', '1.0', {}];
   });
   engine.global.set('__sp_get_gaia_team_id', () => 999);
   engine.global.set('__sp_get_visible_units', () => Array.from(scenario.units.keys()));
@@ -276,12 +292,22 @@ export async function createWidgetHarness(
     }
   `);
 
-  // 9. require mock (common/wind_functions as native Lua table)
-  const windFuncsData = scenario.windFunctions?.averageWindLookup ?? { '0': { '15': 7.5 } };
+  // 9. require mock (common/wind_functions as native Lua table with real BAR shape: numeric keys, string values)
+  const windFuncsData = scenario.windFunctions?.averageWindLookup ?? { '0': { '15': '7.5' } };
   engine.global.set('__wind_lookup_json', JSON.stringify(windFuncsData));
   engine.doStringSync(`
+    local rawWind = Json.decode(__wind_lookup_json)
+    local realWindLookup = {}
+    for minK, maxMap in pairs(rawWind) do
+      local nMin = tonumber(minK) or minK
+      realWindLookup[nMin] = {}
+      for maxK, v in pairs(maxMap) do
+        local nMax = tonumber(maxK) or maxK
+        realWindLookup[nMin][nMax] = tostring(v)
+      end
+    end
     __common_wind_functions = {
-      averageWindLookup = Json.decode(__wind_lookup_json),
+      averageWindLookup = realWindLookup,
       getWindRisk = function() return 1 end,
       isNoWind = function() return false end
     }

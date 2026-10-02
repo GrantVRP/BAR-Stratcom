@@ -160,31 +160,57 @@ io = {
       buffer = __fs_read(filepath) or ""
     end
 
+    local chunks = {}
+    local nChunks = 0
+    if buffer ~= "" then
+      nChunks = 1
+      chunks[1] = buffer
+    end
+
+    local function syncBuffer()
+      if nChunks > 1 then
+        buffer = table.concat(chunks)
+        chunks = { buffer }
+        nChunks = 1
+      elseif nChunks == 1 then
+        buffer = chunks[1]
+      else
+        buffer = ""
+      end
+    end
+
     local handle = {}
     handle.write = function(self, ...)
       local args = { ... }
       for i = 1, #args do
-        buffer = buffer .. tostring(args[i])
+        nChunks = nChunks + 1
+        chunks[nChunks] = tostring(args[i])
       end
-      __fs_write(filepath, buffer)
       return true
     end
 
     handle.read = function(self, pattern)
+      syncBuffer()
       pattern = pattern or "*a"
       if pattern == "*a" or pattern == "*all" then
         local res = buffer
         buffer = ""
+        chunks = {}
+        nChunks = 0
         return res
       elseif pattern == "*l" or pattern == "*line" then
         local nl = buffer:find("\\n")
         if nl then
           local line = buffer:sub(1, nl - 1)
           buffer = buffer:sub(nl + 1)
+          chunks = { buffer }
+          nChunks = 1
           return line
         else
           local res = buffer
           buffer = ""
+          chunks = {}
+          nChunks = 0
           return #res > 0 and res or nil
         end
       end
@@ -192,10 +218,12 @@ io = {
     end
 
     handle.flush = function(self)
+      syncBuffer()
       __fs_write(filepath, buffer)
     end
 
     handle.close = function(self)
+      syncBuffer()
       __fs_write(filepath, buffer)
       return true
     end
@@ -301,6 +329,13 @@ Spring = {
   GetTeamInfo = function(teamId)
     local r = __sp_get_team_info(teamId)
     return r[1], r[2], r[3], r[4], r[5], r[6]
+  end,
+  GetAIInfo = function(teamId)
+    local r = __sp_get_ai_info(teamId)
+    if r then
+      return r[1], r[2], r[3], r[4], r[5], r[6]
+    end
+    return nil
   end,
   GetGaiaTeamID = function()
     return __sp_get_gaia_team_id()

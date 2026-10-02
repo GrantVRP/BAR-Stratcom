@@ -1,5 +1,5 @@
 -- License: GPL-2.0-or-later
--- STRATCOM_WIDGET_VERSION 3.0.0
+-- STRATCOM_WIDGET_VERSION 3.0.1
 -- STRATCOM_PROTOCOL 1
 
 function widget:GetInfo()
@@ -51,11 +51,12 @@ local spGetUnitTeam = Spring.GetUnitTeam
 local spGetUnitAllyTeam = Spring.GetUnitAllyTeam
 local spGetTeamList = Spring.GetTeamList
 local spGetTeamInfo = Spring.GetTeamInfo
+local spGetAIInfo = Spring.GetAIInfo
 local spGetGaiaTeamID = Spring.GetGaiaTeamID
 
 -- Constants & State
 local PROTOCOL = 1
-local WIDGET_VERSION = "3.0.0"
+local WIDGET_VERSION = "3.0.1"
 local DIR = "stratcom/"
 
 local jsonNull = (type(Json) == "table" and Json.null) or nil
@@ -146,7 +147,22 @@ end
 local function resolveFaction(teamId)
   local startUnitName = nil
   if spGetTeamRulesParam then
-    startUnitName = spGetTeamRulesParam(teamId, "startUnit")
+    local startUnitVal = spGetTeamRulesParam(teamId, "startUnit")
+    if startUnitVal ~= nil then
+      if type(startUnitVal) == "number" and (type(UnitDefs) == "table" or type(UnitDefs) == "userdata") then
+        local def = UnitDefs[startUnitVal]
+        if def and def.name then
+          startUnitName = def.name
+        end
+      elseif type(startUnitVal) == "string" and startUnitVal ~= "" then
+        local numId = tonumber(startUnitVal)
+        if numId and (type(UnitDefs) == "table" or type(UnitDefs) == "userdata") and UnitDefs[numId] and UnitDefs[numId].name then
+          startUnitName = UnitDefs[numId].name
+        else
+          startUnitName = startUnitVal
+        end
+      end
+    end
   end
 
   if not startUnitName and spGetTeamUnits and (type(UnitDefs) == "table" or type(UnitDefs) == "userdata") then
@@ -162,7 +178,7 @@ local function resolveFaction(teamId)
   end
 
   local factionId = nil
-  if startUnitName then
+  if startUnitName and type(startUnitName) == "string" then
     local lowerName = string.lower(startUnitName)
     local pfx = string.sub(lowerName, 1, 3)
     if pfx == "arm" then
@@ -172,6 +188,10 @@ local function resolveFaction(teamId)
     elseif pfx == "leg" then
       factionId = "legion"
     end
+  end
+
+  if type(startUnitName) ~= "string" then
+    startUnitName = nil
   end
 
   return factionId, startUnitName
@@ -217,7 +237,10 @@ local function resolveWindInfo(wMin, wMax)
   if type(wf.averageWindLookup) == "table" or type(wf.averageWindLookup) == "userdata" then
     local minTbl = wf.averageWindLookup[wMin] or wf.averageWindLookup[tostring(wMin)]
     if type(minTbl) == "table" or type(minTbl) == "userdata" then
-      avg = minTbl[wMax] or minTbl[tostring(wMax)]
+      local rawAvg = minTbl[wMax] or minTbl[tostring(wMax)]
+      if rawAvg ~= nil then
+        avg = tonumber(rawAvg)
+      end
     end
   end
 
@@ -354,9 +377,23 @@ local function getTeamInfoDetails(tId)
     leaderId, isAiTeam, allyTeamId = lId, (isAi == true), aId or 0
   end
   local playerName = "Player " .. tostring(tId)
-  if leaderId and spGetPlayerInfo then
-    local pName = spGetPlayerInfo(leaderId)
-    if pName and pName ~= "" then playerName = pName end
+  if isAiTeam then
+    local aiName = nil
+    if spGetAIInfo then
+      local ok, _, name = pcall(spGetAIInfo, tId)
+      if ok and name and name ~= "" then
+        aiName = name .. " (AI)"
+      end
+    end
+    if not aiName then
+      aiName = "AI " .. tostring(tId)
+    end
+    playerName = aiName
+  else
+    if leaderId and spGetPlayerInfo then
+      local pName = spGetPlayerInfo(leaderId)
+      if pName and pName ~= "" then playerName = pName end
+    end
   end
   return allyTeamId, isAiTeam, playerName, resolveFaction(tId)
 end
@@ -703,26 +740,32 @@ local function exportUnitdefs()
   end
 
   local unitsList = makeArray({})
+  local unitsCount = 0
   local foundAny = {}
-  local foundCount = 0
-  local totalTrackedFields = #TRACKED_RAW_FIELDS
+  local remainingTracked = {}
+  local remCount = #TRACKED_RAW_FIELDS
+  for idx, fieldName in ipairs(TRACKED_RAW_FIELDS) do
+    remainingTracked[idx] = fieldName
+  end
 
   for _, def in pairs(UnitDefs) do
     if type(def) == "table" or type(def) == "userdata" then
       if def.name then
         -- Convert buildOptions from defIDs to names
         local convertedBuildOptions = makeArray({})
+        local optCount = 0
         if type(def.buildOptions) == "table" or type(def.buildOptions) == "userdata" then
           for _, opt in ipairs(def.buildOptions) do
+            optCount = optCount + 1
             if type(opt) == "number" then
               local bDef = UnitDefs and UnitDefs[opt]
               if bDef and bDef.name then
-                table.insert(convertedBuildOptions, bDef.name)
+                convertedBuildOptions[optCount] = bDef.name
               else
-                table.insert(convertedBuildOptions, tostring(opt))
+                convertedBuildOptions[optCount] = tostring(opt)
               end
             elseif type(opt) == "string" then
-              table.insert(convertedBuildOptions, opt)
+              convertedBuildOptions[optCount] = opt
             end
           end
         end
@@ -753,26 +796,21 @@ local function exportUnitdefs()
           end
         end
 
-        table.insert(unitsList, u)
+        unitsCount = unitsCount + 1
+        unitsList[unitsCount] = u
 
-        -- Track field presence for missingFields
-        if foundCount < totalTrackedFields then
-          for _, fieldName in ipairs(TRACKED_RAW_FIELDS) do
-            if not foundAny[fieldName] then
-              if fieldName == "sightDistance" then
-                if def.sightDistance ~= nil or def.losRadius ~= nil then
-                  foundAny["sightDistance"] = true
-                  foundCount = foundCount + 1
-                end
-              elseif fieldName == "radarDistance" then
-                if def.radarDistance ~= nil or def.radarRadius ~= nil then
-                  foundAny["radarDistance"] = true
-                  foundCount = foundCount + 1
-                end
-              elseif def[fieldName] ~= nil then
-                foundAny[fieldName] = true
-                foundCount = foundCount + 1
-              end
+        -- Track field presence for missingFields efficiently
+        if remCount > 0 then
+          local i = 1
+          while i <= remCount do
+            local fieldName = remainingTracked[i]
+            if u[fieldName] ~= nil then
+              foundAny[fieldName] = true
+              remainingTracked[i] = remainingTracked[remCount]
+              remainingTracked[remCount] = nil
+              remCount = remCount - 1
+            else
+              i = i + 1
             end
           end
         end
@@ -830,8 +868,9 @@ local function exportWindLookup()
     if type(maxMap) == "table" or type(maxMap) == "userdata" then
       for maxKey, val in pairs(maxMap) do
         local sMax = tostring(maxKey)
-        if type(val) == "number" then
-          exportTable[sMin][sMax] = val
+        local nVal = tonumber(val)
+        if nVal ~= nil then
+          exportTable[sMin][sMax] = nVal
         end
       end
     end

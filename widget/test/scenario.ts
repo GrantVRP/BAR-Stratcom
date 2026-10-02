@@ -33,7 +33,8 @@ export interface ScenarioTeam {
   energyStorage: number;
   metalIncome: number;
   energyIncome: number;
-  startUnit?: string;
+  startUnit?: string | number | null;
+  aiName?: string;
 }
 
 export interface ScenarioOptions {
@@ -51,7 +52,7 @@ export interface ScenarioOptions {
   teams?: ScenarioTeam[];
   units?: ScenarioUnit[];
   windFunctions?: {
-    averageWindLookup?: Record<string, Record<string, number>>;
+    averageWindLookup?: Record<string | number, Record<string | number, string | number>>;
     getWindRisk?: () => number;
     isNoWind?: () => boolean;
   };

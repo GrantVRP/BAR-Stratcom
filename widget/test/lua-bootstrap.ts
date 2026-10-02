@@ -14,8 +14,12 @@ local function json_encode(val)
   if t == "boolean" then return val and "true" or "false"
   elseif t == "number" then return tostring(val)
   elseif t == "string" then
-    local s = val:gsub('\\\\', '\\\\\\\\'):gsub('"', '\\\\"'):gsub('\\n', '\\\\n'):gsub('\\r', '\\\\r'):gsub('\\t', '\\\\t')
-    return '"' .. s .. '"'
+    if val:find('[%%c\\\\"]') then
+      local s = val:gsub('\\\\', '\\\\\\\\'):gsub('"', '\\\\"'):gsub('\\n', '\\\\n'):gsub('\\r', '\\\\r'):gsub('\\t', '\\\\t')
+      return '"' .. s .. '"'
+    else
+      return '"' .. val .. '"'
+    end
   elseif t == "table" then
     local mt = getmetatable(val)
     local forced_array = mt and (mt.__jsontype == "array" or mt.__array == true)
@@ -27,6 +31,22 @@ local function json_encode(val)
         parts[i] = json_encode(val[i])
       end
       return "[" .. table.concat(parts, ",") .. "]"
+    end
+    if val[1] == nil then
+      if next(val) == nil then
+        return "{}"
+      end
+      local parts = {}
+      local pCount = 0
+      for k, v in pairs(val) do
+        pCount = pCount + 1
+        local ks = tostring(k)
+        if ks:find('[\\"]') then
+          ks = ks:gsub('\\\\', '\\\\\\\\'):gsub('"', '\\\\"')
+        end
+        parts[pCount] = '"' .. ks .. '":' .. json_encode(v)
+      end
+      return "{" .. table.concat(parts, ",") .. "}"
     end
     local is_array = true
     local max_i = 0

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "default": "test-31479-433a460",
+  "available": [
+    {
+      "gameVersion": "test-31320-e17e8b7",
+      "path": "test-31320-e17e8b7/units.json",
+      "unitCount": 586,
+      "exportedAt": "2026-10-02T18:31:16.194Z"
+    },
+    {
+      "gameVersion": "test-31479-433a460",
+      "path": "test-31479-433a460/units.json",
+      "unitCount": 587,
+      "exportedAt": "2026-10-02T18:31:01.852Z"
+    }
+  ]
+}

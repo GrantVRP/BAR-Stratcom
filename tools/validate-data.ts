@@ -1,6 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { AliasesFileSchema, FactionsFileSchema, MapsFileSchema } from '../src/core/schemas';
+import {
+  AliasesFileSchema,
+  FactionsFileSchema,
+  MapsFileSchema,
+  SnapshotIndexSchema,
+  UnitSnapshotSchema
+} from '../src/core/schemas';
 
 function findJsonFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) {
@@ -43,6 +49,12 @@ for (const file of jsonFiles) {
     } else if (file.endsWith('maps.json')) {
       MapsFileSchema.parse(parsed);
       console.log(`validate:data: OK (maps schema) ${relPath}`);
+    } else if (relPath.replace(/\\/g, '/').endsWith('snapshots/index.json')) {
+      SnapshotIndexSchema.parse(parsed);
+      console.log(`validate:data: OK (snapshot index schema) ${relPath}`);
+    } else if (relPath.replace(/\\/g, '/').includes('snapshots/') && file.endsWith('units.json')) {
+      UnitSnapshotSchema.parse(parsed);
+      console.log(`validate:data: OK (unit snapshot schema) ${relPath}`);
     } else {
       console.log(`validate:data: OK (json) ${relPath}`);
     }

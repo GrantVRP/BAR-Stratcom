@@ -87,22 +87,22 @@ The widget registers actions with the BAR action handler. You can bind them in B
 
 ## 6. API Probe Results
 
-This table documents engine API availability across BAR engine releases. To be populated after checkpoint **H1**:
+This table documents engine API availability across BAR engine releases, verified from client probe export (`data/raw/h1/probe.json`):
 
 | Engine API / Global | Type | Engine Version | Status / Notes |
 |---------------------|------|----------------|----------------|
-| `Spring.GetTeamRulesParam` | `function` | Pending H1 | Used for `startUnit` faction detection |
-| `Spring.GetTeamUnitsCounts` | `function` | Pending H1 | One-pass unit defID count lookup |
-| `Spring.GetUnitIsBeingBuilt` | `function` | Pending H1 | Differentiates in-construction vs finished units |
-| `Spring.GetUnitIsBuilding` | `function` | Pending H1 | Detects active constructor build power |
-| `Spring.GetUnitCurrentBuildPower` | `function` | Pending H1 | Measures active build power utilization |
-| `Spring.GetUnitCommandCount` | `function` | Pending H1 | Identifies idle builders and commanders |
-| `Spring.GetFactoryCommands` | `function` | Pending H1 | Inspects factory queues |
-| `Spring.GetVisibleUnits` | `function` | Pending H1 | Identifies LOS-visible enemy units |
-| `Spring.SetActiveCommand` | `function` | Pending H1 | Arms next build command |
-| `Spring.GetActiveCmdDescs` | `function` | Pending H1 | Inspects builder command descriptions |
-| `widgetHandler.actionHandler:AddAction` | `function` | Pending H1 | Registers `/bind` actions |
-| `WG['fonts']` | `table / nil` | Pending H1 | BAR engine shared font provider |
+| `Spring.GetTeamRulesParam` | `function` | 2026.07.04 | Available; used for `startUnit` faction detection |
+| `Spring.GetTeamUnitsCounts` | `function` | 2026.07.04 | Available; one-pass unit defID count lookup |
+| `Spring.GetUnitIsBeingBuilt` | `function` | 2026.07.04 | Available; differentiates in-construction vs finished units |
+| `Spring.GetUnitIsBuilding` | `function` | 2026.07.04 | Available; detects active constructor build power |
+| `Spring.GetUnitCurrentBuildPower` | `function` | 2026.07.04 | Available; measures active build power utilization |
+| `Spring.GetUnitCommandCount` | `function` | 2026.07.04 | Available; identifies idle builders and commanders |
+| `Spring.GetFactoryCommands` | `function` | 2026.07.04 | Available; inspects factory queue (returns number for count or table) |
+| `Spring.GetVisibleUnits` | `function` | 2026.07.04 | Available; identifies LOS-visible enemy units |
+| `Spring.SetActiveCommand` | `function` | 2026.07.04 | Available; arms next build command |
+| `Spring.GetActiveCmdDescs` | `function` | 2026.07.04 | Available; inspects builder command descriptions |
+| `widgetHandler.actionHandler:AddAction` | `function` | 2026.07.04 | Available; registers `/bind` actions (requires `(widget, cmd, func)` or `widgetHandler:AddAction`) |
+| `WG['fonts']` | `table` | 2026.07.04 | Available; BAR engine shared font provider present |
 
 ---
 

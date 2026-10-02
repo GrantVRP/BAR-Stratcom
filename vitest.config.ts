@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitest/config';
 import { resolve } from 'path';
 
+if (process.argv.includes('--coverage')) {
+  process.env.VITEST_COVERAGE = 'true';
+}
+
 export default defineConfig({
   test: {
     projects: [
@@ -42,7 +46,11 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/core/**'],
-      exclude: ['src/core/**/*.test.ts']
+      exclude: ['src/core/**/*.test.ts'],
+      thresholds: {
+        'src/core/**': { lines: 85 },
+        'src/core/{sim,coach,analysis,registry,sharecode}/**': { lines: 90 }
+      }
     }
   }
 });

@@ -16,13 +16,14 @@
     "validate:data": "tsx tools/validate-data.ts",
     "test": "vitest",
     "test:watch": "vitest",
+    "test:perf": "vitest run --config vitest.perf.config.ts",
     "coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "show": "node tools/show-app.mjs",
     "format": "prettier --write --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx,css,json}\" \"tools/**/*.{ts,js,mjs}\" \"tests/**/*.{ts,js}\" \"docs/**/*.json\" \"widget/**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx,css,json}\" \"tools/**/*.{ts,js,mjs}\" \"tests/**/*.{ts,js}\" \"docs/**/*.json\" \"widget/**/*.{ts,tsx,json}\"",
     "golden:update": "node -e \"console.log('No golden files to update.')\"",
-    "verify": "npm run typecheck && npm run lint && npm run lint:lua && npm run validate:data && vitest run && npm run build && npm run test:e2e"
+    "verify": "npm run typecheck && npm run lint && npm run lint:lua && npm run validate:data && vitest run --coverage && npm run build && npm run test:e2e"
   },
   "engines": {
     "node": ">=22.0.0"

@@ -187,8 +187,10 @@ describe('Widget Exporters (05 §5, T02.3)', () => {
       expect(exported).not.toBeNull();
       expect(exported!.units.length).toBe(500);
 
-      // Measure budget: ≤ 50 ms
-      expect(durationMs).toBeLessThan(50);
+      // Measure budget: ≤ 50 ms (wall-clock budget skipped when coverage instrumentation is active)
+      if (!process.env.VITEST_COVERAGE) {
+        expect(durationMs).toBeLessThan(50);
+      }
     } finally {
       harness.close();
     }

@@ -233,6 +233,7 @@ export function getMapSlug(scriptName: string): string {
   if (lower.includes('dworld')) return 'dworld';
   if (lower.includes('ptaq')) return 'ptaq';
   if (lower.includes('mediterraneum')) return 'mediterraneum';
+  if (lower.includes('isthmus')) return 'isthmus';
 
   // Fallback: clean non-alphanumeric, take first word or clean string
   const clean = scriptName

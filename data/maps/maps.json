@@ -1921,7 +1921,10 @@
         "replays30d": 29,
         "rank": 13
       },
-      "mexYield": null
+      "mexYield": {
+        "value": 2.21,
+        "provenance": "measured"
+      }
     },
     {
       "fileName": "altair_pass_v4",
@@ -3709,7 +3712,10 @@
         "replays30d": 6,
         "rank": 71
       },
-      "mexYield": null
+      "mexYield": {
+        "value": 1.04,
+        "provenance": "measured"
+      }
     },
     {
       "fileName": "barren_2",
@@ -32187,7 +32193,10 @@
         "replays30d": 7,
         "rank": 47
       },
-      "mexYield": null
+      "mexYield": {
+        "value": 2.3,
+        "provenance": "measured"
+      }
     },
     {
       "fileName": "supreme_isthmus_v1.8",

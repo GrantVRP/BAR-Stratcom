@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-02-armada-1v1-vs-ai-isthmus",
+  "mode": "player",
+  "gameVersion": "test-31479-433a460",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Supreme Isthmus v1.7",
+  "durationSec": 899.000061,
+  "startedAt": "2026-10-02T19:53:49.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "Player",
+      "factionId": "armada",
+      "isMe": true
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "BARbarianAI(1) (AI)",
+      "factionId": null,
+      "isMe": false
+    }
+  ],
+  "start": {
+    "metal": 1000,
+    "energy": 1000,
+    "metalStorage": 1000,
+    "energyStorage": 1000
+  },
+  "source": "fixture",
+  "anonymized": true
+}

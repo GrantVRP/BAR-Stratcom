@@ -153,6 +153,7 @@ describe('fixture-repair unit functions', () => {
     expect(getMapSlug('DWorld_V4')).toBe('dworld');
     expect(getMapSlug('Why did I let PtaQ talk me into this 1.0')).toBe('ptaq');
     expect(getMapSlug('Mediterraneum_V1')).toBe('mediterraneum');
+    expect(getMapSlug('Supreme Isthmus v1.7')).toBe('isthmus');
   });
 });
 

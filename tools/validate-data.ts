@@ -2,14 +2,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {
   AliasesFileSchema,
+  AvgWindFileSchema,
   FactionsFileSchema,
   MapsFileSchema,
   SessionMetaSchema,
   SnapshotIndexSchema,
   StateDocSchema,
   UnitSnapshotSchema,
-  WidgetEventSchema
+  WidgetEventSchema,
+  type MapsFile,
+  type SessionMeta
 } from '../src/core/schemas';
+import { findMapByScriptName } from '../src/core/maps';
 import { getStateFilePath, readStateLines } from './lib/state-reader';
 
 function findJsonFiles(dir: string): string[] {
@@ -53,6 +57,9 @@ for (const file of jsonFiles) {
     } else if (file.endsWith('maps.json')) {
       MapsFileSchema.parse(parsed);
       console.log(`validate:data: OK (maps schema) ${relPath}`);
+    } else if (file.endsWith('avg-wind.json')) {
+      AvgWindFileSchema.parse(parsed);
+      console.log(`validate:data: OK (avg wind schema) ${relPath}`);
     } else if (relPath.replace(/\\/g, '/').endsWith('snapshots/index.json')) {
       SnapshotIndexSchema.parse(parsed);
       console.log(`validate:data: OK (snapshot index schema) ${relPath}`);
@@ -71,7 +78,10 @@ for (const file of jsonFiles) {
   }
 }
 
-// Fixture sessions validation (T03.2)
+// Fixture sessions validation (T03.2, T03.3)
+const mapsFileContent = fs.readFileSync(path.resolve(dataDir, 'maps', 'maps.json'), 'utf-8');
+const mapsData: MapsFile = JSON.parse(mapsFileContent);
+
 const fixturesDir = path.resolve(dataDir, 'fixtures', 'sessions');
 if (fs.existsSync(fixturesDir)) {
   const sessionDirs = fs.readdirSync(fixturesDir, { withFileTypes: true }).filter((d) => d.isDirectory());
@@ -79,11 +89,25 @@ if (fs.existsSync(fixturesDir)) {
     const fixturePath = path.join(fixturesDir, sessionDir.name);
     const relFixturePath = path.relative(process.cwd(), fixturePath);
 
-    // 0. meta.json
+    // 0. meta.json & map resolution check (T03.3)
     const metaPath = path.join(fixturePath, 'meta.json');
     if (!fs.existsSync(metaPath)) {
       console.error(`validate:data: ERROR missing meta.json in ${relFixturePath}`);
       hasErrors = true;
+    } else {
+      try {
+        const metaDoc = JSON.parse(fs.readFileSync(metaPath, 'utf-8')) as SessionMeta;
+        const resolvedMap = findMapByScriptName(mapsData.maps, metaDoc.mapScriptName);
+        if (!resolvedMap) {
+          console.error(`validate:data: ERROR map "${metaDoc.mapScriptName}" in ${relFixturePath} did not resolve in maps.json`);
+          hasErrors = true;
+        } else {
+          console.log(`validate:data: OK (map resolved: "${resolvedMap.scriptName}" -> ${resolvedMap.fileName}) ${relFixturePath}`);
+        }
+      } catch (err) {
+        console.error(`validate:data: ERROR reading meta.json in ${relFixturePath}:`, err);
+        hasErrors = true;
+      }
     }
 
     // 1. events.ndjson validation

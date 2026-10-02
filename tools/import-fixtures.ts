@@ -81,9 +81,33 @@ export async function importFixtures(opts: ImportOptions): Promise<string[]> {
 
   const importedFolderNames: string[] = [];
 
+  const existingStartedAts = new Set<string>();
+  if (fs.existsSync(toDir)) {
+    const existingDirs = fs.readdirSync(toDir, { withFileTypes: true }).filter((d) => d.isDirectory());
+    for (const d of existingDirs) {
+      const metaPath = path.join(toDir, d.name, 'meta.json');
+      if (fs.existsSync(metaPath)) {
+        try {
+          const meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+          if (meta.startedAt) {
+            existingStartedAts.add(meta.startedAt);
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
+  }
+
   for (const sFile of sessionFiles) {
     const rawSessionId = sFile.replace(/^session-/, '').replace(/\.json$/, '');
     if (sessionFilter && !rawSessionId.includes(sessionFilter)) {
+      continue;
+    }
+
+    const sessionIso = parseSessionTimestampToIso(rawSessionId);
+    if (existingStartedAts.has(sessionIso)) {
+      console.log(`[import-fixtures] Skipping ${rawSessionId}: already exists in fixtures`);
       continue;
     }
 

@@ -4,7 +4,7 @@ import { UnitSnapshotSchema } from '../schemas';
 import { createRegistry } from '../registry';
 import syntheticSnapshotData from '../registry/__test__/test-snapshot.json';
 import goldenOpeningA from './__golden__/opening-a.json';
-import { simulate } from './simulate';
+import { deriveBaseMexExtractsMetal, simulate } from './simulate';
 import { SimInputError, type SimInput } from './types';
 
 const syntheticSnapshot = UnitSnapshotSchema.parse(syntheticSnapshotData);
@@ -229,5 +229,11 @@ describe('Sim: scheduler & SimResult', () => {
       options: { dt: 0.5, horizon: 60, windSeries }
     });
     expect(res.samples).toHaveLength(61);
+  });
+
+  it('derives baseMexExtractsMetal from snapshot T1 metal extractor', () => {
+    expect(deriveBaseMexExtractsMetal(registry, 'armada')).toBe(0.001);
+    expect(deriveBaseMexExtractsMetal(registry, 'cortex')).toBe(0.001);
+    expect(deriveBaseMexExtractsMetal(registry, 'unknown_faction')).toBe(0.001);
   });
 });

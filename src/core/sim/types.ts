@@ -83,6 +83,7 @@ export interface SimInput {
     schedule?: 'respect-targets' | 'asap'; // default 'respect-targets' when steps have targetTime
     converterThreshold?: number; // fraction of energy storage; default in constants.ts
     windSeries?: number[]; // per-second wind (calibration only); otherwise windAvg
+    baseMexExtractsMetal?: number; // derived from registry T1 mex; fallback to BASE_MEX_EXTRACTS_METAL
   };
 }
 

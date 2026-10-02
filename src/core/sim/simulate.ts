@@ -1,6 +1,7 @@
 import type { BuildStep, UnitDefRecord } from '../schemas';
 import { validatePlan } from '../plans/validate';
 import {
+  BASE_MEX_EXTRACTS_METAL,
   DEFAULT_CONVERTER_THRESHOLD,
   DEFAULT_SIM_DT,
   DEFAULT_SIM_HORIZON,
@@ -45,6 +46,21 @@ function getActorKey(actor: BuildStep['actor']): string {
   return `${actor.kind}:${actor.unitId}:${actor.index}`;
 }
 
+export function deriveBaseMexExtractsMetal(registry: SimInput['registry'], factionId: string): number {
+  try {
+    const commander = registry.commanderOf(factionId);
+    for (const opt of commander.buildOptions) {
+      const unit = registry.get(opt);
+      if (unit?.techLevel === 1 && registry.classify(unit.id) === 'eco-metal' && unit.economy.extractsMetal > 0) {
+        return unit.economy.extractsMetal;
+      }
+    }
+  } catch {
+    // fallback if faction not found or commander missing
+  }
+  return BASE_MEX_EXTRACTS_METAL;
+}
+
 /**
  * Simulates a BuildPlan on a given map using deterministic discrete-time simulation.
  */
@@ -62,6 +78,9 @@ export function simulate(input: SimInput): SimResult {
   const hasTargetTimes = input.plan.steps.some((s) => s.targetTime !== undefined);
   const schedule = input.options?.schedule ?? (hasTargetTimes ? 'respect-targets' : 'asap');
   const converterThreshold = input.options?.converterThreshold ?? DEFAULT_CONVERTER_THRESHOLD;
+  const baseMexExtractsMetal =
+    input.options?.baseMexExtractsMetal ??
+    deriveBaseMexExtractsMetal(input.registry, input.plan.factionId);
   const startEstimated = !input.start;
   const start = input.start ?? DEFAULT_START_RESOURCES;
 
@@ -221,7 +240,7 @@ export function simulate(input: SimInput): SimResult {
     const windNow = input.options?.windSeries
       ? (input.options.windSeries[seriesIdx] ?? input.map.windAvg)
       : input.map.windAvg;
-    const incomeRes = computeIncome(completedUnits, input.map, windNow);
+    const incomeRes = computeIncome(completedUnits, input.map, windNow, { baseMexExtractsMetal });
     if (incomeRes.flags.windUnknown && !flags.includes('windUnknown')) {
       flags.push('windUnknown');
     }

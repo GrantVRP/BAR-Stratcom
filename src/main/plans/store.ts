@@ -46,26 +46,31 @@ export class PlanStore {
       return [];
     }
 
-    const files = fs.readdirSync(dir);
     const plans: BuildPlan[] = [];
-
-    for (const file of files) {
-      if (!file.endsWith('.json')) continue;
-      const filePath = path.join(dir, file);
-      try {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        const parsed = JSON.parse(content);
-        const validated = BuildPlanSchema.safeParse(parsed);
-        if (validated.success) {
-          plans.push(validated.data);
-        } else {
-          console.warn(`Plan validation failed for ${filePath}:`, validated.error.message);
+    const scan = (currentDir: string): void => {
+      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(currentDir, entry.name);
+        if (entry.isDirectory()) {
+          scan(fullPath);
+        } else if (entry.isFile() && entry.name.endsWith('.json')) {
+          try {
+            const content = fs.readFileSync(fullPath, 'utf-8');
+            const parsed = JSON.parse(content);
+            const validated = BuildPlanSchema.safeParse(parsed);
+            if (validated.success) {
+              plans.push(validated.data);
+            } else {
+              console.warn(`Plan validation failed for ${fullPath}:`, validated.error.message);
+            }
+          } catch (err) {
+            console.warn(`Failed to read plan from ${fullPath}:`, err);
+          }
         }
-      } catch (err) {
-        console.warn(`Failed to read plan from ${filePath}:`, err);
       }
-    }
+    };
 
+    scan(dir);
     return plans;
   }
 
@@ -99,9 +104,16 @@ export class PlanStore {
       }
     }
 
-    // Check bundled plans
-    const bundledFile = path.join(this.bundledDir, `${id}.json`);
-    if (fs.existsSync(bundledFile)) {
+    // Check bundled plans directly or in samples/
+    const directBundledFile = path.join(this.bundledDir, `${id}.json`);
+    const sampleBundledFile = path.join(this.bundledDir, 'samples', `${id}.json`);
+    const bundledFile = fs.existsSync(directBundledFile)
+      ? directBundledFile
+      : fs.existsSync(sampleBundledFile)
+        ? sampleBundledFile
+        : null;
+
+    if (bundledFile) {
       try {
         const content = fs.readFileSync(bundledFile, 'utf-8');
         const parsed = JSON.parse(content);

@@ -33,6 +33,16 @@ function formatMss(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function formatSimFlag(flag: string): string {
+  switch (flag) {
+    case 'startEstimated': return 'ESTIMATED START';
+    case 'mexYieldEstimated': return 'ESTIMATED MEX';
+    case 'windUnknown': return 'WIND UNKNOWN';
+    case 'horizonReached': return 'HORIZON REACHED';
+    default: return flag.toUpperCase();
+  }
+}
+
 export function SimGraph({
   plan,
   mapRecord,
@@ -161,7 +171,7 @@ export function SimGraph({
               data-testid={`sim-flag-${flag}`}
               className="px-1.5 py-0.5 border border-zinc-700 bg-zinc-900 text-zinc-400 font-pixel-heading text-[10px]"
             >
-              {flag === 'windUnknown' ? 'WIND UNKNOWN' : flag === 'mexYieldEstimated' ? 'ESTIMATED MEX' : flag.toUpperCase()}
+              {formatSimFlag(flag)}
             </span>
           ))}
         </div>

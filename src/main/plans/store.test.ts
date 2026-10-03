@@ -140,4 +140,32 @@ describe('PlanStore', () => {
     expect(colliding.id).not.toBe(samplePlan.id);
     expect(colliding.title).toBe(samplePlan.title);
   });
+
+  it('discovers sample plans in bundled subdirectories', () => {
+    const samplesSubdir = path.join(tmpBundledDir, 'samples');
+    fs.mkdirSync(samplesSubdir, { recursive: true });
+    const sampleSubPlan: BuildPlan = {
+      ...samplePlan,
+      id: 'sample-sub-1',
+      title: 'Sample Sub Plan',
+      source: {
+        kind: 'own-game',
+        sessionId: 'session-1',
+        map: 'BarR 1.1',
+        capturedAt: '2026-10-01T00:00:00Z'
+      }
+    };
+    fs.writeFileSync(
+      path.join(samplesSubdir, 'sample-sub-1.json'),
+      JSON.stringify(sampleSubPlan),
+      'utf-8'
+    );
+
+    const plans = store.list();
+    expect(plans.some((p) => p.id === 'sample-sub-1')).toBe(true);
+
+    const found = store.get('sample-sub-1');
+    expect(found).not.toBeNull();
+    expect(found?.title).toBe('Sample Sub Plan');
+  });
 });

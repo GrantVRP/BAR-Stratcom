@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-10-02-cortex-1v1-vs-ai-altair",
+  "title": "Sample // Cortex hover on Altair Crossing (owner vs AI)",
+  "factionId": "cortex",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "intermediate",
+  "opening": "hover",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "own-game",
+    "sessionId": "2026-10-02-cortex-1v1-vs-ai-altair",
+    "map": "Altair_Crossing_V4.1",
+    "capturedAt": "2026-10-02T15:32:02.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 3.5
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 4,
+      "targetTime": 16.5
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corhp",
+      "count": 1,
+      "targetTime": 40.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corhp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corch",
+      "count": 1,
+      "targetTime": 70
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 71.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 8,
+      "targetTime": 78
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corhp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corsh",
+      "count": 3,
+      "targetTime": 103.3
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 112.3
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corhp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corch",
+      "count": 1,
+      "targetTime": 149
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corllt",
+      "count": 2,
+      "targetTime": 159
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormakr",
+      "count": 5,
+      "targetTime": 191.1
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corllt",
+      "count": 2,
+      "targetTime": 192
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corrad",
+      "count": 1,
+      "targetTime": 209.5
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corllt",
+      "count": 1,
+      "targetTime": 222
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corhp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corhal",
+      "count": 1,
+      "targetTime": 228
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormakr",
+      "count": 1,
+      "targetTime": 252.6
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormakr",
+      "count": 2,
+      "targetTime": 279.6
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cordrag",
+      "count": 9,
+      "targetTime": 296
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corhp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormh",
+      "count": 2,
+      "targetTime": 301
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corhlt",
+      "count": 1,
+      "targetTime": 318.1
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 395.6
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corhp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corsnap",
+      "count": 2,
+      "targetTime": 411
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corhlt",
+      "count": 1,
+      "targetTime": 430.1
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cordrag",
+      "count": 6,
+      "targetTime": 458
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corllt",
+      "count": 1,
+      "targetTime": 474.5
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormaw",
+      "count": 1,
+      "targetTime": 485.2
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cordrag",
+      "count": 3,
+      "targetTime": 491.5
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corllt",
+      "count": 1,
+      "targetTime": 498.5
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormaw",
+      "count": 1,
+      "targetTime": 524.1
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corllt",
+      "count": 2,
+      "targetTime": 545
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corch",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormaw",
+      "count": 1,
+      "targetTime": 557.5
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cordrag",
+      "count": 10,
+      "targetTime": 578
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays."
+}

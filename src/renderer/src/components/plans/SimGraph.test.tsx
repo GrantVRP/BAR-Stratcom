@@ -120,6 +120,22 @@ describe('SimGraph', () => {
     expect(mexFlag?.textContent).toContain('ESTIMATED MEX');
   });
 
+  it('renders startEstimated and horizonReached human labels', () => {
+    const flagSeries: ChartSeries = {
+      ...mockSeries,
+      flags: ['startEstimated', 'horizonReached']
+    };
+    act(() => {
+      root.render(<SimGraph chartSeries={flagSeries} />);
+    });
+
+    const startFlag = container.querySelector('[data-testid="sim-flag-startEstimated"]');
+    expect(startFlag?.textContent).toContain('ESTIMATED START');
+
+    const horizonFlag = container.querySelector('[data-testid="sim-flag-horizonReached"]');
+    expect(horizonFlag?.textContent).toContain('HORIZON REACHED');
+  });
+
   it('allows switching between STORED and FLOW metric modes', () => {
     act(() => {
       root.render(<SimGraph chartSeries={mockSeries} />);

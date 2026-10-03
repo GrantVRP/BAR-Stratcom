@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-10-01-cortex-1v1-vs-ai-barr-499s",
+  "title": "Sample // Cortex vehicle on BarR 1.1 #2 (owner vs AI)",
+  "factionId": "cortex",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "intermediate",
+  "opening": "vehicle",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "own-game",
+    "sessionId": "2026-10-01-cortex-1v1-vs-ai-barr-499s",
+    "map": "BarR 1.1",
+    "capturedAt": "2026-10-01T22:03:12.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 4
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 5,
+      "targetTime": 19.5
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corvp",
+      "count": 1,
+      "targetTime": 55
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 1,
+      "targetTime": 78.2
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 1,
+      "targetTime": 107.3
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 123.8
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfav",
+      "count": 1,
+      "targetTime": 136.4
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 8,
+      "targetTime": 136.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 146.7
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "corexp",
+      "count": 1,
+      "targetTime": 164.7
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corlevlr",
+      "count": 1,
+      "targetTime": 176.9
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corlevlr",
+      "count": 1,
+      "targetTime": 208.8
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corlevlr",
+      "count": 1,
+      "targetTime": 234.4
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 238.7
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 5,
+      "targetTime": 246
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 288.1
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corraid",
+      "count": 1,
+      "targetTime": 299.6
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 3,
+      "targetTime": 300.5
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "corrad",
+      "count": 1,
+      "targetTime": 306.6
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corhllt",
+      "count": 1,
+      "targetTime": 317.1
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "corhllt",
+      "count": 1,
+      "targetTime": 319.4
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormakr",
+      "count": 14,
+      "targetTime": 322.5
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 376.1
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 1,
+      "targetTime": 384.1
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corhllt",
+      "count": 1,
+      "targetTime": 440.1
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays."
+}

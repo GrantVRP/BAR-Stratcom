@@ -127,4 +127,17 @@ describe('MapCombobox', () => {
 
     expect(onSelect).toHaveBeenCalledWith(testMaps[1]);
   });
+
+  it('shows "CHOOSE A MAP" when selectedMap is null', async () => {
+    const onSelect = vi.fn();
+    await act(async () => {
+      root.render(<MapCombobox selectedMap={null} onSelectMap={onSelect} maps={testMaps} />);
+    });
+
+    const trigger = container.querySelector('#map-combobox-trigger');
+    expect(trigger).not.toBeNull();
+    expect(trigger?.textContent).toContain('CHOOSE A MAP');
+    expect(trigger?.textContent).not.toContain('Red River');
+  });
 });
+

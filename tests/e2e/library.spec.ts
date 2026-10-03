@@ -22,17 +22,17 @@ test('library: browse build plans, open detail view, and inspect timeline steps'
     await expect(libraryView).toBeVisible();
 
     // 4. Check that plan cards are rendered
-    const planCard = page.getByTestId('plan-card-armada-rocketeer-1v1');
+    const planCard = page.getByTestId('plan-card-2026-10-02-armada-1v1-vs-ai-isthmus');
     await expect(planCard).toBeVisible();
-    await expect(planCard).toContainText('Armada Bot Rocketeer 1v1');
-    await expect(planCard).toContainText('CURATED');
+    await expect(planCard).toContainText('Sample // Armada hover');
+    await expect(planCard).toContainText('SAMPLE');
 
     // 5. Open plan detail
     await planCard.click();
 
     const planDetail = page.getByTestId('view-plan-detail');
     await expect(planDetail).toBeVisible();
-    await expect(planDetail).toContainText('Armada Bot Rocketeer 1v1');
+    await expect(planDetail).toContainText('Sample // Armada hover');
 
     // 6. Inspect validation badge, map selector, and timeline steps
     await expect(page.getByTestId('badge-validation-valid')).toBeVisible();

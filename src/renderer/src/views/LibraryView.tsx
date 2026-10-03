@@ -13,7 +13,7 @@ function formatProvenanceLine(source: BuildPlan['source']): string {
   switch (source.kind) {
     case 'curated': return `CURATED // from ${source.player} on ${source.map}, ${d(source.playedAt)}`;
     case 'replay-capture': return `CAPTURED // from ${source.player} on ${source.map}, ${d(source.capturedAt)}`;
-    case 'own-game': return `OWN GAME // on ${source.map}, ${d(source.capturedAt)}`;
+    case 'own-game': return `SAMPLE // owner game vs AI, ${source.map}, ${d(source.capturedAt)}`;
     case 'adapted': return `ADAPTED // from ${source.fromPlanId}, ${d(source.createdAt)}`;
     case 'ai-draft': return `AI DRAFT // ${source.provider}/${source.model}, ${d(source.createdAt)}`;
     default: return `MANUAL // ${d(source.createdAt)}`;

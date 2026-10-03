@@ -36,9 +36,7 @@ export function MapCombobox({
   useEffect(() => {
     if (!externalMaps || externalMaps.length === 0) {
       ipcClient.invoke('maps:list').then((res) => {
-        if (res.ok && res.data.length > 0) {
-          setInternalMaps(res.data);
-        }
+        if (res.ok && res.data.length > 0) setInternalMaps(res.data);
       }).catch((err) => {
         console.warn('Failed to load maps for combobox:', err);
       });
@@ -48,21 +46,18 @@ export function MapCombobox({
   const mapList = externalMaps && externalMaps.length > 0 ? externalMaps : internalMaps;
 
   const filteredMaps = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return mapList;
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return mapList;
     return mapList.filter(
       (m) =>
-        m.name.toLowerCase().includes(query) ||
-        m.fileName.toLowerCase().includes(query) ||
-        (m.author && m.author.toLowerCase().includes(query)) ||
-        `${m.sizeX}x${m.sizeZ}`.includes(query)
+        m.name.toLowerCase().includes(q) ||
+        m.fileName.toLowerCase().includes(q) ||
+        (m.author && m.author.toLowerCase().includes(q)) ||
+        `${m.sizeX}x${m.sizeZ}`.includes(q)
     );
   }, [mapList, searchQuery]);
 
-  const safeHighlightedIndex = Math.min(
-    highlightedIndex,
-    Math.max(0, filteredMaps.length - 1)
-  );
+  const safeHighlightedIndex = Math.min(highlightedIndex, Math.max(0, filteredMaps.length - 1));
 
   const closeCombobox = useCallback(() => {
     setIsOpen(false);
@@ -71,9 +66,7 @@ export function MapCombobox({
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus();
-    }
+    if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
   useEffect(() => {
@@ -103,30 +96,22 @@ export function MapCombobox({
       return;
     }
 
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setHighlightedIndex((prev) => (prev + 1) % Math.max(1, filteredMaps.length));
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setHighlightedIndex((prev) => (prev - 1 + filteredMaps.length) % Math.max(1, filteredMaps.length));
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (filteredMaps[safeHighlightedIndex]) {
-          handleSelect(filteredMaps[safeHighlightedIndex]);
-        }
-        break;
-      case 'Escape':
-      case 'Tab':
-        e.preventDefault();
-        closeCombobox();
-        break;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev + 1) % Math.max(1, filteredMaps.length));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev - 1 + filteredMaps.length) % Math.max(1, filteredMaps.length));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (filteredMaps[safeHighlightedIndex]) handleSelect(filteredMaps[safeHighlightedIndex]);
+    } else if (e.key === 'Escape' || e.key === 'Tab') {
+      e.preventDefault();
+      closeCombobox();
     }
   };
 
-  const currentMap = selectedMap || mapList[0] || null;
+  const currentMap = selectedMap;
 
   return (
     <div
@@ -154,13 +139,10 @@ export function MapCombobox({
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-pixel-heading text-[10px] text-zinc-100 truncate">
-                {currentMap ? currentMap.name : 'SELECT MAP'}
+                {currentMap ? currentMap.name : 'CHOOSE A MAP'}
               </span>
               {currentMap && (
-                <span
-                  data-num="true"
-                  className="font-mono text-[10px] px-1.5 py-0.5 bg-zinc-900 text-zinc-300 border border-zinc-700 shrink-0"
-                >
+                <span data-num="true" className="font-mono text-[10px] px-1.5 py-0.5 bg-zinc-900 text-zinc-300 border border-zinc-700 shrink-0">
                   {currentMap.sizeX}×{currentMap.sizeZ}
                 </span>
               )}
@@ -169,25 +151,19 @@ export function MapCombobox({
               <div className="flex items-center gap-2 text-zinc-400 mt-1 flex-wrap">
                 <span className="flex items-center gap-1">
                   <img src={turbineImg} alt="Wind" className="size-3.5 object-contain" />
-                  <span data-num="true" className="font-mono text-[10px] text-zinc-200">
-                    {currentMap.wind.min}–{currentMap.wind.max}
-                  </span>
+                  <span data-num="true" className="font-mono text-[10px] text-zinc-200">{currentMap.wind.min}–{currentMap.wind.max}</span>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
                   <MetalIcon size={12} />
-                  <span data-num="true" className="font-mono text-[10px] text-zinc-200">
-                    {currentMap.maxMetal.toFixed(2)}
-                  </span>
+                  <span data-num="true" className="font-mono text-[10px] text-zinc-200">{currentMap.maxMetal.toFixed(2)}</span>
                 </span>
                 {currentMap.tidalStrength > 0 && (
                   <>
                     <span>•</span>
                     <span className="flex items-center gap-1 text-[#fbbf24]">
                       <EnergyIcon size={12} />
-                      <span data-num="true" className="font-mono text-[10px]">
-                        +{currentMap.tidalStrength}E
-                      </span>
+                      <span data-num="true" className="font-mono text-[10px]">+{currentMap.tidalStrength}E</span>
                     </span>
                   </>
                 )}
@@ -244,24 +220,16 @@ export function MapCombobox({
                   <div className="flex flex-col min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-pixel-heading text-[10px] truncate">{map.name}</span>
-                      <span data-num="true" className="font-mono text-[10px] text-zinc-400">
-                        {map.sizeX}×{map.sizeZ}
-                      </span>
+                      <span data-num="true" className="font-mono text-[10px] text-zinc-400">{map.sizeX}×{map.sizeZ}</span>
                     </div>
                     <div className="flex items-center gap-2 text-zinc-400 text-[10px] mt-0.5">
-                      <span data-num="true" className="font-mono">
-                        wind {map.wind.min}–{map.wind.max}
-                      </span>
+                      <span data-num="true" className="font-mono">wind {map.wind.min}–{map.wind.max}</span>
                       {map.tidalStrength > 0 && (
-                        <span data-num="true" className="font-mono text-[#fbbf24]">
-                          tidal +{map.tidalStrength}
-                        </span>
+                        <span data-num="true" className="font-mono text-[#fbbf24]">tidal +{map.tidalStrength}</span>
                       )}
                     </div>
                   </div>
-                  {isSelected && (
-                    <span className="font-pixel-heading text-[10px] text-[#449bed] ml-2">✓</span>
-                  )}
+                  {isSelected && <span className="font-pixel-heading text-[10px] text-[#449bed] ml-2">✓</span>}
                 </li>
               );
             })}

@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import type { BuildPlan, MapRecord } from '../../../core/schemas';
 import { validatePlan } from '../../../core/plans';
+import { findMapByScriptName } from '../../../core/maps';
 import { usePlans, useSettings, useSnapshot } from '../stores';
 import { getClientRegistry } from '../lib/registry';
+import { ipcClient } from '../lib/ipc-client';
 import { MapCombobox } from '../components/tactical/MapCombobox';
 import { PlanTimeline } from '../components/plans/PlanTimeline';
 import { SimGraph } from '../components/SimGraph';
@@ -22,7 +24,7 @@ function formatProvenanceLine(source: BuildPlan['source']): string {
   switch (source.kind) {
     case 'curated': return `CURATED // from ${source.player} on ${source.map}, ${d(source.playedAt)}`;
     case 'replay-capture': return `CAPTURED // from ${source.player} on ${source.map}, ${d(source.capturedAt)}`;
-    case 'own-game': return `OWN GAME // on ${source.map}, ${d(source.capturedAt)}`;
+    case 'own-game': return `SAMPLE // owner game vs AI, ${source.map}, ${d(source.capturedAt)}`;
     case 'adapted': return `ADAPTED // from ${source.fromPlanId}, ${d(source.createdAt)}`;
     case 'ai-draft': return `AI DRAFT // ${source.provider}/${source.model}, ${d(source.createdAt)}`;
     default: return `MANUAL // ${d(source.createdAt)}`;
@@ -40,6 +42,41 @@ export function PlanDetailView({
   const snapshot = useSnapshot((s) => s.snapshot);
   const [selectedMap, setSelectedMap] = useState<MapRecord | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    ipcClient.invoke('maps:list').then((res) => {
+      if (!active || !res.ok) return;
+      const maps = res.data;
+      if (maps.length === 0) return;
+
+      let resolved: MapRecord | undefined;
+      const firstFit = plan.mapFit?.maps?.[0];
+      if (firstFit) {
+        resolved = findMapByScriptName(maps, firstFit) || maps.find((m) => m.fileName === firstFit);
+      }
+      const sourceMap = 'map' in plan.source && typeof plan.source.map === 'string' ? plan.source.map : undefined;
+      if (!resolved && sourceMap) {
+        resolved = findMapByScriptName(maps, sourceMap) || maps.find((m) => m.fileName === sourceMap);
+      }
+      if (!resolved) {
+        const sorted = [...maps].sort((a, b) => {
+          const rankA = a.popularity?.rank ?? 999999;
+          const rankB = b.popularity?.rank ?? 999999;
+          return rankA - rankB;
+        });
+        resolved = sorted[0];
+      }
+      if (resolved) {
+        setSelectedMap(resolved);
+      }
+    }).catch((err) => {
+      console.warn('Failed to load maps for plan detail:', err);
+    });
+    return () => {
+      active = false;
+    };
+  }, [plan]);
 
   const isActive = activePlanId === plan.id;
   const isCurated = plan.source.kind === 'curated';

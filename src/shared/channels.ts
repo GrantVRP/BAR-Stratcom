@@ -26,7 +26,10 @@ export const IPC_CHANNELS = [
   'game:browse',
   'data:openFolder',
   'data:exportAllPlans',
-  'data:clearSessions'
+  'data:clearSessions',
+  'sessions:list',
+  'sessions:get',
+  'sessions:delete'
 ] as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[number];

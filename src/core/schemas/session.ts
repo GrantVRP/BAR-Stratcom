@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { SchemaVersionSchema } from './common';
+import { SessionReportSchema } from './report';
 
 export const SessionModeSchema = z.enum(['player', 'spectator', 'replay']);
 export type SessionMode = z.infer<typeof SessionModeSchema>;
@@ -60,3 +61,43 @@ export const SessionMetaSchema = z
   .strict();
 
 export type SessionMeta = z.infer<typeof SessionMetaSchema>;
+
+export const SessionSummarySchema = z
+  .object({
+    sessionId: z.string(),
+    startedAt: z.string(),
+    durationSec: z.number(),
+    mapScriptName: z.string(),
+    mode: SessionModeSchema,
+    factionId: z.string().nullable(),
+    playerName: z.string(),
+    planId: z.string().optional(),
+    source: SessionSourceSchema,
+    grade: z.enum(['S', 'A', 'B', 'C', 'D']).nullable().optional(),
+    adherence: z.number().nullable().optional(),
+    hasReport: z.boolean()
+  })
+  .strict();
+
+export type SessionSummary = z.infer<typeof SessionSummarySchema>;
+
+export const SessionSeriesSchema = z
+  .object({
+    states: z.array(z.record(z.string(), z.unknown())),
+    events: z.array(z.record(z.string(), z.unknown()))
+  })
+  .strict();
+
+export type SessionSeries = z.infer<typeof SessionSeriesSchema>;
+
+export const SessionDetailSchema = z
+  .object({
+    meta: SessionMetaSchema,
+    report: SessionReportSchema.nullable(),
+    hasState: z.boolean(),
+    hasEvents: z.boolean(),
+    series: SessionSeriesSchema.optional()
+  })
+  .strict();
+
+export type SessionDetail = z.infer<typeof SessionDetailSchema>;

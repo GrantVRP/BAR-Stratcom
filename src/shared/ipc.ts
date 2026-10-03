@@ -7,6 +7,8 @@ import {
   CueSchema,
   LiveSnapshotSchema,
   MapRecordSchema,
+  SessionDetailSchema,
+  SessionSummarySchema,
   SettingsSchema,
   UnitSnapshotSchema
 } from '../core/schemas';
@@ -272,6 +274,31 @@ export const ipcContract = {
     response: z
       .object({
         cleared: z.boolean()
+      })
+      .strict()
+  },
+  'sessions:list': {
+    request: z.void().optional(),
+    response: z.array(SessionSummarySchema)
+  },
+  'sessions:get': {
+    request: z
+      .object({
+        sessionId: z.string(),
+        includeSeries: z.boolean().optional()
+      })
+      .strict(),
+    response: SessionDetailSchema.nullable()
+  },
+  'sessions:delete': {
+    request: z
+      .object({
+        sessionId: z.string()
+      })
+      .strict(),
+    response: z
+      .object({
+        success: z.boolean()
       })
       .strict()
   }

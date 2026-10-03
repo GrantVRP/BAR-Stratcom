@@ -4,6 +4,7 @@ import type { BridgeSource } from '../game/source';
 import type { SessionFileDoc, StateDoc, WidgetEvent, WidgetHeartbeat } from '../../core/schemas/protocol';
 import { SessionMetaSchema, type SessionMeta } from '../../core/schemas/session';
 import { broadcast } from '../ipc/register';
+import { SessionStore } from './store';
 
 export interface SessionRecorderOptions {
   sessionsDir: string;
@@ -272,6 +273,14 @@ export class SessionRecorder {
     // Broadcast review ready
     broadcast('review:ready', { sessionId });
     this.onReviewReady?.({ sessionId });
+
+    // Apply retention policy (keep newest 200 sessions)
+    try {
+      const store = new SessionStore({ sessionsDir: this.sessionsDir });
+      store.applyRetention();
+    } catch {
+      // Ignored
+    }
 
     // Cleanup stratcom files only after successful write
     await this.cleanupStratcomFiles(sessionId);

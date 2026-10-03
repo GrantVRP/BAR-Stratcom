@@ -3,7 +3,9 @@ import {
   SessionMetaSchema,
   SessionModeSchema,
   SessionStartResSchema,
-  SessionTeamMemberSchema
+  SessionTeamMemberSchema,
+  SessionSummarySchema,
+  SessionDetailSchema
 } from './session';
 
 describe('session schemas', () => {
@@ -105,6 +107,69 @@ describe('session schemas', () => {
       expect(SessionMetaSchema.safeParse({ ...validSessionMeta, schemaVersion: 2 }).success).toBe(false);
       expect(SessionMetaSchema.safeParse({ ...validSessionMeta, source: 'unknown' }).success).toBe(false);
       expect(SessionMetaSchema.safeParse({ ...validSessionMeta, extraField: 123 }).success).toBe(false);
+    });
+  });
+
+  describe('SessionSummarySchema', () => {
+    it('accepts valid session summary', () => {
+      const summary = {
+        sessionId: '2026-10-04-arm-1v1-test',
+        startedAt: '2026-10-04T18:00:00Z',
+        durationSec: 620,
+        mapScriptName: 'Supreme Isthmus v2.1',
+        mode: 'player' as const,
+        factionId: 'arm',
+        playerName: 'Player',
+        planId: 'armada-1v1-bot-rocketeer-01',
+        source: 'live' as const,
+        grade: 'A' as const,
+        adherence: 0.85,
+        hasReport: true
+      };
+      expect(SessionSummarySchema.parse(summary)).toEqual(summary);
+    });
+
+    it('accepts summary without optional fields and null report fields', () => {
+      const minimalSummary = {
+        sessionId: '2026-10-04-arm-1v1-test',
+        startedAt: '2026-10-04T18:00:00Z',
+        durationSec: 620,
+        mapScriptName: 'Supreme Isthmus v2.1',
+        mode: 'player' as const,
+        factionId: null,
+        playerName: 'Player',
+        source: 'live' as const,
+        grade: null,
+        adherence: null,
+        hasReport: false
+      };
+      expect(SessionSummarySchema.parse(minimalSummary)).toEqual(minimalSummary);
+    });
+  });
+
+  describe('SessionDetailSchema', () => {
+    it('accepts valid session detail with meta and null report', () => {
+      const detail = {
+        meta: validSessionMeta,
+        report: null,
+        hasState: true,
+        hasEvents: true
+      };
+      expect(SessionDetailSchema.parse(detail)).toEqual(detail);
+    });
+
+    it('accepts valid session detail with series', () => {
+      const detail = {
+        meta: validSessionMeta,
+        report: null,
+        hasState: true,
+        hasEvents: true,
+        series: {
+          states: [{ frame: 30, gameSeconds: 1 }],
+          events: [{ f: 0, e: 'gamestart' }]
+        }
+      };
+      expect(SessionDetailSchema.parse(detail)).toEqual(detail);
     });
   });
 });

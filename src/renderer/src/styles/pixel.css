@@ -244,6 +244,14 @@
   position: relative;
 }
 
+.crt.fixed {
+  position: fixed;
+}
+
+.crt.absolute {
+  position: absolute;
+}
+
 .crt::after {
   content: ' ';
   display: block;

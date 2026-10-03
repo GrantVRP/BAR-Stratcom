@@ -32,10 +32,15 @@ export function LibraryPlanCard({
         }`}
       />
 
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <FactionEmblem faction={plan.factionId} size={24} />
-          <h3 className="font-pixel-heading text-xs text-zinc-100 group-hover:text-white truncate">
+      <div className="flex items-start justify-between gap-3 min-w-0">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <div className="shrink-0">
+            <FactionEmblem faction={plan.factionId} size={24} />
+          </div>
+          <h3
+            title={plan.title}
+            className="font-pixel-heading text-xs text-zinc-100 group-hover:text-white truncate"
+          >
             {plan.title}
           </h3>
         </div>
@@ -57,7 +62,10 @@ export function LibraryPlanCard({
         </span>
       </div>
 
-      <div className="mt-3 pt-2 border-t border-zinc-800 text-[10px] text-zinc-400 font-pixel-heading truncate">
+      <div
+        title={provenanceLine}
+        className="mt-3 pt-2 border-t border-zinc-800 text-[10px] text-zinc-400 font-pixel-heading truncate"
+      >
         {provenanceLine}
       </div>
     </div>

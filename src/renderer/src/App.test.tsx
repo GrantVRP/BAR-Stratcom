@@ -129,4 +129,33 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
     expect(container.querySelector('[data-testid="left-rail"]')).toBeNull();
     expect(container.querySelector('[data-testid="top-bar"]')).toBeNull();
   });
+
+  it('renders NotFoundView on unknown route and button returns to home', async () => {
+    window.location.hash = '#/unknown-subsystem';
+
+    await act(async () => {
+      root.render(<App />);
+    });
+
+    // Dismiss launcher if shown
+    const launchBtn = container.querySelector('[data-testid="launcher-button"]') as HTMLButtonElement;
+    if (launchBtn) {
+      await act(async () => {
+        launchBtn.click();
+      });
+    }
+
+    const notFound = container.querySelector('[data-testid="not-found-view"]');
+    expect(notFound).not.toBeNull();
+    expect(notFound?.textContent).toContain('404 // ROUTE NOT FOUND');
+    expect(notFound?.textContent).toContain('#/unknown-subsystem');
+
+    const homeBtn = container.querySelector('[data-testid="btn-not-found-home"]') as HTMLButtonElement;
+    expect(homeBtn).not.toBeNull();
+    await act(async () => {
+      homeBtn.click();
+    });
+
+    expect(window.location.hash).toBe('#/home');
+  });
 });

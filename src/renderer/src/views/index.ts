@@ -12,3 +12,4 @@ export * from './DevUiGallery';
 export * from './LaunchWindow';
 export * from './PlanDetailView';
 export * from './PlanEditorView';
+export * from './NotFoundView';

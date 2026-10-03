@@ -106,10 +106,10 @@ export function LaunchWindow({
     <div
       data-testid="launch-window"
       onClick={handleLaunch}
-      className="crt fixed inset-0 z-50 flex flex-col justify-between bg-[#0a0c14] p-6 text-[#e4e4e7] select-none cursor-pointer"
+      className="crt fixed inset-0 z-50 h-screen w-screen flex flex-col justify-between bg-[#0a0c14] p-6 text-[#e4e4e7] select-none cursor-pointer overflow-hidden"
     >
       {/* Top Header Branding */}
-      <header className="flex flex-col items-center gap-1 pt-6 text-center">
+      <header className="flex flex-col items-center gap-1 pt-6 text-center shrink-0">
         <div className="flex items-center gap-3">
           <div
             className="flex h-10 w-10 items-center justify-center border-2 bg-black shadow-[2px_2px_0px_#000]"
@@ -136,7 +136,7 @@ export function LaunchWindow({
       </header>
 
       {/* Center Tactical Stage */}
-      <main className="flex flex-col items-center justify-center gap-6">
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 my-auto">
         <div
           className={`relative flex items-center justify-center ${
             reducedMotion ? '' : 'transition-transform duration-300'
@@ -175,7 +175,7 @@ export function LaunchWindow({
       </main>
 
       {/* Footer Area */}
-      <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-800 pt-4 text-center">
+      <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-800 pt-4 text-center shrink-0">
         <div
           style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}
           className="text-zinc-500 uppercase tracking-wide"

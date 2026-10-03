@@ -149,6 +149,10 @@ describe('LibraryView & PlanDetailView', () => {
     expect(container.textContent).toContain('Armada Rocketeer Rush');
     expect(container.textContent).toContain('Cortex Grunt Swarm');
     expect(container.textContent).toContain('CURATED // from AcePilot on Red River, 2026-10-01');
+
+    const cardTitle = container.querySelector('[data-testid="plan-card-armada-test-plan"] h3');
+    expect(cardTitle?.getAttribute('title')).toBe('Armada Rocketeer Rush');
+    expect(cardTitle?.className).toContain('truncate');
   });
 
   it('filters plans by faction', async () => {

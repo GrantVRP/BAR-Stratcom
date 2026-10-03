@@ -11,6 +11,7 @@ import {
   LaunchWindow,
   LibraryView,
   MapsView,
+  NotFoundView,
   OnboardingView,
   ReviewView,
   SettingsView,
@@ -160,6 +161,14 @@ export function App(): React.JSX.Element {
 
   // Route matching
   function renderView(): React.JSX.Element {
+    if (
+      currentHash === '' ||
+      currentHash === '#' ||
+      currentHash === '#/' ||
+      currentHash === '#/home'
+    ) {
+      return <HomeView />;
+    }
     if (currentHash.startsWith('#/library')) return <LibraryView />;
     if (currentHash.startsWith('#/coach')) return <CoachView />;
     if (currentHash.startsWith('#/review')) return <ReviewView />;
@@ -170,7 +179,8 @@ export function App(): React.JSX.Element {
     if (currentHash.startsWith('#/onboarding')) return <OnboardingView />;
     if (currentHash.startsWith('#/about')) return <AboutView />;
     if (currentHash.startsWith('#/dev/ui')) return <DevUiGallery />;
-    return <HomeView />;
+    if (currentHash === '#/launcher') return <HomeView />;
+    return <NotFoundView route={currentHash} />;
   }
 
   if (currentHash.startsWith('#/coach-window')) {

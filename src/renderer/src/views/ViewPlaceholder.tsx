@@ -3,7 +3,7 @@ import { Panel, Inset, Tag } from '../components/ui';
 
 export interface ViewPlaceholderProps {
   title: string;
-  code: string;
+  code?: string;
   description: string;
   badge?: string;
   children?: React.ReactNode;
@@ -11,9 +11,8 @@ export interface ViewPlaceholderProps {
 
 export function ViewPlaceholder({
   title,
-  code,
   description,
-  badge = 'PORTING IN PROGRESS',
+  badge = 'COMING SOON',
   children
 }: ViewPlaceholderProps): React.JSX.Element {
   return (
@@ -35,12 +34,6 @@ export function ViewPlaceholder({
           >
             {description}
           </div>
-        </div>
-        <div
-          style={{ fontFamily: "'Press Start 2P', monospace" }}
-          className="text-xs text-zinc-500"
-        >
-          [SUB-{code}]
         </div>
       </div>
 

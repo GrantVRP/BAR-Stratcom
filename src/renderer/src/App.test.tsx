@@ -109,4 +109,17 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
 
     expect(window.location.hash).toBe('#/coach');
   });
+
+  it('renders CoachView standalone when launched with #/coach-window', async () => {
+    window.location.hash = '#/coach-window';
+
+    await act(async () => {
+      root.render(<App />);
+    });
+
+    expect(container.querySelector('[data-testid="view-coach"]')).not.toBeNull();
+    // Should NOT render LeftRail or TopBar
+    expect(container.querySelector('[data-testid="left-rail"]')).toBeNull();
+    expect(container.querySelector('[data-testid="top-bar"]')).toBeNull();
+  });
 });

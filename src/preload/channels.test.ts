@@ -23,7 +23,9 @@ describe('preload channel filters', () => {
       'plans:export',
       'demo:list',
       'coach:manual',
-      'coach:markDone'
+      'coach:markDone',
+      'coach:toggleWindow',
+      'coach:getShortcutStatus'
     ];
 
     for (const ch of validChannels) {

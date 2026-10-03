@@ -49,10 +49,23 @@ export const HudSettingsSchema = z
 
 export type HudSettings = z.infer<typeof HudSettingsSchema>;
 
+export const CoachWindowBoundsSchema = z
+  .object({
+    x: z.number().optional(),
+    y: z.number().optional(),
+    width: z.number(),
+    height: z.number()
+  })
+  .strict();
+
+export type CoachWindowBounds = z.infer<typeof CoachWindowBoundsSchema>;
+
 export const CoachWindowSettingsSchema = z
   .object({
     alwaysOnTop: z.boolean(),
-    overlayMode: z.boolean()
+    overlayMode: z.boolean(),
+    bounds: CoachWindowBoundsSchema.optional(),
+    clickThrough: z.boolean().optional()
   })
   .strict();
 

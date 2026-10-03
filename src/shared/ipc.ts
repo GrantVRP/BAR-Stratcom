@@ -220,6 +220,30 @@ export const ipcContract = {
   'coach:markDone': {
     request: z.object({ stepId: z.string() }).strict(),
     response: z.object({ ok: z.boolean() }).strict()
+  },
+  'coach:toggleWindow': {
+    request: z
+      .object({
+        action: z.enum(['open', 'close', 'toggle']).optional(),
+        mode: z.enum(['second-monitor', 'overlay']).optional()
+      })
+      .strict()
+      .optional(),
+    response: z
+      .object({
+        open: z.boolean(),
+        mode: z.enum(['second-monitor', 'overlay'])
+      })
+      .strict()
+  },
+  'coach:getShortcutStatus': {
+    request: z.void().optional(),
+    response: z
+      .object({
+        shortcut: z.string().nullable(),
+        status: z.enum(['registered', 'busy', 'disabled'])
+      })
+      .strict()
   }
 } as const satisfies Record<IpcChannel, { request: z.ZodTypeAny; response: z.ZodTypeAny }>;
 

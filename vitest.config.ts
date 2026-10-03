@@ -15,6 +15,7 @@ export default defineConfig({
           include: [
             'src/core/**/*.test.ts',
             'src/shared/**/*.test.ts',
+            'src/preload/**/*.test.ts',
             'src/main/**/*.test.ts',
             'tools/**/*.test.ts',
             'widget/test/**/*.test.ts'

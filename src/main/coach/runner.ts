@@ -102,6 +102,10 @@ export class CoachRunner {
     return this.running;
   }
 
+  public getMode(): 'live' | 'manual' | 'demo' {
+    return this.mode;
+  }
+
   public getSeq(): number {
     return this.seq;
   }

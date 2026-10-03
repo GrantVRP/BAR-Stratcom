@@ -18,6 +18,7 @@ import {
 } from './views';
 import { ipcClient } from './lib/ipc-client';
 import { useCoach, useLive, usePlans, useSettings, useSnapshot } from './stores';
+import { setupAudioCueListener } from './audio/sounds';
 
 const ALT_ROUTES: Record<string, string> = {
   '1': '#/home',
@@ -52,6 +53,7 @@ export function App(): React.JSX.Element {
   useEffect(() => {
     const unsubLive = useLive.getState().subscribe();
     const unsubCoach = useCoach.getState().subscribe();
+    const unsubAudio = setupAudioCueListener();
     void useSettings.getState().load();
     void usePlans.getState().loadPlans();
     void useSnapshot.getState().load();
@@ -70,6 +72,7 @@ export function App(): React.JSX.Element {
     return () => {
       unsubLive();
       unsubCoach();
+      unsubAudio();
     };
   }, []);
 
@@ -134,6 +137,16 @@ export function App(): React.JSX.Element {
     if (currentHash.startsWith('#/about')) return <AboutView />;
     if (currentHash.startsWith('#/dev/ui')) return <DevUiGallery />;
     return <HomeView />;
+  }
+
+  if (currentHash.startsWith('#/coach-window')) {
+    return (
+      <ErrorBoundary>
+        <div className="h-screen w-screen overflow-hidden bg-[#0a0c14] text-[#e4e4e7]">
+          <CoachView standalone={true} />
+        </div>
+      </ErrorBoundary>
+    );
   }
 
   return (

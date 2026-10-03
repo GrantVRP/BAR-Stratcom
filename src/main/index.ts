@@ -1,8 +1,7 @@
-import { app, BrowserWindow, dialog } from 'electron';
-import * as fs from 'fs';
+import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import { broadcast, handle } from './ipc/register';
-import { planFileName, planToFile } from '../core/plans/files';
+import { importPlanWithDialog, exportPlanWithDialog } from './plans/dialogs';
 
 import { defaultSettingsStore } from './settings/store';
 import { locateGame } from './game/locator';
@@ -15,6 +14,17 @@ import { findDataDir, loadRegistry, loadSnapshot } from './registry/loader';
 import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
 import { defaultPlanStore } from './plans/store';
 import { getMap, loadMaps } from './maps/loader';
+import {
+  isCoachWindowOpen,
+  openCoachWindow,
+  toggleCoachWindow,
+  closeCoachWindow
+} from './windows/coach-window';
+import {
+  getGlobalShortcutStatus,
+  registerAppGlobalShortcut,
+  unregisterAppGlobalShortcut
+} from './shortcuts/global-shortcut';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -95,7 +105,11 @@ if (!gotTheLock) {
     });
 
     handle('settings:set', (req) => {
-      return defaultSettingsStore.updateSettings(req ?? {});
+      const updated = defaultSettingsStore.updateSettings(req ?? {});
+      if (req && 'globalShortcut' in req) {
+        registerAppGlobalShortcut();
+      }
+      return updated;
     });
 
     const initialSettings = defaultSettingsStore.getSettings();
@@ -275,6 +289,29 @@ if (!gotTheLock) {
       return { ok: true };
     });
 
+    handle('coach:toggleWindow', (req) => {
+      const mode = req?.mode;
+      const action = req?.action ?? 'toggle';
+      let open = isCoachWindowOpen();
+      if (action === 'open') {
+        openCoachWindow(mode);
+        open = true;
+      } else if (action === 'close') {
+        closeCoachWindow();
+        open = false;
+      } else {
+        open = toggleCoachWindow(mode);
+      }
+      const currentMode = defaultSettingsStore.getSettings().coachWindow.overlayMode
+        ? 'overlay'
+        : 'second-monitor';
+      return { open, mode: mode ?? currentMode };
+    });
+
+    handle('coach:getShortcutStatus', () => {
+      return getGlobalShortcutStatus();
+    });
+
     handle('registry:getSnapshot', (req) => {
       return loadSnapshot(req?.gameVersion);
     });
@@ -303,60 +340,16 @@ if (!gotTheLock) {
       return defaultPlanStore.delete(req.id);
     });
 
-    handle('plans:import', async (req) => {
-      if (req?.openFileDialog) {
-        if (!mainWindow) return null;
-        const res = await dialog.showOpenDialog(mainWindow, {
-          title: 'Import Build Plan',
-          filters: [{ name: 'StratCom Plan (*.json)', extensions: ['json'] }],
-          properties: ['openFile']
-        });
-        if (res.canceled || res.filePaths.length === 0) {
-          return null;
-        }
-        const filePath = res.filePaths[0]!;
-        const content = fs.readFileSync(filePath, 'utf-8');
-        return defaultPlanStore.importTextOrCode(content);
-      }
-      if (req?.content) {
-        return defaultPlanStore.importTextOrCode(req.content);
-      }
-      if (req?.shareCode) {
-        return defaultPlanStore.import(req.shareCode);
-      }
-      return null;
+    handle('plans:import', (req) => {
+      return importPlanWithDialog(mainWindow, req);
     });
 
-    handle('plans:export', async (req) => {
-      const plan = defaultPlanStore.get(req.id);
-      if (!plan) {
-        throw new Error(`Plan not found: ${req.id}`);
-      }
-      const exported = defaultPlanStore.export(req.id);
-      let savedPath: string | null = null;
-
-      if (req.saveDialog) {
-        if (mainWindow) {
-          const res = await dialog.showSaveDialog(mainWindow, {
-            title: 'Export Build Plan',
-            defaultPath: planFileName(plan),
-            filters: [{ name: 'StratCom Plan (*.stratcom.json)', extensions: ['json'] }]
-          });
-          if (!res.canceled && res.filePath) {
-            fs.writeFileSync(res.filePath, planToFile(plan), 'utf-8');
-            savedPath = res.filePath;
-          }
-        }
-      }
-
-      return {
-        shareCode: exported.shareCode,
-        discordText: exported.discordText,
-        savedPath
-      };
+    handle('plans:export', (req) => {
+      return exportPlanWithDialog(mainWindow, req);
     });
 
     createWindow();
+    registerAppGlobalShortcut();
 
     if (mainWindow) {
       mainWindow.on('ready-to-show', () => {
@@ -369,6 +362,10 @@ if (!gotTheLock) {
         createWindow();
       }
     });
+  });
+
+  app.on('will-quit', () => {
+    unregisterAppGlobalShortcut();
   });
 
   app.on('window-all-closed', () => {

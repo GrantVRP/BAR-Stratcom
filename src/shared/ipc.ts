@@ -179,12 +179,29 @@ export const ipcContract = {
     response: z.object({ ok: z.boolean() }).strict()
   },
   'plans:import': {
-    request: z.object({ shareCode: z.string() }).strict(),
-    response: BuildPlanSchema
+    request: z
+      .object({
+        shareCode: z.string().optional(),
+        openFileDialog: z.boolean().optional(),
+        content: z.string().optional()
+      })
+      .strict(),
+    response: BuildPlanSchema.nullable()
   },
   'plans:export': {
-    request: z.object({ id: z.string() }).strict(),
-    response: z.object({ shareCode: z.string() }).strict()
+    request: z
+      .object({
+        id: z.string(),
+        saveDialog: z.boolean().optional()
+      })
+      .strict(),
+    response: z
+      .object({
+        shareCode: z.string(),
+        discordText: z.string().optional(),
+        savedPath: z.string().nullable().optional()
+      })
+      .strict()
   },
   'demo:list': {
     request: z.void().optional(),

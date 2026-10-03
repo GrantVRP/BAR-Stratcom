@@ -1,6 +1,8 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog } from 'electron';
+import * as fs from 'fs';
 import { join } from 'path';
 import { broadcast, handle } from './ipc/register';
+import { planFileName, planToFile } from '../core/plans/files';
 
 import { defaultSettingsStore } from './settings/store';
 import { locateGame } from './game/locator';
@@ -301,12 +303,57 @@ if (!gotTheLock) {
       return defaultPlanStore.delete(req.id);
     });
 
-    handle('plans:import', (req) => {
-      return defaultPlanStore.import(req.shareCode);
+    handle('plans:import', async (req) => {
+      if (req?.openFileDialog) {
+        if (!mainWindow) return null;
+        const res = await dialog.showOpenDialog(mainWindow, {
+          title: 'Import Build Plan',
+          filters: [{ name: 'StratCom Plan (*.json)', extensions: ['json'] }],
+          properties: ['openFile']
+        });
+        if (res.canceled || res.filePaths.length === 0) {
+          return null;
+        }
+        const filePath = res.filePaths[0]!;
+        const content = fs.readFileSync(filePath, 'utf-8');
+        return defaultPlanStore.importTextOrCode(content);
+      }
+      if (req?.content) {
+        return defaultPlanStore.importTextOrCode(req.content);
+      }
+      if (req?.shareCode) {
+        return defaultPlanStore.import(req.shareCode);
+      }
+      return null;
     });
 
-    handle('plans:export', (req) => {
-      return defaultPlanStore.export(req.id);
+    handle('plans:export', async (req) => {
+      const plan = defaultPlanStore.get(req.id);
+      if (!plan) {
+        throw new Error(`Plan not found: ${req.id}`);
+      }
+      const exported = defaultPlanStore.export(req.id);
+      let savedPath: string | null = null;
+
+      if (req.saveDialog) {
+        if (mainWindow) {
+          const res = await dialog.showSaveDialog(mainWindow, {
+            title: 'Export Build Plan',
+            defaultPath: planFileName(plan),
+            filters: [{ name: 'StratCom Plan (*.stratcom.json)', extensions: ['json'] }]
+          });
+          if (!res.canceled && res.filePath) {
+            fs.writeFileSync(res.filePath, planToFile(plan), 'utf-8');
+            savedPath = res.filePath;
+          }
+        }
+      }
+
+      return {
+        shareCode: exported.shareCode,
+        discordText: exported.discordText,
+        savedPath
+      };
     });
 
     createWindow();

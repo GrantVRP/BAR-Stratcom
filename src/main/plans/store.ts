@@ -3,6 +3,7 @@ import * as path from 'path';
 import { app } from 'electron';
 import { BuildPlanSchema, type BuildPlan } from '../../core/schemas';
 import { decodePlan, encodePlan } from '../../core/sharecode';
+import { planFromFile, planToDiscordText } from '../../core/plans/files';
 import { findDataDir } from '../registry/loader';
 
 export interface PlanStoreOptions {
@@ -168,15 +169,38 @@ export class PlanStore {
     if (!result.ok) {
       throw new Error(`Invalid share code: ${result.error.message}`);
     }
-    return this.save(result.plan);
+    const plan = { ...result.plan };
+    if (this.get(plan.id)) {
+      plan.id = `user-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    }
+    return this.save(plan);
   }
 
-  export(id: string): { shareCode: string } {
+  importTextOrCode(content: string): BuildPlan {
+    const trimmed = content.trim();
+    if (trimmed.startsWith('BSC1.')) {
+      return this.import(trimmed);
+    }
+    const fileRes = planFromFile(trimmed);
+    if (!fileRes.ok) {
+      throw new Error(`Failed to parse plan JSON: ${fileRes.error}`);
+    }
+    const plan = { ...fileRes.plan };
+    if (this.get(plan.id)) {
+      plan.id = `user-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    }
+    return this.save(plan);
+  }
+
+  export(id: string): { shareCode: string; discordText: string } {
     const plan = this.get(id);
     if (!plan) {
       throw new Error(`Plan not found: ${id}`);
     }
-    return { shareCode: encodePlan(plan) };
+    return {
+      shareCode: encodePlan(plan),
+      discordText: planToDiscordText(plan)
+    };
   }
 }
 

@@ -125,11 +125,19 @@ describe('PlanStore', () => {
 
   it('exports and imports a plan via share code', () => {
     store.save(samplePlan);
-    const { shareCode } = store.export(samplePlan.id);
+    const { shareCode, discordText } = store.export(samplePlan.id);
     expect(shareCode.startsWith('BSC1.')).toBe(true);
+    expect(discordText).toBeDefined();
 
+    // Delete before import so it doesn't collide
+    store.delete(samplePlan.id);
     const imported = store.import(shareCode);
     expect(imported.id).toBe(samplePlan.id);
     expect(imported.title).toBe(samplePlan.title);
+
+    // Second import now collides and receives a regenerated ID
+    const colliding = store.import(shareCode);
+    expect(colliding.id).not.toBe(samplePlan.id);
+    expect(colliding.title).toBe(samplePlan.title);
   });
 });

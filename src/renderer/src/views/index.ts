@@ -11,3 +11,4 @@ export * from './AboutView';
 export * from './DevUiGallery';
 export * from './LaunchWindow';
 export * from './PlanDetailView';
+export * from './PlanEditorView';

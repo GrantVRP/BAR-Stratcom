@@ -1,0 +1,71 @@
+/* ==========================================================================
+   BAR StratCom v3 — Design System Tokens (06 §3)
+   ========================================================================== */
+
+:root {
+  /* Surfaces & Backgrounds */
+  --bg-base: #0a0c14;
+  --bg-panel: #12131a;
+  --bg-inset: #0d0f17;
+
+  /* Typography Colors */
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+
+  /* Factions */
+  --faction-armada: #449bed;
+  --faction-armada-dim: #2563eb;
+  --faction-armada-dark: #0a1c32;
+
+  --faction-cortex: #ff2244;
+  --faction-cortex-dim: #e11d48;
+  --faction-cortex-dark: #380b12;
+
+  --faction-legion: #2ec4b6;
+
+  /* Resources */
+  --res-energy: #fbbf24;
+  --res-metal: #94a3b8;
+
+  /* Status & Accents */
+  --status-good: #4ade80;
+  --status-warn: #fbbf24;
+  --status-danger: #f87171;
+  --status-ai: #c084fc;
+
+  /* Typography Families */
+  --font-pixel-heading: 'Press Start 2P', monospace;
+  --font-pixel-body: 'VT323', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@theme {
+  --color-bg-base: #0a0c14;
+  --color-bg-panel: #12131a;
+  --color-bg-inset: #0d0f17;
+
+  --color-text-primary: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+
+  --color-armada: #449bed;
+  --color-armada-dim: #2563eb;
+  --color-armada-dark: #0a1c32;
+
+  --color-cortex: #ff2244;
+  --color-cortex-dim: #e11d48;
+  --color-cortex-dark: #380b12;
+
+  --color-legion: #2ec4b6;
+
+  --color-energy: #fbbf24;
+  --color-metal: #94a3b8;
+
+  --color-good: #4ade80;
+  --color-warn: #fbbf24;
+  --color-danger: #f87171;
+  --color-ai: #c084fc;
+
+  --font-heading: 'Press Start 2P', monospace;
+  --font-body: 'VT323', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
+}

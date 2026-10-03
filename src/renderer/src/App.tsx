@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { DevUiGallery } from './views/DevUiGallery';
 
 export function App(): React.JSX.Element {
   const [version, setVersion] = useState<string>('');
+  const [currentHash, setCurrentHash] = useState<string>(
+    typeof window !== 'undefined' ? window.location.hash : ''
+  );
+
+  useEffect(() => {
+    function handleHashChange(): void {
+      setCurrentHash(window.location.hash);
+    }
+    window.addEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (window.stratcom?.invoke) {
@@ -19,6 +33,10 @@ export function App(): React.JSX.Element {
         });
     }
   }, []);
+
+  if (currentHash.startsWith('#/dev/ui')) {
+    return <DevUiGallery />;
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#0a0c14] text-[#e4e4e7]">

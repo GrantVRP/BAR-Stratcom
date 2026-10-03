@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+@import './tokens.css';
+@import './pixel.css';
+
 @import '@fontsource/press-start-2p';
 @import '@fontsource/vt323';
 @import '@fontsource/jetbrains-mono';

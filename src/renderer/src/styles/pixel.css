@@ -1,0 +1,281 @@
+/* ==========================================================================
+   BAR StratCom v3 — Pixel Art Theme & Arcade Styling
+   Inspired by Advance Wars, Metal Slug, and Dune II (06 §3)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Typography Utility Classes
+   -------------------------------------------------------------------------- */
+.font-pixel-heading {
+  font-family: var(--font-pixel-heading);
+  letter-spacing: 0.05em;
+}
+
+.font-pixel-body {
+  font-family: var(--font-pixel-body);
+  line-height: 1.25;
+}
+
+/* --------------------------------------------------------------------------
+   Stepped Pixel Art Containers (.pixel-box)
+   -------------------------------------------------------------------------- */
+.pixel-box {
+  background-color: var(--bg-panel);
+  border: 2px solid #2a2e42;
+  box-shadow:
+    inset -2px -2px 0px 0px #09090f,
+    inset 2px 2px 0px 0px #222638,
+    3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+}
+
+.pixel-box-armada {
+  background-color: var(--faction-armada-dark);
+  border: 2px solid var(--faction-armada);
+  box-shadow:
+    inset -2px -2px 0px 0px var(--faction-armada-dim),
+    inset 2px 2px 0px 0px #6ec7f9,
+    3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+}
+
+.pixel-box-cortex {
+  background-color: var(--faction-cortex-dark);
+  border: 2px solid var(--faction-cortex);
+  box-shadow:
+    inset -2px -2px 0px 0px #b91c1c,
+    inset 2px 2px 0px 0px #f87171,
+    3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+}
+
+.pixel-box-inset {
+  background-color: var(--bg-inset);
+  border: 2px solid #1a1c28;
+  box-shadow:
+    inset 2px 2px 0px 0px #000000,
+    inset -2px -2px 0px 0px #24283b;
+  border-radius: 0px !important;
+}
+
+/* --------------------------------------------------------------------------
+   Chunky Tactile Arcade Controls (.pixel-btn)
+   -------------------------------------------------------------------------- */
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1c28;
+  color: #e4e4e7;
+  border: 2px solid #3b425b;
+  box-shadow: 3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+  font-family: var(--font-pixel-heading);
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  user-select: none;
+  transition: none !important;
+}
+
+.pixel-btn:hover:not(:disabled) {
+  background-color: #24293d;
+  color: #ffffff;
+  border-color: #4f587a;
+}
+
+.pixel-btn:active:not(:disabled),
+.pixel-btn.active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.pixel-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.pixel-btn-armada {
+  background-color: var(--faction-armada-dark);
+  border-color: var(--faction-armada);
+  color: var(--faction-armada);
+}
+
+.pixel-btn-armada:hover:not(:disabled) {
+  background-color: var(--faction-armada);
+  color: #0a0c14;
+}
+
+.pixel-btn-armada:active:not(:disabled),
+.pixel-btn-armada.active:not(:disabled) {
+  background-color: var(--faction-armada);
+  color: #0a0c14;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.pixel-btn-cortex {
+  background-color: var(--faction-cortex-dark);
+  border-color: var(--faction-cortex);
+  color: var(--faction-cortex);
+}
+
+.pixel-btn-cortex:hover:not(:disabled) {
+  background-color: var(--faction-cortex);
+  color: #0a0c14;
+}
+
+.pixel-btn-cortex:active:not(:disabled),
+.pixel-btn-cortex.active:not(:disabled) {
+  background-color: var(--faction-cortex);
+  color: #0a0c14;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.pixel-btn-danger {
+  background-color: #380b12;
+  border-color: var(--status-danger);
+  color: var(--status-danger);
+}
+
+.pixel-btn-danger:hover:not(:disabled) {
+  background-color: var(--status-danger);
+  color: #0a0c14;
+}
+
+.pixel-btn-danger:active:not(:disabled),
+.pixel-btn-danger.active:not(:disabled) {
+  background-color: var(--status-danger);
+  color: #0a0c14;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.pixel-btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--text-secondary);
+}
+
+.pixel-btn-ghost:hover:not(:disabled) {
+  background-color: #1a1c28;
+  color: #ffffff;
+  border-color: #3b425b;
+}
+
+/* --------------------------------------------------------------------------
+   Arcade Cartridge Tabs (.pixel-tab)
+   -------------------------------------------------------------------------- */
+.pixel-tab {
+  background-color: var(--bg-panel);
+  border: 2px solid #222536;
+  border-bottom: none;
+  box-shadow: 2px -2px 0px 0px #000000;
+  border-radius: 0px !important;
+  font-family: var(--font-pixel-heading);
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  transition: none !important;
+}
+
+.pixel-tab:hover {
+  background-color: #1a1c28;
+}
+
+.pixel-tab.active-default {
+  background-color: #1a1c28;
+  border-color: #3b425b;
+  color: #ffffff;
+  box-shadow:
+    inset 0px 3px 0px 0px #60a5fa,
+    2px -2px 0px 0px #000000;
+}
+
+.pixel-tab.active-armada {
+  background-color: var(--faction-armada-dark);
+  border-color: var(--faction-armada);
+  color: var(--faction-armada);
+  box-shadow:
+    inset 0px 3px 0px 0px var(--faction-armada),
+    2px -2px 0px 0px #000000;
+}
+
+.pixel-tab.active-cortex {
+  background-color: var(--faction-cortex-dark);
+  border-color: var(--faction-cortex);
+  color: var(--faction-cortex);
+  box-shadow:
+    inset 0px 3px 0px 0px var(--faction-cortex),
+    2px -2px 0px 0px #000000;
+}
+
+/* --------------------------------------------------------------------------
+   Chunky Retro Arcade Scrollbar
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090e;
+  border: 1px solid #1a1c28;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2e42;
+  border: 2px solid #000000;
+  box-shadow: inset 1px 1px 0px 0px #4f587a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b425b;
+}
+
+/* --------------------------------------------------------------------------
+   Local CRT Overlay (.crt) — only for launcher and home background (06 §3)
+   -------------------------------------------------------------------------- */
+.crt {
+  position: relative;
+}
+
+.crt::after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+  background-size:
+    100% 4px,
+    6px 100%;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.6);
+  opacity: 0.85;
+}
+
+/* --------------------------------------------------------------------------
+   Focus, Selection & Caret Styling
+   -------------------------------------------------------------------------- */
+::selection {
+  background-color: var(--faction-armada);
+  color: #0a0c14;
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--faction-armada);
+}
+
+:focus-visible {
+  outline: 2px solid var(--faction-armada);
+  outline-offset: 1px;
+}

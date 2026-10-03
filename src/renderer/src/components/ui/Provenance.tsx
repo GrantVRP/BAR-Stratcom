@@ -30,6 +30,7 @@ export const Provenance: React.FC<ProvenanceProps> = ({ kind, tooltip, className
 
   return (
     <span
+      data-testid={`provenance-${kind}`}
       title={title}
       aria-label={`Provenance: ${kind}. ${title}`}
       className={`inline-flex items-center px-1.5 py-0.5 font-pixel-heading text-[10px] uppercase tracking-wider select-none cursor-help ${style} ${className}`.trim()}

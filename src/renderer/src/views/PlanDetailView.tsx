@@ -7,6 +7,7 @@ import { getClientRegistry } from '../lib/registry';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
 import { MapCombobox } from '../components/tactical/MapCombobox';
 import { PlanTimeline } from '../components/plans/PlanTimeline';
+import { SimGraph } from '../components/SimGraph';
 
 export interface PlanDetailViewProps {
   plan: BuildPlan;
@@ -15,27 +16,15 @@ export interface PlanDetailViewProps {
 }
 
 function formatProvenanceLine(source: BuildPlan['source']): string {
-  if (source.kind === 'curated') {
-    const date = source.playedAt.slice(0, 10);
-    return `CURATED // from ${source.player} on ${source.map}, ${date}`;
+  const d = (iso: string): string => iso.slice(0, 10);
+  switch (source.kind) {
+    case 'curated': return `CURATED // from ${source.player} on ${source.map}, ${d(source.playedAt)}`;
+    case 'replay-capture': return `CAPTURED // from ${source.player} on ${source.map}, ${d(source.capturedAt)}`;
+    case 'own-game': return `OWN GAME // on ${source.map}, ${d(source.capturedAt)}`;
+    case 'adapted': return `ADAPTED // from ${source.fromPlanId}, ${d(source.createdAt)}`;
+    case 'ai-draft': return `AI DRAFT // ${source.provider}/${source.model}, ${d(source.createdAt)}`;
+    default: return `MANUAL // ${d(source.createdAt)}`;
   }
-  if (source.kind === 'replay-capture') {
-    const date = source.capturedAt.slice(0, 10);
-    return `CAPTURED // from ${source.player} on ${source.map}, ${date}`;
-  }
-  if (source.kind === 'own-game') {
-    const date = source.capturedAt.slice(0, 10);
-    return `OWN GAME // on ${source.map}, ${date}`;
-  }
-  if (source.kind === 'adapted') {
-    const date = source.createdAt.slice(0, 10);
-    return `ADAPTED // from ${source.fromPlanId}, ${date}`;
-  }
-  if (source.kind === 'ai-draft') {
-    const date = source.createdAt.slice(0, 10);
-    return `AI DRAFT // ${source.provider}/${source.model}, ${date}`;
-  }
-  return `MANUAL // ${source.createdAt.slice(0, 10)}`;
 }
 
 export function PlanDetailView({
@@ -233,6 +222,14 @@ export function PlanDetailView({
           onSelectMap={setSelectedMap}
           faction={plan.factionId}
         />
+      </div>
+
+      {/* Simulation Graph */}
+      <div className="space-y-1.5">
+        <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">
+          SIMULATED ECONOMY TRAJECTORY
+        </div>
+        <SimGraph plan={plan} mapRecord={selectedMap} />
       </div>
 
       {/* Plan Timeline */}

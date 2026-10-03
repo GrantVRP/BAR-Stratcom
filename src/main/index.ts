@@ -9,7 +9,8 @@ import { FileBridge } from './game/file-bridge';
 import { HealthManager } from './game/health';
 import { SessionRecorder } from './sessions/recorder';
 import { defaultCoachRunner } from './coach/runner';
-import { loadRegistry, loadSnapshot } from './registry/loader';
+import { findDataDir, loadRegistry, loadSnapshot } from './registry/loader';
+import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -179,12 +180,52 @@ if (!gotTheLock) {
       return res;
     });
 
+    let activeDemoSource: DemoSource | null = null;
+
+    handle('demo:list', () => {
+      return listDemos();
+    });
+
     handle('coach:start', async (req) => {
+      const registry = loadRegistry();
+      const currentSettings = defaultSettingsStore.getSettings();
+
+      if (req.mode === 'demo') {
+        if (!req.demoId) {
+          throw new Error('Coach start in demo mode requires a demoId');
+        }
+        const dataDir = findDataDir();
+        const fixtureDir = join(dataDir, 'fixtures', 'sessions', req.demoId);
+        if (activeDemoSource) {
+          activeDemoSource.stop();
+          activeDemoSource = null;
+        }
+        const demoSource = new DemoSource({
+          fixtureDir,
+          speed: req.speed ?? 1
+        });
+        activeDemoSource = demoSource;
+
+        let plan = req.plan;
+        if (!plan) {
+          plan = derivePlanFromDemo(demoSource, registry);
+        }
+
+        await defaultCoachRunner.start({
+          plan,
+          mode: 'demo',
+          source: demoSource,
+          registry,
+          stratcomDir: null
+        });
+
+        demoSource.start();
+        return { ok: true };
+      }
+
       if (!req.plan) {
         throw new Error('Coach start currently requires an explicit plan object');
       }
-      const registry = loadRegistry();
-      const currentSettings = defaultSettingsStore.getSettings();
       const stratcomDir = currentSettings.bar.dataDir ? join(currentSettings.bar.dataDir, 'stratcom') : null;
       await defaultCoachRunner.start({
         plan: req.plan,
@@ -197,6 +238,10 @@ if (!gotTheLock) {
     });
 
     handle('coach:stop', async () => {
+      if (activeDemoSource) {
+        activeDemoSource.stop();
+        activeDemoSource = null;
+      }
       await defaultCoachRunner.stop();
       return { ok: true };
     });

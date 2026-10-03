@@ -147,6 +147,9 @@ export class CoachRunner {
         while (this.history.length > 0 && this.history[0]!.gameSeconds < cutoff) {
           this.history.shift();
         }
+        if (this.mode === 'demo') {
+          void this.tick();
+        }
       };
 
       this.eventsHandler = (events) => {
@@ -174,13 +177,15 @@ export class CoachRunner {
       this.source.on('heartbeat', this.heartbeatHandler);
     }
 
-    // 4. Start 2 Hz evaluation timer
-    this.timer = setInterval(() => {
-      void this.tick();
-    }, 500);
+    // 4. Start 2 Hz evaluation timer in non-demo modes
+    if (this.mode !== 'demo') {
+      this.timer = setInterval(() => {
+        void this.tick();
+      }, 500);
 
-    // Initial immediate tick
-    await this.tick();
+      // Initial immediate tick
+      await this.tick();
+    }
   }
 
   public async stop(): Promise<void> {

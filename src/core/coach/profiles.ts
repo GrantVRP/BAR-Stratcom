@@ -39,9 +39,9 @@ export const BEGINNER_PROFILE: ProfileConfig = {
     mStallingSustainSec: 10,
     mFloatSustainSec: 8,
     eFloatSustainSec: null, // off
-    idleFactorySustainSec: 5,
-    idleBuildersSustainSec: 6,
-    idleCommanderSustainSec: 5,
+    idleFactorySustainSec: 8, // estimated: rally & production transitions take 5-8s
+    idleBuildersSustainSec: 10, // estimated: walking between build sites takes 8-10s
+    idleCommanderSustainSec: 8, // estimated: commander positioning takes 5-8s
     behindPlanThresholdSec: 20,
     benchmarkLowEnabled: false, // off
     scoutReminderTimeSec: 150,
@@ -59,15 +59,15 @@ export const BEGINNER_PROFILE: ProfileConfig = {
 export const INTERMEDIATE_PROFILE: ProfileConfig = {
   id: 'intermediate',
   thresholds: {
-    eStallSoonHorizonSec: 8,
+    eStallSoonHorizonSec: 6, // estimated: 6s horizon with deficit requirement catches real stalls without blip noise
     eStallingSustainSec: 2,
-    mStallSoonHorizonSec: 8,
+    mStallSoonHorizonSec: null, // advanced-only (spending metal is good play in BAR; T05.10 item 4)
     mStallingSustainSec: 8,
     mFloatSustainSec: 10,
     eFloatSustainSec: 20,
-    idleFactorySustainSec: 5,
-    idleBuildersSustainSec: 5,
-    idleCommanderSustainSec: 4,
+    idleFactorySustainSec: 8, // estimated: 8s allows factory rally & production transitions without noisy alerts
+    idleBuildersSustainSec: 10, // estimated: constructors walking between build locations on large maps take 8-10s
+    idleCommanderSustainSec: 8, // estimated: commander walking/repositioning takes 5-8s
     behindPlanThresholdSec: 15,
     benchmarkLowEnabled: true,
     scoutReminderTimeSec: 180,
@@ -76,7 +76,7 @@ export const INTERMEDIATE_PROFILE: ProfileConfig = {
   tolerances: {
     adherenceSec: 20
   },
-  enabledAlerts: new Set(ALL_ALERT_IDS),
+  enabledAlerts: new Set(ALL_ALERT_IDS.filter((id) => id !== 'M_STALL_SOON')),
   wording: 'standard'
 };
 

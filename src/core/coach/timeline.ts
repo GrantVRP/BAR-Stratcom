@@ -9,6 +9,7 @@ import { INTERMEDIATE_PROFILE } from './profiles';
 import { createFinishedLedger, applyEventsToLedger, type FinishedLedger } from './ledger';
 import { createInitialCoachMemory, type CoachMemory } from './rules';
 import { evaluate } from './evaluate';
+import { ALERT_MIN_VISIBLE_SEC, ALERT_REACTIVATION_WINDOW_SEC } from './constants';
 
 export interface AlertInterval {
   id: string;
@@ -83,6 +84,7 @@ export function computeScenarioTimeline(options: ComputeScenarioOptions): CoachS
 
   const intervals: AlertInterval[] = [];
   const activeIntervals = new Map<string, AlertInterval>();
+  const lastCompletedInterval = new Map<string, AlertInterval>();
 
   let eventIdx = 0;
   let finalAheadBehindSec: number | null = null;
@@ -134,31 +136,44 @@ export function computeScenarioTimeline(options: ComputeScenarioOptions): CoachS
       });
     }
 
-    // 5. Update alert intervals
+    // 5. Update alert intervals with 15s reactivation extension and 5s min duration (T05.10 item 5)
     const activeIds = new Set<string>(evalResult.state.alerts.map((a) => a.id));
     const sec = Math.round(state.gameSeconds);
 
     // End intervals that are no longer active
     for (const [id, interval] of activeIntervals.entries()) {
       if (!activeIds.has(id)) {
-        intervals.push({ ...interval });
+        interval.endSec = Math.max(interval.endSec, interval.startSec + ALERT_MIN_VISIBLE_SEC);
+        intervals.push(interval);
+        lastCompletedInterval.set(id, interval);
         activeIntervals.delete(id);
       } else {
         interval.endSec = sec;
       }
     }
 
-    // Start intervals for newly active alerts
+    // Start intervals for newly active alerts (or re-open if within 15s)
     for (const id of activeIds) {
       if (!activeIntervals.has(id)) {
-        activeIntervals.set(id, { id, startSec: sec, endSec: sec });
+        const last = lastCompletedInterval.get(id);
+        if (last && sec - last.endSec <= ALERT_REACTIVATION_WINDOW_SEC) {
+          const idx = intervals.indexOf(last);
+          if (idx !== -1) {
+            intervals.splice(idx, 1);
+          }
+          last.endSec = sec;
+          activeIntervals.set(id, last);
+        } else {
+          activeIntervals.set(id, { id, startSec: sec, endSec: sec });
+        }
       }
     }
   }
 
-  // Close remaining intervals
+  // Close remaining intervals with min 5s duration
   for (const interval of activeIntervals.values()) {
-    intervals.push({ ...interval });
+    interval.endSec = Math.max(interval.endSec, interval.startSec + ALERT_MIN_VISIBLE_SEC);
+    intervals.push(interval);
   }
 
   // Sort intervals by startSec then id

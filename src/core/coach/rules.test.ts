@@ -4,7 +4,7 @@ import type { AlertCandidate } from './alerts';
 import { createInitialCoachMemory, updateAlertRules, resolveAudioCues } from './rules';
 
 describe('Coach Engine: Rules & Audio Limiting', () => {
-  it('applies 2s deactivation hysteresis on alerts', () => {
+  it('applies 5s min visible and 2s deactivation hysteresis on alerts', () => {
     let memory = createInitialCoachMemory();
 
     const candidate: AlertCandidate = {
@@ -20,19 +20,27 @@ describe('Coach Engine: Rules & Audio Limiting', () => {
     expect(res.activeAlerts[0]!.id).toBe('E_STALLING');
     memory = { ...memory, alerts: res.updatedAlertMemory };
 
-    // t = 11s: condition becomes false (<2s since last true at 10s)
+    // t = 11s: condition becomes false (<5s visible and <2s since last true)
     res = updateAlertRules({}, 11, memory);
-    expect(res.activeAlerts).toHaveLength(1); // Still active under hysteresis!
+    expect(res.activeAlerts).toHaveLength(1); // Still active under min visible & hysteresis!
     memory = { ...memory, alerts: res.updatedAlertMemory };
 
-    // t = 11.9s: still < 2s
-    res = updateAlertRules({}, 11.9, memory);
+    // t = 14s: false for 4s, but visible only 4s (<5s min visible)
+    res = updateAlertRules({}, 14, memory);
     expect(res.activeAlerts).toHaveLength(1);
     memory = { ...memory, alerts: res.updatedAlertMemory };
 
-    // t = 12.1s: >= 2s since last true => deactivates!
-    res = updateAlertRules({}, 12.1, memory);
+    // t = 15.1s: >= 5s visible and >= 2s since last true => deactivates!
+    res = updateAlertRules({}, 15.1, memory);
     expect(res.activeAlerts).toHaveLength(0);
+    memory = { ...memory, alerts: res.updatedAlertMemory };
+
+    // t = 20s (4.9s after clearing <= 15s): reactivates!
+    // Extends previous interval (since remains 10) and does NOT re-cue sound
+    res = updateAlertRules({ E_STALLING: candidate }, 20, memory);
+    expect(res.activeAlerts).toHaveLength(1);
+    expect(res.activeAlerts[0]!.since).toBe(10);
+    expect(res.soundCandidateAlerts).toHaveLength(0); // Suppressed sound on extension
   });
 
   it('enforces 20s audio cooldown for the same alert', () => {

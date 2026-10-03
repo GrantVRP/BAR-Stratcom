@@ -155,6 +155,7 @@ describe('Coach Alert Detectors: Resources', () => {
       }
     });
 
+    // Suppressed in beginner and intermediate profiles (advanced-only in BAR)
     expect(
       detectMStallSoon({
         now: stallingMetal,
@@ -165,10 +166,20 @@ describe('Coach Alert Detectors: Resources', () => {
       })
     ).toBeNull();
 
+    expect(
+      detectMStallSoon({
+        now: stallingMetal,
+        history: [],
+        profile: INTERMEDIATE_PROFILE,
+        registry: mockRegistry,
+        clock: 10
+      })
+    ).toBeNull();
+
     const alert = detectMStallSoon({
       now: stallingMetal,
       history: [],
-      profile: INTERMEDIATE_PROFILE,
+      profile: ADVANCED_PROFILE,
       registry: mockRegistry,
       clock: 10
     });
@@ -205,7 +216,7 @@ describe('Coach Alert Detectors: Resources', () => {
     expect(alert?.text).toBe('METAL STALL // TOO MUCH BP');
   });
 
-  it('detects M_FLOAT when metal >= 90% storage sustained', () => {
+  it('detects M_FLOAT when metal >= 90% storage sustained and clock >= 60s', () => {
     const floatRes = {
       metal: { current: 950, storage: 1000, pull: 5, income: 10, expense: 5, share: 0, sent: 0, received: 0 },
       energy: {
@@ -219,10 +230,22 @@ describe('Coach Alert Detectors: Resources', () => {
         received: 0
       }
     };
-    const now = makeSnapshot({ gameSeconds: 50, res: floatRes });
+    // Opening grace: suppressed before 60s
+    const earlyNow = makeSnapshot({ gameSeconds: 50, res: floatRes });
+    expect(
+      detectMFloat({
+        now: earlyNow,
+        history: [makeSnapshot({ gameSeconds: 40, res: floatRes })],
+        profile: INTERMEDIATE_PROFILE,
+        registry: mockRegistry,
+        clock: 50
+      })
+    ).toBeNull();
+
+    const now = makeSnapshot({ gameSeconds: 70, res: floatRes });
     const history = [
-      makeSnapshot({ gameSeconds: 40, res: floatRes }),
-      makeSnapshot({ gameSeconds: 45, res: floatRes })
+      makeSnapshot({ gameSeconds: 60, res: floatRes }),
+      makeSnapshot({ gameSeconds: 65, res: floatRes })
     ];
 
     const alert = detectMFloat({
@@ -230,7 +253,7 @@ describe('Coach Alert Detectors: Resources', () => {
       history,
       profile: INTERMEDIATE_PROFILE,
       registry: mockRegistry,
-      clock: 50
+      clock: 70
     });
     expect(alert?.text).toBe('METAL FULL // SPEND IT');
   });

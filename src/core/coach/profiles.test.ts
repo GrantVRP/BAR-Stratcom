@@ -17,9 +17,13 @@ describe('Coach Engine: Profiles', () => {
     expect(BEGINNER_PROFILE.enabledAlerts.has('E_FLOAT')).toBe(false);
     expect(BEGINNER_PROFILE.enabledAlerts.has('BENCHMARK_LOW')).toBe(false);
 
-    expect(INTERMEDIATE_PROFILE.enabledAlerts.has('M_STALL_SOON')).toBe(true);
+    expect(INTERMEDIATE_PROFILE.enabledAlerts.has('M_STALL_SOON')).toBe(false);
     expect(INTERMEDIATE_PROFILE.enabledAlerts.has('E_FLOAT')).toBe(true);
     expect(INTERMEDIATE_PROFILE.enabledAlerts.has('BENCHMARK_LOW')).toBe(true);
+
+    expect(ADVANCED_PROFILE.enabledAlerts.has('M_STALL_SOON')).toBe(true);
+    expect(ADVANCED_PROFILE.enabledAlerts.has('E_FLOAT')).toBe(true);
+    expect(ADVANCED_PROFILE.enabledAlerts.has('BENCHMARK_LOW')).toBe(true);
   });
 
   it('merges user overrides over default profile', () => {

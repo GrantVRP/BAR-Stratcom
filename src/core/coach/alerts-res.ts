@@ -3,7 +3,9 @@ import type { AlertId, AlertSeverity } from '../schemas/coach';
 import type { Registry } from '../registry';
 import type { BuildPlan } from '../schemas/plans';
 import type { BenchmarkFile } from '../schemas/benchmark';
+import type { SimResult } from '../sim/types';
 import type { ProfileConfig } from './profiles';
+import { FLOAT_OPENING_GRACE_SEC, PLAN_EXPECTED_STALL_WINDOW_SEC } from './constants';
 
 export interface AlertCandidate {
   id: AlertId;
@@ -17,10 +19,32 @@ export interface AlertContext {
   history: readonly LiveSnapshot[];
   profile: ProfileConfig;
   plan?: BuildPlan;
+  planSim?: SimResult;
   aheadBehindSec?: number | null;
   benchmark?: BenchmarkFile | null;
   registry: Registry;
   clock: number;
+}
+
+/**
+ * Checks whether a plan simulation already expects a stall of the given type within +/- 10s of now (T05.10 item 3).
+ */
+export function isPlannedStall(
+  planSim: SimResult | undefined,
+  type: 'energy' | 'metal',
+  clock: number
+): boolean {
+  if (!planSim) return false;
+  const intervals = type === 'energy' ? planSim.intervals.energyStall : planSim.intervals.metalStall;
+  for (const iv of intervals) {
+    if (
+      clock >= iv.start - PLAN_EXPECTED_STALL_WINDOW_SEC &&
+      clock <= iv.end + PLAN_EXPECTED_STALL_WINDOW_SEC
+    ) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -61,15 +85,22 @@ export function isSustained(
 
 // 1. E_STALL_SOON
 export function detectEStallSoon(ctx: AlertContext): AlertCandidate | null {
-  const { now, profile } = ctx;
+  const { now, profile, clock, planSim } = ctx;
   if (!profile.enabledAlerts.has('E_STALL_SOON') || !now.res) {
     return null;
   }
+  if (isPlannedStall(planSim, 'energy', clock)) {
+    return null;
+  }
 
-  const { current, pull, income } = now.res.energy;
+  const { current, pull, income, storage } = now.res.energy;
   const H = profile.thresholds.eStallSoonHorizonSec;
-  if (pull > income && current + (income - pull) * H <= 0) {
-    const timeToEmpty = Math.max(1, Math.round(current / (pull - income)));
+  const deficit = pull - income;
+  const minDeficit = Math.max(5, 0.1 * income);
+
+  // Significance: deficit >= max(5 E/s, 10% income) and current < 50% storage (T05.10 item 4)
+  if (deficit >= minDeficit && current < 0.5 * storage && current - deficit * H <= 0) {
+    const timeToEmpty = Math.max(1, Math.round(current / deficit));
     let text = `ENERGY EMPTY IN ${timeToEmpty}s`;
     if (profile.wording === 'plain') {
       text = 'BUILD ENERGY NOW';
@@ -88,8 +119,11 @@ export function detectEStallSoon(ctx: AlertContext): AlertCandidate | null {
 
 // 2. E_STALLING
 export function detectEStalling(ctx: AlertContext): AlertCandidate | null {
-  const { now, history, profile } = ctx;
+  const { now, history, profile, clock, planSim } = ctx;
   if (!profile.enabledAlerts.has('E_STALLING') || !now.res) {
+    return null;
+  }
+  if (isPlannedStall(planSim, 'energy', clock)) {
     return null;
   }
 
@@ -113,15 +147,22 @@ export function detectEStalling(ctx: AlertContext): AlertCandidate | null {
 
 // 3. M_STALL_SOON
 export function detectMStallSoon(ctx: AlertContext): AlertCandidate | null {
-  const { now, profile } = ctx;
+  const { now, profile, clock, planSim } = ctx;
   const H = profile.thresholds.mStallSoonHorizonSec;
   if (!profile.enabledAlerts.has('M_STALL_SOON') || H === null || !now.res) {
     return null;
   }
+  if (isPlannedStall(planSim, 'metal', clock)) {
+    return null;
+  }
 
-  const { current, pull, income } = now.res.metal;
-  if (pull > income && current + (income - pull) * H <= 0) {
-    const timeToEmpty = Math.max(1, Math.round(current / (pull - income)));
+  const { current, pull, income, storage } = now.res.metal;
+  const deficit = pull - income;
+  const minDeficit = Math.max(1, 0.1 * income);
+
+  // Significance: deficit >= max(1 M/s, 10% income) and current < 50% storage (T05.10 item 4)
+  if (deficit >= minDeficit && current < 0.5 * storage && current - deficit * H <= 0) {
+    const timeToEmpty = Math.max(1, Math.round(current / deficit));
     return {
       id: 'M_STALL_SOON',
       severity: 'info',
@@ -134,8 +175,11 @@ export function detectMStallSoon(ctx: AlertContext): AlertCandidate | null {
 
 // 4. M_STALLING
 export function detectMStalling(ctx: AlertContext): AlertCandidate | null {
-  const { now, history, profile } = ctx;
+  const { now, history, profile, clock, planSim } = ctx;
   if (!profile.enabledAlerts.has('M_STALLING') || !now.res) {
+    return null;
+  }
+  if (isPlannedStall(planSim, 'metal', clock)) {
     return null;
   }
 
@@ -159,15 +203,17 @@ export function detectMStalling(ctx: AlertContext): AlertCandidate | null {
 
 // 5. M_FLOAT
 export function detectMFloat(ctx: AlertContext): AlertCandidate | null {
-  const { now, history, profile } = ctx;
-  if (!profile.enabledAlerts.has('M_FLOAT') || !now.res) {
+  const { now, history, profile, clock } = ctx;
+  // Opening grace: no M_FLOAT before 60s (T05.10 item 2)
+  if (!profile.enabledAlerts.has('M_FLOAT') || !now.res || clock < FLOAT_OPENING_GRACE_SEC) {
     return null;
   }
 
+  // Float alerts require income > 0 for the whole sustain window (T05.10 item 2)
   const check = (snap: LiveSnapshot) => {
     if (!snap.res) return false;
-    const { current, storage } = snap.res.metal;
-    return current >= 0.9 * storage;
+    const { current, storage, income } = snap.res.metal;
+    return current >= 0.9 * storage && income > 0;
   };
 
   const S = profile.thresholds.mFloatSustainSec;
@@ -186,14 +232,22 @@ export function detectMFloat(ctx: AlertContext): AlertCandidate | null {
 export function detectEFloat(ctx: AlertContext): AlertCandidate | null {
   const { now, history, profile, clock } = ctx;
   const S = profile.thresholds.eFloatSustainSec;
-  if (!profile.enabledAlerts.has('E_FLOAT') || S === null || !now.res || clock <= 240) {
+  // Opening grace: no E_FLOAT before 60s and clock > 240 (T05.10 item 2)
+  if (
+    !profile.enabledAlerts.has('E_FLOAT') ||
+    S === null ||
+    !now.res ||
+    clock < FLOAT_OPENING_GRACE_SEC ||
+    clock <= 240
+  ) {
     return null;
   }
 
+  // Float alerts require income > 0 for the whole sustain window (T05.10 item 2)
   const check = (snap: LiveSnapshot) => {
     if (!snap.res) return false;
-    const { current, storage } = snap.res.energy;
-    return current >= 0.95 * storage;
+    const { current, storage, income } = snap.res.energy;
+    return current >= 0.95 * storage && income > 0;
   };
 
   if (isSustained(check, now, history, S)) {

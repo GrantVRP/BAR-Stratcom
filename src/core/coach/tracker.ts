@@ -3,6 +3,7 @@ import type { BuildPlan, BuildStep } from '../schemas/plans';
 import type { SimResult, SimStepResult } from '../sim/types';
 import type { Registry } from '../registry';
 import type { FinishedLedger } from './ledger';
+import { STEP_OVERDUE_SKIP_SEC } from './constants';
 
 export interface StepTrackerInput {
   plan: BuildPlan;
@@ -24,6 +25,7 @@ export interface StepTrackerResult {
   cues: Cue[];
   dueStepIds: Set<string>;
   doneStepIds: Set<string>;
+  skippedStepIds: Set<string>;
 }
 
 interface StepWorkingItem {
@@ -141,6 +143,28 @@ export function trackSteps(input: StepTrackerInput): StepTrackerResult {
     }
   }
 
+  // 2.5 Auto-skip overdue steps (T05.10 item 6):
+  // "a step overdue by > 60 s while two or more later steps have completed becomes skipped"
+  const autoSkippedIds = new Set<string>(skippedStepIds ?? []);
+  for (let i = 0; i < working.length; i++) {
+    const item = working[i];
+    if (!item || item.isSkipped || item.isDone) {
+      continue;
+    }
+    if (clock > item.plannedFinish + STEP_OVERDUE_SKIP_SEC) {
+      let laterDoneCount = 0;
+      for (let j = i + 1; j < working.length; j++) {
+        if (working[j]?.isDone) {
+          laterDoneCount++;
+        }
+      }
+      if (laterDoneCount >= 2) {
+        item.isSkipped = true;
+        autoSkippedIds.add(item.step.id);
+      }
+    }
+  }
+
   // 3. Status determination & currentStepIndex
   // "Steps may complete out of order; the current step is the first step that is not done."
   let currentStepIndex = working.findIndex((item) => !item.isSkipped && !item.isDone);
@@ -180,7 +204,7 @@ export function trackSteps(input: StepTrackerInput): StepTrackerResult {
     aheadBehindSec = Math.round(currentItem.plannedFinish - clock);
   } else {
     const completedBuildItems = working.filter(
-      (item) => item.step.action === 'build' && item.isDone && item.actualFinish !== null
+      (item) => item.step.action === 'build' && item.isDone && !item.isSkipped && item.actualFinish !== null
     );
 
     const firstCompleted = completedBuildItems[0];
@@ -256,6 +280,7 @@ export function trackSteps(input: StepTrackerInput): StepTrackerResult {
     aheadBehindSec,
     cues,
     dueStepIds,
-    doneStepIds
+    doneStepIds,
+    skippedStepIds: autoSkippedIds
   };
 }

@@ -152,6 +152,9 @@ async function main() {
     const metaRaw = JSON.parse(fs.readFileSync(path.join(fixtureDir, 'meta.json'), 'utf8'));
     const myTeam = metaRaw.teams.find((t: { isMe?: boolean }) => t.isMe) ?? metaRaw.teams[0];
 
+    const stateLines = readStateLines(fixtureDir);
+    const states = stateLines.map((l) => StateDocSchema.parse(JSON.parse(l)));
+
     reportSections.push(`## Fixture: \`${fixtureId}\``, '');
     reportSections.push(`- **Map:** ${metaRaw.mapScriptName}`);
     reportSections.push(`- **Faction:** ${myTeam?.factionId ?? 'unknown'}`);
@@ -162,6 +165,63 @@ async function main() {
     reportSections.push(
       `- **Behind Scenario (30s earlier):** Final Ahead/Behind = \`${timeline.behind.finalAheadBehindSec}s\`, ${timeline.behind.alertIntervals.length} alert intervals, ${timeline.behind.cues.length} cues`
     );
+    // Per-alert count table
+    const alertStats = new Map<string, { nomCount: number; nomDur: number; behCount: number; behDur: number }>();
+    for (const inv of timeline.nominal.alertIntervals) {
+      const cur = alertStats.get(inv.id) ?? { nomCount: 0, nomDur: 0, behCount: 0, behDur: 0 };
+      cur.nomCount++;
+      cur.nomDur += inv.endSec - inv.startSec;
+      alertStats.set(inv.id, cur);
+    }
+    for (const inv of timeline.behind.alertIntervals) {
+      const cur = alertStats.get(inv.id) ?? { nomCount: 0, nomDur: 0, behCount: 0, behDur: 0 };
+      cur.behCount++;
+      cur.behDur += inv.endSec - inv.startSec;
+      alertStats.set(inv.id, cur);
+    }
+
+    reportSections.push('', '### Alert Activation Breakdown', '');
+    reportSections.push('| Alert ID | Nominal Activations | Nominal Total Time | Behind Activations | Behind Total Time |');
+    reportSections.push('|---|---|---|---|---|');
+    const sortedAlertIds = Array.from(alertStats.keys()).sort();
+    for (const id of sortedAlertIds) {
+      const s = alertStats.get(id)!;
+      reportSections.push(`| \`${id}\` | ${s.nomCount} | ${s.nomDur}s | ${s.behCount} | ${s.behDur}s |`);
+    }
+
+    // E_STALLING Energy Level Spot-Check (Acceptance criterion 4)
+    const eStallIntervals = timeline.nominal.alertIntervals.filter((i) => i.id === 'E_STALLING');
+    reportSections.push('', '### E_STALLING Ground-Truth Energy Check (Recorded Energy <= 1% Storage)', '');
+    if (eStallIntervals.length === 0) {
+      reportSections.push('*(No E_STALLING intervals occurred in this fixture)*');
+    } else {
+      reportSections.push('| Sample Interval | Start Time | Start E | Min E | Storage | Min % of Storage | <= 1% Check |');
+      reportSections.push('|---|---|---|---|---|---|---|');
+      const spotChecks = eStallIntervals.slice(0, 3);
+      for (const inv of spotChecks) {
+        const intervalStates = states.filter((s) => s.gameSeconds >= inv.startSec && s.gameSeconds <= inv.endSec && s.res);
+        const startState = intervalStates[0] ?? states.find((s) => Math.abs(s.gameSeconds - inv.startSec) <= 1.5);
+        if (startState && startState.res) {
+          let minE = startState.res.energy.current;
+          let storE = startState.res.energy.storage;
+          for (const s of intervalStates) {
+            if (s.res && s.res.energy.current < minE) {
+              minE = s.res.energy.current;
+              storE = s.res.energy.storage;
+            }
+          }
+          const startEStr = startState.res.energy.current.toFixed(1);
+          const minEStr = minE.toFixed(1);
+          const storEStr = storE.toFixed(1);
+          const pct = ((minE / storE) * 100).toFixed(2);
+          const pass = minE <= Math.max(1, 0.01 * storE) ? 'PASS' : 'FAIL';
+          reportSections.push(
+            `| \`${formatTime(inv.startSec)} – ${formatTime(inv.endSec)}\` | ${formatTime(inv.startSec)} | ${startEStr} | ${minEStr} | ${storEStr} | ${pct}% | **${pass}** |`
+          );
+        }
+      }
+    }
+
     reportSections.push('', '### Nominal Alert Intervals', '');
 
     if (timeline.nominal.alertIntervals.length === 0) {

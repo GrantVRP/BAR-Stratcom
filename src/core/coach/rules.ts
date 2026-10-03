@@ -5,7 +5,9 @@ import {
   ALERT_SOUND_COOLDOWN_SEC,
   GLOBAL_AUDIO_LIMIT_SEC,
   AUDIO_SEVERITY_PRIORITY,
-  ALL_ALERT_IDS
+  ALL_ALERT_IDS,
+  ALERT_MIN_VISIBLE_SEC,
+  ALERT_REACTIVATION_WINDOW_SEC
 } from './constants';
 
 export interface AlertMemoryItem {
@@ -13,6 +15,7 @@ export interface AlertMemoryItem {
   since: number;
   lastTrueAt: number;
   lastFalseAt: number;
+  lastClearedAt: number;
   lastSoundAt: number;
   severity: AlertSeverity;
   text: string;
@@ -24,6 +27,7 @@ export interface CoachMemory {
   lastChatEchoAt: number;
   dueStepIds: Set<string>;
   doneStepIds: Set<string>;
+  skippedStepIds: Set<string>;
 }
 
 export function createInitialCoachMemory(): CoachMemory {
@@ -32,7 +36,8 @@ export function createInitialCoachMemory(): CoachMemory {
     lastGlobalAudioAt: -Infinity,
     lastChatEchoAt: -Infinity,
     dueStepIds: new Set<string>(),
-    doneStepIds: new Set<string>()
+    doneStepIds: new Set<string>(),
+    skippedStepIds: new Set<string>()
   };
 }
 
@@ -43,7 +48,8 @@ export interface AlertUpdateResult {
 }
 
 /**
- * Updates alert states with sustained check, 2s deactivation hysteresis, and 20s sound cooldown.
+ * Updates alert states with sustained check, min 5s visibility, 2s deactivation hysteresis,
+ * 15s reactivation interval extension, and 20s sound cooldown.
  */
 export function updateAlertRules(
   detectedCandidates: Partial<Record<AlertId, AlertCandidate>>,
@@ -59,12 +65,14 @@ export function updateAlertRules(
     const prev = prevMemory.alerts[id];
 
     let active = false;
-    let since = clock;
+    let since = prev ? prev.since : clock;
     let lastTrueAt = prev ? prev.lastTrueAt : -Infinity;
     let lastFalseAt = prev ? prev.lastFalseAt : -Infinity;
+    let lastClearedAt = prev ? prev.lastClearedAt : -Infinity;
     const lastSoundAt = prev ? prev.lastSoundAt : -Infinity;
     let severity: AlertSeverity = candidate ? candidate.severity : prev ? prev.severity : 'info';
     let text: string = candidate ? candidate.text : prev ? prev.text : '';
+    let isExtended = false;
 
     if (candidate) {
       lastTrueAt = clock;
@@ -74,18 +82,28 @@ export function updateAlertRules(
         active = true;
         since = prev.since;
       } else {
-        active = true;
-        since = clock;
+        // Reactivating within 15s of clearing extends previous interval without re-cueing sound (T05.10 item 5)
+        if (prev && clock - lastClearedAt <= ALERT_REACTIVATION_WINDOW_SEC) {
+          active = true;
+          since = prev.since;
+          isExtended = true;
+        } else {
+          active = true;
+          since = clock;
+        }
       }
     } else {
       lastFalseAt = clock;
       if (prev && prev.active) {
-        // Hysteresis: remain active until false for at least 2s
-        if (clock - lastTrueAt < ALERT_DEACTIVATION_HYSTERESIS_SEC) {
+        // No flicker: remain active until visible for >= 5s AND false for >= 2s (T05.10 item 5)
+        const visibleElapsed = clock - prev.since;
+        const falseElapsed = clock - lastTrueAt;
+        if (visibleElapsed < ALERT_MIN_VISIBLE_SEC || falseElapsed < ALERT_DEACTIVATION_HYSTERESIS_SEC) {
           active = true;
           since = prev.since;
         } else {
           active = false;
+          lastClearedAt = clock;
         }
       } else {
         active = false;
@@ -97,6 +115,7 @@ export function updateAlertRules(
       since,
       lastTrueAt,
       lastFalseAt,
+      lastClearedAt,
       lastSoundAt,
       severity,
       text
@@ -114,8 +133,8 @@ export function updateAlertRules(
       };
       activeAlerts.push(alertObj);
 
-      // Check 20s sound cooldown
-      if (clock - lastSoundAt >= ALERT_SOUND_COOLDOWN_SEC) {
+      // Check 20s sound cooldown. Extended activations do NOT re-cue sound (T05.10 item 5)
+      if (!isExtended && clock - lastSoundAt >= ALERT_SOUND_COOLDOWN_SEC) {
         soundCandidateAlerts.push(alertObj);
       }
     }

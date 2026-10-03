@@ -8,7 +8,7 @@ import type { CoachHud, CoachEcho, CoachAssist } from '../schemas/protocol';
 import type { FinishedLedger } from './ledger';
 import { trackSteps } from './tracker';
 import type { ProfileConfig } from './profiles';
-import { ALERT_DETECTORS, type AlertCandidate } from './alerts';
+import { ALERT_DETECTORS, type AlertCandidate, isPlannedStall } from './alerts';
 import { type CoachMemory, updateAlertRules, resolveAudioCues } from './rules';
 import { buildCoachHud } from './display';
 import { CHAT_ECHO_COOLDOWN_SEC, ALL_ALERT_IDS } from './constants';
@@ -74,6 +74,7 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     clock,
     registry,
     manualDoneStepIds,
+    skippedStepIds: memory.skippedStepIds,
     previouslyDueStepIds: memory.dueStepIds,
     previouslyDoneStepIds: memory.doneStepIds
   });
@@ -87,6 +88,7 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
       history,
       profile,
       plan,
+      planSim,
       aheadBehindSec: trackerResult.aheadBehindSec,
       benchmark,
       registry,
@@ -216,6 +218,13 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     profile: profile.id
   };
 
+  let plannedStall: 'energy' | 'metal' | null = null;
+  if (isPlannedStall(planSim, 'energy', clock)) {
+    plannedStall = 'energy';
+  } else if (isPlannedStall(planSim, 'metal', clock)) {
+    plannedStall = 'metal';
+  }
+
   const hud = buildCoachHud({
     plan,
     steps: trackerResult.steps,
@@ -225,7 +234,8 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     registry,
     clock,
     factionId: now.me?.factionId ?? plan.factionId,
-    visible: mode !== 'manual'
+    visible: mode !== 'manual',
+    plannedStall
   });
 
   const currentPlanStep =
@@ -258,7 +268,8 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     lastGlobalAudioAt: newLastGlobalAudioAt,
     lastChatEchoAt: newLastChatEchoAt,
     dueStepIds: trackerResult.dueStepIds,
-    doneStepIds: trackerResult.doneStepIds
+    doneStepIds: trackerResult.doneStepIds,
+    skippedStepIds: trackerResult.skippedStepIds
   };
 
   const cues = mode === 'manual' ? emittedCues.filter((c) => c.alertId === 'STEP_DUE') : emittedCues;

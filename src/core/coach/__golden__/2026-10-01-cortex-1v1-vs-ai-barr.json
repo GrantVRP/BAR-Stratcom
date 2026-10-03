@@ -4,19 +4,14 @@
     "finalAheadBehindSec": 0,
     "alertIntervals": [
       {
-        "id": "M_FLOAT",
-        "startSec": 10,
-        "endSec": 20
-      },
-      {
         "id": "E_STALL_SOON",
-        "startSec": 20,
-        "endSec": 70
+        "startSec": 23,
+        "endSec": 108
       },
       {
         "id": "E_STALLING",
         "startSec": 30,
-        "endSec": 69
+        "endSec": 77
       },
       {
         "id": "BEHIND_PLAN",
@@ -24,49 +19,9 @@
         "endSec": 159
       },
       {
-        "id": "E_STALL_SOON",
-        "startSec": 72,
-        "endSec": 77
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 74,
-        "endSec": 77
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 82,
-        "endSec": 83
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 91,
-        "endSec": 94
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 96,
-        "endSec": 97
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 104,
-        "endSec": 105
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 107,
-        "endSec": 108
-      },
-      {
         "id": "IDLE_FACTORY",
-        "startSec": 128,
+        "startSec": 131,
         "endSec": 151
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 179,
-        "endSec": 189
       },
       {
         "id": "SCOUT_REMINDER",
@@ -74,14 +29,9 @@
         "endSec": 316
       },
       {
-        "id": "M_STALL_SOON",
-        "startSec": 209,
-        "endSec": 260
-      },
-      {
         "id": "BEHIND_PLAN",
         "startSec": 216,
-        "endSec": 299
+        "endSec": 261
       },
       {
         "id": "M_STALLING",
@@ -96,12 +46,7 @@
       {
         "id": "M_STALLING",
         "startSec": 258,
-        "endSec": 260
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 273,
-        "endSec": 274
+        "endSec": 263
       },
       {
         "id": "E_FLOAT",
@@ -110,38 +55,23 @@
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 305,
+        "startSec": 308,
         "endSec": 332
       },
       {
-        "id": "M_STALL_SOON",
-        "startSec": 312,
-        "endSec": 317
-      },
-      {
-        "id": "IDLE_COMMANDER",
-        "startSec": 320,
-        "endSec": 324
-      },
-      {
         "id": "IDLE_BUILDERS",
-        "startSec": 326,
+        "startSec": 331,
         "endSec": 338
       },
       {
-        "id": "IDLE_BUILDERS",
-        "startSec": 348,
-        "endSec": 349
-      },
-      {
         "id": "IDLE_FACTORY",
-        "startSec": 385,
+        "startSec": 388,
         "endSec": 399
       },
       {
         "id": "IDLE_BUILDERS",
-        "startSec": 394,
-        "endSec": 402
+        "startSec": 399,
+        "endSec": 404
       },
       {
         "id": "E_STALL_SOON",
@@ -149,79 +79,19 @@
         "endSec": 408
       },
       {
-        "id": "M_STALL_SOON",
-        "startSec": 403,
-        "endSec": 406
-      },
-      {
         "id": "E_STALL_SOON",
-        "startSec": 413,
-        "endSec": 416
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 417,
-        "endSec": 418
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 420,
-        "endSec": 424
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 422,
-        "endSec": 424
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 427,
-        "endSec": 429
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 434,
-        "endSec": 438
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 440,
-        "endSec": 450
+        "startSec": 435,
+        "endSec": 477
       },
       {
         "id": "E_STALLING",
         "startSec": 444,
-        "endSec": 449
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 452,
-        "endSec": 462
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 460,
-        "endSec": 461
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 464,
-        "endSec": 474
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 466,
         "endSec": 473
       },
       {
-        "id": "E_STALL_SOON",
-        "startSec": 476,
-        "endSec": 477
-      },
-      {
         "id": "IDLE_BUILDERS",
-        "startSec": 476,
-        "endSec": 487
+        "startSec": 481,
+        "endSec": 527
       },
       {
         "id": "BEHIND_PLAN",
@@ -230,107 +100,57 @@
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 490,
+        "startSec": 493,
         "endSec": 551
-      },
-      {
-        "id": "IDLE_BUILDERS",
-        "startSec": 496,
-        "endSec": 527
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 502,
-        "endSec": 503
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 505,
-        "endSec": 507
       },
       {
         "id": "E_STALL_SOON",
         "startSec": 510,
-        "endSec": 519
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 522,
         "endSec": 523
       },
       {
         "id": "E_STALL_SOON",
-        "startSec": 551,
+        "startSec": 553,
         "endSec": 591
       },
       {
         "id": "E_STALLING",
         "startSec": 562,
-        "endSec": 571
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 575,
         "endSec": 588
       },
       {
-        "id": "BEHIND_PLAN",
-        "startSec": 590,
-        "endSec": 614
-      },
-      {
         "id": "IDLE_BUILDERS",
-        "startSec": 595,
+        "startSec": 600,
         "endSec": 709
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 597,
+        "startSec": 600,
         "endSec": 625
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 642,
+        "startSec": 645,
         "endSec": 720
       },
       {
         "id": "E_STALL_SOON",
-        "startSec": 669,
-        "endSec": 670
-      },
-      {
-        "id": "E_STALL_SOON",
         "startSec": 761,
-        "endSec": 763
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 763,
-        "endSec": 769
+        "endSec": 766
       },
       {
         "id": "IDLE_BUILDERS",
-        "startSec": 812,
+        "startSec": 817,
         "endSec": 899
       },
       {
         "id": "E_STALL_SOON",
-        "startSec": 831,
-        "endSec": 834
+        "startSec": 832,
+        "endSec": 837
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 833,
-        "endSec": 834
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 849,
-        "endSec": 851
-      },
-      {
-        "id": "IDLE_FACTORY",
-        "startSec": 883,
+        "startSec": 886,
         "endSec": 899
       }
     ],
@@ -342,76 +162,76 @@
         "text": "2x Metal Extractor"
       },
       {
-        "atSec": 10,
-        "alertId": "M_FLOAT",
-        "sound": "warn",
-        "text": "METAL FULL // SPEND IT"
+        "atSec": 11,
+        "alertId": "STEP_DUE",
+        "sound": "step_due",
+        "text": "1x Vehicle Plant"
       },
       {
-        "atSec": 20,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 8s"
+        "atSec": 21,
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "2x Metal Extractor done"
       },
       {
-        "atSec": 30,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 40,
+        "atSec": 29,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
         "text": "ENERGY EMPTY IN 1s"
       },
       {
-        "atSec": 50,
+        "atSec": 37,
         "alertId": "E_STALLING",
         "sound": "danger",
         "text": "ENERGY STALL"
       },
       {
-        "atSec": 58,
+        "atSec": 49,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 1s"
+      },
+      {
+        "atSec": 57,
+        "alertId": "E_STALLING",
+        "sound": "danger",
+        "text": "ENERGY STALL"
+      },
+      {
+        "atSec": 66,
         "alertId": "BEHIND_PLAN",
         "sound": "info",
-        "text": "BEHIND PLAN 19s"
+        "text": "BEHIND PLAN 26s"
       },
       {
-        "atSec": 67,
+        "atSec": 74,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
         "text": "ENERGY EMPTY IN 1s"
       },
       {
-        "atSec": 75,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 83,
+        "atSec": 86,
         "alertId": "BEHIND_PLAN",
         "sound": "info",
         "text": "BEHIND PLAN 28s"
       },
       {
-        "atSec": 91,
+        "atSec": 94,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
-        "text": "ENERGY EMPTY IN 3s"
+        "text": "ENERGY EMPTY IN 4s"
       },
       {
-        "atSec": 103,
+        "atSec": 106,
         "alertId": "BEHIND_PLAN",
         "sound": "info",
         "text": "BEHIND PLAN 28s"
       },
       {
         "atSec": 123,
-        "alertId": "BEHIND_PLAN",
-        "sound": "info",
-        "text": "BEHIND PLAN 23s"
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "1x Construction Vehicle done"
       },
       {
         "atSec": 132,
@@ -420,31 +240,19 @@
         "text": "FACTORY IDLE"
       },
       {
-        "atSec": 141,
-        "alertId": "STEP_DUE",
-        "sound": "step_due",
-        "text": "3x Incisor"
-      },
-      {
-        "atSec": 149,
+        "atSec": 140,
         "alertId": "BEHIND_PLAN",
         "sound": "info",
         "text": "BEHIND PLAN 23s"
       },
       {
-        "atSec": 159,
-        "alertId": "STEP_DONE",
-        "sound": "step_done",
-        "text": "1x Metal Extractor done"
+        "atSec": 153,
+        "alertId": "STEP_DUE",
+        "sound": "step_due",
+        "text": "1x Metal Extractor"
       },
       {
-        "atSec": 179,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 6s"
-      },
-      {
-        "atSec": 187,
+        "atSec": 180,
         "alertId": "SCOUT_REMINDER",
         "sound": "info",
         "text": "GET RADAR / SCOUT"
@@ -456,124 +264,106 @@
         "text": "1x Exploiter"
       },
       {
-        "atSec": 207,
+        "atSec": 205,
         "alertId": "SCOUT_REMINDER",
         "sound": "info",
         "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 215,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 1s"
-      },
-      {
-        "atSec": 223,
+        "atSec": 216,
         "alertId": "M_STALLING",
         "sound": "warn",
         "text": "METAL STALL // TOO MUCH BP"
       },
       {
-        "atSec": 231,
+        "atSec": 224,
         "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 30s"
-      },
-      {
-        "atSec": 239,
-        "alertId": "M_STALL_SOON",
         "sound": "info",
-        "text": "METAL EMPTY IN 1s"
+        "text": "BEHIND PLAN 23s"
       },
       {
-        "atSec": 247,
-        "alertId": "E_FLOAT",
-        "sound": "info",
-        "text": "ENERGY FULL // ADD BP/CONV"
-      },
-      {
-        "atSec": 255,
-        "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 58s"
-      },
-      {
-        "atSec": 264,
+        "atSec": 232,
         "alertId": "SCOUT_REMINDER",
         "sound": "info",
         "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 272,
+        "atSec": 240,
+        "alertId": "M_STALLING",
+        "sound": "warn",
+        "text": "METAL STALL // TOO MUCH BP"
+      },
+      {
+        "atSec": 248,
+        "alertId": "BEHIND_PLAN",
+        "sound": "warn",
+        "text": "BEHIND PLAN 51s"
+      },
+      {
+        "atSec": 257,
         "alertId": "E_FLOAT",
         "sound": "info",
         "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
-        "atSec": 280,
-        "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 73s"
-      },
-      {
-        "atSec": 288,
+        "atSec": 265,
         "alertId": "SCOUT_REMINDER",
         "sound": "info",
         "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 296,
+        "atSec": 282,
+        "alertId": "STEP_DUE",
+        "sound": "step_due",
+        "text": "1x Exploiter"
+      },
+      {
+        "atSec": 290,
+        "alertId": "SCOUT_REMINDER",
+        "sound": "info",
+        "text": "GET RADAR / SCOUT"
+      },
+      {
+        "atSec": 298,
         "alertId": "E_FLOAT",
         "sound": "info",
         "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
-        "atSec": 305,
+        "atSec": 308,
         "alertId": "IDLE_FACTORY",
         "sound": "warn",
         "text": "FACTORY IDLE"
       },
       {
-        "atSec": 313,
-        "alertId": "M_STALL_SOON",
+        "atSec": 316,
+        "alertId": "SCOUT_REMINDER",
         "sound": "info",
-        "text": "METAL EMPTY IN 1s"
+        "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 321,
-        "alertId": "IDLE_COMMANDER",
-        "sound": "warn",
-        "text": "COMMANDER IDLE"
+        "atSec": 324,
+        "alertId": "E_FLOAT",
+        "sound": "info",
+        "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
-        "atSec": 329,
+        "atSec": 332,
         "alertId": "IDLE_FACTORY",
         "sound": "warn",
         "text": "FACTORY IDLE"
       },
       {
-        "atSec": 337,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 345,
+        "atSec": 344,
         "alertId": "E_FLOAT",
         "sound": "info",
         "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
-        "atSec": 365,
+        "atSec": 364,
         "alertId": "E_FLOAT",
         "sound": "info",
         "text": "ENERGY FULL // ADD BP/CONV"
-      },
-      {
-        "atSec": 380,
-        "alertId": "STEP_DONE",
-        "sound": "step_done",
-        "text": "3x Incisor done"
       },
       {
         "atSec": 388,
@@ -582,16 +372,16 @@
         "text": "FACTORY IDLE"
       },
       {
-        "atSec": 396,
+        "atSec": 399,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 404,
+        "atSec": 407,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
-        "text": "ENERGY EMPTY IN 1s"
+        "text": "ENERGY EMPTY IN 3s"
       },
       {
         "atSec": 416,
@@ -601,9 +391,9 @@
       },
       {
         "atSec": 424,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 5s"
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "1x Pounder done"
       },
       {
         "atSec": 432,
@@ -612,175 +402,163 @@
         "text": "1x Exploiter done"
       },
       {
-        "atSec": 444,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 452,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 6s"
-      },
-      {
-        "atSec": 466,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 474,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 5s"
-      },
-      {
-        "atSec": 482,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 490,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 502,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 7s"
-      },
-      {
-        "atSec": 510,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 519,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 531,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 541,
-        "alertId": "STEP_DUE",
-        "sound": "step_due",
-        "text": "1x Incisor"
-      },
-      {
-        "atSec": 549,
-        "alertId": "STEP_DUE",
-        "sound": "step_due",
-        "text": "1x Metal Extractor"
-      },
-      {
-        "atSec": 557,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 4s"
-      },
-      {
-        "atSec": 565,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 577,
+        "atSec": 440,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
         "text": "ENERGY EMPTY IN 1s"
       },
       {
-        "atSec": 585,
+        "atSec": 448,
         "alertId": "E_STALLING",
         "sound": "danger",
         "text": "ENERGY STALL"
       },
       {
-        "atSec": 593,
-        "alertId": "BEHIND_PLAN",
-        "sound": "info",
-        "text": "BEHIND PLAN 25s"
-      },
-      {
-        "atSec": 601,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 609,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 621,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 629,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 642,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 650,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "2 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 662,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 670,
+        "atSec": 460,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
-        "text": "ENERGY EMPTY IN 8s"
+        "text": "ENERGY EMPTY IN 1s"
       },
       {
-        "atSec": 678,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "2 CONSTRUCTOR(S) IDLE"
+        "atSec": 468,
+        "alertId": "E_STALLING",
+        "sound": "danger",
+        "text": "ENERGY STALL"
       },
       {
-        "atSec": 686,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 698,
+        "atSec": 481,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 706,
+        "atSec": 489,
+        "alertId": "BEHIND_PLAN",
+        "sound": "warn",
+        "text": "BEHIND PLAN 38s"
+      },
+      {
+        "atSec": 497,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 505,
+        "alertId": "IDLE_BUILDERS",
+        "sound": "warn",
+        "text": "1 CONSTRUCTOR(S) IDLE"
+      },
+      {
+        "atSec": 514,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 4s"
+      },
+      {
+        "atSec": 522,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 542,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 553,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 3s"
+      },
+      {
+        "atSec": 562,
+        "alertId": "E_STALLING",
+        "sound": "danger",
+        "text": "ENERGY STALL"
+      },
+      {
+        "atSec": 573,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 1s"
+      },
+      {
+        "atSec": 582,
+        "alertId": "E_STALLING",
+        "sound": "danger",
+        "text": "ENERGY STALL"
+      },
+      {
+        "atSec": 590,
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "1x Twin Guard done"
+      },
+      {
+        "atSec": 600,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 608,
+        "alertId": "IDLE_BUILDERS",
+        "sound": "warn",
+        "text": "1 CONSTRUCTOR(S) IDLE"
+      },
+      {
+        "atSec": 620,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 628,
+        "alertId": "IDLE_BUILDERS",
+        "sound": "warn",
+        "text": "1 CONSTRUCTOR(S) IDLE"
+      },
+      {
+        "atSec": 645,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 653,
+        "alertId": "IDLE_BUILDERS",
+        "sound": "warn",
+        "text": "2 CONSTRUCTOR(S) IDLE"
+      },
+      {
+        "atSec": 665,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 673,
+        "alertId": "IDLE_BUILDERS",
+        "sound": "warn",
+        "text": "2 CONSTRUCTOR(S) IDLE"
+      },
+      {
+        "atSec": 685,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 693,
+        "alertId": "IDLE_BUILDERS",
+        "sound": "warn",
+        "text": "1 CONSTRUCTOR(S) IDLE"
+      },
+      {
+        "atSec": 705,
         "alertId": "IDLE_FACTORY",
         "sound": "warn",
         "text": "FACTORY IDLE"
@@ -792,58 +570,40 @@
         "text": "ENERGY EMPTY IN 4s"
       },
       {
-        "atSec": 769,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 4s"
-      },
-      {
-        "atSec": 812,
+        "atSec": 817,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 831,
+        "atSec": 832,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
-        "text": "ENERGY EMPTY IN 6s"
+        "text": "ENERGY EMPTY IN 2s"
       },
       {
-        "atSec": 839,
+        "atSec": 840,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "2 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 849,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 7s"
-      },
-      {
-        "atSec": 859,
+        "atSec": 860,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 879,
+        "atSec": 880,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 887,
+        "atSec": 888,
         "alertId": "IDLE_FACTORY",
         "sound": "warn",
         "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 899,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
       }
     ]
   },
@@ -851,84 +611,29 @@
     "finalAheadBehindSec": -30,
     "alertIntervals": [
       {
-        "id": "M_FLOAT",
-        "startSec": 10,
-        "endSec": 20
-      },
-      {
         "id": "E_STALL_SOON",
-        "startSec": 20,
-        "endSec": 70
+        "startSec": 23,
+        "endSec": 108
       },
       {
         "id": "E_STALLING",
         "startSec": 30,
-        "endSec": 69
+        "endSec": 77
       },
       {
         "id": "BEHIND_PLAN",
         "startSec": 47,
-        "endSec": 172
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 72,
-        "endSec": 77
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 74,
-        "endSec": 77
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 82,
-        "endSec": 83
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 91,
-        "endSec": 94
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 96,
-        "endSec": 97
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 104,
-        "endSec": 105
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 107,
-        "endSec": 108
+        "endSec": 347
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 128,
+        "startSec": 131,
         "endSec": 151
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 179,
-        "endSec": 189
       },
       {
         "id": "SCOUT_REMINDER",
         "startSec": 180,
         "endSec": 316
-      },
-      {
-        "id": "BEHIND_PLAN",
-        "startSec": 186,
-        "endSec": 271
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 209,
-        "endSec": 260
       },
       {
         "id": "M_STALLING",
@@ -943,17 +648,7 @@
       {
         "id": "M_STALLING",
         "startSec": 258,
-        "endSec": 260
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 273,
-        "endSec": 274
-      },
-      {
-        "id": "BEHIND_PLAN",
-        "startSec": 285,
-        "endSec": 299
+        "endSec": 263
       },
       {
         "id": "E_FLOAT",
@@ -962,48 +657,28 @@
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 305,
+        "startSec": 308,
         "endSec": 332
       },
       {
-        "id": "BEHIND_PLAN",
-        "startSec": 307,
-        "endSec": 348
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 312,
-        "endSec": 317
-      },
-      {
-        "id": "IDLE_COMMANDER",
-        "startSec": 320,
-        "endSec": 324
-      },
-      {
         "id": "IDLE_BUILDERS",
-        "startSec": 326,
+        "startSec": 331,
         "endSec": 338
       },
       {
-        "id": "IDLE_BUILDERS",
-        "startSec": 348,
-        "endSec": 349
-      },
-      {
         "id": "BEHIND_PLAN",
-        "startSec": 363,
+        "startSec": 380,
         "endSec": 522
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 385,
+        "startSec": 388,
         "endSec": 399
       },
       {
         "id": "IDLE_BUILDERS",
-        "startSec": 394,
-        "endSec": 402
+        "startSec": 399,
+        "endSec": 404
       },
       {
         "id": "E_STALL_SOON",
@@ -1011,193 +686,78 @@
         "endSec": 408
       },
       {
-        "id": "M_STALL_SOON",
-        "startSec": 403,
-        "endSec": 406
-      },
-      {
         "id": "E_STALL_SOON",
-        "startSec": 413,
-        "endSec": 416
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 417,
-        "endSec": 418
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 420,
-        "endSec": 424
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 422,
-        "endSec": 424
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 427,
-        "endSec": 429
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 434,
-        "endSec": 438
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 440,
-        "endSec": 450
+        "startSec": 435,
+        "endSec": 477
       },
       {
         "id": "E_STALLING",
         "startSec": 444,
-        "endSec": 449
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 452,
-        "endSec": 462
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 460,
-        "endSec": 461
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 464,
-        "endSec": 474
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 466,
         "endSec": 473
       },
       {
-        "id": "E_STALL_SOON",
-        "startSec": 476,
-        "endSec": 477
-      },
-      {
         "id": "IDLE_BUILDERS",
-        "startSec": 476,
-        "endSec": 487
-      },
-      {
-        "id": "IDLE_FACTORY",
-        "startSec": 490,
-        "endSec": 551
-      },
-      {
-        "id": "IDLE_BUILDERS",
-        "startSec": 496,
+        "startSec": 481,
         "endSec": 527
       },
       {
-        "id": "E_STALL_SOON",
-        "startSec": 502,
-        "endSec": 503
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 505,
-        "endSec": 507
+        "id": "IDLE_FACTORY",
+        "startSec": 493,
+        "endSec": 551
       },
       {
         "id": "E_STALL_SOON",
         "startSec": 510,
-        "endSec": 519
-      },
-      {
-        "id": "E_STALL_SOON",
-        "startSec": 522,
         "endSec": 523
       },
       {
         "id": "E_STALL_SOON",
-        "startSec": 551,
+        "startSec": 553,
         "endSec": 591
       },
       {
         "id": "BEHIND_PLAN",
         "startSec": 560,
-        "endSec": 588
+        "endSec": 899
       },
       {
         "id": "E_STALLING",
         "startSec": 562,
-        "endSec": 571
-      },
-      {
-        "id": "E_STALLING",
-        "startSec": 575,
         "endSec": 588
       },
       {
-        "id": "BEHIND_PLAN",
-        "startSec": 590,
-        "endSec": 592
-      },
-      {
         "id": "IDLE_BUILDERS",
-        "startSec": 595,
+        "startSec": 600,
         "endSec": 709
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 597,
+        "startSec": 600,
         "endSec": 625
       },
       {
-        "id": "BEHIND_PLAN",
-        "startSec": 599,
-        "endSec": 899
-      },
-      {
         "id": "IDLE_FACTORY",
-        "startSec": 642,
+        "startSec": 645,
         "endSec": 720
       },
       {
         "id": "E_STALL_SOON",
-        "startSec": 669,
-        "endSec": 670
-      },
-      {
-        "id": "E_STALL_SOON",
         "startSec": 761,
-        "endSec": 763
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 763,
-        "endSec": 769
+        "endSec": 766
       },
       {
         "id": "IDLE_BUILDERS",
-        "startSec": 812,
+        "startSec": 817,
         "endSec": 899
       },
       {
         "id": "E_STALL_SOON",
-        "startSec": 831,
-        "endSec": 834
+        "startSec": 832,
+        "endSec": 837
       },
       {
         "id": "IDLE_FACTORY",
-        "startSec": 833,
-        "endSec": 834
-      },
-      {
-        "id": "M_STALL_SOON",
-        "startSec": 849,
-        "endSec": 851
-      },
-      {
-        "id": "IDLE_FACTORY",
-        "startSec": 883,
+        "startSec": 886,
         "endSec": 899
       }
     ],
@@ -1209,79 +769,79 @@
         "text": "2x Metal Extractor"
       },
       {
-        "atSec": 10,
-        "alertId": "M_FLOAT",
-        "sound": "warn",
-        "text": "METAL FULL // SPEND IT"
+        "atSec": 21,
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "2x Metal Extractor done"
       },
       {
-        "atSec": 20,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 8s"
-      },
-      {
-        "atSec": 30,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 40,
+        "atSec": 29,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
         "text": "ENERGY EMPTY IN 1s"
       },
       {
-        "atSec": 48,
+        "atSec": 37,
+        "alertId": "E_STALLING",
+        "sound": "danger",
+        "text": "ENERGY STALL"
+      },
+      {
+        "atSec": 47,
         "alertId": "BEHIND_PLAN",
         "sound": "info",
-        "text": "BEHIND PLAN 16s"
+        "text": "BEHIND PLAN 15s"
       },
       {
-        "atSec": 56,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 65,
+        "atSec": 55,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
         "text": "ENERGY EMPTY IN 1s"
       },
       {
-        "atSec": 73,
+        "atSec": 63,
+        "alertId": "E_STALLING",
+        "sound": "danger",
+        "text": "ENERGY STALL"
+      },
+      {
+        "atSec": 72,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 36s"
       },
       {
-        "atSec": 91,
+        "atSec": 83,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 2s"
+      },
+      {
+        "atSec": 92,
+        "alertId": "BEHIND_PLAN",
+        "sound": "warn",
+        "text": "BEHIND PLAN 36s"
+      },
+      {
+        "atSec": 105,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
         "text": "ENERGY EMPTY IN 3s"
       },
       {
-        "atSec": 99,
+        "atSec": 113,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 36s"
       },
       {
-        "atSec": 111,
-        "alertId": "STEP_DUE",
-        "sound": "step_due",
-        "text": "3x Incisor"
+        "atSec": 123,
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "1x Construction Vehicle done"
       },
       {
-        "atSec": 119,
-        "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 36s"
-      },
-      {
-        "atSec": 128,
+        "atSec": 132,
         "alertId": "IDLE_FACTORY",
         "sound": "warn",
         "text": "FACTORY IDLE"
@@ -1291,12 +851,6 @@
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 53s"
-      },
-      {
-        "atSec": 148,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
       },
       {
         "atSec": 159,
@@ -1311,148 +865,136 @@
         "text": "BEHIND PLAN 29s"
       },
       {
-        "atSec": 179,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 6s"
-      },
-      {
-        "atSec": 187,
-        "alertId": "BEHIND_PLAN",
-        "sound": "info",
-        "text": "BEHIND PLAN 16s"
-      },
-      {
-        "atSec": 195,
+        "atSec": 180,
         "alertId": "SCOUT_REMINDER",
         "sound": "info",
         "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 207,
+        "atSec": 188,
+        "alertId": "BEHIND_PLAN",
+        "sound": "info",
+        "text": "BEHIND PLAN 17s"
+      },
+      {
+        "atSec": 200,
+        "alertId": "SCOUT_REMINDER",
+        "sound": "info",
+        "text": "GET RADAR / SCOUT"
+      },
+      {
+        "atSec": 208,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
-        "text": "BEHIND PLAN 36s"
+        "text": "BEHIND PLAN 37s"
       },
       {
-        "atSec": 215,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 1s"
-      },
-      {
-        "atSec": 223,
+        "atSec": 216,
         "alertId": "M_STALLING",
         "sound": "warn",
         "text": "METAL STALL // TOO MUCH BP"
       },
       {
-        "atSec": 231,
-        "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 60s"
-      },
-      {
-        "atSec": 239,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 1s"
-      },
-      {
-        "atSec": 247,
-        "alertId": "E_FLOAT",
-        "sound": "info",
-        "text": "ENERGY FULL // ADD BP/CONV"
-      },
-      {
-        "atSec": 255,
-        "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 88s"
-      },
-      {
-        "atSec": 264,
+        "atSec": 224,
         "alertId": "SCOUT_REMINDER",
         "sound": "info",
         "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 272,
+        "atSec": 232,
+        "alertId": "BEHIND_PLAN",
+        "sound": "warn",
+        "text": "BEHIND PLAN 65s"
+      },
+      {
+        "atSec": 240,
+        "alertId": "M_STALLING",
+        "sound": "warn",
+        "text": "METAL STALL // TOO MUCH BP"
+      },
+      {
+        "atSec": 248,
         "alertId": "E_FLOAT",
         "sound": "info",
         "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
-        "atSec": 284,
+        "atSec": 257,
+        "alertId": "BEHIND_PLAN",
+        "sound": "warn",
+        "text": "BEHIND PLAN 49s"
+      },
+      {
+        "atSec": 265,
         "alertId": "SCOUT_REMINDER",
         "sound": "info",
         "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 292,
-        "alertId": "BEHIND_PLAN",
+        "atSec": 285,
+        "alertId": "SCOUT_REMINDER",
         "sound": "info",
-        "text": "BEHIND PLAN 22s"
+        "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 300,
+        "atSec": 293,
         "alertId": "E_FLOAT",
         "sound": "info",
         "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
-        "atSec": 308,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 316,
-        "alertId": "M_STALL_SOON",
+        "atSec": 305,
+        "alertId": "SCOUT_REMINDER",
         "sound": "info",
-        "text": "METAL EMPTY IN 1s"
+        "text": "GET RADAR / SCOUT"
       },
       {
-        "atSec": 324,
-        "alertId": "IDLE_COMMANDER",
-        "sound": "warn",
-        "text": "COMMANDER IDLE"
-      },
-      {
-        "atSec": 332,
+        "atSec": 313,
         "alertId": "IDLE_FACTORY",
         "sound": "warn",
         "text": "FACTORY IDLE"
       },
       {
-        "atSec": 340,
+        "atSec": 321,
+        "alertId": "E_FLOAT",
+        "sound": "info",
+        "text": "ENERGY FULL // ADD BP/CONV"
+      },
+      {
+        "atSec": 329,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"
       },
       {
-        "atSec": 348,
+        "atSec": 337,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 356,
+        "atSec": 345,
         "alertId": "E_FLOAT",
         "sound": "info",
         "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
-        "atSec": 364,
-        "alertId": "BEHIND_PLAN",
+        "atSec": 359,
+        "alertId": "STEP_DUE",
+        "sound": "step_due",
+        "text": "1x Pounder"
+      },
+      {
+        "atSec": 367,
+        "alertId": "E_FLOAT",
         "sound": "info",
-        "text": "BEHIND PLAN 16s"
+        "text": "ENERGY FULL // ADD BP/CONV"
       },
       {
         "atSec": 380,
-        "alertId": "STEP_DONE",
-        "sound": "step_done",
-        "text": "3x Incisor done"
+        "alertId": "BEHIND_PLAN",
+        "sound": "info",
+        "text": "BEHIND PLAN 15s"
       },
       {
         "atSec": 388,
@@ -1461,34 +1003,34 @@
         "text": "FACTORY IDLE"
       },
       {
-        "atSec": 396,
+        "atSec": 399,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 404,
+        "atSec": 407,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
-        "text": "ENERGY EMPTY IN 1s"
+        "text": "ENERGY EMPTY IN 3s"
       },
       {
-        "atSec": 412,
+        "atSec": 415,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"
       },
       {
-        "atSec": 422,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 3s"
+        "atSec": 424,
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "1x Pounder done"
       },
       {
         "atSec": 432,
-        "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 30s"
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "1x Exploiter done"
       },
       {
         "atSec": 440,
@@ -1510,9 +1052,9 @@
       },
       {
         "atSec": 464,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 1s"
+        "alertId": "STEP_DUE",
+        "sound": "step_due",
+        "text": "1x Twin Guard"
       },
       {
         "atSec": 472,
@@ -1522,81 +1064,75 @@
       },
       {
         "atSec": 480,
+        "alertId": "BEHIND_PLAN",
+        "sound": "warn",
+        "text": "BEHIND PLAN 30s"
+      },
+      {
+        "atSec": 491,
+        "alertId": "STEP_DONE",
+        "sound": "step_done",
+        "text": "1x Construction Turret done"
+      },
+      {
+        "atSec": 499,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 507,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 488,
-        "alertId": "BEHIND_PLAN",
-        "sound": "warn",
-        "text": "BEHIND PLAN 68s"
-      },
-      {
-        "atSec": 496,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 504,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 513,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 3s"
-      },
-      {
-        "atSec": 521,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 541,
-        "alertId": "IDLE_FACTORY",
-        "sound": "warn",
-        "text": "FACTORY IDLE"
-      },
-      {
-        "atSec": 551,
-        "alertId": "E_STALL_SOON",
-        "sound": "warn",
-        "text": "ENERGY EMPTY IN 6s"
-      },
-      {
-        "atSec": 560,
-        "alertId": "BEHIND_PLAN",
-        "sound": "info",
-        "text": "BEHIND PLAN 15s"
-      },
-      {
-        "atSec": 568,
-        "alertId": "E_STALLING",
-        "sound": "danger",
-        "text": "ENERGY STALL"
-      },
-      {
-        "atSec": 576,
+        "atSec": 516,
         "alertId": "E_STALL_SOON",
         "sound": "warn",
         "text": "ENERGY EMPTY IN 1s"
       },
       {
-        "atSec": 584,
-        "alertId": "BEHIND_PLAN",
+        "atSec": 524,
+        "alertId": "IDLE_FACTORY",
         "sound": "warn",
-        "text": "BEHIND PLAN 39s"
+        "text": "FACTORY IDLE"
       },
       {
-        "atSec": 592,
-        "alertId": "STEP_DONE",
-        "sound": "step_done",
-        "text": "1x Incisor done"
+        "atSec": 544,
+        "alertId": "IDLE_FACTORY",
+        "sound": "warn",
+        "text": "FACTORY IDLE"
+      },
+      {
+        "atSec": 553,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 3s"
+      },
+      {
+        "atSec": 561,
+        "alertId": "BEHIND_PLAN",
+        "sound": "info",
+        "text": "BEHIND PLAN 16s"
+      },
+      {
+        "atSec": 569,
+        "alertId": "E_STALLING",
+        "sound": "danger",
+        "text": "ENERGY STALL"
+      },
+      {
+        "atSec": 577,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 1s"
+      },
+      {
+        "atSec": 585,
+        "alertId": "BEHIND_PLAN",
+        "sound": "warn",
+        "text": "BEHIND PLAN 40s"
       },
       {
         "atSec": 600,
@@ -1713,79 +1249,73 @@
         "text": "ENERGY EMPTY IN 4s"
       },
       {
-        "atSec": 769,
-        "alertId": "M_STALL_SOON",
-        "sound": "info",
-        "text": "METAL EMPTY IN 4s"
-      },
-      {
-        "atSec": 777,
+        "atSec": 772,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"
       },
       {
-        "atSec": 797,
+        "atSec": 792,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"
       },
       {
         "atSec": 812,
-        "alertId": "IDLE_BUILDERS",
-        "sound": "warn",
-        "text": "1 CONSTRUCTOR(S) IDLE"
-      },
-      {
-        "atSec": 820,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"
       },
       {
-        "atSec": 831,
-        "alertId": "E_STALL_SOON",
+        "atSec": 820,
+        "alertId": "IDLE_BUILDERS",
         "sound": "warn",
-        "text": "ENERGY EMPTY IN 6s"
+        "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 839,
+        "atSec": 832,
+        "alertId": "E_STALL_SOON",
+        "sound": "warn",
+        "text": "ENERGY EMPTY IN 2s"
+      },
+      {
+        "atSec": 840,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "2 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 847,
+        "atSec": 848,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"
       },
       {
-        "atSec": 859,
+        "atSec": 860,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 867,
+        "atSec": 868,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"
       },
       {
-        "atSec": 879,
+        "atSec": 880,
         "alertId": "IDLE_BUILDERS",
         "sound": "warn",
         "text": "1 CONSTRUCTOR(S) IDLE"
       },
       {
-        "atSec": 887,
+        "atSec": 888,
         "alertId": "IDLE_FACTORY",
         "sound": "warn",
         "text": "FACTORY IDLE"
       },
       {
-        "atSec": 895,
+        "atSec": 896,
         "alertId": "BEHIND_PLAN",
         "sound": "warn",
         "text": "BEHIND PLAN 30s"

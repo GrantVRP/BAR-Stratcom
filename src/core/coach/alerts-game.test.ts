@@ -49,6 +49,7 @@ const mockRegistry = {
       return {
         id: 'armpeep',
         name: 'Finch',
+        factionId: 'armada',
         canFly: true,
         isBuilding: false,
         combat: { radarDistance: 0, maxWeaponRange: 0 }
@@ -58,6 +59,7 @@ const mockRegistry = {
       return {
         id: 'corvamp',
         name: 'Vamp',
+        factionId: 'cortex',
         canFly: true,
         isBuilding: false,
         combat: { radarDistance: 0, maxWeaponRange: 500 }
@@ -67,10 +69,21 @@ const mockRegistry = {
       return {
         id: 'armjeth',
         name: 'Jethro',
+        factionId: 'armada',
         canFly: false,
         isBuilding: false,
         unitGroup: 'aa',
         combat: { radarDistance: 0, maxWeaponRange: 700 }
+      };
+    }
+    if (id === 'critter_gull') {
+      return {
+        id: 'critter_gull',
+        name: 'Seagull',
+        factionId: null,
+        canFly: true,
+        isBuilding: false,
+        combat: { radarDistance: 0, maxWeaponRange: 0 }
       };
     }
     return undefined;
@@ -81,7 +94,7 @@ const mockRegistry = {
 describe('Coach Alert Detectors: Game & Units', () => {
   it('detects idle factories and builders', () => {
     const idleFac = makeSnapshot({ gameSeconds: 30, factories: { total: 2, idle: 2 } });
-    const facHistory = [makeSnapshot({ gameSeconds: 25, factories: { total: 2, idle: 2 } })];
+    const facHistory = [makeSnapshot({ gameSeconds: 22, factories: { total: 2, idle: 2 } })];
     const facAlert = detectIdleFactory({
       now: idleFac,
       history: facHistory,
@@ -92,7 +105,7 @@ describe('Coach Alert Detectors: Game & Units', () => {
     expect(facAlert?.text).toBe('2 FACTORIES IDLE');
 
     const idleBld = makeSnapshot({ gameSeconds: 30, builders: { total: 3, idle: 3 } });
-    const bldHistory = [makeSnapshot({ gameSeconds: 25, builders: { total: 3, idle: 3 } })];
+    const bldHistory = [makeSnapshot({ gameSeconds: 20, builders: { total: 3, idle: 3 } })];
     const bldAlert = detectIdleBuilders({
       now: idleBld,
       history: bldHistory,
@@ -105,7 +118,7 @@ describe('Coach Alert Detectors: Game & Units', () => {
 
   it('detects idle commander only before 600s', () => {
     const idleCom = makeSnapshot({ gameSeconds: 50, commander: { alive: true, idle: true } });
-    const comHistory = [makeSnapshot({ gameSeconds: 46, commander: { alive: true, idle: true } })];
+    const comHistory = [makeSnapshot({ gameSeconds: 42, commander: { alive: true, idle: true } })];
     const alert = detectIdleCommander({
       now: idleCom,
       history: comHistory,
@@ -252,6 +265,21 @@ describe('Coach Alert Detectors: Game & Units', () => {
       clock: 50
     });
     expect(airAlert?.text).toBe('ENEMY AIR // BUILD AA');
+
+    // Neutral Gaia units (critter_gull, factionId === null) are never enemies (T05.10 item 1)
+    const gullOnly = makeSnapshot({
+      enemies: { critter_gull: 3 },
+      counts: {}
+    });
+    expect(
+      detectEnemyAirNoAa({
+        now: gullOnly,
+        history: [],
+        profile: INTERMEDIATE_PROFILE,
+        registry: mockRegistry,
+        clock: 50
+      })
+    ).toBeNull();
 
     const ownAa = makeSnapshot({
       enemies: { corvamp: 1 },

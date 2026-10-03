@@ -181,7 +181,8 @@ export function detectEnemyAirNoAa(ctx: AlertContext): AlertCandidate | null {
   for (const [unitDefId, count] of Object.entries(now.enemies)) {
     if (count <= 0) continue;
     const unit = registry.get(unitDefId);
-    if (unit && unit.canFly) {
+    // Neutral units (wildlife/critters with factionId === null) are never enemies (T05.10 item 1)
+    if (unit && unit.factionId !== null && unit.canFly) {
       enemyAirPresent = true;
       break;
     }

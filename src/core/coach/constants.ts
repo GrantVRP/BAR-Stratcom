@@ -16,6 +16,37 @@ export const CHAT_ECHO_COOLDOWN_SEC = 10;
 export const DEFAULT_DUE_LEAD_SEC = 10;
 
 /**
+ * Minimum duration an alert must stay visible once activated (04 §3, T05.10 item 5).
+ * // estimated: prevents HUD/audio flicker; human reaction and glance time requires at least 5s visible.
+ */
+export const ALERT_MIN_VISIBLE_SEC = 5;
+
+/**
+ * Window within which a cleared alert reactivating extends the previous interval instead of
+ * creating a new activation, and suppresses sound re-cue (T05.10 item 5).
+ * // estimated: intermittent resource stalls or micro-idle states within 15s are a single continuous episode.
+ */
+export const ALERT_REACTIVATION_WINDOW_SEC = 15;
+
+/**
+ * Opening grace period before resource float alerts may trigger (T05.10 item 2).
+ * // estimated: players start game with full resource storage (1000 M / 1000 E) to execute initial build orders.
+ */
+export const FLOAT_OPENING_GRACE_SEC = 60;
+
+/**
+ * Tolerance window around planned sim stalls to suppress live stall warnings (T05.10 item 3).
+ * // estimated: ±10s tolerance matches slight timing variance between planned sim and real game execution.
+ */
+export const PLAN_EXPECTED_STALL_WINDOW_SEC = 10;
+
+/**
+ * Delay threshold after planned finish before an overdue step with >= 2 later completed steps is marked skipped (T05.10 item 6).
+ * // estimated: steps overdue by >60s while multiple later steps finish indicate order divergence or abandoned build items.
+ */
+export const STEP_OVERDUE_SKIP_SEC = 60;
+
+/**
  * Priority order for audio limiter: danger > warn > info > step cues.
  */
 export const AUDIO_SEVERITY_PRIORITY: Record<string, number> = {

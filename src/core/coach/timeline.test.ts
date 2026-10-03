@@ -6,7 +6,7 @@ import { UnitSnapshotSchema } from '../schemas/units';
 import { createRegistry } from '../registry';
 import syntheticSnapshotData from '../registry/__test__/test-snapshot.json';
 import { simulate } from '../sim/simulate';
-import { computeScenarioTimeline, makeBehindPlan } from './timeline';
+import { computeScenarioTimeline, makeBehindPlan, type CoachTimeline } from './timeline';
 import { BEGINNER_PROFILE } from './profiles';
 
 describe('timeline (04 §3, T05.9)', () => {
@@ -175,5 +175,49 @@ describe('timeline (04 §3, T05.9)', () => {
     expect(result.finalAheadBehindSec).toBeDefined();
     expect(Array.isArray(result.alertIntervals)).toBe(true);
     expect(Array.isArray(result.cues)).toBe(true);
+  });
+
+  it('golden timelines meet T05.10 acceptance criteria across all 4 player fixtures', async () => {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const goldenDir = path.resolve(__dirname, '__golden__');
+
+    const fixtureIds = [
+      '2026-10-01-cortex-1v1-vs-ai-barr',
+      '2026-10-01-cortex-1v1-vs-ai-barr-499s',
+      '2026-10-02-armada-1v1-vs-ai-isthmus',
+      '2026-10-02-cortex-1v1-vs-ai-altair'
+    ];
+
+    for (const fixtureId of fixtureIds) {
+      const goldenFile = path.join(goldenDir, `${fixtureId}.json`);
+      expect(fs.existsSync(goldenFile)).toBe(true);
+      const data = JSON.parse(fs.readFileSync(goldenFile, 'utf8')) as CoachTimeline;
+
+      // 1. <= 30 alert activations per game and 0 activations shorter than 5s
+      expect(data.nominal.alertIntervals.length).toBeLessThanOrEqual(30);
+      for (const inv of data.nominal.alertIntervals) {
+        expect(inv.endSec - inv.startSec).toBeGreaterThanOrEqual(5);
+        // 2. No float alert before 60s
+        if (inv.id === 'M_FLOAT' || inv.id === 'E_FLOAT') {
+          expect(inv.startSec).toBeGreaterThanOrEqual(60);
+        }
+      }
+
+      // 2b. ENEMY_AIR_NO_AA never fires on neutral units (0x in Armada fixture with seagull)
+      if (fixtureId === '2026-10-02-armada-1v1-vs-ai-isthmus') {
+        const airAlerts = data.nominal.alertIntervals.filter((i) => i.id === 'ENEMY_AIR_NO_AA');
+        expect(airAlerts).toHaveLength(0);
+      }
+
+      // 3. Final |ahead/behind| <= 20s on every nominal fixture
+      expect(Math.abs(data.nominal.finalAheadBehindSec!)).toBeLessThanOrEqual(20);
+
+      // In behind scenario, BEHIND_PLAN fires and final value is between -15 and -45s
+      expect(data.behind.finalAheadBehindSec).toBeLessThanOrEqual(-15);
+      expect(data.behind.finalAheadBehindSec).toBeGreaterThanOrEqual(-45);
+      const behindAlerts = data.behind.alertIntervals.filter((i) => i.id === 'BEHIND_PLAN');
+      expect(behindAlerts.length).toBeGreaterThanOrEqual(1);
+    }
   });
 });

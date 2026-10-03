@@ -25,6 +25,7 @@ export interface BuildHudInput {
   clock: number;
   factionId?: string | null;
   visible?: boolean;
+  plannedStall?: 'energy' | 'metal' | null;
 }
 
 /**
@@ -40,7 +41,8 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     registry,
     clock,
     factionId,
-    visible = true
+    visible = true,
+    plannedStall = null
   } = input;
 
   const lines: CoachHudLine[] = [];
@@ -134,6 +136,14 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     lines.push({
       text: truncateTo36(`⚠ ${alert.text}`),
       tone: alertTone
+    });
+  }
+
+  // Quiet line for planned stall if active and line space permits (T05.10 item 3)
+  if (lines.length < 4 && plannedStall) {
+    lines.push({
+      text: truncateTo36('ℹ PLANNED STALL'),
+      tone: 'info'
     });
   }
 

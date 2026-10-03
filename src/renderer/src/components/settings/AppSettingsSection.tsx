@@ -94,6 +94,26 @@ export function AppSettingsSection(): React.JSX.Element {
             Disclosure: Only the GitHub API is queried. Zero telemetry, tracking cookies, or analytics are sent (D-17, D-19).
           </div>
         </div>
+
+        {/* Re-run Onboarding */}
+        <div className="flex items-center justify-between rounded bg-[#0a0c14] p-3 border border-[#1f2430]">
+          <div>
+            <div className="font-bold text-[#e4e4e7] text-xs">ONBOARDING SETUP WIZARD</div>
+            <div className="text-[10px] text-[#71717a]">
+              Re-run the initial 6-step setup wizard to reconfigure BAR directories, widget, and profiles.
+            </div>
+          </div>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => {
+              window.location.hash = '#/onboarding';
+            }}
+            data-testid="rerun-onboarding-btn"
+          >
+            RE-RUN SETUP WIZARD
+          </Button>
+        </div>
       </div>
 
       {/* Global Shortcut */}

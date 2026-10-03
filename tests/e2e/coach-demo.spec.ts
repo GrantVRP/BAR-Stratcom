@@ -12,7 +12,11 @@ test('coach demo: runs demo at 4x on Cortex fixture, shows NEXT card, completes 
     await page.keyboard.press('Space');
     await expect(launcher).not.toBeVisible();
 
-    // 2. Reach Home view
+    // 2. Reach Home view (skip onboarding if fresh profile)
+    const skipBtn = page.getByTestId('onboarding-skip-btn');
+    if (await skipBtn.isVisible()) {
+      await skipBtn.click();
+    }
     const homeView = page.getByTestId('view-home');
     await expect(homeView).toBeVisible({ timeout: 10000 });
 

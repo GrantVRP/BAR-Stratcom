@@ -21,7 +21,14 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
           return { ok: true, data: { version: '3.0.0-dev.0', platform: 'win32' } };
         }
         if (ch === 'settings:get') {
-          return { ok: true, data: { profile: 'intermediate', launcher: { showOnStart: true } } };
+          return {
+            ok: true,
+            data: {
+              profile: 'intermediate',
+              bar: { dataDir: 'C:/Games/BAR', source: 'default' },
+              launcher: { showOnStart: true }
+            }
+          };
         }
         if (ch === 'plans:list') {
           return { ok: true, data: [] };

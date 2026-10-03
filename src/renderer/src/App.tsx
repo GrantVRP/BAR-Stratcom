@@ -110,19 +110,53 @@ export function App(): React.JSX.Element {
     };
   }, []);
 
+  const isOnboardingCompleted = (): boolean => {
+    try {
+      return (
+        typeof window !== 'undefined' &&
+        window.localStorage.getItem('stratcom:onboarding-completed') === 'true'
+      );
+    } catch {
+      return false;
+    }
+  };
+
   const shouldShowLauncher =
     !currentHash.startsWith('#/dev/ui') &&
     (currentHash.startsWith('#/launcher') ||
       (!launcherDismissed &&
-        (currentHash === '' || currentHash === '#/' || currentHash === '#/home') &&
+        (currentHash === '' ||
+          currentHash === '#/' ||
+          currentHash === '#/home' ||
+          currentHash === '#/onboarding') &&
         settings?.launcher?.showOnStart !== false));
 
   function handleLauncherStart(): void {
     setLauncherDismissed(true);
+    if (!settings?.bar?.dataDir && !isOnboardingCompleted()) {
+      window.location.hash = '#/onboarding';
+      setCurrentHash('#/onboarding');
+      return;
+    }
     if (window.location.hash === '#/launcher') {
       window.location.hash = '#/home';
     }
   }
+
+  // Auto-route to onboarding when BAR dataDir is null and onboarding flag is not set
+  useEffect(() => {
+    if (
+      settings &&
+      settings.bar?.dataDir === null &&
+      !isOnboardingCompleted() &&
+      (launcherDismissed || settings.launcher?.showOnStart === false)
+    ) {
+      const h = window.location.hash;
+      if (h === '' || h === '#/' || h === '#/home') {
+        window.location.hash = '#/onboarding';
+      }
+    }
+  }, [launcherDismissed, settings]);
 
   // Route matching
   function renderView(): React.JSX.Element {

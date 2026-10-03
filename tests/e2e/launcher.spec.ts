@@ -17,8 +17,15 @@ test('launcher: shows title screen on startup and a key press reaches Home', asy
     // Press Space key to launch into Home
     await page.keyboard.press('Space');
 
-    // Launcher should close and Home view should be visible
+    // Launcher should close
     await expect(launcher).not.toBeVisible();
+
+    // If fresh profile auto-runs onboarding, skip to reach Home
+    const skipBtn = page.getByTestId('onboarding-skip-btn');
+    if (await skipBtn.isVisible()) {
+      await skipBtn.click();
+    }
+
     const homeView = page.getByTestId('view-home');
     await expect(homeView).toBeVisible();
 

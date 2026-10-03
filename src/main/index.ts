@@ -1,10 +1,12 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
-import { handle } from './ipc/register';
+import { broadcast, handle } from './ipc/register';
 
 import { defaultSettingsStore } from './settings/store';
 import { locateGame } from './game/locator';
 import { defaultWidgetInstaller } from './game/installer';
+import { FileBridge } from './game/file-bridge';
+import { HealthManager } from './game/health';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -88,8 +90,56 @@ if (!gotTheLock) {
       return defaultSettingsStore.updateSettings(req ?? {});
     });
 
+    const syncBridgeState = (): void => {
+      const currentSettings = defaultSettingsStore.getSettings();
+      const status = defaultWidgetInstaller.status(currentSettings.bar.dataDir ?? undefined);
+      fileBridge.setDataDir(currentSettings.bar.dataDir);
+      fileBridge.setWidgetInfo(status.installed, status.installedVersion, status.bundledVersion);
+      healthManager.checkHealth();
+    };
+
+    const initialSettings = defaultSettingsStore.getSettings();
+    const initialWidgetStatus = defaultWidgetInstaller.status(
+      initialSettings.bar.dataDir ?? undefined
+    );
+
+    const fileBridge = new FileBridge({
+      dataDir: initialSettings.bar.dataDir,
+      widgetInstalled: initialWidgetStatus.installed,
+      installedVersion: initialWidgetStatus.installedVersion,
+      bundledVersion: initialWidgetStatus.bundledVersion
+    });
+
+    const healthManager = new HealthManager(() => fileBridge.getHealthInputs());
+
+    fileBridge.on('state', (stateDoc) => {
+      broadcast('live:state', {
+        frame: stateDoc.frame,
+        gameSeconds: stateDoc.gameSeconds,
+        me: stateDoc.me,
+        wind: stateDoc.wind,
+        res: stateDoc.res,
+        counts: stateDoc.counts,
+        builders: stateDoc.builders,
+        factories: stateDoc.factories,
+        commander: stateDoc.commander,
+        bp: stateDoc.bp,
+        enemies: stateDoc.enemies,
+        teams: stateDoc.teams
+      });
+    });
+
+    healthManager.on('health', (health) => {
+      broadcast('live:health', health);
+    });
+
+    fileBridge.start();
+    healthManager.start();
+
     handle('game:locate', async (req) => {
-      return await locateGame(req?.manualPath ? { manualPath: req.manualPath } : {});
+      const res = await locateGame(req?.manualPath ? { manualPath: req.manualPath } : {});
+      syncBridgeState();
+      return res;
     });
 
     handle('game:widgetStatus', () => {
@@ -97,18 +147,30 @@ if (!gotTheLock) {
     });
 
     handle('game:installWidget', () => {
-      return defaultWidgetInstaller.install();
+      const res = defaultWidgetInstaller.install();
+      syncBridgeState();
+      return res;
     });
 
     handle('game:uninstallWidget', () => {
-      return defaultWidgetInstaller.uninstall();
+      const res = defaultWidgetInstaller.uninstall();
+      syncBridgeState();
+      return res;
     });
 
     handle('game:removeLegacyWidget', (req) => {
-      return defaultWidgetInstaller.removeLegacy(req.confirm);
+      const res = defaultWidgetInstaller.removeLegacy(req.confirm);
+      syncBridgeState();
+      return res;
     });
 
     createWindow();
+
+    if (mainWindow) {
+      mainWindow.on('ready-to-show', () => {
+        broadcast('live:health', healthManager.getHealth());
+      });
+    }
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {

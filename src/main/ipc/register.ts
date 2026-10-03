@@ -1,7 +1,10 @@
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import {
   ipcContract,
+  ipcEvents,
   type IpcChannel,
+  type IpcEventChannel,
+  type IpcEventData,
   type IpcRequest,
   type IpcResponse,
   type IpcResponseData
@@ -41,3 +44,20 @@ export function handle<C extends IpcChannel>(
 ): void {
   ipcMain.handle(channel, (_event, rawReq) => executeIpcHandler(channel, rawReq, handler));
 }
+
+export function broadcast<E extends IpcEventChannel>(event: E, data: IpcEventData<E>): void {
+  const schema = ipcEvents[event];
+  const validated = schema.parse(data);
+  try {
+    if (typeof BrowserWindow !== 'undefined' && BrowserWindow.getAllWindows) {
+      for (const win of BrowserWindow.getAllWindows()) {
+        if (!win.isDestroyed()) {
+          win.webContents.send(event, validated);
+        }
+      }
+    }
+  } catch {
+    // Ignore outside Electron
+  }
+}
+

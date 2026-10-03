@@ -25,6 +25,7 @@ export interface EvaluateInput {
   memory: CoachMemory;
   mode: 'live' | 'manual' | 'demo';
   chatEchoEnabled?: boolean;
+  manualDoneStepIds?: ReadonlySet<string>;
 }
 
 export interface CoachDisplay {
@@ -59,7 +60,8 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     profile,
     memory,
     mode,
-    chatEchoEnabled = false
+    chatEchoEnabled = false,
+    manualDoneStepIds
   } = input;
 
   const clock = now.gameSeconds;
@@ -71,11 +73,12 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     finished,
     clock,
     registry,
+    manualDoneStepIds,
     previouslyDueStepIds: memory.dueStepIds,
     previouslyDoneStepIds: memory.doneStepIds
   });
 
-  // 2. Alert detection (only active in live or demo mode; manual mode has no live sensor alerts)
+  // 2. Alert detection (live/demo: sensor alerts; manual: planned risks from planSim)
   const detectedCandidates: Partial<Record<string, AlertCandidate>> = {};
 
   if (mode === 'live' || mode === 'demo') {
@@ -97,6 +100,37 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
         if (candidate) {
           detectedCandidates[alertId] = candidate;
         }
+      }
+    }
+  } else if (mode === 'manual') {
+    // In manual mode, alerts are limited to planned risks from planSim (04 §3.7)
+    for (const interval of planSim.intervals.energyStall) {
+      if (clock >= Math.max(0, interval.start - 30) && clock <= interval.end) {
+        const m = Math.floor(interval.start / 60);
+        const s = Math.floor(interval.start % 60);
+        const timeStr = `${m}:${s.toString().padStart(2, '0')}`;
+        detectedCandidates['E_STALL_SOON'] = {
+          id: 'E_STALL_SOON',
+          severity: 'warn',
+          text: `Plan dips energy at ${timeStr}`,
+          dedupeKey: `planned-energy-${interval.start}`
+        };
+        break;
+      }
+    }
+
+    for (const interval of planSim.intervals.metalStall) {
+      if (clock >= Math.max(0, interval.start - 30) && clock <= interval.end) {
+        const m = Math.floor(interval.start / 60);
+        const s = Math.floor(interval.start % 60);
+        const timeStr = `${m}:${s.toString().padStart(2, '0')}`;
+        detectedCandidates['M_STALL_SOON'] = {
+          id: 'M_STALL_SOON',
+          severity: 'warn',
+          text: `Plan dips metal at ${timeStr}`,
+          dedupeKey: `planned-metal-${interval.start}`
+        };
+        break;
       }
     }
   }
@@ -227,9 +261,11 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     doneStepIds: trackerResult.doneStepIds
   };
 
+  const cues = mode === 'manual' ? emittedCues.filter((c) => c.alertId === 'STEP_DUE') : emittedCues;
+
   return {
     state,
-    cues: emittedCues,
+    cues,
     display,
     memory: nextMemory
   };

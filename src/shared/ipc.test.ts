@@ -78,7 +78,9 @@ describe('IPC contract schemas', () => {
       'plans:delete',
       'plans:import',
       'plans:export',
-      'demo:list'
+      'demo:list',
+      'coach:manual',
+      'coach:markDone'
     ];
 
     for (const channel of requiredChannels) {

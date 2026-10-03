@@ -246,6 +246,27 @@ if (!gotTheLock) {
       return { ok: true };
     });
 
+    handle('coach:manual', (req) => {
+      const clock = defaultCoachRunner.getManualClock();
+      if (req.action === 'start') {
+        clock.start();
+      } else if (req.action === 'pause') {
+        clock.pause();
+      } else if (req.action === 'reset') {
+        clock.reset();
+      }
+      return {
+        ok: true,
+        clock: clock.getClock(),
+        running: clock.isRunning()
+      };
+    });
+
+    handle('coach:markDone', (req) => {
+      defaultCoachRunner.markStepDone(req.stepId);
+      return { ok: true };
+    });
+
     handle('registry:getSnapshot', (req) => {
       return loadSnapshot(req?.gameVersion);
     });

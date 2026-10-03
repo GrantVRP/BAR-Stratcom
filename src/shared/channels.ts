@@ -18,7 +18,9 @@ export const IPC_CHANNELS = [
   'plans:delete',
   'plans:import',
   'plans:export',
-  'demo:list'
+  'demo:list',
+  'coach:manual',
+  'coach:markDone'
 ] as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[number];

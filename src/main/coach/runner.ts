@@ -21,6 +21,7 @@ import {
 } from '../../core/coach';
 import type { BridgeSource } from '../game/source';
 import { broadcast } from '../ipc/register';
+import { ManualClock } from './manual-clock';
 
 export interface CoachRunnerMapOptions {
   windAvg?: number | null;
@@ -79,6 +80,24 @@ export class CoachRunner {
   private sessionHandler?: (session: { sessionId: string }) => void;
   private heartbeatHandler?: (hb: { sessionId: string | null }) => void;
 
+  private manualClock: ManualClock = new ManualClock({
+    onTick: () => {
+      void this.tick();
+    }
+  });
+  private manualDoneStepIds = new Set<string>();
+
+  public getManualClock(): ManualClock {
+    return this.manualClock;
+  }
+
+  public markStepDone(stepId: string): void {
+    this.manualDoneStepIds.add(stepId);
+    if (this.running) {
+      void this.tick();
+    }
+  }
+
   public isRunning(): boolean {
     return this.running;
   }
@@ -134,6 +153,11 @@ export class CoachRunner {
     this.latestState = null;
     this.history = [];
     this.currentSessionId = null;
+    this.manualDoneStepIds.clear();
+
+    if (this.mode === 'manual') {
+      this.manualClock.reset();
+    }
 
     // 3. Attach listeners to bridge source
     if (options.source) {
@@ -177,13 +201,16 @@ export class CoachRunner {
       this.source.on('heartbeat', this.heartbeatHandler);
     }
 
-    // 4. Start 2 Hz evaluation timer in non-demo modes
-    if (this.mode !== 'demo') {
+    // 4. Start 2 Hz evaluation timer in live mode
+    if (this.mode === 'live') {
       this.timer = setInterval(() => {
         void this.tick();
       }, 500);
 
       // Initial immediate tick
+      await this.tick();
+    } else if (this.mode === 'manual') {
+      // In manual mode, tick at clock = 0 initially
       await this.tick();
     }
   }
@@ -196,6 +223,10 @@ export class CoachRunner {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
+    }
+
+    if (this.mode === 'manual') {
+      this.manualClock.pause();
     }
 
     if (this.source) {
@@ -223,19 +254,43 @@ export class CoachRunner {
       return;
     }
 
-    const now: LiveSnapshot = this.latestState ?? {
-      frame: 0,
-      gameSeconds: 0,
-      me: null,
-      wind: { current: 10 },
-      res: null,
-      counts: {},
-      builders: { total: 0, idle: 0 },
-      factories: { total: 0, idle: 0 },
-      commander: { alive: true, idle: false },
-      bp: { total: 300, active: 300 },
-      enemies: {}
-    };
+    let now: LiveSnapshot;
+    if (this.mode === 'manual') {
+      const clock = this.manualClock.getClock();
+      now = {
+        frame: clock * 30,
+        gameSeconds: clock,
+        me: {
+          teamId: 0,
+          allyTeamId: 0,
+          playerName: 'Player',
+          factionId: this.plan.factionId,
+          startUnitId: null
+        },
+        wind: { current: 10 },
+        res: null,
+        counts: {},
+        builders: { total: 0, idle: 0 },
+        factories: { total: 0, idle: 0 },
+        commander: { alive: true, idle: false },
+        bp: { total: 300, active: 300 },
+        enemies: {}
+      };
+    } else {
+      now = this.latestState ?? {
+        frame: 0,
+        gameSeconds: 0,
+        me: null,
+        wind: { current: 10 },
+        res: null,
+        counts: {},
+        builders: { total: 0, idle: 0 },
+        factories: { total: 0, idle: 0 },
+        commander: { alive: true, idle: false },
+        bp: { total: 300, active: 300 },
+        enemies: {}
+      };
+    }
 
     const evalResult = evaluate({
       plan: this.plan,
@@ -248,7 +303,8 @@ export class CoachRunner {
       profile: this.profile,
       memory: this.memory,
       mode: this.mode,
-      chatEchoEnabled: true
+      chatEchoEnabled: true,
+      manualDoneStepIds: this.manualDoneStepIds
     });
 
     this.memory = evalResult.memory;

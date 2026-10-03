@@ -189,6 +189,20 @@ export const ipcContract = {
   'demo:list': {
     request: z.void().optional(),
     response: z.array(DemoInfoSchema)
+  },
+  'coach:manual': {
+    request: z.object({ action: z.enum(['start', 'pause', 'reset']) }).strict(),
+    response: z
+      .object({
+        ok: z.boolean(),
+        clock: z.number(),
+        running: z.boolean()
+      })
+      .strict()
+  },
+  'coach:markDone': {
+    request: z.object({ stepId: z.string() }).strict(),
+    response: z.object({ ok: z.boolean() }).strict()
   }
 } as const satisfies Record<IpcChannel, { request: z.ZodTypeAny; response: z.ZodTypeAny }>;
 

@@ -21,7 +21,9 @@ describe('preload channel filters', () => {
       'plans:delete',
       'plans:import',
       'plans:export',
-      'demo:list'
+      'demo:list',
+      'coach:manual',
+      'coach:markDone'
     ];
 
     for (const ch of validChannels) {

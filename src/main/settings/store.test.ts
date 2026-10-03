@@ -74,4 +74,17 @@ describe('SettingsStore (T05.1)', () => {
     const settings = store.getSettings();
     expect(settings).toEqual(defaultSettings());
   });
+
+  it('falls back to os.tmpdir/stratcom-dev when outside Electron and no env is set', () => {
+    const originalEnv = process.env.STRATCOM_USER_DATA;
+    delete process.env.STRATCOM_USER_DATA;
+    try {
+      const store = new SettingsStore();
+      expect(store.getUserDataDir()).toBe(path.join(os.tmpdir(), 'stratcom-dev'));
+    } finally {
+      if (originalEnv !== undefined) {
+        process.env.STRATCOM_USER_DATA = originalEnv;
+      }
+    }
+  });
 });

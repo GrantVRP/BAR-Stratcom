@@ -4,6 +4,7 @@ import { handle } from './ipc/register';
 
 import { defaultSettingsStore } from './settings/store';
 import { locateGame } from './game/locator';
+import { defaultWidgetInstaller } from './game/installer';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -89,6 +90,22 @@ if (!gotTheLock) {
 
     handle('game:locate', async (req) => {
       return await locateGame(req?.manualPath ? { manualPath: req.manualPath } : {});
+    });
+
+    handle('game:widgetStatus', () => {
+      return defaultWidgetInstaller.status();
+    });
+
+    handle('game:installWidget', () => {
+      return defaultWidgetInstaller.install();
+    });
+
+    handle('game:uninstallWidget', () => {
+      return defaultWidgetInstaller.uninstall();
+    });
+
+    handle('game:removeLegacyWidget', (req) => {
+      return defaultWidgetInstaller.removeLegacy(req.confirm);
     });
 
     createWindow();

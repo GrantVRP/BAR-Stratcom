@@ -55,6 +55,17 @@ export const InstallResultSchema = z
 
 export type InstallResult = z.infer<typeof InstallResultSchema>;
 
+export const WidgetStatusSchema = z
+  .object({
+    installed: z.boolean(),
+    installedVersion: z.string().nullable(),
+    bundledVersion: z.string(),
+    legacyPresent: z.boolean()
+  })
+  .strict();
+
+export type WidgetStatus = z.infer<typeof WidgetStatusSchema>;
+
 export const DemoInfoSchema = z
   .object({
     id: z.string(),
@@ -115,12 +126,20 @@ export const ipcContract = {
     request: z.object({ manualPath: z.string().optional() }).strict().optional(),
     response: GameLocationSchema.nullable()
   },
+  'game:widgetStatus': {
+    request: z.void().optional(),
+    response: WidgetStatusSchema
+  },
   'game:installWidget': {
     request: z.void().optional(),
     response: InstallResultSchema
   },
   'game:uninstallWidget': {
     request: z.void().optional(),
+    response: InstallResultSchema
+  },
+  'game:removeLegacyWidget': {
+    request: z.object({ confirm: z.boolean() }).strict(),
     response: InstallResultSchema
   },
   'coach:start': {

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { app } from 'electron';
 import {
@@ -26,7 +27,7 @@ export class SettingsStore {
     } catch {
       // Not running within Electron app lifecycle
     }
-    return process.env.STRATCOM_USER_DATA || path.join(process.cwd(), '.stratcom');
+    return process.env.STRATCOM_USER_DATA || path.join(os.tmpdir(), 'stratcom-dev');
   }
 
   getSettingsPath(): string {

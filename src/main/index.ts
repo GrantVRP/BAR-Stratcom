@@ -7,6 +7,9 @@ import { locateGame } from './game/locator';
 import { defaultWidgetInstaller } from './game/installer';
 import { FileBridge } from './game/file-bridge';
 import { HealthManager } from './game/health';
+import { SessionRecorder } from './sessions/recorder';
+import { defaultCoachRunner } from './coach/runner';
+import { loadRegistry, loadSnapshot } from './registry/loader';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -90,18 +93,8 @@ if (!gotTheLock) {
       return defaultSettingsStore.updateSettings(req ?? {});
     });
 
-    const syncBridgeState = (): void => {
-      const currentSettings = defaultSettingsStore.getSettings();
-      const status = defaultWidgetInstaller.status(currentSettings.bar.dataDir ?? undefined);
-      fileBridge.setDataDir(currentSettings.bar.dataDir);
-      fileBridge.setWidgetInfo(status.installed, status.installedVersion, status.bundledVersion);
-      healthManager.checkHealth();
-    };
-
     const initialSettings = defaultSettingsStore.getSettings();
-    const initialWidgetStatus = defaultWidgetInstaller.status(
-      initialSettings.bar.dataDir ?? undefined
-    );
+    const initialWidgetStatus = defaultWidgetInstaller.status(initialSettings.bar.dataDir ?? undefined);
 
     const fileBridge = new FileBridge({
       dataDir: initialSettings.bar.dataDir,
@@ -111,6 +104,28 @@ if (!gotTheLock) {
     });
 
     const healthManager = new HealthManager(() => fileBridge.getHealthInputs());
+
+    const sessionsDir = join(app.getPath('userData'), 'sessions');
+    const initialStratcomDir = initialSettings.bar.dataDir
+      ? join(initialSettings.bar.dataDir, 'stratcom')
+      : null;
+
+    const sessionRecorder = new SessionRecorder({
+      sessionsDir,
+      stratcomDir: initialStratcomDir,
+      activePlanIdProvider: () => defaultSettingsStore.getSettings().activePlanId
+    });
+    sessionRecorder.attach(fileBridge);
+
+    const syncBridgeState = (): void => {
+      const currentSettings = defaultSettingsStore.getSettings();
+      const status = defaultWidgetInstaller.status(currentSettings.bar.dataDir ?? undefined);
+      fileBridge.setDataDir(currentSettings.bar.dataDir);
+      fileBridge.setWidgetInfo(status.installed, status.installedVersion, status.bundledVersion);
+      const stratcomDir = currentSettings.bar.dataDir ? join(currentSettings.bar.dataDir, 'stratcom') : null;
+      sessionRecorder.setStratcomDir(stratcomDir);
+      healthManager.checkHealth();
+    };
 
     fileBridge.on('state', (stateDoc) => {
       broadcast('live:state', {
@@ -162,6 +177,32 @@ if (!gotTheLock) {
       const res = defaultWidgetInstaller.removeLegacy(req.confirm);
       syncBridgeState();
       return res;
+    });
+
+    handle('coach:start', async (req) => {
+      if (!req.plan) {
+        throw new Error('Coach start currently requires an explicit plan object');
+      }
+      const registry = loadRegistry();
+      const currentSettings = defaultSettingsStore.getSettings();
+      const stratcomDir = currentSettings.bar.dataDir ? join(currentSettings.bar.dataDir, 'stratcom') : null;
+      await defaultCoachRunner.start({
+        plan: req.plan,
+        mode: req.mode,
+        source: fileBridge,
+        registry,
+        stratcomDir
+      });
+      return { ok: true };
+    });
+
+    handle('coach:stop', async () => {
+      await defaultCoachRunner.stop();
+      return { ok: true };
+    });
+
+    handle('registry:getSnapshot', (req) => {
+      return loadSnapshot(req?.gameVersion);
     });
 
     createWindow();

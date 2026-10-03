@@ -8,6 +8,7 @@ import {
   DevUiGallery,
   HomeView,
   IntelView,
+  LaunchWindow,
   LibraryView,
   MapsView,
   OnboardingView,
@@ -34,6 +35,18 @@ export function App(): React.JSX.Element {
   const [currentHash, setCurrentHash] = useState<string>(
     typeof window !== 'undefined' && window.location.hash ? window.location.hash : '#/home'
   );
+  const settings = useSettings((s) => s.settings);
+
+  // Initialize dismissed state: if launched with specific non-home hash, dismiss launcher
+  const [launcherDismissed, setLauncherDismissed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const h = window.location.hash;
+      if (h !== '' && h !== '#/' && h !== '#/home' && h !== '#/launcher') {
+        return true;
+      }
+    }
+    return false;
+  });
 
   // Initialize stores and subscriptions
   useEffect(() => {
@@ -64,6 +77,9 @@ export function App(): React.JSX.Element {
     function handleHashChange(): void {
       const hash = window.location.hash || '#/home';
       setCurrentHash(hash);
+      if (hash.startsWith('#/launcher')) {
+        setLauncherDismissed(false);
+      }
     }
 
     window.addEventListener('hashchange', handleHashChange);
@@ -90,6 +106,20 @@ export function App(): React.JSX.Element {
     };
   }, []);
 
+  const shouldShowLauncher =
+    !currentHash.startsWith('#/dev/ui') &&
+    (currentHash.startsWith('#/launcher') ||
+      (!launcherDismissed &&
+        (currentHash === '' || currentHash === '#/' || currentHash === '#/home') &&
+        settings?.launcher?.showOnStart !== false));
+
+  function handleLauncherStart(): void {
+    setLauncherDismissed(true);
+    if (window.location.hash === '#/launcher') {
+      window.location.hash = '#/home';
+    }
+  }
+
   // Route matching
   function renderView(): React.JSX.Element {
     if (currentHash.startsWith('#/library')) return <LibraryView />;
@@ -107,15 +137,19 @@ export function App(): React.JSX.Element {
 
   return (
     <ErrorBoundary>
-      <div className="flex h-screen w-screen overflow-hidden bg-[#0a0c14] text-[#e4e4e7]">
-        <LeftRail currentRoute={currentHash} version={version} />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <TopBar />
-          <main className="flex-1 overflow-y-auto bg-[#0a0c14]">
-            {renderView()}
-          </main>
+      {shouldShowLauncher ? (
+        <LaunchWindow onStart={handleLauncherStart} version={version} />
+      ) : (
+        <div className="flex h-screen w-screen overflow-hidden bg-[#0a0c14] text-[#e4e4e7]">
+          <LeftRail currentRoute={currentHash} version={version} />
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <TopBar />
+            <main className="flex-1 overflow-y-auto bg-[#0a0c14]">
+              {renderView()}
+            </main>
+          </div>
         </div>
-      </div>
+      )}
     </ErrorBoundary>
   );
 }

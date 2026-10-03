@@ -9,3 +9,4 @@ export * from './SettingsView';
 export * from './OnboardingView';
 export * from './AboutView';
 export * from './DevUiGallery';
+export * from './LaunchWindow';

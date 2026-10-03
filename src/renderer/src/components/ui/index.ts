@@ -14,3 +14,4 @@ export * from './Num';
 export * from './Kbd';
 export * from './MetalIcon';
 export * from './EnergyIcon';
+export * from './FactionEmblem';

@@ -244,6 +244,36 @@ export const ipcContract = {
         status: z.enum(['registered', 'busy', 'disabled'])
       })
       .strict()
+  },
+  'game:browse': {
+    request: z.void().optional(),
+    response: z.string().nullable()
+  },
+  'data:openFolder': {
+    request: z.void().optional(),
+    response: z
+      .object({
+        ok: z.boolean(),
+        path: z.string()
+      })
+      .strict()
+  },
+  'data:exportAllPlans': {
+    request: z.void().optional(),
+    response: z
+      .object({
+        count: z.number(),
+        filePath: z.string().nullable()
+      })
+      .strict()
+  },
+  'data:clearSessions': {
+    request: z.void().optional(),
+    response: z
+      .object({
+        cleared: z.boolean()
+      })
+      .strict()
   }
 } as const satisfies Record<IpcChannel, { request: z.ZodTypeAny; response: z.ZodTypeAny }>;
 

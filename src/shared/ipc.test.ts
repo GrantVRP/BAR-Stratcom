@@ -82,7 +82,11 @@ describe('IPC contract schemas', () => {
       'coach:manual',
       'coach:markDone',
       'coach:toggleWindow',
-      'coach:getShortcutStatus'
+      'coach:getShortcutStatus',
+      'game:browse',
+      'data:openFolder',
+      'data:exportAllPlans',
+      'data:clearSessions'
     ];
 
     for (const channel of requiredChannels) {

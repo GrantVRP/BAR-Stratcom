@@ -8,11 +8,12 @@ export interface SettingsState {
   error: string | null;
   load: () => Promise<void>;
   update: (partial: Partial<Settings>) => Promise<boolean>;
+  updateSettings: (partial: Partial<Settings>) => Promise<boolean>;
   setSettings: (settings: Settings) => void;
   reset: () => void;
 }
 
-export const useSettings = create<SettingsState>()((set) => ({
+export const useSettings = create<SettingsState>()((set, get) => ({
   settings: null,
   loading: false,
   error: null,
@@ -39,6 +40,10 @@ export const useSettings = create<SettingsState>()((set) => ({
       set({ error: res.message, loading: false });
       return false;
     }
+  },
+
+  updateSettings: async (partial: Partial<Settings>) => {
+    return get().update(partial);
   },
 
   reset: () => set({ settings: null, loading: false, error: null })

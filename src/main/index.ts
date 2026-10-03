@@ -1,7 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import { broadcast, handle } from './ipc/register';
-import { importPlanWithDialog, exportPlanWithDialog } from './plans/dialogs';
+import { importPlanWithDialog, exportPlanWithDialog, browseBarDirectory } from './plans/dialogs';
+import { openUserDataFolder, exportAllPlansWithDialog, clearUserSessions } from './data/handlers';
 
 import { defaultSettingsStore } from './settings/store';
 import { locateGame } from './game/locator';
@@ -346,6 +347,22 @@ if (!gotTheLock) {
 
     handle('plans:export', (req) => {
       return exportPlanWithDialog(mainWindow, req);
+    });
+
+    handle('game:browse', () => {
+      return browseBarDirectory(mainWindow);
+    });
+
+    handle('data:openFolder', () => {
+      return openUserDataFolder();
+    });
+
+    handle('data:exportAllPlans', () => {
+      return exportAllPlansWithDialog(mainWindow);
+    });
+
+    handle('data:clearSessions', () => {
+      return clearUserSessions();
     });
 
     createWindow();

@@ -22,7 +22,11 @@ export const IPC_CHANNELS = [
   'coach:manual',
   'coach:markDone',
   'coach:toggleWindow',
-  'coach:getShortcutStatus'
+  'coach:getShortcutStatus',
+  'game:browse',
+  'data:openFolder',
+  'data:exportAllPlans',
+  'data:clearSessions'
 ] as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[number];

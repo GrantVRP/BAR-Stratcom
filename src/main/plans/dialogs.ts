@@ -51,3 +51,13 @@ export async function exportPlanWithDialog(
     savedPath
   };
 }
+
+export async function browseBarDirectory(parentWindow: BrowserWindow | null): Promise<string | null> {
+  if (!parentWindow) return null;
+  const res = await dialog.showOpenDialog(parentWindow, {
+    title: 'Select Beyond All Reason Data Directory',
+    properties: ['openDirectory']
+  });
+  if (res.canceled || res.filePaths.length === 0) return null;
+  return res.filePaths[0] ?? null;
+}

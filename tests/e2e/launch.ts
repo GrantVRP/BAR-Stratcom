@@ -9,8 +9,8 @@ export interface LaunchedApp {
   close: () => Promise<void>;
 }
 
-export async function launchApp(extraArgs: string[] = []): Promise<LaunchedApp> {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'stratcom-e2e-'));
+export async function launchApp(extraArgs: string[] = [], customTmpDir?: string): Promise<LaunchedApp> {
+  const tmpDir = customTmpDir ?? fs.mkdtempSync(path.join(os.tmpdir(), 'stratcom-e2e-'));
   const app = await electron.launch({
     args: ['.', `--user-data-dir=${tmpDir}`, ...extraArgs]
   });
@@ -19,13 +19,16 @@ export async function launchApp(extraArgs: string[] = []): Promise<LaunchedApp> 
     try {
       await app.close();
     } finally {
-      try {
-        fs.rmSync(tmpDir, { recursive: true, force: true });
-      } catch (err) {
-        console.warn(`Failed to clean up temp user data dir ${tmpDir}:`, err);
+      if (!customTmpDir) {
+        try {
+          fs.rmSync(tmpDir, { recursive: true, force: true });
+        } catch (err) {
+          console.warn(`Failed to clean up temp user data dir ${tmpDir}:`, err);
+        }
       }
     }
   };
 
   return { app, tmpDir, close };
 }
+

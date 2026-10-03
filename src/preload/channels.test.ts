@@ -25,7 +25,11 @@ describe('preload channel filters', () => {
       'coach:manual',
       'coach:markDone',
       'coach:toggleWindow',
-      'coach:getShortcutStatus'
+      'coach:getShortcutStatus',
+      'game:browse',
+      'data:openFolder',
+      'data:exportAllPlans',
+      'data:clearSessions'
     ];
 
     for (const ch of validChannels) {

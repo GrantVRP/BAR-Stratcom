@@ -2,6 +2,9 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import { handle } from './ipc/register';
 
+import { defaultSettingsStore } from './settings/store';
+import { locateGame } from './game/locator';
+
 let mainWindow: BrowserWindow | null = null;
 
 function createWindow(): void {
@@ -63,16 +66,29 @@ if (!gotTheLock) {
   });
 
   app.whenReady().then(() => {
-    // Register IPC handler
+    // Register IPC handlers
     handle('app:getInfo', () => {
+      const settings = defaultSettingsStore.getSettings();
       return {
         version: app.getVersion(),
         platform: process.platform,
         dataPaths: {
           userData: app.getPath('userData'),
-          barData: null
+          barData: settings.bar.dataDir
         }
       };
+    });
+
+    handle('settings:get', () => {
+      return defaultSettingsStore.getSettings();
+    });
+
+    handle('settings:set', (req) => {
+      return defaultSettingsStore.updateSettings(req ?? {});
+    });
+
+    handle('game:locate', async (req) => {
+      return await locateGame(req?.manualPath ? { manualPath: req.manualPath } : {});
     });
 
     createWindow();

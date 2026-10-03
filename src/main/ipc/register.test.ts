@@ -54,4 +54,27 @@ describe('IPC register and executor', () => {
       expect(result.message).toBe('Database connection failed');
     }
   });
+
+  it('validates and executes game:locate with optional manualPath', async () => {
+    const result = await executeIpcHandler('game:locate', { manualPath: 'C:\\BAR\\data' }, async (req) => {
+      return {
+        dataDir: req?.manualPath ?? '',
+        source: 'manual'
+      };
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data?.dataDir).toBe('C:\\BAR\\data');
+      expect(result.data?.source).toBe('manual');
+    }
+  });
+
+  it('rejects invalid game:locate request with unexpected types', async () => {
+    const result = await executeIpcHandler('game:locate', { manualPath: 12345 }, async () => null);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.code).toBe('E_BAD_REQUEST');
+    }
+  });
 });

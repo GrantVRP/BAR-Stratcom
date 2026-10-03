@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "id": "cortex-grunt-1v1",
+  "title": "Cortex Bot Grunt 1v1",
+  "description": "Aggressive Cortex bot opening with Grunts, Storms, and expansion construction bot.",
+  "factionId": "cortex",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "1v1"
+  ],
+  "role": "front",
+  "skill": "beginner",
+  "opening": "bot",
+  "energyStyle": "solar",
+  "mapFit": {
+    "windMin": 0,
+    "windMax": 15,
+    "needsWater": false
+  },
+  "source": {
+    "kind": "curated",
+    "replayId": "fixture-cortex-01",
+    "player": "CoreCommander",
+    "playerRating": 31,
+    "map": "Altair Crossing v1",
+    "playedAt": "2026-10-01T14:30:00Z",
+    "gameVersion": "test-31479-433a460",
+    "reviewedBy": "StratCom Curators",
+    "reviewedAt": "2026-10-02T12:00:00Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 6,
+      "text": "Initial metal extractors"
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 24,
+      "text": "Solar collector"
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 38,
+      "text": "Third metal extractor"
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 52,
+      "text": "Second solar collector"
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corlab",
+      "count": 1,
+      "targetTime": 70,
+      "text": "Bot Lab factory"
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corak",
+      "count": 3,
+      "targetTime": 92,
+      "text": "Fast Grunt raiders"
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corstorm",
+      "count": 2,
+      "targetTime": 118,
+      "text": "Storm rocket bots"
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corck",
+      "count": 1,
+      "targetTime": 142,
+      "text": "Construction Bot"
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 164,
+      "text": "Expand to front metal"
+    }
+  ],
+  "notes": "Raid enemy metal extractors with Grunts while Storms contest early skirmishes.",
+  "tags": [
+    "1v1",
+    "bot",
+    "solar",
+    "grunt"
+  ]
+}

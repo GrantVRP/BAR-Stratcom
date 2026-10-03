@@ -10,3 +10,4 @@ export * from './OnboardingView';
 export * from './AboutView';
 export * from './DevUiGallery';
 export * from './LaunchWindow';
+export * from './PlanDetailView';

@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "id": "armada-rocketeer-1v1",
+  "title": "Armada Bot Rocketeer 1v1",
+  "description": "Standard Armada bot opening with early Mexes, Solars, Bot Lab, Rocketeers, and Construction Bot.",
+  "factionId": "armada",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "1v1"
+  ],
+  "role": "front",
+  "skill": "beginner",
+  "opening": "bot",
+  "energyStyle": "solar",
+  "mapFit": {
+    "windMin": 0,
+    "windMax": 15,
+    "needsWater": false
+  },
+  "source": {
+    "kind": "curated",
+    "replayId": "fixture-armada-01",
+    "player": "BAR Pioneer",
+    "playerRating": 28,
+    "map": "Red River v2",
+    "playedAt": "2026-10-01T12:00:00Z",
+    "gameVersion": "test-31479-433a460",
+    "reviewedBy": "StratCom Curators",
+    "reviewedAt": "2026-10-02T12:00:00Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 6,
+      "text": "First two metal extractors"
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 24,
+      "text": "Initial solar collector for stable power"
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 38,
+      "text": "Third metal extractor"
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 52,
+      "text": "Second solar collector"
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armlab",
+      "count": 1,
+      "targetTime": 70,
+      "text": "Bot Lab factory"
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 2,
+      "targetTime": 94,
+      "text": "Scout / frontline Paw bots"
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armrock",
+      "count": 3,
+      "targetTime": 120,
+      "text": "Rocketeer artillery bots"
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 1,
+      "targetTime": 145,
+      "text": "Construction Bot"
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 165,
+      "text": "Expand to peripheral metal spots"
+    }
+  ],
+  "notes": "Fast bot aggression into rocketeer pressure against enemy commander.",
+  "tags": [
+    "1v1",
+    "bot",
+    "solar",
+    "rocketeer"
+  ]
+}

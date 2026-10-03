@@ -17,7 +17,7 @@ import {
   UnitsView
 } from './views';
 import { ipcClient } from './lib/ipc-client';
-import { useCoach, useLive, usePlans, useSettings } from './stores';
+import { useCoach, useLive, usePlans, useSettings, useSnapshot } from './stores';
 
 const ALT_ROUTES: Record<string, string> = {
   '1': '#/home',
@@ -54,6 +54,7 @@ export function App(): React.JSX.Element {
     const unsubCoach = useCoach.getState().subscribe();
     void useSettings.getState().load();
     void usePlans.getState().loadPlans();
+    void useSnapshot.getState().load();
 
     ipcClient
       .invoke('app:getInfo')

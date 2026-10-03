@@ -11,6 +11,8 @@ import { SessionRecorder } from './sessions/recorder';
 import { defaultCoachRunner } from './coach/runner';
 import { findDataDir, loadRegistry, loadSnapshot } from './registry/loader';
 import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
+import { defaultPlanStore } from './plans/store';
+import { getMap, loadMaps } from './maps/loader';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -223,12 +225,16 @@ if (!gotTheLock) {
         return { ok: true };
       }
 
-      if (!req.plan) {
-        throw new Error('Coach start currently requires an explicit plan object');
+      let plan = req.plan;
+      if (!plan && req.planId) {
+        plan = defaultPlanStore.get(req.planId) ?? undefined;
+      }
+      if (!plan) {
+        throw new Error('Coach start requires a plan object or valid planId');
       }
       const stratcomDir = currentSettings.bar.dataDir ? join(currentSettings.bar.dataDir, 'stratcom') : null;
       await defaultCoachRunner.start({
-        plan: req.plan,
+        plan,
         mode: req.mode,
         source: fileBridge,
         registry,
@@ -269,6 +275,38 @@ if (!gotTheLock) {
 
     handle('registry:getSnapshot', (req) => {
       return loadSnapshot(req?.gameVersion);
+    });
+
+    handle('maps:list', () => {
+      return loadMaps();
+    });
+
+    handle('maps:get', (req) => {
+      return getMap(req.fileName);
+    });
+
+    handle('plans:list', () => {
+      return defaultPlanStore.list();
+    });
+
+    handle('plans:get', (req) => {
+      return defaultPlanStore.get(req.id);
+    });
+
+    handle('plans:save', (req) => {
+      return defaultPlanStore.save(req);
+    });
+
+    handle('plans:delete', (req) => {
+      return defaultPlanStore.delete(req.id);
+    });
+
+    handle('plans:import', (req) => {
+      return defaultPlanStore.import(req.shareCode);
+    });
+
+    handle('plans:export', (req) => {
+      return defaultPlanStore.export(req.id);
     });
 
     createWindow();

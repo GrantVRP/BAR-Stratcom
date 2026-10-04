@@ -1,0 +1,123 @@
+/* --------------------------------------------------------------------------
+   Launcher scene (T06.14). Every animation is stepped so sprites move in whole
+   scene pixels (pixel-art motion, no sub-pixel smearing). Custom properties are
+   set per element by the components in components/launch/.
+   -------------------------------------------------------------------------- */
+.launch-px {
+  image-rendering: pixelated;
+}
+
+/* Rotor: walk the 24-frame sprite sheet; --sheet-w = sheet width in screen px */
+@keyframes launch-rotor {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: calc(-1 * var(--sheet-w));
+  }
+}
+.launch-rotor {
+  animation: launch-rotor var(--spin, 0.96s) steps(24) infinite;
+}
+
+/* Clouds and wind gusts drift from --from to --to */
+@keyframes launch-drift {
+  from {
+    transform: translateX(var(--from));
+  }
+  to {
+    transform: translateX(var(--to));
+  }
+}
+.launch-cloud {
+  animation: launch-drift var(--dur) steps(var(--steps)) var(--delay, 0s) infinite;
+}
+
+@keyframes launch-gust {
+  0% {
+    transform: translateX(var(--from));
+    opacity: 0;
+  }
+  12%,
+  80% {
+    opacity: var(--o, 0.4);
+  }
+  100% {
+    transform: translateX(var(--to));
+    opacity: 0;
+  }
+}
+.launch-gust {
+  animation: launch-gust var(--dur) steps(var(--steps)) var(--delay, 0s) infinite;
+}
+
+/* Energy: a spark runs down the tower, then the base flashes */
+@keyframes launch-spark {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(var(--fall));
+    opacity: 1;
+  }
+  64%,
+  100% {
+    transform: translateY(var(--fall));
+    opacity: 0;
+  }
+}
+.launch-spark {
+  animation: launch-spark 2.6s steps(var(--steps)) infinite;
+}
+
+@keyframes launch-glow {
+  0%,
+  60% {
+    opacity: 0;
+  }
+  64% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.launch-glow {
+  animation: launch-glow 2.6s steps(10) infinite;
+}
+
+/* Dust kicked up by the runner's feet */
+@keyframes launch-dust {
+  from {
+    transform: translate(0, 0);
+    opacity: 0.9;
+  }
+  to {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+.launch-dust {
+  animation: launch-dust 0.5s steps(5) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launch-rotor,
+  .launch-cloud,
+  .launch-gust,
+  .launch-spark,
+  .launch-glow,
+  .launch-dust {
+    animation: none;
+  }
+  .launch-gust,
+  .launch-spark,
+  .launch-glow,
+  .launch-dust {
+    opacity: 0;
+  }
+}

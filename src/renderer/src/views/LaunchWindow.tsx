@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
-import { WalkingBot } from '../components/sprites/WalkingBot';
+import { LaunchScene } from '../components/launch/LaunchScene';
 import { factionAccent } from '../lib/faction-style';
-import armadaTurbineStill from '../assets/original/armada_turbine_still.png';
-import cortexTurbineStill from '../assets/original/cortex_turbine_still.png';
-import armadaTurbineFull from '../assets/original/armada_turbine_full.webp';
-import cortexTurbineFull from '../assets/original/cortex_turbine_full.webp';
-
-/** Width of the stage the bot walks across (px). */
-const STAGE_WIDTH = 640;
 
 export interface LaunchWindowProps {
   onStart: () => void;
@@ -99,63 +92,36 @@ export function LaunchWindow({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleLaunch, toggleFaction]);
 
-  const turbineImage = isArmada
-    ? reducedMotion
-      ? armadaTurbineStill
-      : armadaTurbineFull
-    : reducedMotion
-      ? cortexTurbineStill
-      : cortexTurbineFull;
+  const panel = 'border-2 border-black bg-[#0a0c14]/90 shadow-[4px_4px_0px_#000]';
 
   return (
     <div
       data-testid="launch-window"
       onClick={handleLaunch}
-      className="crt fixed inset-0 z-50 h-screen w-screen flex flex-col justify-between bg-[#0a0c14] p-6 text-[#e4e4e7] select-none cursor-pointer overflow-hidden"
+      className="crt crt-soft fixed inset-0 z-50 h-screen w-screen cursor-pointer select-none overflow-hidden bg-[#0a0c14] text-[#e4e4e7]"
     >
-      {/* Top Header Branding */}
-      <header className="flex flex-col items-center gap-1 pt-6 text-center shrink-0">
+      <LaunchScene faction={faction} reducedMotion={reducedMotion} />
+
+      {/* Title */}
+      <header className={`absolute left-1/2 top-6 z-[48] flex -translate-x-1/2 flex-col items-center gap-1 px-6 py-3 ${panel}`}>
         <div className="flex items-center gap-3">
-          <div
-            className="flex h-10 w-10 items-center justify-center border-2 bg-black shadow-[2px_2px_0px_#000]"
-            style={{ borderColor: factionColor }}
-          >
-            <FactionEmblem faction={faction} size={28} />
+          <div className="flex h-11 w-11 items-center justify-center border-2 bg-black" style={{ borderColor: factionColor }}>
+            <FactionEmblem faction={faction} size={32} />
           </div>
-          <h1
-            style={{ fontFamily: "'Press Start 2P', monospace" }}
-            className="text-xl sm:text-2xl font-bold tracking-wider"
-          >
+          <h1 style={{ fontFamily: "'Press Start 2P', monospace" }} className="text-xl font-bold tracking-wider sm:text-2xl">
             <span className="text-white drop-shadow-[2px_2px_0px_#000]">BAR </span>
             <span style={{ color: factionColor }} className="drop-shadow-[2px_2px_0px_#000]">
               STRATCOM
             </span>
           </h1>
         </div>
-        <p
-          style={{ fontFamily: "'JetBrains Mono', monospace" }}
-          className="text-xs text-zinc-400"
-        >
+        <p style={{ fontFamily: "'JetBrains Mono', monospace" }} className="text-xs text-zinc-400">
           {version}
         </p>
       </header>
 
-      {/* Center Tactical Stage */}
-      <main className="flex flex-1 flex-col items-center justify-center gap-6 my-auto">
-        <div
-          data-testid="launcher-stage"
-          className="relative flex h-64 max-w-full items-center justify-center overflow-hidden"
-          style={{ width: STAGE_WIDTH }}
-        >
-          <img
-            src={turbineImage}
-            alt={`${faction} Tactical Energy Turbine`}
-            className="h-64 w-64 object-contain pixelated pointer-events-none drop-shadow-[0_0_24px_rgba(0,0,0,0.8)]"
-            style={{ imageRendering: 'pixelated' }}
-          />
-          <WalkingBot key={faction} faction={faction} reducedMotion={reducedMotion} stageWidth={STAGE_WIDTH} />
-        </div>
-
+      {/* Launch (bottom-right, clear of the runner's track) */}
+      <div className="absolute left-[74%] top-[70%] z-[48] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-3">
         <button
           type="button"
           data-testid="launcher-button"
@@ -163,55 +129,40 @@ export function LaunchWindow({
             e.stopPropagation();
             handleLaunch();
           }}
-          style={{
-            backgroundColor: factionColor,
-            fontFamily: "'Press Start 2P', monospace"
-          }}
-          className="px-10 py-4 text-base font-bold text-white uppercase tracking-wider border-2 border-black shadow-[4px_4px_0px_#000] active:translate-y-1 active:shadow-none cursor-pointer transition-none"
+          style={{ backgroundColor: factionColor, fontFamily: "'Press Start 2P', monospace" }}
+          className="cursor-pointer border-2 border-black px-10 py-4 text-base font-bold uppercase tracking-wider text-white shadow-[4px_4px_0px_#000] transition-none active:translate-y-1 active:shadow-none"
         >
           LAUNCH
         </button>
-
         <div
           style={{ fontFamily: "'Press Start 2P', monospace" }}
-          className="animate-pulse text-[10px] uppercase tracking-wider text-zinc-400"
+          className={`whitespace-nowrap px-3 py-2 text-[10px] uppercase tracking-wider text-zinc-300 ${panel} ${reducedMotion ? '' : 'animate-pulse'}`}
         >
           [PRESS ANY KEY OR CLICK TO CONTINUE]
         </div>
-      </main>
+      </div>
 
-      {/* Footer Area */}
-      <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-800 pt-4 text-center shrink-0">
-        <div
-          style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}
-          className="text-zinc-500 uppercase tracking-wide"
-        >
+      {/* Footer */}
+      <footer className="absolute inset-x-0 bottom-0 z-[48] flex flex-col items-center justify-between gap-3 border-t-2 border-black bg-[#0a0c14]/90 px-6 py-3 sm:flex-row">
+        <div style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }} className="uppercase tracking-wide text-zinc-400">
           UNOFFICIAL COMMUNITY TOOL // NOT AFFILIATED WITH THE BEYOND ALL REASON TEAM
         </div>
 
-        {/* Faction Switcher */}
+        {/* Faction switcher */}
         <div
           data-testid="launcher-faction-toggle"
           onClick={(e) => {
             e.stopPropagation();
             toggleFaction();
           }}
-          className="flex items-center gap-2 cursor-pointer border border-zinc-800 bg-[#0d0f17] px-3 py-1.5"
+          className="flex cursor-pointer items-center gap-2 border border-zinc-700 bg-[#0d0f17] px-3 py-1.5"
         >
-          <span
-            style={{ fontFamily: "'Press Start 2P', monospace", color: factionColor }}
-            className="text-[10px] font-bold uppercase tracking-wider"
-          >
+          <span style={{ fontFamily: "'Press Start 2P', monospace", color: factionColor }} className="text-[10px] font-bold uppercase tracking-wider">
             {faction}
           </span>
-          <div
-            className="relative h-5 w-10 border border-black p-0.5"
-            style={{ backgroundColor: `${factionColor}33`, borderColor: factionColor }}
-          >
+          <div className="relative h-5 w-10 border border-black p-0.5" style={{ backgroundColor: `${factionColor}33`, borderColor: factionColor }}>
             <div
-              className={`h-3.5 w-3.5 border border-black transition-transform duration-150 ${
-                isArmada ? 'translate-x-0' : 'translate-x-5'
-              }`}
+              className={`h-3.5 w-3.5 border border-black transition-transform duration-150 ${isArmada ? 'translate-x-0' : 'translate-x-5'}`}
               style={{ backgroundColor: factionColor }}
             />
           </div>

@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './tokens.css';
 @import './pixel.css';
+@import './launch.css';
 
 @import '@fontsource/press-start-2p';
 @import '@fontsource/vt323';

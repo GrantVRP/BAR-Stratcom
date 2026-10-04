@@ -12,6 +12,9 @@ See the approved plan and architecture in [docs/plan/README.md](docs/plan/README
   `tools/pixelate-unitpics.ts` and live in `src/renderer/src/assets/unitpics-32/`.
 - **Faction emblems:** 32-bit versions of the Beyond All Reason faction icons (`sidepics/`), used with
   permission. Made by `tools/pixelate-factions.ts`, in `src/renderer/src/assets/factions-32/`.
+- **Launch scene:** pixel art built from the Greenest Fields map by **IceXuick** (map texture from
+  beyondallreason.info), used with permission. Made by `tools/build-launch-scene.ts`, in
+  `src/renderer/src/assets/launch/`.
 - Unit data comes from each player's own game through the StratCom widget. Beyond All Reason is made
   by its community: https://www.beyondallreason.info/
 - BAR StratCom is an unofficial community tool and is not affiliated with the Beyond All Reason team.

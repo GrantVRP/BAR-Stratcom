@@ -45,7 +45,14 @@ async function raw(pipeline: ReturnType<typeof sharp>): Promise<Rgba> {
 }
 
 /** One 32-bit style sprite of `size` × `size` from a unit picture. */
-export async function pixelate(input: Buffer | string, size: 64 | 32, style: PixelStyle = SPRITE_STYLES[size]): Promise<Buffer> {
+/** Style for sizes other than the two icon sizes (e.g. the launcher runner). */
+export const DEFAULT_STYLE: PixelStyle = SPRITE_STYLES[64];
+
+export async function pixelate(
+  input: Buffer | string,
+  size: number,
+  style: PixelStyle = size === 64 || size === 32 ? SPRITE_STYLES[size] : DEFAULT_STYLE
+): Promise<Buffer> {
   const full = await raw(sharp(input));
   // The renders sit on a soft semi-transparent shadow; keep only the solid unit
   for (let i = 3; i < full.data.length; i += 4) if (full.data[i]! < SHADOW_ALPHA) full.data[i] = 0;

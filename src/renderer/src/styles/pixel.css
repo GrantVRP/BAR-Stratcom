@@ -269,6 +269,11 @@
   opacity: 0.85;
 }
 
+/* Lighter scanlines over the launcher's pixel-art scene (one scanline per scene pixel at 4×) */
+.crt.crt-soft::after {
+  opacity: 0.4;
+}
+
 /* --------------------------------------------------------------------------
    Focus, Selection & Caret Styling
    -------------------------------------------------------------------------- */

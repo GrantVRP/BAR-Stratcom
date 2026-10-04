@@ -10,9 +10,9 @@ test('launcher: shows title screen on startup and a key press reaches Home', asy
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible();
 
-    // Verify faction emblem and disclaimer
+    // Title; the unofficial notice lives on the in-app top bar tag and About page (owner request, T06.16)
     await expect(launcher).toContainText('BAR STRATCOM');
-    await expect(launcher).toContainText('UNOFFICIAL COMMUNITY TOOL');
+    await expect(launcher).not.toContainText('NOT AFFILIATED');
 
     // Press Space key to launch into Home
     await page.keyboard.press('Space');

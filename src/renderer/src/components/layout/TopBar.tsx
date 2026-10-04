@@ -2,7 +2,6 @@ import React from 'react';
 import { Tag } from '../ui/Tag';
 import { useLive } from '../../stores/useLive';
 import { usePlans } from '../../stores/usePlans';
-import { useSettings } from '../../stores/useSettings';
 import { FactionEmblem } from '../ui/FactionEmblem';
 import { factionAccent } from '../../lib/faction-style';
 import type { HealthStatus } from '../../../../shared/ipc';
@@ -26,14 +25,12 @@ export function TopBar(): React.JSX.Element {
   const activePlan = usePlans((s) => s.getActivePlan());
   // The whole PLAN chip takes the active plan's faction colour (Armada blue, Cortex red)
   const planAccent = activePlan ? factionAccent(activePlan.factionId) : undefined;
-  const settings = useSettings((s) => s.settings);
 
   const statusMeta = STATUS_LABELS[health.status] ?? {
     text: health.status.toUpperCase(),
     variant: 'danger' as const
   };
 
-  const profile = settings?.profile ? settings.profile.toUpperCase() : 'INTERMEDIATE';
 
   return (
     <header className="flex h-14 items-center justify-between border-b-2 border-zinc-800 bg-[#0c0e18] px-4 select-none">
@@ -85,24 +82,6 @@ export function TopBar(): React.JSX.Element {
           </span>
         </div>
 
-        {/* Profile Chip */}
-        <div
-          data-testid="profile-chip"
-          className="flex items-center gap-2 border border-zinc-800 bg-[#0a0c14] px-2.5 py-1"
-        >
-          <span
-            style={{ fontFamily: "'Press Start 2P', monospace" }}
-            className="text-[10px] text-zinc-500 uppercase"
-          >
-            COACH:
-          </span>
-          <span
-            style={{ fontFamily: "'Press Start 2P', monospace" }}
-            className="text-[10px] uppercase text-zinc-300"
-          >
-            {profile}
-          </span>
-        </div>
       </div>
 
       {/* Right side: Unofficial Tag linking to About */}

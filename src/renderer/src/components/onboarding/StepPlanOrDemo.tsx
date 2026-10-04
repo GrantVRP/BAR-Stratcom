@@ -45,16 +45,12 @@ export function StepPlanOrDemo({ onBack, onNext, onTryDemo }: StepPlanOrDemoProp
       <div className="rounded border border-[#27272a] bg-[#12131a] p-5 space-y-4">
         <div className="border-b border-[#1f2430] pb-3">
           <span className="font-['Press_Start_2P'] text-sm text-[#38bdf8]">
-            SELECT AN OPENING OR TRY DEMO
+            PICK A PLAN
           </span>
-          <p className="mt-1 text-xs text-[#a1a1aa]">
-            ACTIVATE A BUILD ORDER TO COACH IN YOUR NEXT GAME, OR EXPERIENCE A LIVE COACHING DEMO
-          </p>
         </div>
 
         <p className="text-xs text-[#e4e4e7] leading-relaxed">
-          Choose a build order for the coach to track, or run a 4× simulated match to see how live
-          resource warnings and step countdowns look in action.
+          Pick a plan to coach, or watch a demo first.
         </p>
 
         {/* Suggested Plans Grid */}
@@ -95,10 +91,10 @@ export function StepPlanOrDemo({ onBack, onNext, onTryDemo }: StepPlanOrDemoProp
         <div className="rounded border border-[#2ec4b6]/30 bg-[#0d2226] p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
           <div>
             <div className="font-['Press_Start_2P'] text-[10px] text-[#2ec4b6]">
-              WANT TO SEE IT IN ACTION FIRST?
+              TRY A DEMO
             </div>
             <p className="mt-1 text-xs text-[#99f6e4]">
-              Replays a real Cortex match at 4× speed with live economy gauges, alert triggers, and HUD cues.
+              A real Cortex game at 4×.
             </p>
           </div>
           <Button
@@ -119,7 +115,7 @@ export function StepPlanOrDemo({ onBack, onNext, onTryDemo }: StepPlanOrDemoProp
           ◂ BACK
         </Button>
         <Button
-          variant="armada"
+          variant="primary"
           size="md"
           onClick={onNext}
           data-testid="onboarding-next-btn"

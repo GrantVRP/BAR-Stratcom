@@ -60,15 +60,12 @@ export function OnboardingView(): React.JSX.Element {
         <div>
           <div className="flex items-center gap-2">
             <span className="font-['Press_Start_2P'] text-sm text-[#e4e4e7]">
-              TACTICAL ONBOARDING WIZARD
+              SETUP
             </span>
             <span className="font-mono text-xs text-[#38bdf8] font-bold">
               [STEP {step}/6]
             </span>
           </div>
-          <p className="mt-1 text-xs text-[#a1a1aa] font-mono">
-            Get your live Beyond All Reason tactical coach set up in 6 quick steps.
-          </p>
         </div>
 
         <div>

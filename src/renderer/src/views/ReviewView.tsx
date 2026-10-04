@@ -6,6 +6,7 @@ import { MetricTiles } from '../components/review/MetricTiles';
 import { StepAdherenceChart } from '../components/review/StepAdherenceChart';
 import { EconomyChart } from '../components/review/EconomyChart';
 import { BenchmarkChart } from '../components/review/BenchmarkChart';
+import { Button } from '../components/ui/Button';
 import { SaveOpeningModal } from '../components/review/SaveOpeningModal';
 import { ipcClient } from '../lib/ipc-client';
 import type { SessionDetail } from '../../../core/schemas/session';
@@ -86,8 +87,7 @@ export function ReviewView(): React.JSX.Element {
             NO SESSIONS RECORDED
           </div>
           <div className="mt-3 max-w-md font-mono text-xs text-zinc-400">
-            Play a match in Beyond All Reason with the StratCom widget or run a Demo match
-            from Home to generate a post-match execution review.
+            Play a match, or run Demo from Home.
           </div>
         </div>
       ) : (
@@ -126,23 +126,13 @@ export function ReviewView(): React.JSX.Element {
 
                   <div>
                     {currentSessionDetail.meta.mode === 'player' ? (
-                      <button
-                        type="button"
-                        data-testid="btn-save-opening"
-                        onClick={() => setSaveModalOpen(true)}
-                        className="cursor-pointer border-2 border-black bg-[#449bed] px-3 py-1.5 font-['Press_Start_2P'] text-[10px] text-black hover:bg-[#60a5fa]"
-                      >
+                      <Button variant="primary" size="md" data-testid="btn-save-opening" onClick={() => setSaveModalOpen(true)}>
                         SAVE MY OPENING AS PLAN
-                      </button>
+                      </Button>
                     ) : (
-                      <button
-                        type="button"
-                        data-testid="btn-capture-plan"
-                        onClick={() => setSaveModalOpen(true)}
-                        className="cursor-pointer border-2 border-black bg-[#2ec4b6] px-3 py-1.5 font-['Press_Start_2P'] text-[10px] text-black hover:bg-[#4dd4c6]"
-                      >
+                      <Button variant="primary" size="md" data-testid="btn-capture-plan" onClick={() => setSaveModalOpen(true)}>
                         CAPTURE PLAN
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -183,7 +173,7 @@ export function ReviewView(): React.JSX.Element {
                         <div data-testid="review-tips-list" className="mt-2 space-y-2">
                           {report.tips.length === 0 ? (
                             <div className="font-mono text-xs text-zinc-500">
-                              Clean execution! No major errors detected.
+                              Clean game. Nothing to fix.
                             </div>
                           ) : (
                             report.tips.map((tip) => (
@@ -224,13 +214,13 @@ export function ReviewView(): React.JSX.Element {
                   </>
                 ) : (
                   <div className="p-8 text-center font-mono text-xs text-zinc-500">
-                    Report processing or unavailable for this session.
+                    No report for this game.
                   </div>
                 )}
               </>
             ) : (
               <div className="p-8 text-center font-mono text-xs text-zinc-500">
-                Select a match from the left to view the review report.
+                Pick a match.
               </div>
             )}
           </div>

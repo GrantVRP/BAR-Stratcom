@@ -1,21 +1,27 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { DemoInfo } from '../../../shared/ipc';
-import { useCoach, useLive, usePlans, useSettings } from '../stores';
+import { useCoach, useLive, usePlans, useSessions } from '../stores';
 import { ipcClient } from '../lib/ipc-client';
 import { findMatchingDemoFixture } from '../lib/demo-pairing';
 import { DemoPickerModal } from '../components/coach/DemoPickerModal';
 import { Button } from '../components/ui/Button';
+import { PageHeader } from '../components/ui/PageHeader';
 import { Tag } from '../components/ui/Tag';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
 import { factionAccent, factionTagVariant } from '../lib/faction-style';
-import { Provenance } from '../components/ui/Provenance';
 import { ProfileSuggestionBanner } from '../components/profile/ProfileSuggestionBanner';
+
+const STATUS_STYLE: Record<'good' | 'warn' | 'bad', string> = {
+  good: 'border-[#4ade80]/40 text-[#4ade80]',
+  warn: 'border-[#fbbf24]/40 text-[#fbbf24]',
+  bad: 'border-[#f87171]/40 text-[#f87171]'
+};
 
 export function HomeView(): React.JSX.Element {
   const { health } = useLive();
   const { plans, getActivePlan } = usePlans();
+  const latest = useSessions((s) => s.latestSession);
   const { start } = useCoach();
-  const settings = useSettings((s) => s.settings);
   const [demoPickerOpen, setDemoPickerOpen] = useState<boolean>(false);
   const [demoList, setDemoList] = useState<DemoInfo[]>([]);
 
@@ -35,13 +41,7 @@ export function HomeView(): React.JSX.Element {
   }
 
   async function launchDemo(fixtureId: string): Promise<void> {
-    const ok = await start({
-      mode: 'demo',
-      demoId: fixtureId,
-      speed: 4,
-      plan: activePlan ?? undefined,
-      planId: activePlan?.id
-    });
+    const ok = await start({ mode: 'demo', demoId: fixtureId, speed: 4, plan: activePlan ?? undefined, planId: activePlan?.id });
     if (ok) window.location.hash = '#/coach';
   }
 
@@ -57,198 +57,131 @@ export function HomeView(): React.JSX.Element {
     }
   }
 
-  const profile = settings?.profile ?? 'intermediate';
   const isHealthy = health.status === 'live' || health.status === 'pregame' || health.status === 'bar-idle';
+  const statusTone = isHealthy ? 'good' : health.status === 'no-bar' ? 'warn' : 'bad';
+  const nextAction = isHealthy
+    ? 'Start a match to coach live.'
+    : health.status === 'no-bar'
+      ? 'Start BAR, or practise with Demo.'
+      : 'Check the widget in Settings.';
 
   return (
-    <div data-testid="view-home" className="space-y-6 p-6 font-mono text-[#e4e4e7] max-w-6xl mx-auto">
-      {/* Header Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#27272a] pb-4">
-        <div>
-          <h1 className="font-['Press_Start_2P'] text-lg text-[#f8fafc] tracking-wide">COMMAND HOME</h1>
-          <p className="mt-1 text-xs text-[#a1a1aa]">
-            Live match tracking, active build orchestration, and tactical telemetry.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 rounded border border-[#27272a] bg-[#12131a] px-3 py-1.5 text-xs">
-          <span className="text-[#71717a] uppercase">PROFILE:</span>
-          <span className="font-bold uppercase text-[#38bdf8]">{profile}</span>
-        </div>
-      </div>
+    <div data-testid="view-home" className="mx-auto max-w-6xl space-y-6 p-6 font-mono text-[#e4e4e7]">
+      <PageHeader title="COMMAND HOME" />
 
-      {/* Profile suggestion banner (04 §4.4, 06 §4.2) */}
       <ProfileSuggestionBanner />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Status Card (06 §4.2) */}
-        <div
-          data-testid="home-status-card"
-          className="rounded-lg border border-[#27272a] bg-[#12131a] p-5 shadow-lg flex flex-col justify-between"
-        >
-          <div>
-            <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-              <span className="font-['Press_Start_2P'] text-[10px] text-[#a1a1aa]">GAME STATUS</span>
-              <span
-                className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                  isHealthy
-                    ? 'bg-[#4ade80]/15 text-[#4ade80] border border-[#4ade80]/40'
-                    : health.status === 'no-bar'
-                      ? 'bg-[#fbbf24]/15 text-[#fbbf24] border border-[#fbbf24]/40'
-                      : 'bg-[#f87171]/15 text-[#f87171] border border-[#f87171]/40'
-                }`}
-              >
-                {isHealthy ? 'ONLINE' : health.status.toUpperCase()}
-              </span>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              <div>
-                <span className="text-[10px] uppercase text-[#71717a]">Heartbeat / State</span>
-                <p className="mt-0.5 text-xs text-[#e4e4e7]">{health.message}</p>
-              </div>
-
-              <div className="rounded bg-[#0a0c14] p-3 text-xs border border-[#1f2430]">
-                <span className="text-[10px] font-bold uppercase text-[#38bdf8]">▸ NEXT ACTION</span>
-                <p className="mt-1 text-xs text-[#a1a1aa]">
-                  {isHealthy
-                    ? 'BAR connected. Start a match vs AI or players to begin live coaching.'
-                    : health.status === 'no-bar'
-                      ? 'Start Beyond All Reason, run Manual Clock, or test with Demo mode.'
-                      : 'Check widget installation in Settings or reload LuaUI (/luaui reload).'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-[#1f2430] flex gap-2">
-            <Button variant="default" size="sm" onClick={() => { window.location.hash = '#/settings'; }} className="border border-[#27272a]">
-              SETTINGS
-            </Button>
-            <Button variant="default" size="sm" onClick={() => void handleStartDemo()} className="border border-[#38bdf8]/40 text-[#38bdf8]">
-              TEST DEMO
-            </Button>
-          </div>
-        </div>
-
-        {/* Active Plan Card (06 §4.2) */}
-        <div
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Hero: the active plan and the one main action (06 §4.2) */}
+        <section
           data-testid="home-active-plan-card"
           data-faction={activePlan?.factionId ?? 'none'}
-          className="lg:col-span-2 rounded-lg border-2 border-zinc-700 bg-[#0d0f17] p-5 shadow-lg flex flex-col justify-between"
-          style={
-            planAccent
-              ? { borderColor: planAccent, backgroundColor: `color-mix(in srgb, ${planAccent} 9%, #0b0d14)` }
-              : undefined
-          }
+          className="flex flex-col gap-6 rounded-lg border-2 border-zinc-700 bg-[#0d0f17] p-6 shadow-lg lg:col-span-2"
+          style={planAccent ? { borderColor: planAccent, backgroundColor: `color-mix(in srgb, ${planAccent} 9%, #0b0d14)` } : undefined}
         >
-          <div>
-            <div
-              className="flex items-center justify-between border-b border-[#1e293b] pb-2"
-              style={planAccent ? { borderBottomColor: `${planAccent}40` } : undefined}
-            >
-              <span
-                data-testid="home-active-plan-heading"
-                className="font-['Press_Start_2P'] text-[10px] text-zinc-300"
-                style={planAccent ? { color: planAccent } : undefined}
-              >
-                ACTIVE BUILD PLAN
-              </span>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => {
-                  window.location.hash = '#/library';
-                }}
-                className="border border-[#27272a]"
-              >
-                BROWSE PLANS
-              </Button>
-            </div>
-
-            {activePlan ? (
-              <div className="mt-4 space-y-3">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <FactionEmblem faction={activePlan.factionId} size={32} />
-                    <div>
-                      <h2 className="text-base font-bold text-[#f8fafc]">{activePlan.title}</h2>
-                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                        <Tag variant={factionTagVariant(activePlan.factionId)}>{activePlan.factionId}</Tag>
-                        {activePlan.modes.map((m) => (
-                          <Tag key={m} variant="default">
-                            {m}
-                          </Tag>
-                        ))}
-                        <Tag variant="default">{activePlan.opening}</Tag>
-                        <Tag variant="default">{activePlan.energyStyle}</Tag>
-                        <span className="text-[11px] text-[#a1a1aa]">{activePlan.steps.length} STEPS</span>
-                      </div>
-                    </div>
-                  </div>
-                  <Provenance kind="SIMULATED" />
-                </div>
-
-                <div className="rounded bg-[#070b12] p-2.5 text-xs text-[#94a3b8] border border-[#1e293b]">
-                  <span className="text-[10px] uppercase text-[#64748b]">PROVENANCE //</span>{' '}
-                  {activePlan.source.kind === 'curated'
-                    ? `Curated from replay ${activePlan.source.replayId} on ${activePlan.source.map}`
-                    : `Plan: ${activePlan.title}`}
-                </div>
-              </div>
-            ) : (
-              <div className="mt-6 text-center text-sm text-[#71717a] italic">
-                No build plans found in library. Import or create a plan to begin.
-              </div>
-            )}
-          </div>
-
-          {/* Three Coaching Buttons (06 §4.2) */}
-          <div
-            className="mt-6 pt-4 border-t border-[#1e293b] flex flex-wrap gap-3"
-            style={planAccent ? { borderTopColor: `${planAccent}40` } : undefined}
+          <span
+            data-testid="home-active-plan-heading"
+            className="font-['Press_Start_2P'] text-[10px] text-zinc-300"
+            style={planAccent ? { color: planAccent } : undefined}
           >
+            ACTIVE BUILD PLAN
+          </span>
+
+          {activePlan ? (
+            <div className="flex items-start gap-4">
+              <FactionEmblem faction={activePlan.factionId} size={40} />
+              <div className="min-w-0 space-y-2">
+                <h2 className="text-lg font-bold leading-snug text-white">{activePlan.title}</h2>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Tag variant={factionTagVariant(activePlan.factionId)}>{activePlan.factionId}</Tag>
+                  {activePlan.modes.map((m) => (
+                    <Tag key={m} variant="default">
+                      {m}
+                    </Tag>
+                  ))}
+                  <Tag variant="default">{activePlan.opening}</Tag>
+                  <Tag variant="default">{activePlan.energyStyle}</Tag>
+                  <span className="text-[11px] text-zinc-400">{activePlan.steps.length} STEPS</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-zinc-400">No plans yet. Add one in the Library.</p>
+          )}
+
+          <div className="flex flex-wrap items-center gap-3">
             <Button
-              variant="armada"
-              size="md"
+              variant="primary"
+              size="lg"
               disabled={!activePlan}
               onClick={() => void handleStartLive()}
               data-testid="home-start-live-btn"
-              className="flex-1 min-w-[180px] bg-[#22c55e] hover:bg-[#16a34a] text-black font-bold border-[#22c55e]"
+              className="px-5 py-3"
+              style={planAccent ? ({ '--btn-accent': planAccent } as React.CSSProperties) : undefined}
             >
               START COACHING (LIVE)
             </Button>
-            <Button variant="default" size="md" disabled={!activePlan} onClick={() => void handleStartManual()} data-testid="home-start-manual-btn" className="flex-1 min-w-[150px] border border-[#fbbf24]/50 text-[#fbbf24] hover:bg-[#fbbf24]/10">
+            <Button variant="default" size="sm" disabled={!activePlan} onClick={() => void handleStartManual()} data-testid="home-start-manual-btn">
               MANUAL CLOCK
             </Button>
-            <Button variant="default" size="md" onClick={() => void handleStartDemo()} data-testid="home-start-demo-btn" className="flex-1 min-w-[120px] border border-[#38bdf8]/50 text-[#38bdf8] hover:bg-[#38bdf8]/10">
+            <Button variant="default" size="sm" onClick={() => void handleStartDemo()} data-testid="home-start-demo-btn">
               DEMO 4×
             </Button>
           </div>
-        </div>
+        </section>
+
+        {/* Game status: information only; the top bar and Settings hold the controls */}
+        <section data-testid="home-status-card" className="space-y-4 rounded-lg border border-zinc-800 bg-[#12131a] p-5">
+          <div className="flex items-center justify-between">
+            <span className="font-['Press_Start_2P'] text-[10px] text-zinc-400">GAME STATUS</span>
+            <span className={`rounded border px-2 py-0.5 text-[10px] font-bold uppercase ${STATUS_STYLE[statusTone]}`}>
+              {isHealthy ? 'ONLINE' : health.status.toUpperCase()}
+            </span>
+          </div>
+          <p className="text-xs text-zinc-200">{health.message}</p>
+          <p className="border-t border-zinc-800 pt-4 text-xs text-zinc-400">
+            <span className="text-zinc-300">Next: </span>
+            {nextAction}
+          </p>
+        </section>
       </div>
 
-      {/* Last Game Card Placeholder (06 §4.2, M07 placeholder) */}
-      <div
-        data-testid="home-last-game-card"
-        className="rounded-lg border border-[#27272a] bg-[#12131a] p-5 shadow-lg"
-      >
-        <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#a1a1aa]">LAST GAME REPORT</span>
-          <span className="text-[10px] text-[#71717a] uppercase">MILESTONE M07</span>
-        </div>
-        <div className="mt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <p className="text-xs text-[#e4e4e7] font-bold">No recent match session recorded.</p>
-            <p className="mt-1 text-xs text-[#a1a1aa]">
-              Play a live match vs AI or human opponents with the StratCom widget enabled to generate economy
-              metrics, benchmark bands, and tactical post-game analysis.
-            </p>
+      {/* Last game: the latest report, opened directly */}
+      <section data-testid="home-last-game-card" className="rounded-lg border border-zinc-800 bg-[#12131a] p-5">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-400">LAST GAME</span>
+        {latest ? (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              {latest.report && (
+                <span data-testid="home-last-game-grade" className="font-['Press_Start_2P'] text-2xl text-[#fbbf24]">
+                  {latest.report.grade}
+                </span>
+              )}
+              <div>
+                <p className="text-sm font-bold text-white">{latest.meta.mapScriptName}</p>
+                <p className="mt-1 text-xs text-zinc-400">
+                  {latest.meta.startedAt.slice(0, 10)} · {Math.floor(latest.meta.durationSec / 60)} min
+                  {latest.report ? ` · ${Math.round(latest.report.adherence * 100)}% plan adherence` : ''}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="default"
+              size="md"
+              data-testid="home-open-last-report"
+              onClick={() => {
+                window.location.hash = `#/review?sessionId=${latest.meta.sessionId}`;
+              }}
+            >
+              OPEN REPORT
+            </Button>
           </div>
-          <Button variant="default" size="sm" onClick={() => { window.location.hash = '#/review'; }} className="border border-[#27272a]">
-            VIEW REVIEWS
-          </Button>
-        </div>
-      </div>
+        ) : (
+          <p className="mt-4 text-xs text-zinc-400">
+            No games yet.
+          </p>
+        )}
+      </section>
 
       <DemoPickerModal
         isOpen={demoPickerOpen}

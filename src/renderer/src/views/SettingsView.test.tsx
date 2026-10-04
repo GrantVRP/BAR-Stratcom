@@ -95,7 +95,7 @@ describe('SettingsView', () => {
 
     // Find tab buttons
     const tabs = Array.from(container.querySelectorAll('button[role="tab"]'));
-    expect(tabs.length).toBe(7);
+    expect(tabs.length).toBe(6); // GAME COACH ASSIST AI APP DATA (About is its own page)
 
     // Switch to Coach
     const coachTab = tabs.find((t) => t.textContent?.includes('COACH'));
@@ -138,12 +138,7 @@ describe('SettingsView', () => {
     expect(container.querySelector('[data-testid="settings-section-data"]')).not.toBeNull();
     expect(container.textContent).toContain('BACKUP BUILD ORDERS');
 
-    // Switch to About
-    const aboutTab = tabs.find((t) => t.textContent?.includes('ABOUT'));
-    await act(async () => {
-      aboutTab?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-    expect(container.querySelector('[data-testid="settings-section-about"]')).not.toBeNull();
-    expect(container.textContent).toContain('UNOFFICIAL COMMUNITY TOOL');
+    // About lives on the About page only (T06.16: no duplicate tab)
+    expect(tabs.some((t) => t.textContent?.includes('ABOUT'))).toBe(false);
   });
 });

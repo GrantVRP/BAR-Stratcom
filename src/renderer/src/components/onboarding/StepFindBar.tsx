@@ -90,14 +90,10 @@ export function StepFindBar({ onBack, onNext }: StepFindBarProps): React.JSX.Ele
           <span className="font-['Press_Start_2P'] text-sm text-[#38bdf8]">
             LOCATE BEYOND ALL REASON
           </span>
-          <p className="mt-1 text-xs text-[#a1a1aa]">
-            STRATCOM COMMUNICATES WITH YOUR GAME VIA THE &lt;BAR DATA&gt;/stratcom DIRECTORY
-          </p>
         </div>
 
         <p className="text-xs text-[#e4e4e7] leading-relaxed">
-          StratCom needs to know where Beyond All Reason is installed on your computer.
-          We can auto-detect it from your Windows registry, running game processes, or default installation folders.
+          Where is Beyond All Reason installed?
         </p>
 
         {/* Directory Card */}
@@ -150,7 +146,7 @@ export function StepFindBar({ onBack, onNext }: StepFindBarProps): React.JSX.Ele
           ◂ BACK
         </Button>
         <Button
-          variant="armada"
+          variant="primary"
           size="md"
           onClick={onNext}
           data-testid="onboarding-next-btn"

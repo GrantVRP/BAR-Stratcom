@@ -112,7 +112,7 @@ export function EconomyChart({
           <SimGraph chartSeries={actualSeries} />
         ) : (
           <div className="p-4 text-center font-mono text-xs text-zinc-500">
-            NO RECORDED TELEMETRY SERIES FOR THIS SESSION
+            NO RECORDED DATA
           </div>
         )
       ) : (

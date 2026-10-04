@@ -79,7 +79,8 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
     expect(container.querySelector('[data-testid="launch-window"]')).toBeNull();
     expect(container.querySelector('[data-testid="health-chip"]')).not.toBeNull();
     expect(container.querySelector('[data-testid="active-plan-chip"]')).not.toBeNull();
-    expect(container.querySelector('[data-testid="profile-chip"]')).not.toBeNull();
+    // the coaching profile is set in Settings, not shown in the top bar (T06.16)
+    expect(container.querySelector('[data-testid="profile-chip"]')).toBeNull();
     expect(container.querySelector('[data-testid="view-home"]')).not.toBeNull();
   });
 

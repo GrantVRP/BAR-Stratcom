@@ -56,7 +56,7 @@ export function CoachUpNext({
 
       {upcomingIndices.length === 0 ? (
         <div className="py-2 text-center text-xs text-[#71717a] italic">
-          No further steps scheduled in opening sequence.
+          No more steps.
         </div>
       ) : (
         <div className="space-y-1.5">

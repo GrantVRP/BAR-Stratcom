@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Tabs } from '../components/ui/Tabs';
+import { PageHeader } from '../components/ui/PageHeader';
 import {
   GameSettingsSection,
   CoachSettingsSection,
   AssistSettingsSection,
   AiSettingsSection,
   AppSettingsSection,
-  DataSettingsSection,
-  AboutSettingsSection
+  DataSettingsSection
 } from '../components/settings';
 
-export type SettingsTabId = 'game' | 'coach' | 'assist' | 'ai' | 'app' | 'data' | 'about';
+/** The About page (left menu) holds version, licences and credits; no About tab here (T06.16). */
+export type SettingsTabId = 'game' | 'coach' | 'assist' | 'ai' | 'app' | 'data';
 
 interface TabItem {
   id: SettingsTabId;
@@ -23,27 +24,15 @@ const SETTINGS_TABS: TabItem[] = [
   { id: 'assist', label: 'ASSIST' },
   { id: 'ai', label: 'AI' },
   { id: 'app', label: 'APP' },
-  { id: 'data', label: 'DATA' },
-  { id: 'about', label: 'ABOUT' }
+  { id: 'data', label: 'DATA' }
 ];
 
 export function SettingsView(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<SettingsTabId>('game');
 
   return (
-    <div data-testid="view-settings" className="space-y-6 max-w-5xl mx-auto pb-12">
-      {/* View Header */}
-      <div className="border-b-2 border-[#1f2430] pb-4">
-        <div className="flex items-center gap-3">
-          <span className="font-['Press_Start_2P'] text-sm text-[#e4e4e7]">
-            SYSTEM SETTINGS
-          </span>
-          <span className="text-xs font-mono text-[#71717a]">// CONFIGURATION</span>
-        </div>
-        <p className="mt-1 text-xs text-[#a1a1aa] font-mono">
-          Configure Beyond All Reason integration, coaching profile, HUD preferences, and audio.
-        </p>
-      </div>
+    <div data-testid="view-settings" className="mx-auto max-w-5xl space-y-6 p-6 pb-12">
+      <PageHeader title="SETTINGS" />
 
       {/* Section Tabs */}
       <div className="border-b border-[#27272a]">
@@ -63,7 +52,6 @@ export function SettingsView(): React.JSX.Element {
         {activeTab === 'ai' && <AiSettingsSection />}
         {activeTab === 'app' && <AppSettingsSection />}
         {activeTab === 'data' && <DataSettingsSection />}
-        {activeTab === 'about' && <AboutSettingsSection />}
       </div>
     </div>
   );

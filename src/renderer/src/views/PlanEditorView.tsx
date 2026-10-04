@@ -192,7 +192,7 @@ export function PlanEditorView({
           <div className="space-y-2" data-testid="editor-step-list">
             {draft.steps.length === 0 ? (
               <div className="p-8 pixel-box bg-[#0c0e18] text-center text-xs text-zinc-500">
-                No steps in this plan. Click &quot;ADD STEP&quot; to begin.
+                No steps yet.
               </div>
             ) : (
               draft.steps.map((step, idx) => (

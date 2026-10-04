@@ -8,7 +8,6 @@ import { UnitCard } from '../components/units/UnitCard';
 import { UnitDossier } from '../components/units/UnitDossier';
 import { Drawer } from '../components/ui/Drawer';
 import { Provenance } from '../components/ui/Provenance';
-import { UNIT_ART_CREDIT } from '../components/icons/unit-sprites';
 
 /** Unit catalog with original class icons and a dossier drawer (06 §4.8, T10.3). */
 export function UnitsView(): React.JSX.Element {
@@ -53,14 +52,11 @@ export function UnitsView(): React.JSX.Element {
         <h1 className="font-['Press_Start_2P'] text-sm text-zinc-100">UNIT CATALOG</h1>
         {snapshot && (
           <div className="flex items-center gap-2 font-mono text-sm text-zinc-400" data-testid="units-game-version">
-            Data from game version {snapshot.gameVersion}
+            Game version {snapshot.gameVersion}
             <Provenance kind="MEASURED" tooltip="Unit definitions exported from the game by the StratCom widget" />
           </div>
         )}
       </header>
-      <p className="-mt-2 font-mono text-sm text-zinc-400" data-testid="units-art-credit">
-        {UNIT_ART_CREDIT}
-      </p>
 
       {factionId && (
         <UnitFilters

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { CheckSquare, Square } from 'lucide-react';
+import React from 'react';
 import type { BuildPlan, BuildStep } from '../../../../core/schemas';
 import { useSnapshot } from '../../stores';
 import { TacticalIcon } from './TacticalIcon';
@@ -38,17 +37,11 @@ function getActorBadge(actor: BuildStep['actor']): { text: string; className: st
 }
 
 export function PlanTimeline({ plan, className = '' }: PlanTimelineProps): React.JSX.Element {
-  const [checkedIds, setCheckedIds] = useState<Record<string, boolean>>({});
   const { getUnit, getUnitName } = useSnapshot();
-
-  const toggleCheck = (id: string): void => {
-    setCheckedIds((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   return (
     <div className={`space-y-2 ${className}`} data-testid="plan-timeline">
       {plan.steps.map((step, idx) => {
-        const isChecked = Boolean(checkedIds[step.id]);
         const actorBadge = getActorBadge(step.actor);
         const unit = step.unitId ? getUnit(step.unitId) : undefined;
         const unitName = step.unitId ? getUnitName(step.unitId) : '';
@@ -61,9 +54,7 @@ export function PlanTimeline({ plan, className = '' }: PlanTimelineProps): React
           <div
             key={step.id || idx}
             data-testid={`timeline-step-${idx}`}
-            className={`flex items-center gap-3 p-2.5 pixel-box transition-none ${
-              isChecked ? 'bg-[#0b0e17] opacity-60' : 'bg-[#0e121d] hover:bg-[#131826]'
-            }`}
+            className="flex items-center gap-3 p-2.5 pixel-box transition-none bg-[#0e121d] hover:bg-[#131826]"
           >
             {/* Timestamp */}
             <div className="shrink-0 w-14">
@@ -74,21 +65,6 @@ export function PlanTimeline({ plan, className = '' }: PlanTimelineProps): React
                 {timeStr}
               </span>
             </div>
-
-            {/* Checkbox button */}
-            <button
-              type="button"
-              onClick={() => toggleCheck(step.id)}
-              className="text-zinc-500 hover:text-white cursor-pointer shrink-0"
-              title={isChecked ? 'Mark step incomplete' : 'Mark step complete'}
-              aria-label={`Toggle step ${idx + 1}`}
-            >
-              {isChecked ? (
-                <CheckSquare className="size-4 text-[#4ade80]" />
-              ) : (
-                <Square className="size-4" />
-              )}
-            </button>
 
             {/* Tactical Icon */}
             <div className="size-8 pixel-box-inset flex items-center justify-center shrink-0 bg-[#090b14]">
@@ -109,11 +85,7 @@ export function PlanTimeline({ plan, className = '' }: PlanTimelineProps): React
             {/* Content line */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span
-                  className={`font-pixel-heading text-[10px] ${
-                    isChecked ? 'line-through text-zinc-400' : 'text-zinc-100'
-                  }`}
-                >
+                <span className="font-pixel-heading text-[10px] text-zinc-100">
                   {step.action === 'build' ? (
                     <>
                       <span data-num="true" className="font-mono">{step.count}</span>× {unitName}

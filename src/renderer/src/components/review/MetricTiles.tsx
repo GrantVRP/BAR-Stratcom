@@ -67,36 +67,38 @@ export function MetricTiles({ metrics }: MetricTilesProps): React.JSX.Element {
     }
   ];
 
+  // one provenance label for the whole group; each tile leads with its number (T06.16)
   return (
-    <div data-testid="metric-tiles-grid" className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
-      {tiles.map((tile) => (
-        <div
-          key={tile.id}
-          data-testid={tile.testId}
-          className="pixel-box flex flex-col justify-between gap-1 border-2 border-black bg-[#12131a] p-2.5 shadow-[2px_2px_0px_#000]"
-        >
-          <div className="flex items-center justify-between gap-1">
-            <span className="truncate font-['Press_Start_2P'] text-[10px] text-zinc-400">
-              {tile.label}
-            </span>
-            <Provenance kind="MEASURED" />
-          </div>
+    <section className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-400">MATCH METRICS</span>
+        <Provenance kind="MEASURED" />
+      </div>
+      <div data-testid="metric-tiles-grid" className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+        {tiles.map((tile) => (
           <div
-            data-num="true"
-            className={`font-mono text-base font-bold tabular-nums ${
-              tile.status === 'danger'
-                ? 'text-[#f87171]'
-                : tile.status === 'warn'
-                  ? 'text-[#fbbf24]'
-                  : tile.status === 'good'
-                    ? 'text-[#4ade80]'
-                    : 'text-zinc-200'
-            }`}
+            key={tile.id}
+            data-testid={tile.testId}
+            className="flex flex-col gap-1 rounded border border-zinc-800 bg-[#12131a] p-3"
           >
-            {tile.value}
+            <div
+              data-num="true"
+              className={`font-mono text-xl font-bold tabular-nums ${
+                tile.status === 'danger'
+                  ? 'text-[#f87171]'
+                  : tile.status === 'warn'
+                    ? 'text-[#fbbf24]'
+                    : tile.status === 'good'
+                      ? 'text-[#4ade80]'
+                      : 'text-zinc-200'
+              }`}
+            >
+              {tile.value}
+            </div>
+            <span className="font-mono text-[11px] uppercase leading-tight text-zinc-400">{tile.label}</span>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </section>
   );
 }

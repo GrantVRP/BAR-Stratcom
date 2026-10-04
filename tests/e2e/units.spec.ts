@@ -13,7 +13,7 @@ test('unit catalog: legacy name search, original icons and dossier (T10.3)', asy
 
     await page.getByTestId('nav-units').click();
     await expect(page.getByTestId('view-units')).toBeVisible();
-    await expect(page.getByTestId('units-game-version')).toContainText('Data from game version');
+    await expect(page.getByTestId('units-game-version')).toContainText('Game version');
 
     // "Rocko" is a legacy name (data/aliases.json); the card shows the unit under its current name
     await page.getByTestId('input-units-search').fill('Rocko');
@@ -21,7 +21,6 @@ test('unit catalog: legacy name search, original icons and dossier (T10.3)', asy
     await expect(card).toBeVisible();
     await expect(card).not.toContainText('Rocko');
     await expect(card.locator('img[data-unit-sprite="armrock"]')).toBeVisible();
-    await expect(page.getByTestId('units-art-credit')).toContainText('IceXuick and Floris');
 
     await card.click();
     const dossier = page.getByTestId('unit-dossier');
@@ -32,6 +31,12 @@ test('unit catalog: legacy name search, original icons and dossier (T10.3)', asy
     // Following a "Built by" link opens that unit's dossier
     await dossier.getByRole('button', { name: /Bot Lab/ }).first().click();
     await expect(page.getByTestId('unit-dossier')).toContainText('armlab');
+
+    // The unit art credit lives on the About page (T06.16 keeps the catalog free of long copy)
+    await page.keyboard.press('Escape'); // close the dossier drawer first
+    await expect(page.getByTestId('unit-dossier')).not.toBeVisible();
+    await page.getByTestId('nav-about').click();
+    await expect(page.getByTestId('about-credits')).toContainText('IceXuick and Floris');
   } finally {
     await close();
   }

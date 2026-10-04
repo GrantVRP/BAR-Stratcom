@@ -6,7 +6,7 @@ export function AboutSettingsSection(): React.JSX.Element {
       {/* App Header & Version */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
         <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+          <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
             BAR STRATCOM
           </span>
           <span
@@ -35,7 +35,7 @@ export function AboutSettingsSection(): React.JSX.Element {
 
       {/* Licenses */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           LICENSES & OPEN SOURCE
         </span>
 
@@ -76,7 +76,7 @@ export function AboutSettingsSection(): React.JSX.Element {
 
       {/* BAR Attribution & Links */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           BEYOND ALL REASON ATTRIBUTION
         </span>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen, FileUp, Plus } from 'lucide-react';
+import { FileUp, Plus } from 'lucide-react';
 import type { BuildPlan } from '../../../core/schemas';
 import { usePlans } from '../stores';
 import { PlanDetailView } from './PlanDetailView';
@@ -7,16 +7,17 @@ import { PlanEditorView } from './PlanEditorView';
 import { LibraryFilters } from '../components/plans/LibraryFilters';
 import { LibraryPlanCard } from '../components/plans/LibraryPlanCard';
 import { ImportPlanDialog } from '../components/plans/ImportPlanDialog';
+import { Button } from '../components/ui/Button';
+import { PageHeader } from '../components/ui/PageHeader';
 
 function formatProvenanceLine(source: BuildPlan['source']): string {
-  const d = (iso: string): string => iso.slice(0, 10);
   switch (source.kind) {
-    case 'curated': return `CURATED // from ${source.player} on ${source.map}, ${d(source.playedAt)}`;
-    case 'replay-capture': return `CAPTURED // from ${source.player} on ${source.map}, ${d(source.capturedAt)}`;
-    case 'own-game': return `SAMPLE // owner game vs AI, ${source.map}, ${d(source.capturedAt)}`;
-    case 'adapted': return `ADAPTED // from ${source.fromPlanId}, ${d(source.createdAt)}`;
-    case 'ai-draft': return `AI DRAFT // ${source.provider}/${source.model}, ${d(source.createdAt)}`;
-    default: return `MANUAL // ${d(source.createdAt)}`;
+    case 'curated': return `PRO // ${source.player}`;
+    case 'replay-capture': return `CAPTURED // ${source.player}`;
+    case 'own-game': return `SAMPLE // ${source.map}`;
+    case 'adapted': return 'ADAPTED';
+    case 'ai-draft': return 'AI DRAFT';
+    default: return 'MANUAL';
   }
 }
 
@@ -122,44 +123,24 @@ export function LibraryView(): React.JSX.Element {
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-5" data-testid="view-library">
-      {/* View Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h2 className="font-pixel-heading text-sm text-white tracking-wider flex items-center gap-2">
-            <BookOpen className="size-4 text-[#449bed]" />
-            PLAN LIBRARY
-          </h2>
-          <div className="text-xs text-zinc-400 mt-1">
-            Curated openings, captured replays, and custom builds.
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => setImportOpen(true)}
-            data-testid="btn-import-plan"
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-zinc-700 bg-zinc-900 text-zinc-300 hover:text-white font-pixel-heading text-[10px] cursor-pointer transition-none"
-          >
-            <FileUp className="size-3.5" />
-            <span>IMPORT</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setEditingPlan('new')}
-            data-testid="btn-create-plan"
-            className="flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#449bed] bg-[#0a1c32] text-[#449bed] hover:bg-[#122845] font-pixel-heading text-[10px] cursor-pointer transition-none"
-          >
-            <Plus className="size-3.5" />
-            <span>+ NEW PLAN</span>
-          </button>
-
-          <div data-num="true" className="font-mono text-xs text-zinc-400 pixel-box-inset px-2.5 py-1">
-            {filteredPlans.length} / {plans.length} PLANS
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="PLAN LIBRARY"
+        actions={
+          <>
+            <span data-num="true" className="font-mono text-xs text-zinc-400">
+              {filteredPlans.length} / {plans.length} PLANS
+            </span>
+            <Button variant="default" size="md" onClick={() => setImportOpen(true)} data-testid="btn-import-plan" className="gap-1.5">
+              <FileUp className="size-3.5" />
+              IMPORT
+            </Button>
+            <Button variant="primary" size="md" onClick={() => setEditingPlan('new')} data-testid="btn-create-plan" className="gap-1.5">
+              <Plus className="size-3.5" />
+              NEW PLAN
+            </Button>
+          </>
+        }
+      />
 
       {/* Filter Toolbar */}
       <LibraryFilters
@@ -186,8 +167,7 @@ export function LibraryView(): React.JSX.Element {
         </div>
       ) : filteredPlans.length === 0 ? (
         <div className="p-12 pixel-box bg-[#0c0e18] text-center space-y-2">
-          <div className="font-pixel-heading text-xs text-zinc-400">NO PLANS MATCH YOUR CRITERIA</div>
-          <div className="text-xs text-zinc-500">Try adjusting your filters or import a build plan.</div>
+          <div className="font-pixel-heading text-xs text-zinc-400">NO PLANS MATCH</div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="plans-grid">

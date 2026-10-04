@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 style={{ fontFamily: "'VT323', monospace", fontSize: '20px' }}
                 className="text-zinc-300"
               >
-                A tactical interface component encountered an unhandled exception. State has been isolated.
+                Something went wrong on this screen.
               </div>
 
               <Inset className="p-4">
@@ -64,7 +64,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 <Button variant="ghost" size="sm" onClick={this.handleReload}>
                   RELOAD SUBSYSTEM
                 </Button>
-                <Button variant="armada" size="sm" onClick={this.handleReset}>
+                <Button variant="primary" size="sm" onClick={this.handleReset}>
                   RETURN TO HOME
                 </Button>
               </div>

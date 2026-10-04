@@ -134,7 +134,7 @@ export function BenchmarkChart({ benchmark, meta, states }: BenchmarkChartProps)
             {chart.you && <polyline data-testid="benchmark-you" points={chart.you} fill="none" stroke={accent} strokeWidth={2} />}
           </svg>
           <div className="flex flex-wrap gap-4 font-mono text-[10px] text-zinc-400">
-            <span><span className="mr-1 inline-block h-2 w-4 align-middle" style={{ backgroundColor: BAND, opacity: 0.4 }} />PRO P25–P75</span>
+            <span><span className="mr-1 inline-block h-2 w-4 align-middle" style={{ backgroundColor: BAND, opacity: 0.4 }} />PRO P25-P75</span>
             <span><span className="mr-1 inline-block w-4 border-t border-dashed align-middle" style={{ borderColor: BAND }} />PRO MEDIAN</span>
             <span><span className="mr-1 inline-block w-4 border-t-2 align-middle" style={{ borderColor: accent }} />YOU</span>
           </div>
@@ -148,8 +148,8 @@ export function BenchmarkChart({ benchmark, meta, states }: BenchmarkChartProps)
           <div className="font-['Press_Start_2P'] text-[10px] text-[#fbbf24]">NO PRO BENCHMARK</div>
           <div className="mt-2 font-mono text-xs text-zinc-400">
             {key
-              ? `No pro games recorded yet for ${key.factionId} ${key.mode}.`
-              : 'Benchmarks compare your own team; this session has no player of yours to compare.'}
+              ? `No pro data for ${key.factionId} ${key.mode} yet.`
+              : 'Only for your own games.'}
           </div>
         </div>
       )}

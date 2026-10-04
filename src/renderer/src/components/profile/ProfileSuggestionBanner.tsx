@@ -94,11 +94,11 @@ export function ProfileSuggestionBanner({
 
         <div className="flex items-center gap-2 shrink-0">
           <Button
-            variant="armada"
+            variant="primary"
             size="sm"
             data-testid="profile-suggestion-accept"
             onClick={() => void handleAccept()}
-            className="bg-[#22c55e] hover:bg-[#16a34a] text-black font-bold border-[#22c55e]"
+           
           >
             ACCEPT
           </Button>

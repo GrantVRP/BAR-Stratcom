@@ -3,6 +3,7 @@ import { Check, Copy, Edit, Share2, Trash2, Zap } from 'lucide-react';
 import type { BuildPlan } from '../../../../core/schemas';
 import { FactionEmblem } from '../ui/FactionEmblem';
 import { factionAccent } from '../../lib/faction-style';
+import { Button } from '../ui/Button';
 
 export interface PlanDetailHeaderProps {
   plan: BuildPlan;
@@ -33,7 +34,7 @@ export function PlanDetailHeader({
         <div className="flex items-center gap-3">
           <FactionEmblem faction={plan.factionId} size={36} />
           <div>
-            <h2 className="font-pixel-heading text-sm text-white tracking-wide">
+            <h2 className="font-pixel-heading text-base leading-relaxed tracking-wide text-white">
               {plan.title}
             </h2>
             <div className="flex items-center gap-2 mt-1.5 text-zinc-400 text-xs flex-wrap">
@@ -56,66 +57,39 @@ export function PlanDetailHeader({
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            type="button"
+        {/* Actions: ACTIVATE is the main one (filled, faction colour); delete is set apart */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            variant={isActive ? 'default' : 'primary'}
+            size="md"
             onClick={onActivate}
             data-testid="btn-activate-plan"
-            className={`flex items-center gap-1.5 px-3 py-1.5 cursor-pointer transition-none ${
-              isActive
-                ? 'border-2 border-[#4ade80] bg-[#0c2e17] text-[#4ade80]'
-                : 'border-2 border-[#449bed] bg-[#0a1c32] text-[#449bed] hover:bg-[#122845]'
-            }`}
+            className={`gap-1.5 ${isActive ? 'text-[#4ade80]' : ''}`}
+            style={isActive ? undefined : ({ '--btn-accent': factionAccent(plan.factionId) } as React.CSSProperties)}
           >
             {isActive ? <Check className="size-3.5" /> : <Zap className="size-3.5" />}
-            <span className="font-pixel-heading text-[10px]">
-              {isActive ? 'ACTIVE PLAN' : 'ACTIVATE'}
-            </span>
-          </button>
-
+            {isActive ? 'ACTIVE PLAN' : 'ACTIVATE'}
+          </Button>
           {!isCurated ? (
-            <button
-              type="button"
-              onClick={onEdit}
-              data-testid="btn-edit-plan"
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-500 cursor-pointer transition-none"
-            >
+            <Button variant="default" size="md" onClick={onEdit} data-testid="btn-edit-plan" className="gap-1.5">
               <Edit className="size-3.5" />
-              <span className="font-pixel-heading text-[10px]">EDIT PLAN</span>
-            </button>
+              EDIT PLAN
+            </Button>
           ) : (
-            <button
-              type="button"
-              onClick={onEditCopy}
-              data-testid="btn-edit-copy"
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-500 cursor-pointer transition-none"
-            >
+            <Button variant="default" size="md" onClick={onEditCopy} data-testid="btn-edit-copy" className="gap-1.5">
               <Copy className="size-3.5" />
-              <span className="font-pixel-heading text-[10px]">EDIT A COPY</span>
-            </button>
+              EDIT A COPY
+            </Button>
           )}
-
-          <button
-            type="button"
-            onClick={onShare}
-            data-testid="btn-share-plan"
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-500 cursor-pointer transition-none"
-          >
+          <Button variant="default" size="md" onClick={onShare} data-testid="btn-share-plan" className="gap-1.5">
             <Share2 className="size-3.5" />
-            <span className="font-pixel-heading text-[10px]">SHARE</span>
-          </button>
-
+            SHARE
+          </Button>
           {!isCurated && (
-            <button
-              type="button"
-              onClick={onDelete}
-              data-testid="btn-delete-plan"
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-red-900 bg-red-950/60 text-red-300 hover:border-red-600 cursor-pointer transition-none"
-            >
+            <Button variant="danger" size="md" onClick={onDelete} data-testid="btn-delete-plan" className="ml-4 gap-1.5">
               <Trash2 className="size-3.5" />
-              <span className="font-pixel-heading text-[10px]">DELETE</span>
-            </button>
+              DELETE
+            </Button>
           )}
         </div>
       </div>

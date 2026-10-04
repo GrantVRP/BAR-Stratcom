@@ -53,7 +53,7 @@ export function AiSettingsSection(): React.JSX.Element {
     <div data-testid="settings-section-ai" className="space-y-6 font-mono text-xs">
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-4">
         <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+          <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
             AI ADVISOR CONFIGURATION
           </span>
           <span className="rounded bg-[#c084fc]/15 px-1.5 py-0.5 text-[10px] font-bold text-[#c084fc]">
@@ -62,8 +62,7 @@ export function AiSettingsSection(): React.JSX.Element {
         </div>
 
         <p className="text-xs text-[#a1a1aa]">
-          StratCom supports optional AI integration for build plan generation, match debriefs, and
-          opening variation drafting. BYOK (Bring Your Own Key) or run local models with zero telemetry.
+          Optional. Use your own API key or a local model.
         </p>
 
         {/* Provider Selection */}
@@ -101,7 +100,7 @@ export function AiSettingsSection(): React.JSX.Element {
             <div>
               <div className="font-bold text-[#e4e4e7] text-xs">Anthropic Refusal Fallback</div>
               <div className="text-[10px] text-[#71717a]">
-                Automatically retries prompt adjustments if the model flags harmless game terms.
+                Retry when the model refuses harmless game terms.
               </div>
             </div>
             <Toggle
@@ -118,12 +117,10 @@ export function AiSettingsSection(): React.JSX.Element {
             WHAT IS SENT & SECURE STORAGE
           </span>
           <p className="text-xs text-[#d8b4fe]">
-            Your API keys are encrypted at rest using OS-level secure storage (DPAPI on Windows)
-            in <code className="text-white">userData/keys.json</code> and never transmitted to StratCom servers.
+            Keys are encrypted on this PC (Windows secure storage) and never sent to StratCom.
           </p>
           <p className="text-xs text-[#a1a1aa]">
-            When generating plan variants, only sanitized build step names and resource timings are
-            sent to your chosen provider. Live game telemetry is processed 100% locally on your machine.
+            Only build steps and timings go to your provider. Game data stays on this PC.
           </p>
         </div>
       </div>

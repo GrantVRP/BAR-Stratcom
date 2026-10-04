@@ -22,14 +22,13 @@ import { useCoach, useLive, usePlans, useSessions, useSettings, useSnapshot } fr
 import { setupAudioCueListener } from './audio/sounds';
 import { ReportReadyToast } from './components/review/ReportReadyToast';
 
+// Alt+5 (Intel) and Alt+7 (Maps) return with their pages (T10.2, T10.4)
 const ALT_ROUTES: Record<string, string> = {
   '1': '#/home',
   '2': '#/library',
   '3': '#/coach',
   '4': '#/review',
-  '5': '#/intel',
   '6': '#/units',
-  '7': '#/maps',
   '8': '#/settings'
 };
 

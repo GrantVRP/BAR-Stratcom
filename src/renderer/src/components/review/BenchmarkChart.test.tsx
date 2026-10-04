@@ -81,13 +81,13 @@ describe('BenchmarkChart (T08.4)', () => {
   it('explains when there is no benchmark, or no own team to compare', async () => {
     invoke.mockResolvedValue({ ok: true, data: null });
     await act(async () => root.render(<BenchmarkChart meta={meta} states={states} />));
-    expect(container.textContent).toContain('No pro games recorded yet for cortex 1v1.');
+    expect(container.textContent).toContain('No pro data for cortex 1v1 yet.');
 
     invoke.mockClear();
     const spectator = { ...meta, mode: 'replay' as const, teams: meta.teams.map((t) => ({ ...t, isMe: false })) };
     await act(async () => root.render(<BenchmarkChart meta={spectator} states={states} />));
     expect(invoke).not.toHaveBeenCalled();
-    expect(container.textContent).toContain('no player of yours to compare');
+    expect(container.textContent).toContain('Only for your own games.');
   });
 
   it('reads my metal income every 5 s from player state docs, and nothing from spectator docs', () => {

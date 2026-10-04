@@ -56,7 +56,7 @@ export function AppSettingsSection(): React.JSX.Element {
     <div data-testid="settings-section-app" className="space-y-6 font-mono text-xs">
       {/* Startup & Updates */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-4">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           LAUNCHER & SYSTEM PREFERENCES
         </span>
 
@@ -65,7 +65,7 @@ export function AppSettingsSection(): React.JSX.Element {
           <div>
             <div className="font-bold text-[#e4e4e7] text-xs">SHOW TITLE LAUNCHER ON START</div>
             <div className="text-[10px] text-[#71717a]">
-              Display the retro arcade launcher screen on app startup. Bypassed automatically when invoked via hotkey.
+              Show the launch screen on start.
             </div>
           </div>
           <Toggle
@@ -81,7 +81,7 @@ export function AppSettingsSection(): React.JSX.Element {
             <div>
               <div className="font-bold text-[#e4e4e7] text-xs">CHECK FOR UPDATES ON LAUNCH</div>
               <div className="text-[10px] text-[#71717a]">
-                Queries GitHub Releases on startup to alert you to new versions.
+                Check GitHub for new versions on start.
               </div>
             </div>
             <Toggle
@@ -91,7 +91,7 @@ export function AppSettingsSection(): React.JSX.Element {
             />
           </div>
           <div className="text-[10px] text-[#94a3b8] border-t border-[#1f2430] pt-2">
-            Disclosure: Only the GitHub API is queried. Zero telemetry, tracking cookies, or analytics are sent (D-17, D-19).
+            Only GitHub is contacted. No tracking.
           </div>
         </div>
 
@@ -100,7 +100,7 @@ export function AppSettingsSection(): React.JSX.Element {
           <div>
             <div className="font-bold text-[#e4e4e7] text-xs">ONBOARDING SETUP WIZARD</div>
             <div className="text-[10px] text-[#71717a]">
-              Re-run the initial 6-step setup wizard to reconfigure BAR directories, widget, and profiles.
+              Run the setup wizard again.
             </div>
           </div>
           <Button
@@ -119,7 +119,7 @@ export function AppSettingsSection(): React.JSX.Element {
       {/* Global Shortcut */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
         <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+          <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
             GLOBAL SHORTCUT (IN-GAME HOTKEY)
           </span>
           <span
@@ -137,7 +137,7 @@ export function AppSettingsSection(): React.JSX.Element {
         </div>
 
         <p className="text-xs text-[#a1a1aa]">
-          Toggles the Coach glance window while playing (or starts/pauses clock in manual mode).
+          Shows or hides the coach window in game.
         </p>
 
         <div className="flex items-center gap-2 pt-1">
@@ -163,7 +163,7 @@ export function AppSettingsSection(): React.JSX.Element {
 
       {/* Coach Window Preferences */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-4">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           COACH WINDOW DISPLAY PREFERENCES
         </span>
 
@@ -172,7 +172,7 @@ export function AppSettingsSection(): React.JSX.Element {
           <div>
             <div className="font-bold text-[#e4e4e7] text-xs">ALWAYS ON TOP</div>
             <div className="text-[10px] text-[#71717a]">
-              Keeps the Coach glance window floating above other desktop windows.
+              Keep the coach window on top.
             </div>
           </div>
           <Toggle
@@ -195,7 +195,7 @@ export function AppSettingsSection(): React.JSX.Element {
             <div>
               <div className="font-bold text-[#e4e4e7] text-xs">OVERLAY MODE (TRANSPARENT HUD)</div>
               <div className="text-[10px] text-[#71717a]">
-                Renders a borderless transparent HUD directly over the game screen.
+                Transparent HUD over the game.
               </div>
             </div>
             <Toggle
@@ -212,7 +212,7 @@ export function AppSettingsSection(): React.JSX.Element {
             />
           </div>
           <div className="text-[10px] text-[#fbbf24] border-t border-[#1f2430] pt-2">
-            Notice: Overlay mode requires Beyond All Reason to run in Borderless-Windowed mode.
+            Needs BAR in borderless windowed mode.
           </div>
         </div>
       </div>

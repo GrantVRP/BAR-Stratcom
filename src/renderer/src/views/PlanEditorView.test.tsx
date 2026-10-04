@@ -111,7 +111,7 @@ describe('PlanEditorView', () => {
 
     const stepRows = container.querySelectorAll('[data-testid^="editor-step-row-"]');
     expect(stepRows.length).toBe(0);
-    expect(container.textContent).toContain('No steps in this plan');
+    expect(container.textContent).toContain('No steps yet.');
   });
 
   it('saves plan when clicking save button', async () => {

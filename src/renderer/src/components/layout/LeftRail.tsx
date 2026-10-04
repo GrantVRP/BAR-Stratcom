@@ -4,12 +4,9 @@ import {
   BookOpen,
   Crosshair,
   BarChart2,
-  Radio,
   Cpu,
-  Map as MapIcon,
   Settings,
   Info,
-  Compass,
   Palette
 } from 'lucide-react';
 
@@ -22,19 +19,17 @@ interface NavItem {
   id: string;
   hash: string;
   label: string;
-  shortcut: number;
   icon: React.ComponentType<{ className?: string }>;
 }
 
+// Intel and Maps join the menu once their pages are built (T10.2, T10.4); no "coming soon" entries.
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', hash: '#/home', label: 'HOME', shortcut: 1, icon: Home },
-  { id: 'library', hash: '#/library', label: 'LIBRARY', shortcut: 2, icon: BookOpen },
-  { id: 'coach', hash: '#/coach', label: 'COACH', shortcut: 3, icon: Crosshair },
-  { id: 'review', hash: '#/review', label: 'REVIEW', shortcut: 4, icon: BarChart2 },
-  { id: 'intel', hash: '#/intel', label: 'INTEL', shortcut: 5, icon: Radio },
-  { id: 'units', hash: '#/units', label: 'UNITS', shortcut: 6, icon: Cpu },
-  { id: 'maps', hash: '#/maps', label: 'MAPS', shortcut: 7, icon: MapIcon },
-  { id: 'settings', hash: '#/settings', label: 'SETTINGS', shortcut: 8, icon: Settings }
+  { id: 'home', hash: '#/home', label: 'HOME', icon: Home },
+  { id: 'library', hash: '#/library', label: 'LIBRARY', icon: BookOpen },
+  { id: 'coach', hash: '#/coach', label: 'COACH', icon: Crosshair },
+  { id: 'review', hash: '#/review', label: 'REVIEW', icon: BarChart2 },
+  { id: 'units', hash: '#/units', label: 'UNITS', icon: Cpu },
+  { id: 'settings', hash: '#/settings', label: 'SETTINGS', icon: Settings }
 ];
 
 export function LeftRail({ currentRoute, version }: LeftRailProps): React.JSX.Element {
@@ -51,10 +46,7 @@ export function LeftRail({ currentRoute, version }: LeftRailProps): React.JSX.El
           >
             BAR STRATCOM
           </h1>
-          <p
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
-            className="mt-1 text-[11px] text-zinc-400"
-          >
+          <p style={{ fontFamily: "'JetBrains Mono', monospace" }} className="mt-1 text-[11px] text-zinc-400">
             {version}
           </p>
         </div>
@@ -63,8 +55,7 @@ export function LeftRail({ currentRoute, version }: LeftRailProps): React.JSX.El
         <nav className="p-2 space-y-1">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
-            const isActive =
-              normalizedRoute === item.hash || normalizedRoute.startsWith(item.hash + '/');
+            const isActive = normalizedRoute === item.hash || normalizedRoute.startsWith(item.hash + '/');
 
             return (
               <a
@@ -86,9 +77,6 @@ export function LeftRail({ currentRoute, version }: LeftRailProps): React.JSX.El
                     {item.label}
                   </span>
                 </div>
-                <span className="font-mono text-[10px] text-zinc-600">
-                  {item.shortcut}
-                </span>
               </a>
             );
           })}
@@ -97,20 +85,6 @@ export function LeftRail({ currentRoute, version }: LeftRailProps): React.JSX.El
 
       {/* Bottom Secondary Links */}
       <div className="border-t-2 border-zinc-800 p-2 space-y-1">
-        <a
-          href="#/onboarding"
-          data-testid="nav-onboarding"
-          className={`flex items-center gap-2.5 px-3 py-1.5 text-xs transition-none ${
-            normalizedRoute.startsWith('#/onboarding')
-              ? 'bg-zinc-800 text-white'
-              : 'text-zinc-400 hover:bg-[#12131a] hover:text-zinc-200'
-          }`}
-        >
-          <Compass className="h-3.5 w-3.5" />
-          <span style={{ fontFamily: "'Press Start 2P', monospace" }} className="text-[10px]">
-            ONBOARDING
-          </span>
-        </a>
         <a
           href="#/about"
           data-testid="nav-about"
@@ -125,20 +99,23 @@ export function LeftRail({ currentRoute, version }: LeftRailProps): React.JSX.El
             ABOUT
           </span>
         </a>
-        <a
-          href="#/dev/ui"
-          data-testid="nav-dev-ui"
-          className={`flex items-center gap-2.5 px-3 py-1.5 text-xs transition-none ${
-            normalizedRoute.startsWith('#/dev/ui')
-              ? 'bg-zinc-800 text-white'
-              : 'text-zinc-500 hover:bg-[#12131a] hover:text-zinc-300'
-          }`}
-        >
-          <Palette className="h-3.5 w-3.5" />
-          <span style={{ fontFamily: "'Press Start 2P', monospace" }} className="text-[10px]">
-            DEV UI
-          </span>
-        </a>
+        {/* developer gallery: development builds only */}
+        {import.meta.env.DEV && (
+          <a
+            href="#/dev/ui"
+            data-testid="nav-dev-ui"
+            className={`flex items-center gap-2.5 px-3 py-1.5 text-xs transition-none ${
+              normalizedRoute.startsWith('#/dev/ui')
+                ? 'bg-zinc-800 text-white'
+                : 'text-zinc-500 hover:bg-[#12131a] hover:text-zinc-300'
+            }`}
+          >
+            <Palette className="h-3.5 w-3.5" />
+            <span style={{ fontFamily: "'Press Start 2P', monospace" }} className="text-[10px]">
+              DEV UI
+            </span>
+          </a>
+        )}
       </div>
     </aside>
   );

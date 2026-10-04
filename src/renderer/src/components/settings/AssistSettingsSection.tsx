@@ -12,7 +12,7 @@ export function AssistSettingsSection(): React.JSX.Element {
     <div data-testid="settings-section-assist" className="space-y-6 font-mono text-xs">
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-4">
         <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+          <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
             GAMEPLAY ASSIST MODULES
           </span>
           <span className="rounded bg-[#fbbf24]/15 px-1.5 py-0.5 text-[10px] font-bold text-[#fbbf24]">
@@ -21,9 +21,7 @@ export function AssistSettingsSection(): React.JSX.Element {
         </div>
 
         <p className="text-xs text-[#a1a1aa]">
-          StratCom can assist with executing build orders by sending non-intrusive unit commands
-          directly via the game engine. These modules are disabled by default and will be fully
-          enabled in Milestone M09.
+          Assist modules send build commands for you. Off by default.
         </p>
 
         {/* Arm Next Toggle */}
@@ -38,11 +36,10 @@ export function AssistSettingsSection(): React.JSX.Element {
             />
           </div>
           <p className="text-xs text-[#71717a]">
-            Prepares the commander or builder cursor for the next step in your active build plan
-            as soon as required resources are reached.
+            Readies the next build step when you can afford it.
           </p>
           <div className="text-[10px] text-[#fbbf24]">
-            [M09] Feature disabled in this version.
+            Coming soon.
           </div>
         </div>
 
@@ -58,14 +55,14 @@ export function AssistSettingsSection(): React.JSX.Element {
             />
           </div>
           <p className="text-xs text-[#71717a]">
-            Synchronizes planned unit production queues directly to active factories.
+            Queues planned units in your factories.
           </p>
           <div className="space-y-1">
             <div className="text-[10px] text-[#fbbf24]">
-              [M09] Feature disabled in this version.
+              Coming soon.
             </div>
             <div className="text-[10px] text-[#94a3b8]">
-              Notice: Only works in lobbies that allow unit-control widgets.
+              Only in lobbies that allow unit-control widgets.
             </div>
           </div>
         </div>

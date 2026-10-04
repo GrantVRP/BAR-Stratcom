@@ -38,7 +38,7 @@ export function CoachTelemetry({
           <span className="rounded bg-[#1e293b] px-1.5 py-0.5 text-[10px] text-[#94a3b8]">WAITING</span>
         </div>
         <p className="mt-2 text-center text-[#71717a] italic">
-          No live resource data yet (waiting for match start or live bridge).
+          Waiting for game data.
         </p>
       </div>
     );

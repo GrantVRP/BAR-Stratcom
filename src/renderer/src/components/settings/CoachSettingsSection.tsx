@@ -12,17 +12,17 @@ const PROFILES: Array<{ id: Profile; label: string; desc: string }> = [
   {
     id: 'beginner',
     label: 'BEGINNER',
-    desc: 'Plain alerts, wide timings, extra patience before warning. Best for learning build orders.'
+    desc: 'Gentle alerts, wide timings.'
   },
   {
     id: 'intermediate',
     label: 'INTERMEDIATE',
-    desc: 'Balanced tactical warnings, economy runway, and standard timings. Recommended for standard play.'
+    desc: 'Balanced alerts. Recommended.'
   },
   {
     id: 'advanced',
     label: 'ADVANCED',
-    desc: 'Terse warnings, tight tolerances, rapid stall detection. For competitive 1v1 and high ratings.'
+    desc: 'Strict, fast alerts for competitive play.'
   }
 ];
 
@@ -95,7 +95,7 @@ export function CoachSettingsSection(): React.JSX.Element {
     <div data-testid="settings-section-coach" className="space-y-6 font-mono text-xs">
       {/* Skill Profile Selection */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           SKILL PROFILE
         </span>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
@@ -127,7 +127,7 @@ export function CoachSettingsSection(): React.JSX.Element {
       {/* Sound Settings */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
         <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+          <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
             PROCEDURAL AUDIO CUES
           </span>
           <Toggle
@@ -174,14 +174,14 @@ export function CoachSettingsSection(): React.JSX.Element {
 
       {/* In-Game HUD & Echo */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           IN-GAME HUD & CHAT
         </span>
         <div className="space-y-3 pt-1">
           <div className="flex items-center justify-between">
             <div>
               <span className="font-bold text-xs text-[#e4e4e7]">Widget HUD Display</span>
-              <p className="text-[11px] text-[#71717a]">Show the 4-line tactical HUD inside Beyond All Reason</p>
+              <p className="text-[11px] text-[#71717a]">Show the HUD in game</p>
             </div>
             <Toggle
               checked={hudEnabled}
@@ -193,7 +193,7 @@ export function CoachSettingsSection(): React.JSX.Element {
           <div className="flex items-center justify-between border-t border-[#1f2430] pt-2">
             <div>
               <span className="font-bold text-xs text-[#e4e4e7]">Team Chat Echo</span>
-              <p className="text-[11px] text-[#71717a]">Echo urgent tactical alerts to in-game team chat (/say team)</p>
+              <p className="text-[11px] text-[#71717a]">Post urgent alerts to team chat</p>
             </div>
             <Toggle
               checked={chatEcho}
@@ -206,7 +206,7 @@ export function CoachSettingsSection(): React.JSX.Element {
 
       {/* Per-Alert Toggles */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           ALERT DETECTORS
         </span>
         <div className="space-y-2 pt-1 divide-y divide-[#1f2430]">

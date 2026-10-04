@@ -32,7 +32,8 @@ describe('LaunchWindow (06 §4.1, T06.3)', () => {
     expect(container.querySelector('[data-testid="launch-window"]')).not.toBeNull();
     expect(container.textContent).toContain('BAR STRATCOM');
     expect(container.textContent).toContain('3.0.0-dev.0');
-    expect(container.textContent).toContain('UNOFFICIAL COMMUNITY TOOL');
+    // owner request (T06.16): no disclaimer line on the launcher; it is on the top bar tag and About page
+    expect(container.textContent).not.toContain('NOT AFFILIATED');
     expect(container.textContent).toContain('PRESS ANY KEY OR CLICK TO CONTINUE');
   });
 

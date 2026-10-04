@@ -148,7 +148,7 @@ describe('LibraryView & PlanDetailView', () => {
     expect(container.querySelector('[data-testid="view-library"]')).not.toBeNull();
     expect(container.textContent).toContain('Armada Rocketeer Rush');
     expect(container.textContent).toContain('Cortex Grunt Swarm');
-    expect(container.textContent).toContain('CURATED // from AcePilot on Red River, 2026-10-01');
+    expect(container.textContent).toContain('PRO // AcePilot');
 
     const cardTitle = container.querySelector('[data-testid="plan-card-armada-test-plan"] h3');
     expect(cardTitle?.getAttribute('title')).toBe('Armada Rocketeer Rush');

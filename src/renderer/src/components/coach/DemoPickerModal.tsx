@@ -47,7 +47,7 @@ export function DemoPickerModal({
         </div>
 
         <p className="mt-2 text-xs text-[#a1a1aa]">
-          Select a recorded player game to replay through the live coach engine at 4× speed.
+          Pick a game to replay at 4×.
         </p>
 
         <div className="mt-4 max-h-64 space-y-2 overflow-y-auto pr-1">
@@ -86,7 +86,7 @@ export function DemoPickerModal({
             CANCEL
           </Button>
           <Button
-            variant="armada"
+            variant="primary"
             size="sm"
             onClick={handleConfirm}
             data-testid="demo-picker-start-btn"

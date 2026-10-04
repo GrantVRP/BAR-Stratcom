@@ -16,12 +16,14 @@ const DEFAULT_TOOLTIPS: Record<ProvenanceKind, string> = {
   UNKNOWN: 'Origin or measurement source is unknown or unverified'
 };
 
+// Quiet labels (T06.16): thin outline, no fill or shadow, so they mark where a number comes from
+// without competing with the number itself. Colour still tells the kinds apart.
 const KIND_STYLES: Record<ProvenanceKind, string> = {
-  MEASURED: 'border-2 border-[#4ade80] bg-[#0a2e16] text-[#4ade80] shadow-[1px_1px_0px_#000]',
-  SIMULATED: 'border-2 border-[#449bed] bg-[#0a1c32] text-[#449bed] shadow-[1px_1px_0px_#000]',
-  ESTIMATED: 'border-2 border-dashed border-[#fbbf24] bg-[#2e230a] text-[#fbbf24]',
-  'AI DRAFT': 'border-2 border-[#c084fc] bg-[#220d3a] text-[#c084fc] shadow-[1px_1px_0px_#000]',
-  UNKNOWN: 'border-2 border-zinc-600 bg-zinc-900 text-zinc-400'
+  MEASURED: 'border border-[#4ade80]/50 text-[#4ade80]',
+  SIMULATED: 'border border-[#449bed]/50 text-[#449bed]',
+  ESTIMATED: 'border border-dashed border-[#fbbf24]/60 text-[#fbbf24]',
+  'AI DRAFT': 'border border-[#c084fc]/50 text-[#c084fc]',
+  UNKNOWN: 'border border-zinc-600 text-zinc-400'
 };
 
 export const Provenance: React.FC<ProvenanceProps> = ({ kind, tooltip, className = '' }) => {
@@ -33,7 +35,7 @@ export const Provenance: React.FC<ProvenanceProps> = ({ kind, tooltip, className
       data-testid={`provenance-${kind}`}
       title={title}
       aria-label={`Provenance: ${kind}. ${title}`}
-      className={`inline-flex items-center px-1.5 py-0.5 font-pixel-heading text-[10px] uppercase tracking-wider select-none cursor-help ${style} ${className}`.trim()}
+      className={`inline-flex items-center px-1.5 py-px font-mono text-[10px] font-bold uppercase tracking-wider select-none cursor-help ${style} ${className}`.trim()}
     >
       {kind}
     </span>

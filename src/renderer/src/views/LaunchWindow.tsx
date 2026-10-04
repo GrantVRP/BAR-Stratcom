@@ -142,12 +142,8 @@ export function LaunchWindow({
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="absolute inset-x-0 bottom-0 z-[48] flex flex-col items-center justify-between gap-3 border-t-2 border-black bg-[#0a0c14]/90 px-6 py-3 sm:flex-row">
-        <div style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }} className="uppercase tracking-wide text-zinc-400">
-          UNOFFICIAL COMMUNITY TOOL // NOT AFFILIATED WITH THE BEYOND ALL REASON TEAM
-        </div>
-
+      {/* Footer (owner request: no disclaimer line here; the unofficial notice is on the top-bar tag and About page) */}
+      <footer className="absolute inset-x-0 bottom-0 z-[48] flex items-center justify-end gap-3 border-t-2 border-black bg-[#0a0c14]/90 px-6 py-3">
         {/* Faction switcher */}
         <div
           data-testid="launcher-faction-toggle"

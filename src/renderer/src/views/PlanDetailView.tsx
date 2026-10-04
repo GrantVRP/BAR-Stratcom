@@ -121,7 +121,7 @@ export function PlanDetailView({
           type="button"
           onClick={onBack}
           data-testid="btn-back-to-library"
-          className="flex items-center gap-2 text-zinc-400 hover:text-white cursor-pointer px-2.5 py-1.5 pixel-box transition-none"
+          className="flex items-center gap-2 px-1 py-1 text-zinc-400 hover:text-white cursor-pointer transition-none"
         >
           <ArrowLeft className="size-4" />
           <span className="font-pixel-heading text-[10px]">BACK TO LIBRARY</span>
@@ -170,7 +170,7 @@ export function PlanDetailView({
       {/* Map Selector */}
       <div className="space-y-1.5">
         <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">
-          THEATER / MAP SELECTOR
+          MAP
         </div>
         <MapCombobox
           selectedMap={selectedMap}
@@ -182,7 +182,7 @@ export function PlanDetailView({
       {/* Simulation Graph */}
       <div className="space-y-1.5">
         <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">
-          SIMULATED ECONOMY TRAJECTORY
+          ECONOMY
         </div>
         <SimGraph plan={plan} mapRecord={selectedMap} />
       </div>

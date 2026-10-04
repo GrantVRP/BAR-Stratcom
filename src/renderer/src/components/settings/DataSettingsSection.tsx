@@ -61,13 +61,12 @@ export function DataSettingsSection(): React.JSX.Element {
     <div data-testid="settings-section-data" className="space-y-6 font-mono text-xs">
       {/* App Storage Folder */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           LOCAL STORAGE & USER DATA
         </span>
 
         <p className="text-xs text-[#a1a1aa]">
-          StratCom stores your custom build orders, encrypted keys, telemetry caches, and session
-          logs locally in your user profile.
+          Plans, keys and game logs are stored on this PC.
         </p>
 
         <div>
@@ -85,17 +84,17 @@ export function DataSettingsSection(): React.JSX.Element {
 
       {/* Export All Plans */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           BACKUP BUILD ORDERS
         </span>
 
         <p className="text-xs text-[#a1a1aa]">
-          Export all your build plans, community imports, and AI drafts as a single zip archive.
+          Save all plans as one zip.
         </p>
 
         <div>
           <Button
-            variant="armada"
+            variant="default"
             size="sm"
             disabled={busy}
             onClick={() => void handleExportPlans()}
@@ -113,8 +112,7 @@ export function DataSettingsSection(): React.JSX.Element {
         </span>
 
         <p className="text-xs text-[#a1a1aa]">
-          Deletes all recorded match sessions, ndjson telemetry logs, and post-game reports.
-          Your build plans and settings will be preserved.
+          Deletes recorded games and reports. Plans and settings stay.
         </p>
 
         <div className="flex items-center gap-3">

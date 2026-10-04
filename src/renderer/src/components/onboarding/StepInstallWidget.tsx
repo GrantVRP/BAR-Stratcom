@@ -71,14 +71,10 @@ export function StepInstallWidget({ onBack, onNext }: StepInstallWidgetProps): R
           <span className="font-['Press_Start_2P'] text-sm text-[#38bdf8]">
             INSTALL COMPANION WIDGET
           </span>
-          <p className="mt-1 text-xs text-[#a1a1aa]">
-            gui_stratcom.lua EXPORTS LIVE GAME STATE AND DISPLAYS HUD COACHING
-          </p>
         </div>
 
         <p className="text-xs text-[#e4e4e7] leading-relaxed">
-          StratCom works via a lightweight Lua widget placed into your game's <code className="text-[#38bdf8]">LuaUI/Widgets</code> folder.
-          It does not alter gameplay rules or give an unfair advantage.
+          A small widget that reads your game. It doesn't change gameplay.
         </p>
 
         {/* Status Box */}
@@ -104,7 +100,7 @@ export function StepInstallWidget({ onBack, onNext }: StepInstallWidgetProps): R
         {/* Install Action */}
         <div className="flex flex-wrap gap-2">
           <Button
-            variant="armada"
+            variant="primary"
             size="sm"
             disabled={busy || !settings?.bar?.dataDir}
             onClick={() => void handleInstall()}
@@ -137,10 +133,7 @@ export function StepInstallWidget({ onBack, onNext }: StepInstallWidgetProps): R
             ENABLE IT ONCE IN-GAME
           </span>
           <p className="text-xs text-[#bae6fd] leading-relaxed">
-            After installing the widget, launch Beyond All Reason and press <kbd className="px-1 py-0.5 bg-[#1e293b] rounded font-bold text-white">F11</kbd> to open the in-game Widget Manager. Enable &quot;StratCom Bridge&quot; once.
-          </p>
-          <p className="text-[11px] text-[#94a3b8]">
-            Alternatively, open chat in game and type <code className="text-[#38bdf8]">/luaui reload</code>.
+            Then enable it once in game: press <kbd className="px-1 py-0.5 bg-[#1e293b] rounded font-bold text-white">F11</kbd>.
           </p>
         </div>
       </div>
@@ -150,7 +143,7 @@ export function StepInstallWidget({ onBack, onNext }: StepInstallWidgetProps): R
           ◂ BACK
         </Button>
         <Button
-          variant="armada"
+          variant="primary"
           size="md"
           onClick={onNext}
           data-testid="onboarding-next-btn"

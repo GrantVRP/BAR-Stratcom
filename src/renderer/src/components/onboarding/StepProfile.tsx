@@ -12,17 +12,17 @@ const PROFILES: Array<{ id: Profile; label: string; desc: string }> = [
   {
     id: 'beginner',
     label: 'BEGINNER',
-    desc: 'Plain alerts, wide timings, extra patience before warning. Best for learning build orders.'
+    desc: 'Gentle alerts, wide timings.'
   },
   {
     id: 'intermediate',
     label: 'INTERMEDIATE',
-    desc: 'Balanced tactical warnings, economy runway, and standard timings. Recommended for standard play.'
+    desc: 'Balanced alerts. Recommended.'
   },
   {
     id: 'advanced',
     label: 'ADVANCED',
-    desc: 'Terse warnings, tight tolerances, rapid stall detection. For competitive 1v1 and high ratings.'
+    desc: 'Strict, fast alerts for competitive play.'
   }
 ];
 
@@ -41,14 +41,10 @@ export function StepProfile({ onBack, onNext }: StepProfileProps): React.JSX.Ele
           <span className="font-['Press_Start_2P'] text-sm text-[#38bdf8]">
             CHOOSE SKILL PROFILE
           </span>
-          <p className="mt-1 text-xs text-[#a1a1aa]">
-            ADAPTS COACHING STRICTNESS, TIMING TOLERANCES, AND AUDIO URGENCY
-          </p>
         </div>
 
         <p className="text-xs text-[#e4e4e7] leading-relaxed">
-          Select the profile that best matches your play style. You can adjust per-alert thresholds
-          or switch your profile anytime in Settings.
+          You can change this later in Settings.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
@@ -82,7 +78,7 @@ export function StepProfile({ onBack, onNext }: StepProfileProps): React.JSX.Ele
           ◂ BACK
         </Button>
         <Button
-          variant="armada"
+          variant="primary"
           size="md"
           onClick={onNext}
           data-testid="onboarding-next-btn"

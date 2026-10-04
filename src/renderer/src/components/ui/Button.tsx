@@ -1,6 +1,7 @@
 import React from 'react';
 
-export type ButtonVariant = 'default' | 'armada' | 'cortex' | 'danger' | 'ghost';
+/** primary: the one main action of a screen (filled); default: secondary (outlined); ghost: tertiary. */
+export type ButtonVariant = 'primary' | 'default' | 'armada' | 'cortex' | 'danger' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,6 +11,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
+  primary: 'pixel-btn-primary',
   default: '',
   armada: 'pixel-btn-armada',
   cortex: 'pixel-btn-cortex',

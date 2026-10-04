@@ -45,7 +45,7 @@ describe('MetricTiles (06 §4.6, T07.4)', () => {
     root = null;
   });
 
-  it('renders all 7 metric tiles with numeric values and MEASURED provenance badges', async () => {
+  it('renders all 7 metric tiles with numeric values, labels and one MEASURED badge for the group', async () => {
     await act(async () => {
       root?.render(<MetricTiles metrics={sampleMetrics} />);
     });
@@ -53,7 +53,9 @@ describe('MetricTiles (06 §4.6, T07.4)', () => {
     const energyStall = container?.querySelector('[data-testid="metric-tile-energy-stall"]');
     expect(energyStall).not.toBeNull();
     expect(energyStall?.textContent).toContain('12.5s');
-    expect(energyStall?.textContent).toContain('MEASURED');
+    expect(energyStall?.textContent).toContain('ENERGY STALL');
+    // one provenance badge for the group, not one per tile (T06.16)
+    expect(container?.querySelectorAll('[data-testid="provenance-MEASURED"]').length).toBe(1);
 
     const metalStall = container?.querySelector('[data-testid="metric-tile-metal-stall"]');
     expect(metalStall).not.toBeNull();

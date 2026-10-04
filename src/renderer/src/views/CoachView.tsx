@@ -27,16 +27,7 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
   const { plans, activePlanId } = usePlans();
   const getUnitName = useSnapshot((s) => s.getUnitName);
   const settings = useSettings((s) => s.settings);
-  const [showHudPreview, setShowHudPreview] = useState<boolean>(true);
   const [isManualRunning, setIsManualRunning] = useState<boolean>(false);
-  const [readySessionId, setReadySessionId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const unsub = ipcClient.on('review:ready', (data) => {
-      setReadySessionId(data.sessionId);
-    });
-    return () => unsub();
-  }, []);
 
   const statePlanId = coachState?.planId;
   const activePlan = useMemo(() => {
@@ -133,11 +124,10 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
           </span>
           {!standalone && (
             <Button
-              variant="default"
+              variant="ghost"
               size="sm"
               onClick={() => void ipcClient.invoke('coach:toggleWindow', { action: 'open' })}
               title="Open detached coach window on second monitor or overlay"
-              className="border border-[#38bdf8]/40 text-[#38bdf8]"
             >
               DETACH WINDOW
             </Button>
@@ -182,7 +172,7 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
         {mode === 'manual' && (
           <div className="flex items-center justify-between rounded border border-[#fbbf24]/30 bg-[#fbbf24]/5 p-3">
             <div className="flex items-center gap-2">
-              <Button variant="armada" size="sm" onClick={() => void handleToggleClock()}>
+              <Button variant="primary" size="sm" onClick={() => void handleToggleClock()}>
                 {isManualRunning ? 'PAUSE CLOCK' : 'START CLOCK'}
               </Button>
               <Button variant="default" size="sm" onClick={() => void manualAction('reset')}>
@@ -190,52 +180,11 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
               </Button>
               <span className="text-[11px] text-[#a1a1aa]">(Space toggles clock)</span>
             </div>
-            {planStep && (
-              <Button variant="armada" size="sm" onClick={() => void markDone(planStep.id)}>
-                MARK STEP DONE
-              </Button>
-            )}
           </div>
         )}
 
-        {readySessionId && (
-          <div
-            data-testid="coach-review-ready-banner"
-            className="flex items-center justify-between rounded border-2 border-[#38bdf8] bg-[#0c1626] p-3 text-xs"
-          >
-            <div className="flex items-center gap-2">
-              <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">REPORT READY</span>
-              <span className="text-[#e4e4e7]">Post-match analysis completed.</span>
-            </div>
-            <Button
-              variant="armada"
-              size="sm"
-              onClick={() => {
-                window.location.hash = `#/review?session=${readySessionId}`;
-              }}
-              className="bg-[#22c55e] hover:bg-[#16a34a] text-black font-bold border-[#22c55e]"
-            >
-              VIEW REPORT
-            </Button>
-          </div>
-        )}
-
-        {/* HUD Preview (demo mode or toggleable) */}
-        {(mode === 'demo' || showHudPreview) && !isOverlay && (
-          <div>
-            <div className="mb-1 flex items-center justify-between text-[10px] text-[#71717a]">
-              <span>IN-GAME WIDGET PREVIEW</span>
-              <button
-                type="button"
-                className="underline hover:text-[#a1a1aa]"
-                onClick={() => setShowHudPreview(!showHudPreview)}
-              >
-                {showHudPreview ? 'Hide' : 'Show'}
-              </button>
-            </div>
-            {showHudPreview && <HudPreview coachState={coachState} plan={activePlan} />}
-          </div>
-        )}
+        {/* In-game widget preview: demo only (live players see the real HUD in game) */}
+        {mode === 'demo' && !isOverlay && <HudPreview coachState={coachState} plan={activePlan} />}
       </div>
     </div>
   );

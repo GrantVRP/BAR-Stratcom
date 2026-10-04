@@ -153,6 +153,28 @@
   box-shadow: 1px 1px 0px 0px #000000;
 }
 
+/* Visual hierarchy (owner request, T06.16): one filled PRIMARY action per screen, outlined
+   secondary (.pixel-btn default), borderless tertiary (.pixel-btn-ghost). The fill comes from
+   --btn-accent so a faction screen can tint its main action. */
+.pixel-btn-primary {
+  background-color: var(--btn-accent, #38bdf8);
+  border-color: #000000;
+  color: #0a0c14;
+  font-weight: 700;
+}
+
+.pixel-btn-primary:hover:not(:disabled) {
+  background-color: var(--btn-accent, #38bdf8);
+  border-color: #ffffff;
+  color: #0a0c14;
+}
+
+.pixel-btn-primary:active:not(:disabled),
+.pixel-btn-primary.active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
 .pixel-btn-ghost {
   background-color: transparent;
   border-color: transparent;

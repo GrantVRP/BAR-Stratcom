@@ -132,7 +132,7 @@ export function GameSettingsSection(): React.JSX.Element {
       {/* BAR Folder Section */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
         <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+          <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
             BAR GAME DIRECTORY
           </span>
           {settings?.bar?.source && (
@@ -165,7 +165,7 @@ export function GameSettingsSection(): React.JSX.Element {
       {/* Widget Management */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-3">
         <div className="flex items-center justify-between border-b border-[#1f2430] pb-2">
-          <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+          <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
             LUA WIDGET (gui_stratcom.lua)
           </span>
           <span
@@ -179,13 +179,12 @@ export function GameSettingsSection(): React.JSX.Element {
         </div>
 
         <p className="text-xs text-[#a1a1aa]">
-          StratCom connects to Beyond All Reason via a non-intrusive UI widget. After installing,
-          enable it once in-game via the F11 widget menu or <span className="text-[#38bdf8]">/luaui reload</span>.
+          Install, then enable it once in game (F11).
         </p>
 
         <div className="flex flex-wrap gap-2">
           <Button
-            variant="armada"
+            variant="primary"
             size="sm"
             disabled={busy || !settings?.bar?.dataDir}
             onClick={() => void handleInstallWidget()}
@@ -222,7 +221,7 @@ export function GameSettingsSection(): React.JSX.Element {
 
       {/* Live Bridge Diagnostics */}
       <div className="rounded border border-[#27272a] bg-[#12131a] p-4 space-y-2">
-        <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">
+        <span className="font-['Press_Start_2P'] text-[10px] text-zinc-300">
           DIAGNOSTICS & TELEMETRY
         </span>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2">

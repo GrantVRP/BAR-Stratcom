@@ -80,8 +80,8 @@ export function CoachNextCard({
           </div>
           <p className="mt-1 text-sm text-[#71717a]">
             {isPlanComplete
-              ? 'Opening sequence finished. Transition to midgame response.'
-              : 'Waiting for coach clock or plan execution.'}
+              ? 'Opening done.'
+              : 'Waiting for the game clock.'}
           </p>
         </div>
       </div>
@@ -143,7 +143,7 @@ export function CoachNextCard({
 
       {isManualMode && onMarkDone && (
         <div className="mt-3 pt-2 border-t border-[#1e293b] flex justify-end">
-          <Button variant="armada" size="sm" onClick={onMarkDone} data-testid="coach-next-done-btn">
+          <Button variant="primary" size="sm" onClick={onMarkDone} data-testid="coach-next-done-btn">
             ✓ MARK DONE
           </Button>
         </div>

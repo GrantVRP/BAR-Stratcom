@@ -34,6 +34,8 @@ export const PATH3D: P2[] = [
 export const TURBINE_POS: P2 = { x: -171, z: 102 };
 /** Rotor turned three-quarters to the camera. */
 export const TURBINE_YAW_DEG = 30;
+/** Extra turn of each faction's turbine head (owner request: the Armada turbine turned around). */
+export const TURBINE_FLIP_DEG = { armada: 180, cortex: 0 } as const;
 /** Rotor speed (degrees per second). */
 export const ROTOR_SPEED_DEG = 150;
 

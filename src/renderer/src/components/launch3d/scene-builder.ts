@@ -27,6 +27,7 @@ import {
   TIME_SCALE,
   TREE_MODELS,
   TURBINE_POS,
+  TURBINE_FLIP_DEG,
   TURBINE_YAW_DEG,
   UNIT_SPEED,
   placeTrees,
@@ -124,7 +125,7 @@ export async function buildLaunchWorld(): Promise<LaunchWorld> {
     const t = TURBINE[faction];
     const turbine = buildModel(await loadJson<ModelJson>(`model-${t.model}`), unitMaterial(t.tex));
     turbine.root.position.set(TURBINE_POS.x, 0, TURBINE_POS.z);
-    turbine.pieces.get(t.yaw)!.rotation.y = TURBINE_YAW_DEG * DEG;
+    turbine.pieces.get(t.yaw)!.rotation.y = (TURBINE_YAW_DEG + TURBINE_FLIP_DEG[faction]) * DEG;
     scene.add(turbine.root);
     turbines[faction] = turbine;
 

@@ -300,9 +300,9 @@
       "canMove": false,
       "buildOptions": [],
       "economy": {
-        "energyMake": 20,
+        "energyMake": 0,
         "metalMake": 0,
-        "energyUpkeep": 0,
+        "energyUpkeep": -20,
         "metalUpkeep": 0,
         "extractsMetal": 0,
         "windGenerator": 0,

@@ -10,6 +10,7 @@ export const IPC_CHANNELS = [
   'coach:start',
   'coach:stop',
   'registry:getSnapshot',
+  'registry:getMeta',
   'maps:list',
   'maps:get',
   'plans:list',

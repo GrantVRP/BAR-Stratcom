@@ -15,7 +15,7 @@ import { registerSessionHandlers } from './sessions/handlers';
 import { registerCaptureHandlers } from './capture/handlers';
 import { registerIntelHandlers } from './intel/handlers';
 import { defaultCoachRunner } from './coach/runner';
-import { findDataDir, loadRegistry, loadSnapshot } from './registry/loader';
+import { findDataDir, loadRegistry, loadRegistryMeta, loadSnapshot } from './registry/loader';
 import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
 import { handleDemoCompletion } from './demo/demo-analyzer';
 import { defaultPlanStore } from './plans/store';
@@ -336,6 +336,7 @@ if (!gotTheLock) {
 
     handle('coach:getShortcutStatus', () => getGlobalShortcutStatus());
     handle('registry:getSnapshot', (req) => loadSnapshot(req?.gameVersion));
+    handle('registry:getMeta', () => loadRegistryMeta());
     handle('maps:list', () => loadMaps());
     handle('maps:get', (req) => getMap(req.fileName));
     handle('plans:list', () => defaultPlanStore.list());

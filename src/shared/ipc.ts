@@ -2,6 +2,8 @@ import { z } from 'zod';
 import type { IpcChannel, IpcEventChannel } from './channels';
 import {
   BarSourceSchema,
+  AliasesFileSchema,
+  FactionsFileSchema,
   BuildPlanSchema,
   CapturePlayerSchema,
   CaptureToPlanRequestSchema,
@@ -165,6 +167,10 @@ export const ipcContract = {
   'registry:getSnapshot': {
     request: z.object({ gameVersion: z.string().optional() }).strict().optional(),
     response: UnitSnapshotSchema
+  },
+  'registry:getMeta': {
+    request: z.void().optional(),
+    response: z.object({ factions: FactionsFileSchema, aliases: AliasesFileSchema })
   },
   'maps:list': {
     request: z.void().optional(),

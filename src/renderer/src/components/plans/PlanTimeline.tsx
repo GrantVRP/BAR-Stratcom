@@ -95,7 +95,6 @@ export function PlanTimeline({ plan, className = '' }: PlanTimelineProps): React
               <TacticalIcon
                 unitId={step.unitId}
                 action={step.action}
-                factionId={plan.factionId}
                 size={22}
               />
             </div>

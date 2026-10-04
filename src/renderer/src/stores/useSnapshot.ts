@@ -1,10 +1,13 @@
 import { create } from 'zustand';
-import type { UnitDefRecord, UnitSnapshot } from '../../../core/schemas';
+import type { Faction, UnitDefRecord, UnitSnapshot } from '../../../core/schemas';
 import { ipcClient } from '../lib/ipc-client';
+import { setClientRegistryMeta } from '../lib/registry';
 
 export interface SnapshotState {
   snapshot: UnitSnapshot | null;
   unitsById: Map<string, UnitDefRecord>;
+  /** From data/factions.json (registry:getMeta); empty until loaded. */
+  factions: Faction[];
   loading: boolean;
   error: string | null;
   load: () => Promise<void>;
@@ -15,13 +18,21 @@ export interface SnapshotState {
 export const useSnapshot = create<SnapshotState>()((set, get) => ({
   snapshot: null,
   unitsById: new Map(),
+  factions: [],
   loading: false,
   error: null,
 
   load: async () => {
     if (get().snapshot) return;
     set({ loading: true, error: null });
-    const res = await ipcClient.invoke('registry:getSnapshot');
+    const [res, meta] = await Promise.all([
+      ipcClient.invoke('registry:getSnapshot'),
+      ipcClient.invoke('registry:getMeta')
+    ]);
+    if (meta.ok) {
+      setClientRegistryMeta(meta.data);
+      set({ factions: meta.data.factions.factions });
+    }
     if (res.ok) {
       const snap = res.data;
       const map = new Map<string, UnitDefRecord>();

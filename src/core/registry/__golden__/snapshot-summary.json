@@ -5,12 +5,12 @@
     "commander": 12,
     "converter": 4,
     "defense": 29,
-    "eco-energy": 12,
+    "eco-energy": 13,
     "eco-metal": 5,
     "factory": 19,
     "other": 28,
     "scout": 6,
-    "storage": 10,
+    "storage": 9,
     "turret": 5
   },
   "cortex": {
@@ -19,12 +19,12 @@
     "commander": 11,
     "converter": 4,
     "defense": 27,
-    "eco-energy": 11,
+    "eco-energy": 12,
     "eco-metal": 5,
     "factory": 19,
     "other": 34,
     "scout": 7,
-    "storage": 12,
+    "storage": 11,
     "turret": 5
   },
   "legion": {

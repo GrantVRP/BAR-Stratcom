@@ -6,7 +6,9 @@ import {
   FactionsFileSchema,
   SnapshotIndexSchema,
   UnitSnapshotSchema,
-  type UnitSnapshot
+  type UnitSnapshot,
+  type FactionsFile,
+  type AliasesFile
 } from '../../core/schemas';
 import { createRegistry, type Registry } from '../../core/registry';
 
@@ -61,19 +63,22 @@ export function loadSnapshot(gameVersion?: string): UnitSnapshot {
   return snapshot;
 }
 
+/** Factions and aliases from data/ (the renderer builds its registry from these plus the snapshot). */
+export function loadRegistryMeta(): { factions: FactionsFile; aliases: AliasesFile } {
+  const dataDir = findDataDir();
+  return {
+    factions: FactionsFileSchema.parse(JSON.parse(fs.readFileSync(path.join(dataDir, 'factions.json'), 'utf-8'))),
+    aliases: AliasesFileSchema.parse(JSON.parse(fs.readFileSync(path.join(dataDir, 'aliases.json'), 'utf-8')))
+  };
+}
+
 export function loadRegistry(gameVersion?: string): Registry {
   const snapshot = loadSnapshot(gameVersion);
   const versionKey = snapshot.gameVersion;
   const cached = registryCache.get(versionKey);
   if (cached) return cached;
 
-  const dataDir = findDataDir();
-  const factionsPath = path.join(dataDir, 'factions.json');
-  const aliasesPath = path.join(dataDir, 'aliases.json');
-
-  const factions = FactionsFileSchema.parse(JSON.parse(fs.readFileSync(factionsPath, 'utf-8')));
-  const aliases = AliasesFileSchema.parse(JSON.parse(fs.readFileSync(aliasesPath, 'utf-8')));
-
+  const { factions, aliases } = loadRegistryMeta();
   const registry = createRegistry(snapshot, factions, aliases);
   registryCache.set(versionKey, registry);
   return registry;

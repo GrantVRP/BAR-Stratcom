@@ -1,6 +1,7 @@
 import { createRegistry, type Registry } from '../../../core/registry';
 import type { UnitSnapshot, FactionsFile, AliasesFile } from '../../../core/schemas';
 
+// Boot/test fallback until `registry:getMeta` has loaded the real data/factions.json + aliases.json
 const defaultFactions: FactionsFile = {
   schemaVersion: 1,
   factions: [
@@ -30,12 +31,24 @@ const defaultAliases: AliasesFile = {
 
 let cachedRegistry: Registry | null = null;
 let cachedVersion: string | null = null;
+let loadedMeta: { factions: FactionsFile; aliases: AliasesFile } | null = null;
+
+/** Called by the snapshot store once the real factions and aliases are loaded from main. */
+export function setClientRegistryMeta(meta: { factions: FactionsFile; aliases: AliasesFile }): void {
+  loadedMeta = meta;
+  cachedRegistry = null;
+  cachedVersion = null;
+}
 
 export function getClientRegistry(snapshot: UnitSnapshot): Registry {
   if (cachedRegistry && cachedVersion === snapshot.gameVersion) {
     return cachedRegistry;
   }
-  const registry = createRegistry(snapshot, defaultFactions, defaultAliases);
+  const registry = createRegistry(
+    snapshot,
+    loadedMeta?.factions ?? defaultFactions,
+    loadedMeta?.aliases ?? defaultAliases
+  );
   cachedRegistry = registry;
   cachedVersion = snapshot.gameVersion;
   return registry;

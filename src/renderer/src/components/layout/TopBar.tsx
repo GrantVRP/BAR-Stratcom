@@ -24,6 +24,8 @@ const STATUS_LABELS: Record<HealthStatus, { text: string; variant: 'good' | 'war
 export function TopBar(): React.JSX.Element {
   const health = useLive((s) => s.health);
   const activePlan = usePlans((s) => s.getActivePlan());
+  // The whole PLAN chip takes the active plan's faction colour (Armada blue, Cortex red)
+  const planAccent = activePlan ? factionAccent(activePlan.factionId) : undefined;
   const settings = useSettings((s) => s.settings);
 
   const statusMeta = STATUS_LABELS[health.status] ?? {
@@ -63,17 +65,19 @@ export function TopBar(): React.JSX.Element {
         {/* Active Plan Chip */}
         <div
           data-testid="active-plan-chip"
+          data-faction={activePlan?.factionId ?? 'none'}
           className="flex items-center gap-2 border border-zinc-800 bg-[#0a0c14] px-2.5 py-1"
+          style={planAccent ? { borderColor: planAccent, backgroundColor: `${planAccent}1f` } : undefined}
         >
           <span
-            style={{ fontFamily: "'Press Start 2P', monospace" }}
+            style={{ fontFamily: "'Press Start 2P', monospace", color: planAccent, opacity: planAccent ? 0.8 : undefined }}
             className="text-[10px] text-zinc-500 uppercase"
           >
             PLAN:
           </span>
           {activePlan && <FactionEmblem faction={activePlan.factionId} size={14} />}
           <span
-            style={{ fontFamily: "'Press Start 2P', monospace", color: activePlan ? factionAccent(activePlan.factionId) : undefined }}
+            style={{ fontFamily: "'Press Start 2P', monospace", color: planAccent }}
             className="text-[10px] uppercase text-zinc-400 truncate max-w-[200px]"
             data-testid="active-plan-title"
           >

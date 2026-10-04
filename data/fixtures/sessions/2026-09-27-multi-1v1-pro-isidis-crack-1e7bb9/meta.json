@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-27-multi-1v1-pro-isidis-crack-1e7bb9",
+  "mode": "replay",
+  "gameVersion": "test-31431-20caa70",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Isidis crack 1.1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T19:30:13.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "[APM]ieNemo",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "AnnaDrama",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "1e7bb96ab46ce9319a872f552273d665",
+    "url": "https://bar-rts.com/replays/1e7bb96ab46ce9319a872f552273d665"
+  },
+  "notes": "pro replay 1e7bb96ab46ce9319a872f552273d665 (matched by players)"
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-27-multi-1v1-pro-isidis-crack-9481b9",
+  "mode": "replay",
+  "gameVersion": "test-31422-df3633c",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Isidis crack 1.1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T19:39:13.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "[MADO]Artur91",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "PRO_rANDY",
+      "factionId": "armada",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "9481b96a549a6e315c04a934e433c457",
+    "url": "https://bar-rts.com/replays/9481b96a549a6e315c04a934e433c457"
+  },
+  "notes": "pro replay 9481b96a549a6e315c04a934e433c457 (matched by players)"
+}

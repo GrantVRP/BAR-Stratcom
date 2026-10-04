@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { loadRegistry } from '../registry/loader';
+import { loadRegistryOrDefault } from '../registry/loader';
 import { capturePlan, listCapturePlayers } from '../../core/plans/capture';
 import { SessionMetaSchema } from '../../core/schemas';
 import type { WidgetEvent } from '../../core/schemas/protocol';
@@ -28,7 +28,8 @@ describe('replay capture on the recorded fixtures (T08.2)', () => {
     let blocked = 0;
     for (const name of replayFixtures) {
       const { meta, events } = loadFixture(name);
-      const registry = loadRegistry(meta.gameVersion);
+      // as capture:toPlan does: pro games from older versions use the default snapshot
+      const registry = loadRegistryOrDefault(meta.gameVersion);
       for (const player of listCapturePlayers(registry, meta, events)) {
         if (!player.capturable) {
           blocked += 1;
@@ -48,8 +49,9 @@ describe('replay capture on the recorded fixtures (T08.2)', () => {
         captured += 1;
       }
     }
-    // onyx 2 + dworld 18 + mediterraneum 16 + ptaq 9; ptaq's 7 Legion teams are blocked
-    expect(captured).toBe(45);
-    expect(blocked).toBe(7);
+    // owner replays: onyx 2 + dworld 18 + mediterraneum 16 + ptaq 9 (ptaq's 7 Legion teams blocked);
+    // 24 H2 pro games (T08.3): 134 teams, 5 of them Legion
+    expect(captured).toBe(45 + 129);
+    expect(blocked).toBe(7 + 5);
   });
 });

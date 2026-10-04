@@ -168,4 +168,13 @@ describe('PlanStore', () => {
     expect(found).not.toBeNull();
     expect(found?.title).toBe('Sample Sub Plan');
   });
+
+  it('does not list unreviewed candidates in "_" folders such as _candidates (T08.3)', () => {
+    const candidates = path.join(tmpBundledDir, '_candidates');
+    fs.mkdirSync(candidates, { recursive: true });
+    fs.writeFileSync(path.join(candidates, 'cand-1.json'), JSON.stringify({ ...samplePlan, id: 'cand-1' }), 'utf-8');
+
+    expect(store.list().some((p) => p.id === 'cand-1')).toBe(false);
+    expect(store.get('cand-1')).toBeNull();
+  });
 });

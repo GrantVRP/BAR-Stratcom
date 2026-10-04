@@ -11,6 +11,7 @@ import {
   repairStateDoc,
   type RawSessionFile
 } from './lib/fixture-repair';
+import { matchProReplay, proFixtureId, type ProListReplay } from './lib/pro-match';
 
 export interface ImportOptions {
   fromDir: string;
@@ -18,6 +19,16 @@ export interface ImportOptions {
   ownerName: string;
   slugOverride?: string;
   sessionFilter?: string;
+  /** Pro import (T08.3): only spectator/replay sessions that match this list are imported. */
+  proList?: readonly ProListReplay[];
+  /** Filled with the spectator/replay sessions that matched no list replay (pro import only). */
+  unmatched?: UnmatchedSession[];
+}
+
+export interface UnmatchedSession {
+  sessionId: string;
+  map: string;
+  players: string[];
 }
 
 export function parseSessionTimestampToIso(sessionId: string): string {
@@ -69,7 +80,7 @@ async function readRawStateDocs(filePath: string, maxSeconds: number): Promise<S
 }
 
 export async function importFixtures(opts: ImportOptions): Promise<string[]> {
-  const { fromDir, toDir, ownerName, slugOverride, sessionFilter } = opts;
+  const { fromDir, toDir, ownerName, slugOverride, sessionFilter, proList } = opts;
   if (!fs.existsSync(fromDir)) {
     throw new Error(`Source directory does not exist: ${fromDir}`);
   }
@@ -121,6 +132,8 @@ export async function importFixtures(opts: ImportOptions): Promise<string[]> {
     }
 
     const rawSession: RawSessionFile = JSON.parse(fs.readFileSync(sessionPath, 'utf-8'));
+    // Own games are never pro references.
+    if (proList && rawSession.mode === 'player') continue;
     const allEvents = await readAllEvents(eventsPath);
 
     // Calculate approximate duration
@@ -152,6 +165,23 @@ export async function importFixtures(opts: ImportOptions): Promise<string[]> {
       ownerName
     );
 
+    const pro = proList ? matchProReplay({ mapScriptName: rawSession.map.scriptName, teams: repairedTeams }, proList) : null;
+    if (proList && !pro) {
+      opts.unmatched?.push({
+        sessionId: rawSessionId,
+        map: rawSession.map.scriptName,
+        players: repairedTeams.map((t) => t.playerName)
+      });
+      console.log(`[import-fixtures] Skipping ${rawSessionId}: matches no replay in the pro list`);
+      continue;
+    }
+    if (pro) {
+      // Names were checked against bar-rts (or the factions were, when names differ).
+      const unreliable = notes.indexOf('widget-3.0.0 replay team names may be unreliable');
+      if (unreliable >= 0 && pro.by === 'players') notes.splice(unreliable, 1);
+      notes.push(`pro replay ${pro.replay.id} (matched by ${pro.by})`);
+    }
+
     // Derive fixture folder name
     const dateMatch = rawSessionId.match(/^(\d{4})(\d{2})(\d{2})/);
     const dateStr = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '2026-10-01';
@@ -173,7 +203,7 @@ export async function importFixtures(opts: ImportOptions): Promise<string[]> {
       }
     }
 
-    const fixtureId = `${dateStr}-${factionSlug}-${modeSlug}-${slug}`;
+    const fixtureId = pro ? proFixtureId(pro.replay, modeSlug, mapSlug) : `${dateStr}-${factionSlug}-${modeSlug}-${slug}`;
     const targetDir = path.join(toDir, fixtureId);
     fs.mkdirSync(targetDir, { recursive: true });
 
@@ -246,6 +276,7 @@ export async function importFixtures(opts: ImportOptions): Promise<string[]> {
         : null,
       source: 'fixture',
       anonymized: true,
+      ...(pro ? { replay: { replayId: pro.replay.id, url: pro.replay.url } } : {}),
       ...(notes.length > 0 ? { notes: notes.join('; ') } : {})
     };
 
@@ -270,6 +301,7 @@ if (process.argv[1] && process.argv[1].endsWith('import-fixtures.ts')) {
   let ownerName = 'Grant_P';
   let slugOverride: string | undefined;
   let sessionFilter: string | undefined;
+  let proList: ProListReplay[] | undefined;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--from' && args[i + 1]) {
@@ -282,12 +314,16 @@ if (process.argv[1] && process.argv[1].endsWith('import-fixtures.ts')) {
       slugOverride = args[++i]!;
     } else if (args[i] === '--session' && args[i + 1]) {
       sessionFilter = args[++i]!;
+    } else if (args[i] === '--pro-list' && args[i + 1]) {
+      proList = (JSON.parse(fs.readFileSync(path.resolve(args[++i]!), 'utf-8')) as { replays: ProListReplay[] }).replays;
     }
   }
 
-  importFixtures({ fromDir, toDir, ownerName, slugOverride, sessionFilter })
+  const unmatched: UnmatchedSession[] = [];
+  importFixtures({ fromDir, toDir, ownerName, slugOverride, sessionFilter, proList, unmatched })
     .then((imported) => {
       console.log(`[import-fixtures] Imported ${imported.length} fixtures total.`);
+      if (proList) console.log(`[import-fixtures] ${unmatched.length} spectator/replay sessions matched no pro replay.`);
     })
     .catch((err) => {
       console.error('[import-fixtures] Failed:', err);

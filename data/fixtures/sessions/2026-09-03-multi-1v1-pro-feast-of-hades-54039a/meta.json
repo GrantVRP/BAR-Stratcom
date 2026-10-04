@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-03-multi-1v1-pro-feast-of-hades-54039a",
+  "mode": "replay",
+  "gameVersion": "test-31197-038e78b",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Feast of Hades 1.0.1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:02:36.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "Kuchy",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "Chronopolize",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "54039a6a1b1472e1cc010821b0f90bc9",
+    "url": "https://bar-rts.com/replays/54039a6a1b1472e1cc010821b0f90bc9"
+  },
+  "notes": "pro replay 54039a6a1b1472e1cc010821b0f90bc9 (matched by players)"
+}

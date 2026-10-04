@@ -252,4 +252,20 @@ const captureMeta = (sessionId: string): Parameters<typeof eventsToPlan>[0]['met
     expect(plan.steps.map((s) => s.unitId)).toEqual(['corlab']);
     expect(validatePlan(plan, registry).errors).toEqual([]);
   });
+
+  it('keeps the commander faction when the team also gets a cosmetic hat (H2: Armada player with cor_hat_fightnight)', () => {
+    // Event order as recorded in pro replay 00b9a56a…: commander, then the trophy hat (no builder) at 3 s
+    const events: WidgetEvent[] = [
+      { tm: 0, e: 'created', d: 'armcom', u: 10478, f: 0 },
+      { tm: 0, e: 'created', d: 'cor_hat_fightnight', u: 8569, f: 90 },
+      { tm: 0, bd: 'armcom', b: 10478, e: 'created', d: 'armmex', u: 6024, f: 106 },
+      { tm: 0, bd: 'armcom', b: 10478, e: 'created', d: 'armwin', u: 4230, f: 301 }
+    ];
+
+    const plan = eventsToPlan({ registry, events, teamId: 0, meta: captureMeta('s-hat') });
+
+    expect(plan.factionId).toBe('armada');
+    expect(plan.steps.map((s) => s.unitId)).toEqual(['armmex', 'armwin']);
+    expect(validatePlan(plan, registry).errors).toEqual([]);
+  });
 });

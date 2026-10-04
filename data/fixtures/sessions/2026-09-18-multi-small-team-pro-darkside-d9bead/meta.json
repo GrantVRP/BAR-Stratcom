@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-18-multi-small-team-pro-darkside-d9bead",
+  "mode": "replay",
+  "gameVersion": "test-31320-e17e8b7",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Darkside v3.0",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:09:34.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "watermeloans",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "PlatinumBlonde",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 0,
+      "playerName": "Leohvm",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 0,
+      "playerName": "RAM_Noctis",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 4,
+      "allyTeamId": 1,
+      "playerName": "TheAdmiral",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 5,
+      "allyTeamId": 1,
+      "playerName": "TM_SlickLikeVik",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 6,
+      "allyTeamId": 1,
+      "playerName": "TM_autopilot",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 7,
+      "allyTeamId": 1,
+      "playerName": "[Cookie]Maco",
+      "factionId": "armada",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "d9bead6a69da74b328fca95a753b2239",
+    "url": "https://bar-rts.com/replays/d9bead6a69da74b328fca95a753b2239"
+  },
+  "notes": "pro replay d9bead6a69da74b328fca95a753b2239 (matched by players)"
+}

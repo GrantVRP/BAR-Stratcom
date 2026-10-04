@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-03-multi-large-team-pro-ditched-3392c1",
+  "mode": "replay",
+  "gameVersion": "test-31479-433a460",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Ditched_V1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T21:08:58.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "TM_Sashkorin",
+      "factionId": "legion",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "TM_autopilot",
+      "factionId": "legion",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 0,
+      "playerName": "kirinokirino",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 0,
+      "playerName": "torkin",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 4,
+      "allyTeamId": 0,
+      "playerName": "Iao",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 5,
+      "allyTeamId": 0,
+      "playerName": "LLT",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 6,
+      "allyTeamId": 0,
+      "playerName": "Buttons840",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 7,
+      "allyTeamId": 0,
+      "playerName": "Terreo",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 8,
+      "allyTeamId": 1,
+      "playerName": "TM_SlickLikeVik",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 9,
+      "allyTeamId": 1,
+      "playerName": "JTL",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 10,
+      "allyTeamId": 1,
+      "playerName": "BM_akumar6",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 11,
+      "allyTeamId": 1,
+      "playerName": "Raikoh",
+      "factionId": "legion",
+      "isMe": false
+    },
+    {
+      "teamId": 12,
+      "allyTeamId": 1,
+      "playerName": "Luckelazer",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 13,
+      "allyTeamId": 1,
+      "playerName": "[APM]Saleen",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 14,
+      "allyTeamId": 1,
+      "playerName": "[RoX]pintle",
+      "factionId": "legion",
+      "isMe": false
+    },
+    {
+      "teamId": 15,
+      "allyTeamId": 1,
+      "playerName": "Back57abber",
+      "factionId": "legion",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "3392c16a21c464dbcfbd01254b9bcc6b",
+    "url": "https://bar-rts.com/replays/3392c16a21c464dbcfbd01254b9bcc6b"
+  },
+  "notes": "pro replay 3392c16a21c464dbcfbd01254b9bcc6b (matched by players)"
+}

@@ -1,0 +1,465 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-air-moonshine-run-787ac1-t14",
+  "title": "Air solar // Moonshine Run",
+  "factionId": "cortex",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "advanced",
+  "opening": "air",
+  "energyStyle": "solar",
+  "source": {
+    "kind": "curated",
+    "replayId": "787ac16ae120092fe1241a6c6c179a51",
+    "player": "[MADO]SovietRabbit",
+    "playerRating": 32.67,
+    "map": "Moonshine Run v1.0.1",
+    "playedAt": "2026-10-03",
+    "gameVersion": "test-31479-433a460",
+    "reviewedBy": "",
+    "reviewedAt": ""
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 3,
+      "targetTime": 4.6
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 2,
+      "targetTime": 35.6
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corap",
+      "count": 1,
+      "targetTime": 58.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 77
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 78
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corestor",
+      "count": 1,
+      "targetTime": 87
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 92.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 94.3
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 119.7
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 146.5
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 2,
+      "targetTime": 147.8
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 2,
+      "targetTime": 168.5
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 190.1
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corca",
+      "count": 1,
+      "targetTime": 215.2
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 2,
+      "targetTime": 227.6
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 234
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 237.9
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 274.3
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 4,
+      "targetTime": 288.2
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coradvsol",
+      "count": 1,
+      "targetTime": 316.8
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 2,
+      "targetTime": 335.7
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 346.6
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coradvsol",
+      "count": 1,
+      "targetTime": 369.2
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 3,
+      "targetTime": 372
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 5,
+      "targetTime": 388.6
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 414.7
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 3,
+      "targetTime": 455.1
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coradvsol",
+      "count": 1,
+      "targetTime": 458.7
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 486.7
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormstor",
+      "count": 1,
+      "targetTime": 500.5
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 5,
+      "targetTime": 505.5
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 520.7
+    },
+    {
+      "id": "s33",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coradvsol",
+      "count": 1,
+      "targetTime": 550.2
+    },
+    {
+      "id": "s34",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corca",
+      "count": 1,
+      "targetTime": 550.5
+    },
+    {
+      "id": "s35",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 6,
+      "targetTime": 566.5
+    },
+    {
+      "id": "s36",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 571.2
+    },
+    {
+      "id": "s37",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corca",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 577.9
+    },
+    {
+      "id": "s38",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 2,
+      "targetTime": 593
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "description": "First 10 minutes of [MADO]SovietRabbit (Cortex) in a 8v8 on Moonshine Run v1.0.1, played 2026-10-03."
+}

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-24-multi-small-team-pro-white-fire-remake-7eb2b5",
+  "mode": "replay",
+  "gameVersion": "test-31405-aa9c710",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "White Fire Remake 1.3",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:32:05.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "OralnyDzikus",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "stm_othello",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 0,
+      "playerName": "Teradactylman",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 0,
+      "playerName": "Hunteroni",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 4,
+      "allyTeamId": 1,
+      "playerName": "PRO_Jamerz",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 5,
+      "allyTeamId": 1,
+      "playerName": "[MADO]Nixha",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 6,
+      "allyTeamId": 1,
+      "playerName": "ComDelivery",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 7,
+      "allyTeamId": 1,
+      "playerName": "Luckelazer",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "7eb2b56ab563d40930f3980accc47be2",
+    "url": "https://bar-rts.com/replays/7eb2b56ab563d40930f3980accc47be2"
+  },
+  "notes": "pro replay 7eb2b56ab563d40930f3980accc47be2 (matched by players)"
+}

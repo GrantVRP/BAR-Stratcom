@@ -16,7 +16,7 @@ import {
 } from '../src/core/schemas';
 import { findMapByScriptName } from '../src/core/maps';
 import { getStateFilePath, readStateLines } from './lib/state-reader';
-import { validateCuratedPlanGuard } from './lib/curated-guard';
+import { isCandidatePath, validateCandidatePlan, validateCuratedPlanGuard } from './lib/curated-guard';
 
 function findJsonFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) {
@@ -73,7 +73,7 @@ for (const file of jsonFiles) {
       console.log(`validate:data: OK (session meta schema) ${relPath}`);
     } else if (relPath.replace(/\\/g, '/').includes('builds/') && file.endsWith('.json')) {
       const plan = BuildPlanSchema.parse(parsed);
-      const guardResult = validateCuratedPlanGuard(plan);
+      const guardResult = isCandidatePath(relPath) ? validateCandidatePlan(plan) : validateCuratedPlanGuard(plan);
       if (!guardResult.valid) {
         throw new Error(guardResult.reason ?? 'Curated plan guard failed');
       }

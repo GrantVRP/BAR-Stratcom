@@ -1,0 +1,513 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-bot-isthmus-82328a-t1",
+  "title": "Bot wind // Supreme Isthmus",
+  "factionId": "cortex",
+  "gameVersion": "test-31030-23a0c35",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "advanced",
+  "opening": "bot",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "curated",
+    "replayId": "82328a6a6a5845e9a74cdbbae6716f0f",
+    "player": "DukeofStars",
+    "playerRating": 54.78,
+    "map": "Supreme Isthmus v2.1",
+    "playedAt": "2026-08-22",
+    "gameVersion": "test-31030-23a0c35",
+    "reviewedBy": "",
+    "reviewedAt": ""
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 3.5
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corlab",
+      "count": 1,
+      "targetTime": 18.5
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 1,
+      "targetTime": 36.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornecro",
+      "count": 3,
+      "targetTime": 38.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corck",
+      "count": 2,
+      "targetTime": 71.9
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornecro",
+      "count": 1,
+      "targetTime": 90.9
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corgeo",
+      "count": 1,
+      "targetTime": 92.4
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 93.4
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 113.9
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 6,
+      "targetTime": 133.3
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corak",
+      "count": 1,
+      "targetTime": 149.1
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corvp",
+      "count": 1,
+      "targetTime": 177
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 1,
+      "targetTime": 183.5
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coravp",
+      "count": 1,
+      "targetTime": 190
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corgol",
+      "count": 1,
+      "targetTime": 229
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coreter",
+      "count": 1,
+      "targetTime": 254.9
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corvrad",
+      "count": 1,
+      "targetTime": 260.5
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 13,
+      "targetTime": 261.5
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 2,
+      "targetTime": 263.5
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corsent",
+      "count": 1,
+      "targetTime": 265
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormart",
+      "count": 5,
+      "targetTime": 287.4
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormakr",
+      "count": 3,
+      "targetTime": 333.2
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coracv",
+      "count": 1,
+      "targetTime": 340.6
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cortrem",
+      "count": 1,
+      "targetTime": 358.9
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "builder",
+        "unitId": "coracv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormoho",
+      "count": 1,
+      "targetTime": 365.4
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "builder",
+        "unitId": "coracv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormoho",
+      "count": 2,
+      "targetTime": 409.4
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coracv",
+      "count": 2,
+      "targetTime": 415.9
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 14,
+      "targetTime": 425.7
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 6,
+      "targetTime": 441.6
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "correap",
+      "count": 2,
+      "targetTime": 454.5
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "builder",
+        "unitId": "coracv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormoho",
+      "count": 1,
+      "targetTime": 463.8
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "builder",
+        "unitId": "coracv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corageo",
+      "count": 1,
+      "targetTime": 489.3
+    },
+    {
+      "id": "s33",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 6,
+      "targetTime": 512.8
+    },
+    {
+      "id": "s34",
+      "actor": {
+        "kind": "builder",
+        "unitId": "coracv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormoho",
+      "count": 1,
+      "targetTime": 516.8
+    },
+    {
+      "id": "s35",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corsala",
+      "count": 1,
+      "targetTime": 521.8
+    },
+    {
+      "id": "s36",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 2,
+      "targetTime": 523.1
+    },
+    {
+      "id": "s37",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coracv",
+      "count": 1,
+      "targetTime": 528
+    },
+    {
+      "id": "s38",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "coracv",
+      "count": 1,
+      "targetTime": 548.4
+    },
+    {
+      "id": "s39",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormakr",
+      "count": 5,
+      "targetTime": 555.6
+    },
+    {
+      "id": "s40",
+      "actor": {
+        "kind": "builder",
+        "unitId": "coracv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormoho",
+      "count": 1,
+      "targetTime": 569.3
+    },
+    {
+      "id": "s41",
+      "actor": {
+        "kind": "factory",
+        "unitId": "coravp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corsala",
+      "count": 3,
+      "targetTime": 569.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "description": "First 10 minutes of DukeofStars (Cortex) in a 8v8 on Supreme Isthmus v2.1, played 2026-08-22."
+}

@@ -1,6 +1,6 @@
 import { handle } from '../ipc/register';
 import { defaultSessionStore, type SessionStore } from '../sessions/store';
-import { loadRegistry } from '../registry/loader';
+import { loadRegistryOrDefault } from '../registry/loader';
 import { capturePlan, listCapturePlayers } from '../../core/plans/capture';
 import { parseReplayIdOrUrl, type SessionDetail } from '../../core/schemas';
 import type { WidgetEvent } from '../../core/schemas/protocol';
@@ -12,20 +12,11 @@ interface LoadedSession {
   registry: Registry;
 }
 
-/** The session's own snapshot when we have it; otherwise the default one (validation then warns W_STALE_VERSION). */
-function registryFor(gameVersion: string): Registry {
-  try {
-    return loadRegistry(gameVersion);
-  } catch {
-    return loadRegistry();
-  }
-}
-
 function loadSession(store: SessionStore, sessionId: string): LoadedSession {
   const session = store.get(sessionId, { includeSeries: 'events' });
   if (!session) throw new Error(`Session "${sessionId}" not found`);
   const events = (session.series?.events ?? []) as unknown as WidgetEvent[];
-  return { session, events, registry: registryFor(session.meta.gameVersion) };
+  return { session, events, registry: loadRegistryOrDefault(session.meta.gameVersion) };
 }
 
 export function registerCaptureHandlers(sessionStore: SessionStore = defaultSessionStore): void {

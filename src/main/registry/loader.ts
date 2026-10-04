@@ -83,3 +83,12 @@ export function loadRegistry(gameVersion?: string): Registry {
   registryCache.set(versionKey, registry);
   return registry;
 }
+
+/** The game version's own snapshot when we have it; otherwise the default one (validation then warns W_STALE_VERSION). */
+export function loadRegistryOrDefault(gameVersion: string): Registry {
+  try {
+    return loadRegistry(gameVersion);
+  } catch {
+    return loadRegistry();
+  }
+}

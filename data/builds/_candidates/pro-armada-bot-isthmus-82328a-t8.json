@@ -1,0 +1,423 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-bot-isthmus-82328a-t8",
+  "title": "Bot wind // Supreme Isthmus",
+  "factionId": "armada",
+  "gameVersion": "test-31030-23a0c35",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "advanced",
+  "opening": "bot",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "curated",
+    "replayId": "82328a6a6a5845e9a74cdbbae6716f0f",
+    "player": "PlatinumBlonde",
+    "playerRating": 58.35,
+    "map": "Supreme Isthmus v2.1",
+    "playedAt": "2026-08-22",
+    "gameVersion": "test-31030-23a0c35",
+    "reviewedBy": "",
+    "reviewedAt": ""
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 3,
+      "targetTime": 3.6
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 5,
+      "targetTime": 34
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armlab",
+      "count": 1,
+      "targetTime": 64
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 1,
+      "targetTime": 81.3
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 82.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armrectr",
+      "count": 1,
+      "targetTime": 100.9
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 1,
+      "targetTime": 109.9
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 116
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armrectr",
+      "count": 1,
+      "targetTime": 125.9
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 128.4
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 138.8
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armestor",
+      "count": 1,
+      "targetTime": 151
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 4,
+      "targetTime": 160.5
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 2,
+      "targetTime": 183.7
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armalab",
+      "count": 1,
+      "targetTime": 193.7
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 4,
+      "targetTime": 246.2
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armack",
+      "count": 1,
+      "targetTime": 249.8
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armsnipe",
+      "count": 1,
+      "targetTime": 261.4
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armsnipe",
+      "count": 1,
+      "targetTime": 283.4
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 7,
+      "targetTime": 310
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armack",
+      "count": 1,
+      "targetTime": 322.9
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armack",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmoho",
+      "count": 2,
+      "targetTime": 347.9
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 372.1
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armack",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmoho",
+      "count": 1,
+      "targetTime": 395.4
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 400.6
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 5,
+      "targetTime": 430.6
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armack",
+      "count": 1,
+      "targetTime": 435.3
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfark",
+      "count": 3,
+      "targetTime": 447
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armack",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmoho",
+      "count": 1,
+      "targetTime": 459.9
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armack",
+      "count": 1,
+      "targetTime": 473.5
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armalab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfido",
+      "count": 10,
+      "targetTime": 501.4
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armfark",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 560.8
+    },
+    {
+      "id": "s33",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armfark",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 8,
+      "targetTime": 565.3
+    },
+    {
+      "id": "s34",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armfark",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 594.3
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "description": "First 10 minutes of PlatinumBlonde (Armada) in a 8v8 on Supreme Isthmus v2.1, played 2026-08-22."
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-03-multi-small-team-pro-tangerine-remake-b5089a",
+  "mode": "replay",
+  "gameVersion": "test-31197-038e78b",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Tangerine_Remake 1.0",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:26:14.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "Leohvm",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "bucketphobia",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 1,
+      "playerName": "PlatinumBlonde",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 1,
+      "playerName": "xXGRM_RenXx",
+      "factionId": "armada",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "b5089a6ab091062c42312c17488e2db7",
+    "url": "https://bar-rts.com/replays/b5089a6ab091062c42312c17488e2db7"
+  },
+  "notes": "pro replay b5089a6ab091062c42312c17488e2db7 (matched by players)"
+}

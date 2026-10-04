@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-21-multi-small-team-pro-gasbag-grabens-5da2b1",
+  "mode": "replay",
+  "gameVersion": "test-31368-8379d65",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Gasbag Grabens 1.1.1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:37:00.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "H0tCarl669",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "[DmE]Aslan",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 1,
+      "playerName": "Fasty",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 1,
+      "playerName": "Furrious68",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "5da2b16a627e991785adf453910a4f75",
+    "url": "https://bar-rts.com/replays/5da2b16a627e991785adf453910a4f75"
+  },
+  "notes": "pro replay 5da2b16a627e991785adf453910a4f75 (matched by players)"
+}

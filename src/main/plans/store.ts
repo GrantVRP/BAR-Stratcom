@@ -52,7 +52,8 @@ export class PlanStore {
       for (const entry of entries) {
         const fullPath = path.join(currentDir, entry.name);
         if (entry.isDirectory()) {
-          scan(fullPath);
+          // "_" folders hold curation work in progress (data/builds/_candidates), not library plans
+          if (!entry.name.startsWith('_')) scan(fullPath);
         } else if (entry.isFile() && entry.name.endsWith('.json')) {
           try {
             const content = fs.readFileSync(fullPath, 'utf-8');

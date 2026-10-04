@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+  "mode": "replay",
+  "gameVersion": "test-31030-23a0c35",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Supreme Isthmus v2.1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T21:21:48.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "[AFUS]Trotski",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "DukeofStars",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 0,
+      "playerName": "Syphos",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 0,
+      "playerName": "SkyFireEX",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 4,
+      "allyTeamId": 0,
+      "playerName": "EpicTyrannus",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 5,
+      "allyTeamId": 0,
+      "playerName": "iriS_xe",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 6,
+      "allyTeamId": 0,
+      "playerName": "Edd0Sensei",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 7,
+      "allyTeamId": 0,
+      "playerName": "ChaosNX",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 8,
+      "allyTeamId": 1,
+      "playerName": "PlatinumBlonde",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 9,
+      "allyTeamId": 1,
+      "playerName": "DRM",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 10,
+      "allyTeamId": 1,
+      "playerName": "Kuchy",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 11,
+      "allyTeamId": 1,
+      "playerName": "Hummell",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 12,
+      "allyTeamId": 1,
+      "playerName": "RogShotz",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 13,
+      "allyTeamId": 1,
+      "playerName": "KOT_",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 14,
+      "allyTeamId": 1,
+      "playerName": "waine",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 15,
+      "allyTeamId": 1,
+      "playerName": "kistenair",
+      "factionId": "armada",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "82328a6a6a5845e9a74cdbbae6716f0f",
+    "url": "https://bar-rts.com/replays/82328a6a6a5845e9a74cdbbae6716f0f"
+  },
+  "notes": "pro replay 82328a6a6a5845e9a74cdbbae6716f0f (matched by players)"
+}

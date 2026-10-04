@@ -155,6 +155,12 @@ describe('fixture-repair unit functions', () => {
     expect(getMapSlug('Mediterraneum_V1')).toBe('mediterraneum');
     expect(getMapSlug('Supreme Isthmus v1.7')).toBe('isthmus');
   });
+
+  it('never leaves a dash at either end of a map slug (H2: "Cape_Violet_V1", "Ditched_V1")', () => {
+    expect(getMapSlug('Cape_Violet_V1')).toBe('cape-violet');
+    expect(getMapSlug('Ditched_V1')).toBe('ditched');
+    expect(getMapSlug('_Isidis crack 1.1')).toBe('isidis-crack');
+  });
 });
 
 describe('importFixtures integration', () => {

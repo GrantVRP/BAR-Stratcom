@@ -240,6 +240,7 @@ export function getMapSlug(scriptName: string): string {
     .replace(/[._\-vV]?\d+(\.\d+)*$/g, '')
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-');
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-+|-+$)/g, '');
   return clean || 'map';
 }

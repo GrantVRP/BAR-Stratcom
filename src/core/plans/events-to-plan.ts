@@ -144,9 +144,10 @@ export function eventsToPlan(input: EventsToPlanInput): BuildPlan {
       detectedFactionId = unitDef.factionId;
     }
 
-    // Skip commander itself (f <= 0, or isCommander, or missing builder)
+    // Skip commander itself (f <= 0, or isCommander, or missing builder). Only the commander sets the
+    // faction: builder-less units such as tournament hats (cor_hat_*, on any faction) must not.
     if (unitDef?.isCommander || !e.bd || e.f <= 0) {
-      if (unitDef?.factionId) detectedFactionId = unitDef.factionId;
+      if (unitDef?.isCommander && unitDef.factionId) detectedFactionId = unitDef.factionId;
       continue;
     }
 

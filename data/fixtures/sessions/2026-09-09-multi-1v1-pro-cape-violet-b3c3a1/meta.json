@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-09-multi-1v1-pro-cape-violet-b3c3a1",
+  "mode": "replay",
+  "gameVersion": "test-31251-0ceadc7",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Cape_Violet_V1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T19:44:49.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "[MADO]maratus",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "modulo",
+      "factionId": "armada",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "b3c3a16a06ce2bd05c4d9546248d68ad",
+    "url": "https://bar-rts.com/replays/b3c3a16a06ce2bd05c4d9546248d68ad"
+  },
+  "notes": "pro replay b3c3a16a06ce2bd05c4d9546248d68ad (matched by players)"
+}

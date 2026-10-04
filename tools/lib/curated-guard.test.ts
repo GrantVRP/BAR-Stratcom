@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { validateCuratedPlanGuard } from './curated-guard';
+import { isCandidatePath, validateCandidatePlan, validateCuratedPlanGuard } from './curated-guard';
 import type { BuildPlan } from '../../src/core/schemas';
 
 describe('validateCuratedPlanGuard (T06.11, S-10)', () => {
@@ -156,5 +156,49 @@ describe('validateCuratedPlanGuard (T06.11, S-10)', () => {
     } finally {
       fs.rmSync(tmpBuilds, { recursive: true, force: true });
     }
+  });
+});
+
+describe('curated candidates (T08.3)', () => {
+  const candidate: BuildPlan = {
+    schemaVersion: 1,
+    id: 'pro-cortex-bot-test-map-0123ab-t0',
+    title: 'Bot wind // Test Map',
+    factionId: 'cortex',
+    gameVersion: 'test-1-abc',
+    modes: ['1v1'],
+    role: 'any',
+    skill: 'advanced',
+    opening: 'bot',
+    energyStyle: 'wind',
+    source: {
+      kind: 'curated',
+      replayId: '0123abcd0123abcd0123abcd0123abcd',
+      player: 'TestPro',
+      playerRating: 50,
+      map: 'Test Map 1.0',
+      playedAt: '2026-09-12',
+      gameVersion: 'test-1-abc',
+      reviewedBy: '',
+      reviewedAt: ''
+    },
+    steps: [{ id: 's1', actor: { kind: 'commander' }, action: 'build', unitId: 'cormex', count: 1, targetTime: 4 }]
+  };
+
+  it('recognises candidate files on both path styles', () => {
+    expect(isCandidatePath('data\\builds\\_candidates\\x.json')).toBe(true);
+    expect(isCandidatePath('data/builds/_candidates/x.json')).toBe(true);
+    expect(isCandidatePath('data/builds/x.json')).toBe(false);
+  });
+
+  it('accepts an unreviewed curated candidate with a real replay id', () => {
+    expect(validateCandidatePlan(candidate)).toEqual({ valid: true });
+  });
+
+  it('rejects candidates that are not curated, have a fake replay id, or claim a review', () => {
+    expect(validateCandidatePlan({ ...candidate, source: { kind: 'manual', createdAt: 'x' } }).valid).toBe(false);
+    const src = candidate.source as Extract<BuildPlan['source'], { kind: 'curated' }>;
+    expect(validateCandidatePlan({ ...candidate, source: { ...src, replayId: 'fixture-1' } }).reason).toContain('invalid replayId');
+    expect(validateCandidatePlan({ ...candidate, source: { ...src, reviewedBy: 'someone' } }).reason).toContain('marked reviewed');
   });
 });

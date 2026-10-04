@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-15-multi-1v1-pro-prismatic-anomaly-24d1a9",
+  "mode": "replay",
+  "gameVersion": "test-31320-e17e8b7",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Prismatic Anomaly v1.02",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T19:49:15.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "TM_SlickLikeVik",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "[APM]ieNemo",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "24d1a96af401ba0a8749c0d23e30722d",
+    "url": "https://bar-rts.com/replays/24d1a96af401ba0a8749c0d23e30722d"
+  },
+  "notes": "pro replay 24d1a96af401ba0a8749c0d23e30722d (matched by players)"
+}

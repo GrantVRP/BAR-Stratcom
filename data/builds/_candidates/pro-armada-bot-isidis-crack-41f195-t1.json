@@ -1,0 +1,723 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-bot-isidis-crack-41f195-t1",
+  "title": "Bot wind // Isidis crack",
+  "factionId": "armada",
+  "gameVersion": "test-31152-2fc9ad5",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "advanced",
+  "opening": "bot",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "curated",
+    "replayId": "41f1956a77c3c3334de2cabffcbaacd8",
+    "player": "[teh]Teddy",
+    "playerRating": 52.34,
+    "map": "Isidis crack 1.1",
+    "playedAt": "2026-08-31",
+    "gameVersion": "test-31152-2fc9ad5",
+    "reviewedBy": "",
+    "reviewedAt": ""
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 3.5
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 10
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 16.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 31.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armlab",
+      "count": 1,
+      "targetTime": 44.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 5,
+      "targetTime": 61.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflea",
+      "count": 1,
+      "targetTime": 61.7
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 1,
+      "targetTime": 67.8
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflea",
+      "count": 3,
+      "targetTime": 86.9
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 3,
+      "targetTime": 103.4
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 111.3
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 5,
+      "targetTime": 129.8
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 133.8
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 135.5
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 144.8
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 153.8
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 155.2
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 158.2
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 173
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 177.2
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 181.3
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 187.1
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 9,
+      "targetTime": 189.5
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 190.7
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflea",
+      "count": 3,
+      "targetTime": 192.4
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 11,
+      "targetTime": 209
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 212.1
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 217.7
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 227.6
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 234.9
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 240.4
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 253.6
+    },
+    {
+      "id": "s33",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 1,
+      "targetTime": 272.5
+    },
+    {
+      "id": "s34",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 1,
+      "targetTime": 278.9
+    },
+    {
+      "id": "s35",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 280.6
+    },
+    {
+      "id": "s36",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armwar",
+      "count": 1,
+      "targetTime": 283.4
+    },
+    {
+      "id": "s37",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 4,
+      "targetTime": 290.4
+    },
+    {
+      "id": "s38",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 291.6
+    },
+    {
+      "id": "s39",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 304.6
+    },
+    {
+      "id": "s40",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 306.1
+    },
+    {
+      "id": "s41",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armrectr",
+      "count": 2,
+      "targetTime": 306.4
+    },
+    {
+      "id": "s42",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 314.1
+    },
+    {
+      "id": "s43",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 20,
+      "targetTime": 321.5
+    },
+    {
+      "id": "s44",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 5
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 322.4
+    },
+    {
+      "id": "s45",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 327.6
+    },
+    {
+      "id": "s46",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 332.1
+    },
+    {
+      "id": "s47",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 336.5
+    },
+    {
+      "id": "s48",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 5
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 344.1
+    },
+    {
+      "id": "s49",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 348.1
+    },
+    {
+      "id": "s50",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 349.6
+    },
+    {
+      "id": "s51",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 357.5
+    },
+    {
+      "id": "s52",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 361.6
+    },
+    {
+      "id": "s53",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 368
+    },
+    {
+      "id": "s54",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 5
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 369.3
+    },
+    {
+      "id": "s55",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 371.1
+    },
+    {
+      "id": "s56",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 2,
+      "targetTime": 381.5
+    },
+    {
+      "id": "s57",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 391.3
+    },
+    {
+      "id": "s58",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 5
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 402.4
+    },
+    {
+      "id": "s59",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 405.1
+    },
+    {
+      "id": "s60",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 409.1
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "description": "First 10 minutes of [teh]Teddy (Armada) in a 1v1 on Isidis crack 1.1, played 2026-08-31."
+}

@@ -1,0 +1,563 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-vehicle-moonshine-run-787ac1-t0",
+  "title": "Vehicle solar // Moonshine Run",
+  "factionId": "armada",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "advanced",
+  "opening": "vehicle",
+  "energyStyle": "solar",
+  "source": {
+    "kind": "curated",
+    "replayId": "787ac16ae120092fe1241a6c6c179a51",
+    "player": "TM_Austin",
+    "playerRating": 50.83,
+    "map": "Moonshine Run v1.0.1",
+    "playedAt": "2026-10-03",
+    "gameVersion": "test-31479-433a460",
+    "reviewedBy": "",
+    "reviewedAt": ""
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 3,
+      "targetTime": 3.7
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 28.1
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 39.6
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 2,
+      "targetTime": 46.1
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armvp",
+      "count": 1,
+      "targetTime": 65
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 2,
+      "targetTime": 84.4
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 93.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfav",
+      "count": 4,
+      "targetTime": 116.4
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 134.3
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 1,
+      "targetTime": 148.4
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 154.8
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 174.7
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfav",
+      "count": 2,
+      "targetTime": 176.9
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 178.5
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 180.2
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 2,
+      "targetTime": 188.7
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 195.1
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 203.5
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 206.6
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 1,
+      "targetTime": 220.4
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 228.6
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 238
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 239.5
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 1,
+      "targetTime": 243.4
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 253.7
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armvp",
+      "count": 1,
+      "targetTime": 259.6
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 284.5
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armjanus",
+      "count": 2,
+      "targetTime": 284.9
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 303
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armsam",
+      "count": 6,
+      "targetTime": 337.4
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 340.2
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 351.5
+    },
+    {
+      "id": "s33",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 353.8
+    },
+    {
+      "id": "s34",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armdrag",
+      "count": 4,
+      "targetTime": 367.5
+    },
+    {
+      "id": "s35",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 389.6
+    },
+    {
+      "id": "s36",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 395.4
+    },
+    {
+      "id": "s37",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 400.5
+    },
+    {
+      "id": "s38",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armadvsol",
+      "count": 1,
+      "targetTime": 406.6
+    },
+    {
+      "id": "s39",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armstump",
+      "count": 1,
+      "targetTime": 429.1
+    },
+    {
+      "id": "s40",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 433.5
+    },
+    {
+      "id": "s41",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armadvsol",
+      "count": 1,
+      "targetTime": 435.6
+    },
+    {
+      "id": "s42",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 2,
+      "targetTime": 454.1
+    },
+    {
+      "id": "s43",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 2,
+      "targetTime": 465.5
+    },
+    {
+      "id": "s44",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armavp",
+      "count": 1,
+      "targetTime": 484.1
+    },
+    {
+      "id": "s45",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armavp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armbull",
+      "count": 1,
+      "targetTime": 537.9
+    },
+    {
+      "id": "s46",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armavp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armseer",
+      "count": 1,
+      "targetTime": 556
+    },
+    {
+      "id": "s47",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armavp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmart",
+      "count": 4,
+      "targetTime": 563.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "description": "First 10 minutes of TM_Austin (Armada) in a 8v8 on Moonshine Run v1.0.1, played 2026-10-03."
+}

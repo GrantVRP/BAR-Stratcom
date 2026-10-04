@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-08-19-multi-small-team-pro-all-that-glitters-extended-d02986",
+  "mode": "replay",
+  "gameVersion": "test-31001-7b9fbd4",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "All That Glitters Extended v1.0.2",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:48:36.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "Knoit",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 1,
+      "playerName": "Stokka",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 0,
+      "playerName": "DeGufis",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 1,
+      "playerName": "[AFUS]Haundreyy",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 4,
+      "allyTeamId": 0,
+      "playerName": "Cumbridge",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 5,
+      "allyTeamId": 1,
+      "playerName": "Gattone01",
+      "factionId": "armada",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "d029866a1898d9dcccc3c2ece3706b19",
+    "url": "https://bar-rts.com/replays/d029866a1898d9dcccc3c2ece3706b19"
+  },
+  "notes": "pro replay d029866a1898d9dcccc3c2ece3706b19 (matched by players)"
+}

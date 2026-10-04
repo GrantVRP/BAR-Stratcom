@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-08-19-multi-small-team-pro-flats-and-forests-2e4286",
+  "mode": "replay",
+  "gameVersion": "test-31001-7b9fbd4",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "Flats and Forests v2.2",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:20:41.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "purpleheart",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "Haiiromaru",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 1,
+      "playerName": "AFUS_ABUSE",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 1,
+      "playerName": "[MADO]ItsNoGood",
+      "factionId": "armada",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "2e42866a9f51fcdae733e0b21e883d72",
+    "url": "https://bar-rts.com/replays/2e42866a9f51fcdae733e0b21e883d72"
+  },
+  "notes": "pro replay 2e42866a9f51fcdae733e0b21e883d72 (matched by players)"
+}

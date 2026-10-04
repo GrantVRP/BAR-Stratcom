@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-09-15-multi-small-team-pro-the-cold-place-bar-bcd5a9",
+  "mode": "replay",
+  "gameVersion": "test-31320-e17e8b7",
+  "engineVersion": "2026.07.04",
+  "mapScriptName": "The Cold Place BAR v1.1",
+  "durationSec": 635.000061,
+  "startedAt": "2026-10-04T20:15:10.000Z",
+  "teams": [
+    {
+      "teamId": 0,
+      "allyTeamId": 0,
+      "playerName": "Immort",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 1,
+      "allyTeamId": 0,
+      "playerName": "JesterB",
+      "factionId": "armada",
+      "isMe": false
+    },
+    {
+      "teamId": 2,
+      "allyTeamId": 1,
+      "playerName": "JelousOfMyEco",
+      "factionId": "cortex",
+      "isMe": false
+    },
+    {
+      "teamId": 3,
+      "allyTeamId": 1,
+      "playerName": "UsurpeR",
+      "factionId": "cortex",
+      "isMe": false
+    }
+  ],
+  "start": null,
+  "source": "fixture",
+  "anonymized": true,
+  "replay": {
+    "replayId": "bcd5a96a9433b754b7f6d0de9f06f2d6",
+    "url": "https://bar-rts.com/replays/bcd5a96a9433b754b7f6d0de9f06f2d6"
+  },
+  "notes": "pro replay bcd5a96a9433b754b7f6d0de9f06f2d6 (matched by players)"
+}

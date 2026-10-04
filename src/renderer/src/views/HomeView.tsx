@@ -7,7 +7,7 @@ import { DemoPickerModal } from '../components/coach/DemoPickerModal';
 import { Button } from '../components/ui/Button';
 import { Tag } from '../components/ui/Tag';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
-import { factionTagVariant } from '../lib/faction-style';
+import { factionAccent, factionTagVariant } from '../lib/faction-style';
 import { Provenance } from '../components/ui/Provenance';
 import { ProfileSuggestionBanner } from '../components/profile/ProfileSuggestionBanner';
 
@@ -20,6 +20,7 @@ export function HomeView(): React.JSX.Element {
   const [demoList, setDemoList] = useState<DemoInfo[]>([]);
 
   const activePlan = getActivePlan() ?? plans[0] ?? null;
+  const planAccent = activePlan ? factionAccent(activePlan.factionId) : undefined;
 
   async function handleStartLive(): Promise<void> {
     if (!activePlan) return;
@@ -132,11 +133,26 @@ export function HomeView(): React.JSX.Element {
         {/* Active Plan Card (06 §4.2) */}
         <div
           data-testid="home-active-plan-card"
-          className="lg:col-span-2 rounded-lg border-2 border-[#2563eb]/40 bg-[#0d131f] p-5 shadow-lg flex flex-col justify-between"
+          data-faction={activePlan?.factionId ?? 'none'}
+          className="lg:col-span-2 rounded-lg border-2 border-zinc-700 bg-[#0d0f17] p-5 shadow-lg flex flex-col justify-between"
+          style={
+            planAccent
+              ? { borderColor: planAccent, backgroundColor: `color-mix(in srgb, ${planAccent} 9%, #0b0d14)` }
+              : undefined
+          }
         >
           <div>
-            <div className="flex items-center justify-between border-b border-[#1e293b] pb-2">
-              <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">ACTIVE BUILD PLAN</span>
+            <div
+              className="flex items-center justify-between border-b border-[#1e293b] pb-2"
+              style={planAccent ? { borderBottomColor: `${planAccent}40` } : undefined}
+            >
+              <span
+                data-testid="home-active-plan-heading"
+                className="font-['Press_Start_2P'] text-[10px] text-zinc-300"
+                style={planAccent ? { color: planAccent } : undefined}
+              >
+                ACTIVE BUILD PLAN
+              </span>
               <Button
                 variant="default"
                 size="sm"
@@ -187,7 +203,10 @@ export function HomeView(): React.JSX.Element {
           </div>
 
           {/* Three Coaching Buttons (06 §4.2) */}
-          <div className="mt-6 pt-4 border-t border-[#1e293b] flex flex-wrap gap-3">
+          <div
+            className="mt-6 pt-4 border-t border-[#1e293b] flex flex-wrap gap-3"
+            style={planAccent ? { borderTopColor: `${planAccent}40` } : undefined}
+          >
             <Button
               variant="armada"
               size="md"

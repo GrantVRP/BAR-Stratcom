@@ -97,6 +97,28 @@ describe('HomeView', () => {
     expect(container.querySelector('[data-testid="home-start-demo-btn"]')).not.toBeNull();
   });
 
+  it('colours the active plan card by faction: Cortex red, Armada blue (T10.7)', async () => {
+    const card = (): HTMLElement => container.querySelector('[data-testid="home-active-plan-card"]')!;
+    const heading = (): HTMLElement => container.querySelector('[data-testid="home-active-plan-heading"]')!;
+    await act(async () => root.render(<HomeView />));
+    expect(card().getAttribute('data-faction')).toBe('cortex');
+    expect(card().style.borderColor).toBe('#ff2244');
+    expect(heading().style.color).toBe('#ff2244');
+
+    const armadaPlan: BuildPlan = { ...mockPlan, id: 'armada-plan', title: 'Armada Plan', factionId: 'armada' };
+    await act(async () => usePlans.setState({ plans: [mockPlan, armadaPlan], activePlanId: 'armada-plan' }));
+    expect(card().getAttribute('data-faction')).toBe('armada');
+    expect(card().style.borderColor).toBe('#449bed');
+    expect(heading().style.color).toBe('#449bed');
+  });
+
+  it('keeps the active plan card neutral when there is no plan', async () => {
+    usePlans.setState({ plans: [], activePlanId: null });
+    await act(async () => root.render(<HomeView />));
+    expect(container.querySelector('[data-testid="home-active-plan-card"]')!.getAttribute('data-faction')).toBe('none');
+    expect((container.querySelector('[data-testid="home-active-plan-card"]') as HTMLElement).style.borderColor).toBe('');
+  });
+
   it('triggers paired demo directly when active plan matches a fixture', async () => {
     const startSpy = vi.spyOn(useCoach.getState(), 'start').mockResolvedValue(true);
 

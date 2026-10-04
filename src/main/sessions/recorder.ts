@@ -5,6 +5,7 @@ import type { SessionFileDoc, StateDoc, WidgetEvent, WidgetHeartbeat } from '../
 import { SessionMetaSchema, type SessionMeta } from '../../core/schemas/session';
 import { broadcast } from '../ipc/register';
 import { SessionStore } from './store';
+import { generateReportForSession } from './report-generator';
 
 export interface SessionRecorderOptions {
   sessionsDir: string;
@@ -269,6 +270,9 @@ export class SessionRecorder {
     const tmpFile = path.join(sessionDir, 'meta.json.tmp');
     await fs.promises.writeFile(tmpFile, JSON.stringify(validated, null, 2), 'utf8');
     await fs.promises.rename(tmpFile, metaFile);
+
+    // Generate and persist post-match report (04 §4, T07.2)
+    await generateReportForSession({ sessionDir, meta: validated });
 
     // Broadcast review ready
     broadcast('review:ready', { sessionId });

@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-01-cortex-1v1-vs-ai-barr",
+  "planId": "2026-10-01-cortex-1v1-vs-ai-barr",
+  "profile": "intermediate",
+  "factionId": "cortex",
+  "metrics": {
+    "durationSec": 899,
+    "energyStallSec": 91,
+    "metalStallSec": 82,
+    "metalFloatSec": 19,
+    "energyFloatSec": 244,
+    "idleFactorySec": 292,
+    "idleBuilderSec": 383,
+    "idleCommanderSec": 11,
+    "bpUtilisation": 0.521,
+    "timeToFirstFactory": 68,
+    "timeToT2": null,
+    "incomeAt": {
+      "180": {
+        "metal": 6.68,
+        "energy": 235.52
+      },
+      "300": {
+        "metal": 8.07,
+        "energy": 485.42
+      },
+      "480": {
+        "metal": 10.5,
+        "energy": 320.16
+      },
+      "600": {
+        "metal": 14.24,
+        "energy": 236.62
+      }
+    }
+  },
+  "steps": [
+    {
+      "stepId": "s1",
+      "plannedFinish": 19,
+      "actualFinish": 20.3,
+      "deltaSec": 1
+    },
+    {
+      "stepId": "s2",
+      "plannedFinish": 39.5,
+      "actualFinish": 67.7,
+      "deltaSec": 28
+    },
+    {
+      "stepId": "s3",
+      "plannedFinish": 201.5,
+      "actualFinish": 237.7,
+      "deltaSec": 36
+    },
+    {
+      "stepId": "s4",
+      "plannedFinish": 99.5,
+      "actualFinish": 122.3,
+      "deltaSec": 23
+    },
+    {
+      "stepId": "s5",
+      "plannedFinish": 159,
+      "actualFinish": 158.4,
+      "deltaSec": -1
+    },
+    {
+      "stepId": "s6",
+      "plannedFinish": 197,
+      "actualFinish": 270.2,
+      "deltaSec": 73
+    },
+    {
+      "stepId": "s7",
+      "plannedFinish": 182.5,
+      "actualFinish": 181.8,
+      "deltaSec": -1
+    },
+    {
+      "stepId": "s8",
+      "plannedFinish": 238,
+      "actualFinish": 258.1,
+      "deltaSec": 20
+    },
+    {
+      "stepId": "s9",
+      "plannedFinish": 260,
+      "actualFinish": 264.1,
+      "deltaSec": 4
+    },
+    {
+      "stepId": "s10",
+      "plannedFinish": 299.5,
+      "actualFinish": 299,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s11",
+      "plannedFinish": 322.5,
+      "actualFinish": 322.9,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s12",
+      "plannedFinish": 314.5,
+      "actualFinish": 315.5,
+      "deltaSec": 1
+    },
+    {
+      "stepId": "s13",
+      "plannedFinish": 378,
+      "actualFinish": 379.7,
+      "deltaSec": 2
+    },
+    {
+      "stepId": "s14",
+      "plannedFinish": 395,
+      "actualFinish": 394.7,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s15",
+      "plannedFinish": 575,
+      "actualFinish": 587.1,
+      "deltaSec": 12
+    },
+    {
+      "stepId": "s16",
+      "plannedFinish": 388.5,
+      "actualFinish": 388.1,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s17",
+      "plannedFinish": 420,
+      "actualFinish": 423.3,
+      "deltaSec": 3
+    },
+    {
+      "stepId": "s18",
+      "plannedFinish": 431.5,
+      "actualFinish": 431.2,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s19",
+      "plannedFinish": 446.5,
+      "actualFinish": 484.4,
+      "deltaSec": 38
+    },
+    {
+      "stepId": "s20",
+      "plannedFinish": 487.5,
+      "actualFinish": 490.8,
+      "deltaSec": 3
+    },
+    {
+      "stepId": "s21",
+      "plannedFinish": 555.5,
+      "actualFinish": 521.6,
+      "deltaSec": -34
+    },
+    {
+      "stepId": "s22",
+      "plannedFinish": 607.5,
+      "actualFinish": 589.9,
+      "deltaSec": -18
+    },
+    {
+      "stepId": "s23",
+      "plannedFinish": 566.5,
+      "actualFinish": 591.2,
+      "deltaSec": 25
+    },
+    {
+      "stepId": "s24",
+      "plannedFinish": 578.5,
+      "actualFinish": 588.5,
+      "deltaSec": 10
+    },
+    {
+      "stepId": "s25",
+      "plannedFinish": 614,
+      "actualFinish": 613.7,
+      "deltaSec": 0
+    }
+  ],
+  "adherence": 0.72,
+  "benchmark": null,
+  "tips": [
+    {
+      "id": "tip.energy-stall",
+      "severity": "danger",
+      "text": "Energy-stalled for 91s. Keep energy income above what you spend before adding factories or builders."
+    },
+    {
+      "id": "tip.idle-builders",
+      "severity": "warn",
+      "text": "Constructors were idle for 383 builder-seconds. Always give them a queue."
+    },
+    {
+      "id": "tip.idle-factory",
+      "severity": "warn",
+      "text": "Factories sat idle for 292s. Use repeat-queue so they never stop."
+    }
+  ],
+  "grade": "D",
+  "profileSuggestion": null
+}

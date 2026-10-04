@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-02-armada-1v1-vs-ai-isthmus",
+  "planId": "2026-10-02-armada-1v1-vs-ai-isthmus",
+  "profile": "intermediate",
+  "factionId": "armada",
+  "metrics": {
+    "durationSec": 899,
+    "energyStallSec": 15,
+    "metalStallSec": 33,
+    "metalFloatSec": 200,
+    "energyFloatSec": 12,
+    "idleFactorySec": 222,
+    "idleBuilderSec": 626,
+    "idleCommanderSec": 116,
+    "bpUtilisation": 0.538,
+    "timeToFirstFactory": 71,
+    "timeToT2": null,
+    "incomeAt": {
+      "180": {
+        "metal": 8.9,
+        "energy": 116.43
+      },
+      "300": {
+        "metal": 8.9,
+        "energy": 131.96
+      },
+      "480": {
+        "metal": 28.53,
+        "energy": 628.96
+      },
+      "600": {
+        "metal": 24.56,
+        "energy": 647.22
+      }
+    }
+  },
+  "steps": [
+    {
+      "stepId": "s1",
+      "plannedFinish": 18,
+      "actualFinish": 21.5,
+      "deltaSec": 4
+    },
+    {
+      "stepId": "s2",
+      "plannedFinish": 38.5,
+      "actualFinish": 38.3,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s3",
+      "plannedFinish": 67.5,
+      "actualFinish": 70.6,
+      "deltaSec": 3
+    },
+    {
+      "stepId": "s4",
+      "plannedFinish": 103,
+      "actualFinish": 118.7,
+      "deltaSec": 16
+    },
+    {
+      "stepId": "s5",
+      "plannedFinish": 85,
+      "actualFinish": 86.3,
+      "deltaSec": 1
+    },
+    {
+      "stepId": "s6",
+      "plannedFinish": 105,
+      "actualFinish": 104.8,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s7",
+      "plannedFinish": 202,
+      "actualFinish": 208.6,
+      "deltaSec": 7
+    },
+    {
+      "stepId": "s8",
+      "plannedFinish": 139.5,
+      "actualFinish": 139.2,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s9",
+      "plannedFinish": 192.5,
+      "actualFinish": 192,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s10",
+      "plannedFinish": 234.5,
+      "actualFinish": 265.8,
+      "deltaSec": 31
+    },
+    {
+      "stepId": "s11",
+      "plannedFinish": 276.5,
+      "actualFinish": 252.9,
+      "deltaSec": -24
+    },
+    {
+      "stepId": "s12",
+      "plannedFinish": 241.5,
+      "actualFinish": 232.4,
+      "deltaSec": -9
+    },
+    {
+      "stepId": "s13",
+      "plannedFinish": 271.5,
+      "actualFinish": 249.2,
+      "deltaSec": -22
+    },
+    {
+      "stepId": "s14",
+      "plannedFinish": 420.5,
+      "actualFinish": 319,
+      "deltaSec": -101
+    },
+    {
+      "stepId": "s15",
+      "plannedFinish": 291,
+      "actualFinish": 280.3,
+      "deltaSec": -11
+    },
+    {
+      "stepId": "s16",
+      "plannedFinish": 348,
+      "actualFinish": 324.5,
+      "deltaSec": -23
+    },
+    {
+      "stepId": "s17",
+      "plannedFinish": 378,
+      "actualFinish": 366.7,
+      "deltaSec": -11
+    },
+    {
+      "stepId": "s18",
+      "plannedFinish": 442.5,
+      "actualFinish": 336.7,
+      "deltaSec": -106
+    },
+    {
+      "stepId": "s19",
+      "plannedFinish": 385.5,
+      "actualFinish": 397.8,
+      "deltaSec": 12
+    },
+    {
+      "stepId": "s20",
+      "plannedFinish": 366,
+      "actualFinish": 354.9,
+      "deltaSec": -11
+    },
+    {
+      "stepId": "s21",
+      "plannedFinish": 435.5,
+      "actualFinish": 416.8,
+      "deltaSec": -19
+    },
+    {
+      "stepId": "s22",
+      "plannedFinish": 459,
+      "actualFinish": 402.2,
+      "deltaSec": -57
+    },
+    {
+      "stepId": "s23",
+      "plannedFinish": 424,
+      "actualFinish": 412.7,
+      "deltaSec": -11
+    },
+    {
+      "stepId": "s24",
+      "plannedFinish": 475.5,
+      "actualFinish": 423,
+      "deltaSec": -52
+    },
+    {
+      "stepId": "s25",
+      "plannedFinish": 495.5,
+      "actualFinish": 445.3,
+      "deltaSec": -50
+    },
+    {
+      "stepId": "s26",
+      "plannedFinish": 456.5,
+      "actualFinish": 446.2,
+      "deltaSec": -10
+    },
+    {
+      "stepId": "s27",
+      "plannedFinish": 489,
+      "actualFinish": 488.8,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s28",
+      "plannedFinish": 513.5,
+      "actualFinish": 513.3,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s29",
+      "plannedFinish": 600.5,
+      "actualFinish": 604.4,
+      "deltaSec": 4
+    },
+    {
+      "stepId": "s30",
+      "plannedFinish": 511,
+      "actualFinish": 508.2,
+      "deltaSec": -3
+    },
+    {
+      "stepId": "s31",
+      "plannedFinish": 675,
+      "actualFinish": 594.2,
+      "deltaSec": -81
+    },
+    {
+      "stepId": "s32",
+      "plannedFinish": 600,
+      "actualFinish": 607.8,
+      "deltaSec": 8
+    },
+    {
+      "stepId": "s33",
+      "plannedFinish": 540.5,
+      "actualFinish": 540.2,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s34",
+      "plannedFinish": 567,
+      "actualFinish": 566.7,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s35",
+      "plannedFinish": 593.5,
+      "actualFinish": 593.2,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s36",
+      "plannedFinish": 625.5,
+      "actualFinish": 601.1,
+      "deltaSec": -24
+    }
+  ],
+  "adherence": 0.972,
+  "benchmark": null,
+  "tips": [
+    {
+      "id": "tip.metal-float",
+      "severity": "warn",
+      "text": "Floated metal for 200s. Add build power (constructor or turret) or queue more."
+    },
+    {
+      "id": "tip.idle-builders",
+      "severity": "warn",
+      "text": "Constructors were idle for 626 builder-seconds. Always give them a queue."
+    },
+    {
+      "id": "tip.idle-factory",
+      "severity": "warn",
+      "text": "Factories sat idle for 222s. Use repeat-queue so they never stop."
+    }
+  ],
+  "grade": "D",
+  "profileSuggestion": null
+}

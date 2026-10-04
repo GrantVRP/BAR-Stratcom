@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-10-01-cortex-1v1-vs-ai-barr-499s",
+  "planId": "2026-10-01-cortex-1v1-vs-ai-barr-499s",
+  "profile": "intermediate",
+  "factionId": "cortex",
+  "metrics": {
+    "durationSec": 499,
+    "energyStallSec": 0,
+    "metalStallSec": 32,
+    "metalFloatSec": 24,
+    "energyFloatSec": 290,
+    "idleFactorySec": 154,
+    "idleBuilderSec": 261,
+    "idleCommanderSec": 1,
+    "bpUtilisation": 0.558,
+    "timeToFirstFactory": 74,
+    "timeToT2": null,
+    "incomeAt": {
+      "180": {
+        "metal": 7.72,
+        "energy": 244.37
+      },
+      "300": {
+        "metal": 9.11,
+        "energy": 352.08
+      },
+      "480": {
+        "metal": 16.36,
+        "energy": 450.38
+      },
+      "600": null
+    }
+  },
+  "steps": [
+    {
+      "stepId": "s1",
+      "plannedFinish": 17,
+      "actualFinish": 17.8,
+      "deltaSec": 1
+    },
+    {
+      "stepId": "s2",
+      "plannedFinish": 49.5,
+      "actualFinish": 51.7,
+      "deltaSec": 2
+    },
+    {
+      "stepId": "s3",
+      "plannedFinish": 74,
+      "actualFinish": 73.8,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s4",
+      "plannedFinish": 106.5,
+      "actualFinish": 105.9,
+      "deltaSec": -1
+    },
+    {
+      "stepId": "s5",
+      "plannedFinish": 135.5,
+      "actualFinish": 135,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s6",
+      "plannedFinish": 144,
+      "actualFinish": 143.5,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s7",
+      "plannedFinish": 144.5,
+      "actualFinish": 144,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s8",
+      "plannedFinish": 184.5,
+      "actualFinish": 188.6,
+      "deltaSec": 4
+    },
+    {
+      "stepId": "s9",
+      "plannedFinish": 167,
+      "actualFinish": 166.5,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s10",
+      "plannedFinish": 196,
+      "actualFinish": 195.3,
+      "deltaSec": -1
+    },
+    {
+      "stepId": "s11",
+      "plannedFinish": 198,
+      "actualFinish": 206.7,
+      "deltaSec": 9
+    },
+    {
+      "stepId": "s12",
+      "plannedFinish": 230,
+      "actualFinish": 232.2,
+      "deltaSec": 2
+    },
+    {
+      "stepId": "s13",
+      "plannedFinish": 255.5,
+      "actualFinish": 286.9,
+      "deltaSec": 31
+    },
+    {
+      "stepId": "s14",
+      "plannedFinish": 259,
+      "actualFinish": 259.5,
+      "deltaSec": 1
+    },
+    {
+      "stepId": "s15",
+      "plannedFinish": 276,
+      "actualFinish": 280.6,
+      "deltaSec": 5
+    },
+    {
+      "stepId": "s16",
+      "plannedFinish": 308.5,
+      "actualFinish": 307.9,
+      "deltaSec": -1
+    },
+    {
+      "stepId": "s17",
+      "plannedFinish": 326,
+      "actualFinish": 358.8,
+      "deltaSec": 33
+    },
+    {
+      "stepId": "s18",
+      "plannedFinish": 318.5,
+      "actualFinish": 318.6,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s19",
+      "plannedFinish": 319,
+      "actualFinish": 319.4,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s20",
+      "plannedFinish": 369.5,
+      "actualFinish": 369,
+      "deltaSec": 0
+    },
+    {
+      "stepId": "s21",
+      "plannedFinish": 371.5,
+      "actualFinish": 372.2,
+      "deltaSec": 1
+    },
+    {
+      "stepId": "s22",
+      "plannedFinish": 448.5,
+      "actualFinish": 462.9,
+      "deltaSec": 14
+    },
+    {
+      "stepId": "s23",
+      "plannedFinish": 432.5,
+      "actualFinish": 407.7,
+      "deltaSec": -25
+    },
+    {
+      "stepId": "s24",
+      "plannedFinish": 412.5,
+      "actualFinish": 411.8,
+      "deltaSec": -1
+    },
+    {
+      "stepId": "s25",
+      "plannedFinish": 492.5,
+      "actualFinish": 454,
+      "deltaSec": -38
+    }
+  ],
+  "adherence": 0.92,
+  "benchmark": null,
+  "tips": [
+    {
+      "id": "tip.idle-builders",
+      "severity": "warn",
+      "text": "Constructors were idle for 261 builder-seconds. Always give them a queue."
+    },
+    {
+      "id": "tip.idle-factory",
+      "severity": "warn",
+      "text": "Factories sat idle for 154s. Use repeat-queue so they never stop."
+    }
+  ],
+  "grade": "C",
+  "profileSuggestion": null
+}

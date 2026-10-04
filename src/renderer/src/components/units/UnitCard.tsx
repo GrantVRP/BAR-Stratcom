@@ -25,7 +25,7 @@ export function UnitCard({ unit, unitClass, selected, onSelect }: UnitCardProps)
       }`}
     >
       <div className="flex items-start gap-3">
-        <UnitIcon unitId={unit.id} size={48} />
+        <UnitIcon unitId={unit.id} size={64} />
         <div className="min-w-0 flex-1">
           <div className="truncate font-['Press_Start_2P'] text-[10px] leading-relaxed text-zinc-100" title={unit.name}>
             {unit.name}

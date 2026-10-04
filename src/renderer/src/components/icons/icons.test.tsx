@@ -70,13 +70,27 @@ describe('icon components (T10.3)', () => {
     container.remove();
   });
 
-  it('renders a unit with its sprite, badge and display-name label', async () => {
-    await act(async () => root.render(<UnitIcon unitId="armlab" size={32} />));
+  it('shows the 32-bit unit sprite with the display name and the artists in the tooltip (T10.5)', async () => {
+    await act(async () => root.render(<UnitIcon unitId="armlab" size={64} />));
+    const img = container.querySelector('img')!;
+    expect(img.getAttribute('data-unit-sprite')).toBe('armlab');
+    expect(img.getAttribute('alt')).toBe('Bot Lab (armlab)');
+    expect(img.getAttribute('title')).toBe('Bot Lab (armlab) // unit art by IceXuick & Floris');
+    expect(img.getAttribute('src')).toMatch(/armlab.*\.png/);
+    expect(img.style.imageRendering).toBe('pixelated');
+  });
+
+  it('smooths sprites drawn smaller than their pixel size', async () => {
+    await act(async () => root.render(<UnitIcon unitId="armlab" size={20} />));
+    expect(container.querySelector('img')!.style.imageRendering).toBe('auto');
+  });
+
+  it('falls back to the class sprite for a unit without a picture', () => {
+    const spec = { base: 'factory' as const, badge: 'bot' as const, tech: 1, factionId: 'armada' };
+    act(() => root.render(<SpriteIcon {...spec} size={32} label="Bot Lab (armlab)" />));
     const svg = container.querySelector('svg')!;
     expect(svg.getAttribute('data-icon-base')).toBe('factory');
     expect(svg.getAttribute('data-icon-badge')).toBe('bot');
-    expect(svg.getAttribute('aria-label')).toBe('Bot Lab (armlab)');
-    expect(svg.getAttribute('width')).toBe('32');
   });
 
   it('shows an unknown-unit icon instead of failing', async () => {

@@ -8,6 +8,7 @@ import { UnitCard } from '../components/units/UnitCard';
 import { UnitDossier } from '../components/units/UnitDossier';
 import { Drawer } from '../components/ui/Drawer';
 import { Provenance } from '../components/ui/Provenance';
+import { UNIT_ART_CREDIT } from '../components/icons/unit-sprites';
 
 /** Unit catalog with original class icons and a dossier drawer (06 §4.8, T10.3). */
 export function UnitsView(): React.JSX.Element {
@@ -57,6 +58,9 @@ export function UnitsView(): React.JSX.Element {
           </div>
         )}
       </header>
+      <p className="-mt-2 font-mono text-sm text-zinc-400" data-testid="units-art-credit">
+        {UNIT_ART_CREDIT}
+      </p>
 
       {factionId && (
         <UnitFilters

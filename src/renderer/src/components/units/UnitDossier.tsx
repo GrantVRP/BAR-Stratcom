@@ -5,6 +5,7 @@ import type { BuildPlan, UnitDefRecord } from '../../../../core/schemas';
 import { UnitIcon } from '../icons/UnitIcon';
 import { Provenance } from '../ui/Provenance';
 import { CLASS_LABELS } from '../../lib/unit-catalog';
+import { UNIT_ART_CREDIT } from '../icons/unit-sprites';
 
 export interface UnitDossierProps {
   unit: UnitDefRecord;
@@ -80,7 +81,7 @@ export function UnitDossier({ unit, registry, plans, gameVersion, onOpenUnit }: 
   return (
     <div data-testid="unit-dossier" className="space-y-4">
       <div className="flex items-center gap-3">
-        <UnitIcon unitId={unit.id} size={64} />
+        <UnitIcon unitId={unit.id} size={128} />
         <div className="min-w-0">
           <div className="font-['Press_Start_2P'] text-xs leading-relaxed text-zinc-100">{unit.name}</div>
           <div className="font-mono text-sm text-zinc-400">{unit.id}</div>
@@ -114,6 +115,8 @@ export function UnitDossier({ unit, registry, plans, gameVersion, onOpenUnit }: 
 
       <UnitLinks title="BUILT BY" units={builtBy} onOpen={onOpenUnit} />
       <UnitLinks title="CAN BUILD" units={canBuild} onOpen={onOpenUnit} />
+
+      <p className="font-mono text-sm text-zinc-400">{UNIT_ART_CREDIT}</p>
 
       <section className="space-y-2">
         <div className={heading}>PLANS USING THIS UNIT</div>

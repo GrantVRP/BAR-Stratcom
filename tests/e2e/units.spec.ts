@@ -20,7 +20,8 @@ test('unit catalog: legacy name search, original icons and dossier (T10.3)', asy
     const card = page.getByTestId('unit-card-armrock');
     await expect(card).toBeVisible();
     await expect(card).not.toContainText('Rocko');
-    await expect(card.locator('svg[data-icon-base]').first()).toBeVisible();
+    await expect(card.locator('img[data-unit-sprite="armrock"]')).toBeVisible();
+    await expect(page.getByTestId('units-art-credit')).toContainText('IceXuick and Floris');
 
     await card.click();
     const dossier = page.getByTestId('unit-dossier');

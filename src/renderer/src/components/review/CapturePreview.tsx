@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { BuildPlan, MapRecord, PlanValidationResult } from '../../../../core/schemas';
 import { ipcClient } from '../../lib/ipc-client';
 import { PlanTimeline } from '../plans/PlanTimeline';
+import { FactionTag } from '../ui/FactionTag';
 import { SimGraph } from '../plans/SimGraph';
 
 export interface CapturePreviewProps {
@@ -41,7 +42,7 @@ export function CapturePreview({ plan, issues, mapScriptName }: CapturePreviewPr
     <div className="space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`${tagClass} text-zinc-300`}>{plan.factionId.toUpperCase()}</span>
+          <FactionTag factionId={plan.factionId} />
           <span className={`${tagClass} text-[#449bed]`}>{plan.opening.toUpperCase()}</span>
           <span className={`${tagClass} text-[#fbbf24]`}>{plan.energyStyle.toUpperCase()}</span>
           <span className="font-mono text-sm text-zinc-300">{plan.steps.length} STEPS</span>

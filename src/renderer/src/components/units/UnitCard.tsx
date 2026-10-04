@@ -2,6 +2,7 @@ import React from 'react';
 import type { UnitDefRecord } from '../../../../core/schemas';
 import type { UnitClass } from '../../../../core/registry';
 import { UnitIcon } from '../icons/UnitIcon';
+import { FactionEmblem } from '../ui/FactionEmblem';
 import { MetalIcon } from '../ui/MetalIcon';
 import { EnergyIcon } from '../ui/EnergyIcon';
 import { CLASS_LABELS } from '../../lib/unit-catalog';
@@ -31,7 +32,8 @@ export function UnitCard({ unit, unitClass, selected, onSelect }: UnitCardProps)
             {unit.name}
           </div>
           <div className="truncate font-mono text-sm text-zinc-400">{unit.id}</div>
-          <div className="mt-1 flex flex-wrap gap-1">
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            {unit.factionId && <FactionEmblem faction={unit.factionId} size={14} />}
             <span className="border border-zinc-700 bg-[#0d0f17] px-1 font-['Press_Start_2P'] text-[10px] text-zinc-300">
               {CLASS_LABELS[unitClass]}
             </span>

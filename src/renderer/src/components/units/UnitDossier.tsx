@@ -3,6 +3,7 @@ import type { Registry } from '../../../../core/registry';
 import { classifyUnit } from '../../../../core/registry';
 import type { BuildPlan, UnitDefRecord } from '../../../../core/schemas';
 import { UnitIcon } from '../icons/UnitIcon';
+import { FactionTag } from '../ui/FactionTag';
 import { Provenance } from '../ui/Provenance';
 import { CLASS_LABELS } from '../../lib/unit-catalog';
 import { UNIT_ART_CREDIT } from '../icons/unit-sprites';
@@ -86,6 +87,7 @@ export function UnitDossier({ unit, registry, plans, gameVersion, onOpenUnit }: 
           <div className="font-['Press_Start_2P'] text-xs leading-relaxed text-zinc-100">{unit.name}</div>
           <div className="font-mono text-sm text-zinc-400">{unit.id}</div>
           <div className="font-mono text-sm text-zinc-300">{unit.tooltip}</div>
+          <FactionTag factionId={unit.factionId} className="mt-1" />
           <div className="mt-1 font-['Press_Start_2P'] text-[10px] text-zinc-400">
             {CLASS_LABELS[classifyUnit(unit)]}
             {unit.techLevel !== null ? ` // T${unit.techLevel}` : ''}

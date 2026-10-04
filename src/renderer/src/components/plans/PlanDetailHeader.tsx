@@ -2,6 +2,7 @@ import React from 'react';
 import { Check, Copy, Edit, Share2, Trash2, Zap } from 'lucide-react';
 import type { BuildPlan } from '../../../../core/schemas';
 import { FactionEmblem } from '../ui/FactionEmblem';
+import { factionAccent } from '../../lib/faction-style';
 
 export interface PlanDetailHeaderProps {
   plan: BuildPlan;
@@ -36,7 +37,7 @@ export function PlanDetailHeader({
               {plan.title}
             </h2>
             <div className="flex items-center gap-2 mt-1.5 text-zinc-400 text-xs flex-wrap">
-              <span className="font-pixel-heading text-[10px] text-zinc-300 uppercase">
+              <span className="font-pixel-heading text-[10px] uppercase" style={{ color: factionAccent(plan.factionId) }}>
                 {plan.factionId}
               </span>
               <span>//</span>

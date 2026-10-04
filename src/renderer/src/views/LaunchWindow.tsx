@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
 import { WalkingBot } from '../components/sprites/WalkingBot';
+import { factionAccent } from '../lib/faction-style';
 import armadaTurbineStill from '../assets/original/armada_turbine_still.png';
 import cortexTurbineStill from '../assets/original/cortex_turbine_still.png';
 import armadaTurbineFull from '../assets/original/armada_turbine_full.webp';
@@ -67,7 +68,7 @@ export function LaunchWindow({
   }, []);
 
   const isArmada = faction === 'armada';
-  const factionColor = isArmada ? '#449bed' : '#ff2244';
+  const factionColor = factionAccent(faction);
 
   const handleLaunch = useCallback(() => {
     playArcadeStartChime();

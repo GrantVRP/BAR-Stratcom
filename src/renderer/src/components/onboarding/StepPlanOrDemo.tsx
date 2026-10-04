@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/Button';
 import { usePlans, useSettings } from '../../stores';
 import type { BuildPlan } from '../../../../core/schemas';
+import { FactionTag } from '../ui/FactionTag';
 
 export interface StepPlanOrDemoProps {
   onBack: () => void;
@@ -64,7 +65,6 @@ export function StepPlanOrDemo({ onBack, onNext, onTryDemo }: StepPlanOrDemoProp
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {suggestedPlans.map((plan) => {
               const isSelected = (activePlanId ?? settings?.activePlanId) === plan.id;
-              const isArmada = plan.factionId === 'armada';
               return (
                 <button
                   key={plan.id}
@@ -78,13 +78,7 @@ export function StepPlanOrDemo({ onBack, onNext, onTryDemo }: StepPlanOrDemoProp
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span
-                      className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${
-                        isArmada ? 'bg-[#449bed]/15 text-[#449bed]' : 'bg-[#ff2244]/15 text-[#ff2244]'
-                      }`}
-                    >
-                      {plan.factionId}
-                    </span>
+                    <FactionTag factionId={plan.factionId} />
                     {isSelected && <span className="text-[#38bdf8] font-bold">ACTIVE ✓</span>}
                   </div>
                   <div className="mt-2 font-bold text-xs text-[#e4e4e7] truncate">{plan.title}</div>

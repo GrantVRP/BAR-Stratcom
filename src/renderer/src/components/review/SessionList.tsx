@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import type { SessionSummary } from '../../../../core/schemas/session';
+import { FactionEmblem } from '../ui/FactionEmblem';
+import { factionAccent } from '../../lib/faction-style';
 
 export interface SessionListProps {
   sessions: SessionSummary[];
@@ -146,7 +148,8 @@ export function SessionList({
                     </span>
                   )}
                   {s.factionId && (
-                    <span className="font-mono text-xs uppercase text-zinc-400">
+                    <span className="flex items-center gap-1 font-mono text-xs uppercase" style={{ color: factionAccent(s.factionId) }}>
+                      <FactionEmblem faction={s.factionId} size={12} />
                       {s.factionId}
                     </span>
                   )}

@@ -2,14 +2,16 @@
  * Pixel-sprite palette for the original icon system (T10.3, A-11). Sprites are 16 × 16 character
  * grids; each character is one pixel. Faction shades follow the design palette (06 §3).
  */
+import { factionAccent } from '../../lib/faction-style';
+
 export const SPRITE_SIZE = 16;
 
 export type FactionShades = { f: string; d: string; l: string };
 
 const FACTION_SHADES: Record<string, FactionShades> = {
-  armada: { f: '#449bed', d: '#1d4f91', l: '#9cc9f5' },
-  cortex: { f: '#ff2244', d: '#8f1426', l: '#ff8a9b' },
-  legion: { f: '#2ec4b6', d: '#17635c', l: '#8de4dc' }
+  armada: { f: factionAccent('armada'), d: '#1d4f91', l: '#9cc9f5' },
+  cortex: { f: factionAccent('cortex'), d: '#8f1426', l: '#ff8a9b' },
+  legion: { f: factionAccent('legion'), d: '#17635c', l: '#8de4dc' }
 };
 
 const NEUTRAL: FactionShades = { f: '#94a3b8', d: '#475569', l: '#cbd5e1' };

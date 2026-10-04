@@ -9,6 +9,7 @@ import { CoachUpNext } from '../components/coach/CoachUpNext';
 import { ipcClient } from '../lib/ipc-client';
 
 import { formatDemoHeader } from '../lib/demo-pairing';
+import { factionAccent } from '../lib/faction-style';
 
 export interface CoachViewProps {
   standalone?: boolean;
@@ -121,7 +122,8 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
 
         <div className="flex items-center gap-3">
           <span className="text-xs uppercase text-[#a1a1aa] truncate max-w-[200px] hidden sm:inline">
-            {activePlan?.factionId.toUpperCase()} // {activePlan?.title.toUpperCase()}
+            <span style={{ color: factionAccent(activePlan?.factionId) }}>{activePlan?.factionId.toUpperCase()}</span> //{' '}
+            {activePlan?.title.toUpperCase()}
           </span>
           <span
             data-testid="coach-step-count"

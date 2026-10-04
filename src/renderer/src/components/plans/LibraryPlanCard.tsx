@@ -2,6 +2,7 @@ import React from 'react';
 import type { BuildPlan } from '../../../../core/schemas';
 import { Tag } from '../ui/Tag';
 import { FactionEmblem } from '../ui/FactionEmblem';
+import { factionAccent, factionTagVariant } from '../../lib/faction-style';
 
 export interface LibraryPlanCardProps {
   plan: BuildPlan;
@@ -16,7 +17,7 @@ export function LibraryPlanCard({
   provenanceLine,
   onSelect
 }: LibraryPlanCardProps): React.JSX.Element {
-  const isArmada = plan.factionId === 'armada';
+  const accent = factionAccent(plan.factionId);
 
   return (
     <div
@@ -26,11 +27,7 @@ export function LibraryPlanCard({
         isActive ? 'border-[#4ade80]' : 'hover:border-zinc-500'
       }`}
     >
-      <div
-        className={`absolute left-0 top-0 bottom-0 w-1 ${
-          isArmada ? 'bg-[#449bed]' : 'bg-[#ff2244]'
-        }`}
-      />
+      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: accent }} />
 
       <div className="flex items-start justify-between gap-3 min-w-0">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -53,7 +50,7 @@ export function LibraryPlanCard({
       </div>
 
       <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
-        <Tag variant={isArmada ? 'armada' : 'cortex'}>{plan.factionId}</Tag>
+        <Tag variant={factionTagVariant(plan.factionId)}>{plan.factionId}</Tag>
         <Tag variant="default">{plan.opening}</Tag>
         <Tag variant="default">{plan.energyStyle}</Tag>
         <Tag variant="default">{plan.skill}</Tag>

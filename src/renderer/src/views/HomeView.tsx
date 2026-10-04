@@ -7,6 +7,7 @@ import { DemoPickerModal } from '../components/coach/DemoPickerModal';
 import { Button } from '../components/ui/Button';
 import { Tag } from '../components/ui/Tag';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
+import { factionTagVariant } from '../lib/faction-style';
 import { Provenance } from '../components/ui/Provenance';
 import { ProfileSuggestionBanner } from '../components/profile/ProfileSuggestionBanner';
 
@@ -156,6 +157,7 @@ export function HomeView(): React.JSX.Element {
                     <div>
                       <h2 className="text-base font-bold text-[#f8fafc]">{activePlan.title}</h2>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                        <Tag variant={factionTagVariant(activePlan.factionId)}>{activePlan.factionId}</Tag>
                         {activePlan.modes.map((m) => (
                           <Tag key={m} variant="default">
                             {m}

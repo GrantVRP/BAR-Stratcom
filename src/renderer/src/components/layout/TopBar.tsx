@@ -3,6 +3,8 @@ import { Tag } from '../ui/Tag';
 import { useLive } from '../../stores/useLive';
 import { usePlans } from '../../stores/usePlans';
 import { useSettings } from '../../stores/useSettings';
+import { FactionEmblem } from '../ui/FactionEmblem';
+import { factionAccent } from '../../lib/faction-style';
 import type { HealthStatus } from '../../../../shared/ipc';
 
 const STATUS_LABELS: Record<HealthStatus, { text: string; variant: 'good' | 'warn' | 'danger' | 'default' }> = {
@@ -69,9 +71,11 @@ export function TopBar(): React.JSX.Element {
           >
             PLAN:
           </span>
+          {activePlan && <FactionEmblem faction={activePlan.factionId} size={14} />}
           <span
-            style={{ fontFamily: "'Press Start 2P', monospace" }}
-            className="text-[10px] uppercase text-[#449bed] truncate max-w-[200px]"
+            style={{ fontFamily: "'Press Start 2P', monospace", color: activePlan ? factionAccent(activePlan.factionId) : undefined }}
+            className="text-[10px] uppercase text-zinc-400 truncate max-w-[200px]"
+            data-testid="active-plan-title"
           >
             {activePlan ? activePlan.title : 'NONE ACTIVE'}
           </span>

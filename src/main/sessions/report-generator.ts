@@ -7,7 +7,7 @@ import { loadRegistry } from '../registry/loader';
 import { defaultPlanStore } from '../plans/store';
 import { defaultSettingsStore } from '../settings/store';
 import { simulate } from '../../core/sim/simulate';
-import { readStateLines, readEventsLines } from './store';
+import { readStateLines, readEventsLines, SessionStore } from './store';
 import type { Registry } from '../../core/registry';
 import type { PlanStore } from '../plans/store';
 import type { SettingsStore } from '../settings/store';
@@ -17,6 +17,7 @@ export interface ReportGeneratorOptions {
   meta: SessionMeta;
   planStore?: PlanStore;
   settingsStore?: SettingsStore;
+  sessionStore?: SessionStore;
   registry?: Registry;
 }
 
@@ -79,6 +80,12 @@ export async function generateReportForSession(
       }
     }
 
+    const sessionsDir = path.dirname(sessionDir);
+    const sessionStore = options.sessionStore ?? (fs.existsSync(sessionsDir) ? new SessionStore({ sessionsDir }) : undefined);
+    const pastReports = sessionStore
+      ? sessionStore.getRecentReports(10).filter((r) => r.sessionId !== meta.sessionId)
+      : [];
+
     const report = analyze(
       {
         meta,
@@ -89,7 +96,8 @@ export async function generateReportForSession(
       plan,
       planSim,
       null, // benchmark null until T08.4
-      profile
+      profile,
+      { pastReports }
     );
 
     const validated = SessionReportSchema.parse(report);

@@ -18,7 +18,7 @@ import {
   UnitsView
 } from './views';
 import { ipcClient } from './lib/ipc-client';
-import { useCoach, useLive, usePlans, useSettings, useSnapshot } from './stores';
+import { useCoach, useLive, usePlans, useSessions, useSettings, useSnapshot } from './stores';
 import { setupAudioCueListener } from './audio/sounds';
 
 const ALT_ROUTES: Record<string, string> = {
@@ -54,10 +54,12 @@ export function App(): React.JSX.Element {
   useEffect(() => {
     const unsubLive = useLive.getState().subscribe();
     const unsubCoach = useCoach.getState().subscribe();
+    const unsubSessions = useSessions.getState().subscribe();
     const unsubAudio = setupAudioCueListener();
     void useSettings.getState().load();
     void usePlans.getState().loadPlans();
     void useSnapshot.getState().load();
+    void useSessions.getState().load();
 
     ipcClient
       .invoke('app:getInfo')
@@ -73,6 +75,7 @@ export function App(): React.JSX.Element {
     return () => {
       unsubLive();
       unsubCoach();
+      unsubSessions();
       unsubAudio();
     };
   }, []);

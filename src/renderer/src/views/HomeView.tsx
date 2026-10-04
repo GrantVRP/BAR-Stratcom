@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button';
 import { Tag } from '../components/ui/Tag';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
 import { Provenance } from '../components/ui/Provenance';
+import { ProfileSuggestionBanner } from '../components/profile/ProfileSuggestionBanner';
 
 export function HomeView(): React.JSX.Element {
   const { health } = useLive();
@@ -72,6 +73,9 @@ export function HomeView(): React.JSX.Element {
           <span className="font-bold uppercase text-[#38bdf8]">{profile}</span>
         </div>
       </div>
+
+      {/* Profile suggestion banner (04 §4.4, 06 §4.2) */}
+      <ProfileSuggestionBanner />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Status Card (06 §4.2) */}

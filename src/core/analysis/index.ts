@@ -4,3 +4,4 @@ export * from './metrics';
 export * from './grade';
 export * from './tips';
 export * from './analyze';
+export * from './suggest';

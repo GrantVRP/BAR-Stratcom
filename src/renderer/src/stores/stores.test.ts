@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { useSettings, useLive, usePlans, useCoach } from './index';
+import { useSettings, useLive, usePlans, useCoach, useSessions } from './index';
 import { setIpcClientOverride } from '../lib/ipc-client';
 import type { BuildPlan, Settings } from '../../../core/schemas';
 import type { HealthState } from '../../../shared/ipc';
@@ -10,6 +10,7 @@ describe('Zustand stores (06 §1–§2, T06.2)', () => {
     useLive.getState().reset();
     usePlans.getState().reset();
     useCoach.getState().reset();
+    useSessions.getState().reset();
     setIpcClientOverride(null);
   });
 
@@ -192,4 +193,53 @@ describe('Zustand stores (06 §1–§2, T06.2)', () => {
       expect(mockInvoke).toHaveBeenCalledWith('coach:markDone', { stepId: 'step-1' });
     });
   });
+
+  describe('useSessions', () => {
+    it('initializes with empty sessions and null latestSession', () => {
+      const state = useSessions.getState();
+      expect(state.sessions).toEqual([]);
+      expect(state.latestSession).toBeNull();
+      expect(state.loading).toBe(false);
+      expect(state.error).toBeNull();
+    });
+
+    it('loads sessions and fetches latest session with report', async () => {
+      const mockSummaries = [
+        {
+          sessionId: 'sess-1',
+          startedAt: '2026-10-01T00:00:00.000Z',
+          durationSec: 100,
+          mapScriptName: 'Map',
+          mode: 'player' as const,
+          factionId: 'cortex',
+          playerName: 'Player',
+          source: 'live' as const,
+          hasReport: true
+        }
+      ];
+
+      const mockDetail = {
+        meta: { sessionId: 'sess-1' },
+        report: { sessionId: 'sess-1', grade: 'A' },
+        hasState: true,
+        hasEvents: true
+      };
+
+      setIpcClientOverride({
+        invoke: vi.fn().mockImplementation(async (ch: string, req?: unknown) => {
+          const r = req as { sessionId?: string } | undefined;
+          if (ch === 'sessions:list') return { ok: true, data: mockSummaries };
+          if (ch === 'sessions:get' && r?.sessionId === 'sess-1') return { ok: true, data: mockDetail };
+          return { ok: false, code: 'UNKNOWN', message: '' };
+        }),
+        on: vi.fn().mockReturnValue(() => {}),
+        isAvailable: vi.fn().mockReturnValue(true)
+      });
+
+      await useSessions.getState().load();
+      expect(useSessions.getState().sessions).toEqual(mockSummaries);
+      expect(useSessions.getState().latestSession).toEqual(mockDetail);
+    });
+  });
 });
+

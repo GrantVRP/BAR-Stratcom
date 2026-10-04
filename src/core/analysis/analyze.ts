@@ -14,6 +14,7 @@ import { DEFAULT_ADHERENCE_TOLERANCE_SEC } from './constants';
 import { computeMetrics } from './metrics';
 import { computeGrade } from './grade';
 import { evaluateTips } from './tips';
+import { suggestProfile, type ReportCandidate } from './suggest';
 import type { AnalysisSessionInput } from './types';
 
 function isFactoryFallback(defId: string): boolean {
@@ -50,15 +51,16 @@ export function interpolatePercentile(p: Percentiles, value: number): number {
 }
 
 /**
- * Post-match analysis engine (04 §4, T07.2).
- * Pure domain function computing metrics, adherence, tips, grade, and benchmark percentiles.
+ * Post-match analysis engine (04 §4, T07.2, T07.3).
+ * Pure domain function computing metrics, adherence, tips, grade, benchmark percentiles, and profile suggestions.
  */
 export function analyze(
   session: AnalysisSessionInput,
   plan: BuildPlan | null,
   planSim: SimResult | null,
   benchmark: BenchmarkFile | null,
-  profile: Profile = 'intermediate'
+  profile: Profile = 'intermediate',
+  options: { pastReports?: ReportCandidate[] } = {}
 ): SessionReport {
   const myTeam = session.meta.teams.find((t) => t.isMe) ?? session.meta.teams[0];
   const myTeamId = myTeam?.teamId ?? 0;
@@ -179,6 +181,13 @@ export function analyze(
     profile
   });
 
+  const profileSuggestion = options.pastReports
+    ? suggestProfile(
+        [{ grade, adherence, profile }, ...options.pastReports],
+        profile
+      )
+    : null;
+
   const report: SessionReport = {
     schemaVersion: 1,
     sessionId: session.meta.sessionId,
@@ -191,7 +200,7 @@ export function analyze(
     benchmark: benchmarkResult,
     tips,
     grade,
-    profileSuggestion: null
+    profileSuggestion
   };
 
   return SessionReportSchema.parse(report);

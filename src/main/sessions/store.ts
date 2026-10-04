@@ -254,6 +254,23 @@ export class SessionStore {
   }
 
   /**
+   * Returns recent session reports (newest first).
+   */
+  public getRecentReports(limit: number = 10): SessionReport[] {
+    const summaries = this.list();
+    const reports: SessionReport[] = [];
+    for (const summary of summaries) {
+      if (!summary.hasReport) continue;
+      const detail = this.get(summary.sessionId);
+      if (detail?.report) {
+        reports.push(detail.report);
+        if (reports.length >= limit) break;
+      }
+    }
+    return reports;
+  }
+
+  /**
    * Saves or updates a session report atomically.
    */
   public saveReport(sessionId: string, report: SessionReport): boolean {

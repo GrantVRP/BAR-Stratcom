@@ -28,6 +28,14 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
   const settings = useSettings((s) => s.settings);
   const [showHudPreview, setShowHudPreview] = useState<boolean>(true);
   const [isManualRunning, setIsManualRunning] = useState<boolean>(false);
+  const [readySessionId, setReadySessionId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsub = ipcClient.on('review:ready', (data) => {
+      setReadySessionId(data.sessionId);
+    });
+    return () => unsub();
+  }, []);
 
   const statePlanId = coachState?.planId;
   const activePlan = useMemo(() => {
@@ -185,6 +193,28 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
                 MARK STEP DONE
               </Button>
             )}
+          </div>
+        )}
+
+        {readySessionId && (
+          <div
+            data-testid="coach-review-ready-banner"
+            className="flex items-center justify-between rounded border-2 border-[#38bdf8] bg-[#0c1626] p-3 text-xs"
+          >
+            <div className="flex items-center gap-2">
+              <span className="font-['Press_Start_2P'] text-[10px] text-[#38bdf8]">REPORT READY</span>
+              <span className="text-[#e4e4e7]">Post-match analysis completed.</span>
+            </div>
+            <Button
+              variant="armada"
+              size="sm"
+              onClick={() => {
+                window.location.hash = `#/review?session=${readySessionId}`;
+              }}
+              className="bg-[#22c55e] hover:bg-[#16a34a] text-black font-bold border-[#22c55e]"
+            >
+              VIEW REPORT
+            </Button>
           </div>
         )}
 

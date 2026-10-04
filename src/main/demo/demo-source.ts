@@ -284,6 +284,7 @@ export class DemoSource extends EventEmitter implements BridgeSource {
         this.emit('events', remaining);
       }
       this.stop();
+      this.emit('end', { reason: 'completed' });
       return false;
     }
 
@@ -311,6 +312,7 @@ export class DemoSource extends EventEmitter implements BridgeSource {
 
     if (isGameOver) {
       this.stop();
+      this.emit('end', { reason: 'gameover' });
       return false;
     }
 

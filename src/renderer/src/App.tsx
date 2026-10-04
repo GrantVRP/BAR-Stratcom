@@ -20,6 +20,7 @@ import {
 import { ipcClient } from './lib/ipc-client';
 import { useCoach, useLive, usePlans, useSessions, useSettings, useSnapshot } from './stores';
 import { setupAudioCueListener } from './audio/sounds';
+import { ReportReadyToast } from './components/review/ReportReadyToast';
 
 const ALT_ROUTES: Record<string, string> = {
   '1': '#/home',
@@ -207,6 +208,7 @@ export function App(): React.JSX.Element {
               {renderView()}
             </main>
           </div>
+          <ReportReadyToast />
         </div>
       )}
     </ErrorBoundary>

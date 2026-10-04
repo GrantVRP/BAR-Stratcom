@@ -15,6 +15,7 @@ import { registerSessionHandlers } from './sessions/handlers';
 import { defaultCoachRunner } from './coach/runner';
 import { findDataDir, loadRegistry, loadSnapshot } from './registry/loader';
 import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
+import { handleDemoCompletion } from './demo/demo-analyzer';
 import { defaultPlanStore } from './plans/store';
 import { getMap, loadMaps } from './maps/loader';
 import {
@@ -249,6 +250,15 @@ if (!gotTheLock) {
           source: demoSource,
           registry,
           stratcomDir: null
+        });
+
+        demoSource.on('end', () => {
+          handleDemoCompletion({
+            demoSource,
+            plan: plan ?? null,
+            registry,
+            profile: currentSettings.profile ?? 'intermediate'
+          });
         });
 
         demoSource.start();

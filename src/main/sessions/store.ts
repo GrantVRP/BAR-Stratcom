@@ -76,6 +76,16 @@ export class SessionStore {
     this.maxSessions = options.maxSessions ?? 200;
   }
 
+  private inMemoryDemo: SessionDetail | null = null;
+
+  public setInMemoryDemo(detail: SessionDetail | null): void {
+    this.inMemoryDemo = detail;
+  }
+
+  public getInMemoryDemo(): SessionDetail | null {
+    return this.inMemoryDemo;
+  }
+
   public getSessionsDir(): string {
     return this.sessionsDir;
   }
@@ -94,11 +104,31 @@ export class SessionStore {
    * Lists all sessions, sorted newest first, with summary fields from meta.json and report.json.
    */
   public list(): SessionSummary[] {
-    if (!fs.existsSync(this.sessionsDir)) {
-      return [];
+    const summaries: SessionSummary[] = [];
+
+    if (this.inMemoryDemo) {
+      const demoMeta = this.inMemoryDemo.meta;
+      const playerTeam = demoMeta.teams.find((t) => t.isMe) ?? demoMeta.teams[0];
+      summaries.push({
+        sessionId: demoMeta.sessionId,
+        startedAt: demoMeta.startedAt,
+        durationSec: demoMeta.durationSec,
+        mapScriptName: demoMeta.mapScriptName,
+        mode: demoMeta.mode,
+        factionId: playerTeam?.factionId ?? null,
+        playerName: playerTeam?.playerName ?? 'Player',
+        planId: demoMeta.planId,
+        source: 'fixture',
+        grade: this.inMemoryDemo.report?.grade ?? null,
+        adherence: this.inMemoryDemo.report?.adherence ?? null,
+        hasReport: this.inMemoryDemo.report !== null
+      });
     }
 
-    const summaries: SessionSummary[] = [];
+    if (!fs.existsSync(this.sessionsDir)) {
+      return summaries;
+    }
+
     const entries = fs.readdirSync(this.sessionsDir, { withFileTypes: true });
 
     for (const entry of entries) {
@@ -171,6 +201,10 @@ export class SessionStore {
    * Retrieves a session by ID with meta, report, and optional lazy-loaded series data.
    */
   public get(sessionId: string, options: { includeSeries?: boolean } = {}): SessionDetail | null {
+    if (this.inMemoryDemo && this.inMemoryDemo.meta.sessionId === sessionId) {
+      return this.inMemoryDemo;
+    }
+
     if (!this.isSafeSessionId(sessionId)) {
       return null;
     }
@@ -309,6 +343,11 @@ export class SessionStore {
    * Deletes a session directory and all its contents.
    */
   public delete(sessionId: string): boolean {
+    if (this.inMemoryDemo && this.inMemoryDemo.meta.sessionId === sessionId) {
+      this.inMemoryDemo = null;
+      return true;
+    }
+
     if (!this.isSafeSessionId(sessionId)) {
       return false;
     }

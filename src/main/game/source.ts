@@ -10,6 +10,7 @@ export type BridgeEventMap = {
   state: (state: StateDoc) => void;
   events: (events: WidgetEvent[]) => void;
   session: (session: SessionFileDoc) => void;
+  end?: (info: { reason: string }) => void;
 };
 
 export type BridgeEventName = keyof BridgeEventMap;

@@ -11,6 +11,48 @@ export interface EconomyChartProps {
   mapRecord?: MapRecord | null;
 }
 
+interface RecordedPool {
+  current: number;
+  storage: number;
+  income: number;
+  pull?: number;
+  expense?: number;
+}
+
+/**
+ * Your recorded economy as a chart series. Reads the widget's state docs as stored (`gameSeconds`,
+ * `res.metal` / `res.energy`, `bp.total` / `bp.active`); spectator docs (no `res`) are skipped.
+ */
+export function statesToChartSeries(states: EconomyChartProps['states']): ChartSeries | null {
+  const points: SimSample[] = [];
+  for (const s of states ?? []) {
+    const res = s.res as { metal?: RecordedPool; energy?: RecordedPool } | null | undefined;
+    if (!res?.metal || !res.energy) continue;
+    const bp = (s.bp as { total?: number; active?: number } | undefined) ?? {};
+    const t = typeof s.gameSeconds === 'number' ? s.gameSeconds : typeof s.frame === 'number' ? s.frame / 30 : 0;
+    const m = res.metal;
+    const e = res.energy;
+    const mSpend = m.pull ?? m.expense ?? 0;
+    const eSpend = e.pull ?? e.expense ?? 0;
+    points.push({
+      t,
+      metal: { current: m.current, storage: m.storage, income: m.income, spend: mSpend },
+      energy: { current: e.current, storage: e.storage, income: e.income, spend: eSpend },
+      bpTotal: bp.total ?? 0,
+      bpActive: bp.active ?? 0,
+      stallMetal: m.current < 5 && mSpend > m.income,
+      stallEnergy: e.current < 20 && eSpend > e.income
+    });
+  }
+  if (points.length === 0) return null;
+  return {
+    points,
+    intervals: { metalStall: [], energyStall: [], metalFloat: [], energyFloat: [] },
+    totals: { metalStallSec: 0, energyStallSec: 0, idleBpSec: 0 },
+    flags: []
+  };
+}
+
 export function EconomyChart({
   states,
   plan,
@@ -18,59 +60,7 @@ export function EconomyChart({
 }: EconomyChartProps): React.JSX.Element {
   const [viewMode, setViewMode] = useState<'actual' | 'plan'>('actual');
 
-  const actualSeries = useMemo<ChartSeries | null>(() => {
-    if (!states || states.length === 0) return null;
-
-    const points: SimSample[] = states.map((s) => {
-      const metal = (s.metal as { current?: number; storage?: number; income?: number; pull?: number; expense?: number }) || {};
-      const energy = (s.energy as { current?: number; storage?: number; income?: number; pull?: number; expense?: number }) || {};
-      const bp = (s.bp as { total?: number; idle?: number }) || {};
-      const clock = typeof s.clock === 'number' ? s.clock : typeof s.frame === 'number' ? s.frame / 30 : 0;
-
-      const mCurrent = metal.current ?? 0;
-      const mIncome = metal.income ?? 0;
-      const mSpend = metal.pull ?? metal.expense ?? 0;
-      const eCurrent = energy.current ?? 0;
-      const eIncome = energy.income ?? 0;
-      const eSpend = energy.pull ?? energy.expense ?? 0;
-
-      return {
-        t: clock,
-        metal: {
-          current: mCurrent,
-          storage: metal.storage ?? 1000,
-          income: mIncome,
-          spend: mSpend
-        },
-        energy: {
-          current: eCurrent,
-          storage: energy.storage ?? 1000,
-          income: eIncome,
-          spend: eSpend
-        },
-        bpTotal: bp.total ?? 0,
-        bpActive: Math.max(0, (bp.total ?? 0) - (bp.idle ?? 0)),
-        stallMetal: mCurrent < 5 && mSpend > mIncome,
-        stallEnergy: eCurrent < 20 && eSpend > eIncome
-      };
-    });
-
-    return {
-      points,
-      intervals: {
-        metalStall: [],
-        energyStall: [],
-        metalFloat: [],
-        energyFloat: []
-      },
-      totals: {
-        metalStallSec: 0,
-        energyStallSec: 0,
-        idleBpSec: 0
-      },
-      flags: []
-    };
-  }, [states]);
+  const actualSeries = useMemo(() => statesToChartSeries(states), [states]);
 
   const hasPlan = !!plan;
 

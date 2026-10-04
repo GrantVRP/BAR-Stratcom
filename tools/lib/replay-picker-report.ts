@@ -1,8 +1,45 @@
 import {
   type PickMixResult,
   type ProcessedPlayer,
+  type ProcessedReplay,
   getDirectDownloadUrl
 } from './replay-picker-types';
+import { DEFAULT_CAPS } from './replay-picker-select';
+
+/** Machine-readable list (docs/plan/reports/h2-replay-list.json); T08.3 matches captured sessions with it. */
+export interface H2ReplayListJson {
+  generatedAt: string;
+  replays: Array<{
+    id: string;
+    url: string;
+    date: string;
+    mode: ProcessedReplay['mode'];
+    modeDetail: string;
+    map: { scriptName: string; fileName: string };
+    gameVersion: string;
+    durationSec: number;
+    meanSkill: number;
+    players: ProcessedPlayer[];
+  }>;
+}
+
+export function generateReportJson(result: PickMixResult, generatedAt: string): H2ReplayListJson {
+  return {
+    generatedAt,
+    replays: result.picked.map((r) => ({
+      id: r.id,
+      url: `https://bar-rts.com/replays/${r.id}`,
+      date: r.date,
+      mode: r.mode,
+      modeDetail: r.modeDetail,
+      map: { scriptName: r.mapName, fileName: r.mapFileName },
+      gameVersion: r.gameVersion,
+      durationSec: Math.round(r.durationMs / 1000),
+      meanSkill: r.meanSkill,
+      players: r.players
+    }))
+  };
+}
 
 /** Formats player list as a readable string for markdown tables. */
 export function formatPlayersMarkdown(players: ProcessedPlayer[], mode: string): string {
@@ -14,6 +51,37 @@ export function formatPlayersMarkdown(players: ProcessedPlayer[], mode: string):
     return names.join(', ');
   }
   return `${names.slice(0, 4).join(', ')} ... (+${names.length - 4} more)`;
+}
+
+function selectionRules(result: PickMixResult): string {
+  const days = new Set(result.picked.map((r) => r.date)).size;
+  return [
+    '## Selection rules (T08.1b)',
+    '- Sampled every 3rd day of the last 60 days on the current game version family; no bots; ended normally; at least 11 minutes long.',
+    `- 1v1: Armada or Cortex on both sides (no Legion); a player in at most ${DEFAULT_CAPS.duelPlayerMax} picks; the same two players at most ${DEFAULT_CAPS.duelPairMax}×.`,
+    `- Team games: a player in at most ${DEFAULT_CAPS.teamPlayerMax} picks. All modes: at most ${DEFAULT_CAPS.dayMax} picks per day; no two picks share map + players.`,
+    `- The picks span ${days} distinct days. Machine-readable copy: \`h2-replay-list.json\` (T08.3 uses it to match recordings to replays).`,
+    ''
+  ].join('\n');
+}
+
+function instructions(): string {
+  return [
+    '## Download & Spectator Instructions (Checkpoint H2)',
+    '',
+    'Follow H2 in [`HUMAN-CHECKPOINTS.md`](../HUMAN-CHECKPOINTS.md):',
+    '',
+    '1. **Download the replays**: use the **Replay Page** or **Download** link of each row and put the `.sdfz` files in',
+    '   `<BAR data>\\demos\\` (e.g. `D:\\BAR\\Beyond-All-Reason\\data\\demos\\`).',
+    '2. **Prepare recording**: close the StratCom app, make sure `gui_stratcom.lua` is enabled in BAR (F11), and create',
+    '   `<BAR data>\\stratcom\\record_state.flag`.',
+    '3. **Spectate**: open each replay from BAR\'s **Replays** menu and watch **until the in-game clock shows at least',
+    '   10:30** (up to 4× speed), then exit the replay. Do not exit before 10:00: the import tool throws away replay',
+    '   recordings shorter than 10 minutes. Recording the whole match only bloats the files. Tick **Done** in the table.',
+    '4. **Collect data**: run `npx tsx tools/collect-session-files.ts --from "<BAR data>\\stratcom" --to data/raw/h2`,',
+    '   then delete `record_state.flag`.',
+    ''
+  ].join('\n');
 }
 
 /** Generates the markdown report for docs/plan/reports/h2-replay-list.md. */
@@ -43,35 +111,19 @@ export function generateReportMarkdown(result: PickMixResult, generatedAt?: stri
     md += `\n`;
   }
 
-  md += `## Download & Spectator Instructions (Checkpoint H2)\n\n`;
-  md += `Follow the instructions in [\`HUMAN-CHECKPOINTS.md\`](../../HUMAN-CHECKPOINTS.md#h2--pro-replay-capture-≈-3–4-hours-can-be-split-over-days-·-after-t082):\n\n`;
-  md += `1. **Download the replays**:\n`;
-  md += `   - Click the **Replay Page** link or **Direct Download** link for each replay below.\n`;
-  md += `   - Place the downloaded \`.sdfz\` files in your BAR demo folder: \`<BAR data>\\demos\\\` (e.g. \`D:\\BAR\\Beyond-All-Reason\\data\\demos\\\`).\n`;
-  md += `2. **Prepare recording**:\n`;
-  md += `   - Close the StratCom desktop app.\n`;
-  md += `   - Verify \`gui_stratcom.lua\` is enabled in BAR (press F11 in game).\n`;
-  md += `   - Create the recording flag file: \`<BAR data>\\stratcom\\record_state.flag\`.\n`;
-  md += `3. **Spectate**:\n`;
-  md += `   - Launch BAR, go to the **Replays** menu, and open each downloaded replay.\n`;
-  md += `   - Spectate the **first 10 minutes** of each match (speed up to 4× is fine).\n`;
-  md += `   - Exit each replay after 10 minutes (recording beyond 10m is unnecessary for openings and bloats file size).\n`;
-  md += `4. **Collect data**:\n`;
-  md += `   - Run: \`npx tsx tools/collect-session-files.ts --from "<BAR data>\\stratcom" --to data/raw/h2\`\n`;
-  md += `   - Delete \`record_state.flag\`.\n\n`;
+  md += `${selectionRules(result)}\n`;
+  md += `${instructions()}\n`;
 
   md += `## Replay Table\n\n`;
-  md += `| # | Replay ID | Date | Map | Mode | Mean Skill | Players (Name, Skill, Faction) | Duration | Replay Page | Download |\n`;
-  md += `|---|-----------|------|-----|------|------------|--------------------------------|----------|-------------|----------|\n`;
+  md += `| Done | # | Replay ID | Date | Map | Mode | Mean Skill | Players (Name, Skill, Faction) | Duration | Replay Page | Download |\n`;
+  md += `|------|---|-----------|------|-----|------|------------|--------------------------------|----------|-------------|----------|\n`;
 
-  let idx = 1;
-  for (const r of result.picked) {
+  result.picked.forEach((r, i) => {
     const pageUrl = `https://bar-rts.com/replays/${r.id}`;
     const dlUrl = getDirectDownloadUrl(r.fileName);
     const playersStr = formatPlayersMarkdown(r.players, r.mode);
-    md += `| ${idx} | \`${r.id.slice(0, 12)}...\` | ${r.date} | ${r.mapName} | ${r.modeDetail} | **${r.meanSkill.toFixed(1)}** | ${playersStr} | ${r.durationFormatted} | [Page](${pageUrl}) | [Download](${dlUrl}) |\n`;
-    idx++;
-  }
+    md += `| [ ] | ${i + 1} | \`${r.id.slice(0, 12)}...\` | ${r.date} | ${r.mapName} | ${r.modeDetail} | **${r.meanSkill.toFixed(1)}** | ${playersStr} | ${r.durationFormatted} | [Page](${pageUrl}) | [Download](${dlUrl}) |\n`;
+  });
 
   return md;
 }

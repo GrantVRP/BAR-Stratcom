@@ -30,6 +30,8 @@ export interface ProcessedPlayer {
   name: string;
   faction: string;
   skill: number;
+  /** Index of the player's ally team in the replay. */
+  allyTeam: number;
 }
 
 export interface ProcessedReplay {
@@ -47,6 +49,7 @@ export interface ProcessedReplay {
   players: ProcessedPlayer[];
   hasArmada: boolean;
   hasCortex: boolean;
+  hasLegion: boolean;
   gameVersion: string;
 }
 
@@ -63,6 +66,9 @@ export interface PickMixResult {
   largeTeams: ProcessedReplay[];
   notes: string[];
 }
+
+/** 11 minutes: the owner watches until 10:30 (T08.1b). */
+export const MIN_DURATION_MS = 11 * 60 * 1000;
 
 /** Parses a skill string like "[33.65]" into a numeric float. */
 export function parseSkill(skillStr: string | null | undefined): number {
@@ -109,7 +115,8 @@ export function classifyMode(allyTeams: RawAllyTeam[]): '1v1' | 'small-team' | '
 
 /** Checks whether a replay meets filtering criteria. */
 export function filterReplayCandidate(detail: RawReplayDetail, options: FilterOptions = {}): boolean {
-  const minDurationMs = options.minDurationMs ?? 480000; // 8 minutes
+  // H2 records 10:30 of each replay and the importer drops recordings under 10 minutes
+  const minDurationMs = options.minDurationMs ?? MIN_DURATION_MS;
   const maxAgeDays = options.maxAgeDays ?? 60;
   const versionFamily = options.versionFamily ?? 'test-31';
 
@@ -134,17 +141,18 @@ export function processReplayDetail(detail: RawReplayDetail): ProcessedReplay {
   const players: ProcessedPlayer[] = [];
   const teamSizes: number[] = [];
 
-  for (const at of detail.AllyTeams || []) {
+  (detail.AllyTeams || []).forEach((at, allyTeam) => {
     const list = at.Players || [];
     teamSizes.push(list.length);
     for (const p of list) {
       players.push({
         name: p.name || 'Unknown',
         faction: p.faction || 'Unknown',
-        skill: parseSkill(p.skill)
+        skill: parseSkill(p.skill),
+        allyTeam
       });
     }
-  }
+  });
 
   const meanSkill = players.length
     ? Number((players.reduce((sum, p) => sum + p.skill, 0) / players.length).toFixed(2))
@@ -169,6 +177,7 @@ export function processReplayDetail(detail: RawReplayDetail): ProcessedReplay {
     players,
     hasArmada: factions.includes('armada'),
     hasCortex: factions.includes('cortex'),
+    hasLegion: factions.includes('legion'),
     gameVersion: detail.gameVersion
   };
 }

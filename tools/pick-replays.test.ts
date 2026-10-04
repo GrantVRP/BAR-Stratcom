@@ -5,10 +5,11 @@ import {
   classifyMode,
   filterReplayCandidate,
   formatDuration,
+  generateReportJson,
   generateReportMarkdown,
   getDirectDownloadUrl,
+  MIN_DURATION_MS,
   parseSkill,
-  pickTargetMix,
   processReplayDetail
 } from './pick-replays';
 
@@ -86,7 +87,7 @@ describe('pick-replays (T08.1)', () => {
       engineVersion: '2026.07.04',
       gameVersion: 'Beyond All Reason test-31479-433a460',
       startTime: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      durationMs: 600000,
+      durationMs: 720000,
       gameEndedNormally: true,
       hasBots: false,
       preset: 'duel',
@@ -117,10 +118,12 @@ describe('pick-replays (T08.1)', () => {
       expect(filterReplayCandidate(r2)).toBe(false);
     });
 
-    it('rejects games under 8 minutes', () => {
+    it('rejects games under 11 minutes, which cannot give a 10:30 recording (T08.1b)', () => {
       const r = makeValid();
-      r.durationMs = 400000;
+      r.durationMs = 10 * 60 * 1000 + 59 * 1000;
       expect(filterReplayCandidate(r)).toBe(false);
+      r.durationMs = MIN_DURATION_MS;
+      expect(filterReplayCandidate(r)).toBe(true);
     });
 
     it('rejects games older than 60 days', () => {
@@ -162,80 +165,8 @@ describe('pick-replays (T08.1)', () => {
       expect(processed.hasCortex).toBe(true);
       expect(processed.mode).toBe('1v1');
       expect(processed.modeDetail).toBe('1v1');
-    });
-  });
-
-  describe('pickTargetMix', () => {
-    function makeReplay(
-      id: string,
-      mode: '1v1' | 'small-team' | 'large-team',
-      meanSkill: number,
-      faction: 'armada' | 'cortex' | 'both',
-      mapName: string
-    ): ProcessedReplay {
-      return {
-        id,
-        fileName: `${id}.sdfz`,
-        startTime: '2026-10-01T00:00:00.000Z',
-        date: '2026-10-01',
-        durationMs: 600000,
-        durationFormatted: '10m 00s',
-        mapName,
-        mapFileName: `${mapName.toLowerCase().replace(/\s+/g, '_')}.smf`,
-        mode,
-        modeDetail: mode,
-        meanSkill,
-        players: [
-          {
-            name: 'P1',
-            faction: faction === 'cortex' ? 'Cortex' : 'Armada',
-            skill: meanSkill
-          },
-          {
-            name: 'P2',
-            faction: faction === 'armada' ? 'Armada' : 'Cortex',
-            skill: meanSkill
-          }
-        ],
-        hasArmada: faction === 'armada' || faction === 'both',
-        hasCortex: faction === 'cortex' || faction === 'both',
-        gameVersion: 'Beyond All Reason test-31479'
-      };
-    }
-
-    it('selects 12 duels with >=5 Armada, >=5 Cortex, >=4 maps, plus 8 small and 4 large teams', () => {
-      const candidates: ProcessedReplay[] = [];
-
-      // 15 duels across 5 maps with varying factions
-      const maps = ['Map A', 'Map B', 'Map C', 'Map D', 'Map E'];
-      for (let i = 0; i < 15; i++) {
-        const faction = i < 7 ? 'armada' : i < 12 ? 'cortex' : 'both';
-        candidates.push(makeReplay(`duel_${i}`, '1v1', 50 - i, faction, maps[i % maps.length]!));
-      }
-
-      // 10 small teams
-      for (let i = 0; i < 10; i++) {
-        candidates.push(makeReplay(`small_${i}`, 'small-team', 35 - i, 'both', 'SmallMap'));
-      }
-
-      // 6 large teams
-      for (let i = 0; i < 6; i++) {
-        candidates.push(makeReplay(`large_${i}`, 'large-team', 40 - i, 'both', 'LargeMap'));
-      }
-
-      const result = pickTargetMix(candidates);
-      expect(result.duels.length).toBe(12);
-      expect(result.smallTeams.length).toBe(8);
-      expect(result.largeTeams.length).toBe(4);
-      expect(result.picked.length).toBe(24);
-
-      const armadaCount = result.duels.filter((d) => d.hasArmada).length;
-      const cortexCount = result.duels.filter((d) => d.hasCortex).length;
-      const uniqueMaps = new Set(result.duels.map((d) => d.mapName)).size;
-
-      expect(armadaCount).toBeGreaterThanOrEqual(5);
-      expect(cortexCount).toBeGreaterThanOrEqual(5);
-      expect(uniqueMaps).toBeGreaterThanOrEqual(4);
+      expect(processed.hasLegion).toBe(false);
+      expect(processed.players.map((p) => p.allyTeam)).toEqual([0, 1]);
     });
   });
 
@@ -262,11 +193,12 @@ describe('pick-replays (T08.1)', () => {
         modeDetail: '1v1',
         meanSkill: 42.5,
         players: [
-          { name: 'P1', faction: 'Armada', skill: 45.0 },
-          { name: 'P2', faction: 'Cortex', skill: 40.0 }
+          { name: 'P1', faction: 'Armada', skill: 45.0, allyTeam: 0 },
+          { name: 'P2', faction: 'Cortex', skill: 40.0, allyTeam: 1 }
         ],
         hasArmada: true,
         hasCortex: true,
+        hasLegion: false,
         gameVersion: 'Beyond All Reason test-31479'
       };
 
@@ -282,8 +214,22 @@ describe('pick-replays (T08.1)', () => {
       expect(md).toContain('# H2 Pro Replay List');
       expect(md).toContain('Target Mix Status');
       expect(md).toContain('Download & Spectator Instructions');
-      expect(md).toContain('| 1 | `1234567890ab...` |');
+      expect(md).toContain('| [ ] | 1 | `1234567890ab...` |');
       expect(md).toContain('https://bar-rts.com/replays/1234567890abcdef');
+      expect(md).toContain('until the in-game clock shows at least');
+      expect(md).toContain('Selection rules (T08.1b)');
+
+      const json = generateReportJson(result, '2026-10-04T00:00:00.000Z');
+      expect(json.replays[0]).toMatchObject({
+        id: '1234567890abcdef',
+        url: 'https://bar-rts.com/replays/1234567890abcdef',
+        map: { scriptName: 'Comet Catcher Remake 1.8', fileName: 'comet_catcher_remake_1.8' },
+        durationSec: 720,
+        players: [
+          { name: 'P1', faction: 'Armada', skill: 45, allyTeam: 0 },
+          { name: 'P2', faction: 'Cortex', skill: 40, allyTeam: 1 }
+        ]
+      });
     });
   });
 });

@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
+import { WalkingBot } from '../components/sprites/WalkingBot';
 import armadaTurbineStill from '../assets/original/armada_turbine_still.png';
 import cortexTurbineStill from '../assets/original/cortex_turbine_still.png';
 import armadaTurbineFull from '../assets/original/armada_turbine_full.webp';
 import cortexTurbineFull from '../assets/original/cortex_turbine_full.webp';
+
+/** Width of the stage the bot walks across (px). */
+const STAGE_WIDTH = 640;
 
 export interface LaunchWindowProps {
   onStart: () => void;
@@ -138,9 +142,9 @@ export function LaunchWindow({
       {/* Center Tactical Stage */}
       <main className="flex flex-1 flex-col items-center justify-center gap-6 my-auto">
         <div
-          className={`relative flex items-center justify-center ${
-            reducedMotion ? '' : 'transition-transform duration-300'
-          }`}
+          data-testid="launcher-stage"
+          className="relative flex h-64 max-w-full items-center justify-center overflow-hidden"
+          style={{ width: STAGE_WIDTH }}
         >
           <img
             src={turbineImage}
@@ -148,6 +152,7 @@ export function LaunchWindow({
             className="h-64 w-64 object-contain pixelated pointer-events-none drop-shadow-[0_0_24px_rgba(0,0,0,0.8)]"
             style={{ imageRendering: 'pixelated' }}
           />
+          <WalkingBot key={faction} faction={faction} reducedMotion={reducedMotion} stageWidth={STAGE_WIDTH} />
         </div>
 
         <button

@@ -29,7 +29,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps): React.JSX.Element {
           <div className="rounded bg-[#0a0c14] p-3 border border-[#1f2430]">
             <span className="font-['Press_Start_2P'] text-[10px] text-[#4ade80]">01 // COACH</span>
             <p className="mt-2 text-[11px] text-[#a1a1aa]">
-              Real-time countdowns, step alerts, and voice/audio cues directly in game.
+              Real-time countdowns, step alerts, and sound and HUD cues directly in game.
             </p>
           </div>
           <div className="rounded bg-[#0a0c14] p-3 border border-[#1f2430]">

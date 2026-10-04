@@ -10,7 +10,22 @@ import type { BuildPlan } from '../../../core/schemas/plans';
 
 vi.mock('../lib/ipc-client', () => ({
   ipcClient: {
-    invoke: vi.fn().mockResolvedValue({ ok: true }),
+    invoke: vi.fn().mockImplementation((channel: string) => {
+      if (channel === 'demo:list') {
+        return Promise.resolve({
+          ok: true,
+          data: [
+            {
+              id: '2026-10-01-cortex-1v1-vs-ai-barr',
+              title: 'Cortex on BarR 1.1',
+              description: '1v1 vs AI • 33:45',
+              durationSec: 2025
+            }
+          ]
+        });
+      }
+      return Promise.resolve({ ok: true });
+    }),
     on: vi.fn().mockReturnValue(() => {})
   }
 }));
@@ -28,14 +43,10 @@ const mockPlan: BuildPlan = {
   opening: 'bot',
   tags: [],
   source: {
-    kind: 'curated',
-    replayId: 'rep123',
-    player: 'ProPlayer',
-    map: 'barr.smf',
-    playedAt: '2026-10-01',
-    gameVersion: 'release',
-    reviewedBy: 'StratCom',
-    reviewedAt: '2026-10-01'
+    kind: 'own-game',
+    sessionId: '2026-10-01-cortex-1v1-vs-ai-barr',
+    map: 'BarR 1.1',
+    capturedAt: '2026-10-01'
   },
   steps: [{ id: 's1', actor: { kind: 'commander' }, action: 'build', unitId: 'cormex', count: 2 }]
 };
@@ -85,7 +96,7 @@ describe('HomeView', () => {
     expect(container.querySelector('[data-testid="home-start-demo-btn"]')).not.toBeNull();
   });
 
-  it('triggers demo coaching start when DEMO button is clicked', async () => {
+  it('triggers paired demo directly when active plan matches a fixture', async () => {
     const startSpy = vi.spyOn(useCoach.getState(), 'start').mockResolvedValue(true);
 
     act(() => {
@@ -99,10 +110,31 @@ describe('HomeView', () => {
       demoBtn.click();
     });
 
-    expect(startSpy).toHaveBeenCalledWith({
-      mode: 'demo',
-      demoId: '2026-10-01-cortex-1v1-vs-ai-barr',
-      speed: 4
+    expect(startSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: 'demo',
+        demoId: '2026-10-01-cortex-1v1-vs-ai-barr',
+        speed: 4
+      })
+    );
+  });
+
+  it('opens demo picker modal when plan does not match bundled fixture', async () => {
+    const unbundledPlan: BuildPlan = {
+      ...mockPlan,
+      source: { kind: 'manual', createdAt: '2026-10-02' }
+    };
+    usePlans.setState({ plans: [unbundledPlan], activePlanId: unbundledPlan.id });
+
+    act(() => {
+      root.render(<HomeView />);
     });
+
+    const demoBtn = container.querySelector('[data-testid="home-start-demo-btn"]') as HTMLButtonElement;
+    await act(async () => {
+      demoBtn.click();
+    });
+
+    expect(container.querySelector('[data-testid="demo-picker-modal"]')).not.toBeNull();
   });
 });

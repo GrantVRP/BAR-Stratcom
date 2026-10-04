@@ -14,6 +14,9 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
 
   beforeEach(() => {
     window.location.hash = '#/home';
+    try {
+      localStorage.setItem('stratcom:onboarding-completed', 'true');
+    } catch {}
     useSettings.getState().reset();
     setIpcClientOverride({
       invoke: vi.fn().mockImplementation(async (ch: string) => {
@@ -49,6 +52,9 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
       root.unmount();
     });
     container.remove();
+    try {
+      localStorage.clear();
+    } catch {}
     setIpcClientOverride(null);
   });
 
@@ -157,5 +163,23 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
     });
 
     expect(window.location.hash).toBe('#/home');
+  });
+
+  it('routes to Onboarding on first launch when onboarding is not completed', async () => {
+    localStorage.removeItem('stratcom:onboarding-completed');
+
+    await act(async () => {
+      root.render(<App />);
+    });
+
+    const launchBtn = container.querySelector('[data-testid="launcher-button"]') as HTMLButtonElement;
+    if (launchBtn) {
+      await act(async () => {
+        launchBtn.click();
+      });
+    }
+
+    expect(window.location.hash).toBe('#/onboarding');
+    expect(container.querySelector('[data-testid="view-onboarding"]')).not.toBeNull();
   });
 });

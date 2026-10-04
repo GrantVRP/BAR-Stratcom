@@ -15,13 +15,19 @@ export function truncateTo36(text: string): string {
   return `${text.slice(0, 35)}…`;
 }
 
+const warnedMissingUnits = new Set<string>();
+
+export function clearWarnedMissingUnits(): void {
+  warnedMissingUnits.clear();
+}
+
 export interface BuildHudInput {
   plan?: BuildPlan | null;
   steps: readonly CoachStep[];
   currentStepIndex: number;
   aheadBehindSec: number | null;
   activeAlerts: readonly Alert[];
-  registry?: Registry;
+  registry: Registry;
   clock: number;
   factionId?: string | null;
   visible?: boolean;
@@ -52,8 +58,22 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
   const planStep = plan && currentStepIndex < plan.steps.length ? plan.steps[currentStepIndex] : null;
 
   if (currentStep && planStep) {
-    const unitName = planStep.unitId && registry ? registry.get(planStep.unitId)?.name : undefined;
-    const targetLabel = unitName ?? planStep.unitId ?? planStep.action;
+    let targetLabel: string;
+    if (planStep.unitId) {
+      const unit = registry.get(planStep.unitId);
+      if (unit?.name) {
+        targetLabel = unit.name;
+      } else {
+        targetLabel = 'Unknown unit';
+        if (!warnedMissingUnits.has(planStep.unitId)) {
+          warnedMissingUnits.add(planStep.unitId);
+          console.warn(`[display] Unit '${planStep.unitId}' not found in registry`);
+        }
+      }
+    } else {
+      targetLabel = planStep.text ?? planStep.action;
+    }
+
     const countStr = planStep.action === 'build' ? `${planStep.count}× ` : '';
     const desc = `${countStr}${targetLabel}`;
 

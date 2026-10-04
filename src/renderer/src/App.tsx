@@ -134,7 +134,7 @@ export function App(): React.JSX.Element {
 
   function handleLauncherStart(): void {
     setLauncherDismissed(true);
-    if (!settings?.bar?.dataDir && !isOnboardingCompleted()) {
+    if (!isOnboardingCompleted()) {
       window.location.hash = '#/onboarding';
       setCurrentHash('#/onboarding');
       return;
@@ -144,13 +144,11 @@ export function App(): React.JSX.Element {
     }
   }
 
-  // Auto-route to onboarding when BAR dataDir is null and onboarding flag is not set
+  // Auto-route to onboarding when onboarding flag is not set
   useEffect(() => {
     if (
-      settings &&
-      settings.bar?.dataDir === null &&
       !isOnboardingCompleted() &&
-      (launcherDismissed || settings.launcher?.showOnStart === false)
+      (launcherDismissed || settings?.launcher?.showOnStart === false)
     ) {
       const h = window.location.hash;
       if (h === '' || h === '#/' || h === '#/home') {

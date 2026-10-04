@@ -138,7 +138,11 @@ describe('Coach Engine: HUD Display Model', () => {
     };
 
     const mockRegistry = {
-      get: (id: string) => (id === 'armmex' ? { id: 'armmex', name: 'Metal Extractor' } : undefined)
+      get: (id: string) => {
+        if (id === 'armmex') return { id: 'armmex', name: 'Metal Extractor' };
+        if (id === 'armsolar') return { id: 'armsolar', name: 'Solar Collector' };
+        return undefined;
+      }
     } as unknown as Registry;
 
     const steps: CoachStep[] = [
@@ -165,7 +169,7 @@ describe('Coach Engine: HUD Display Model', () => {
     expect(hud.title).toBe('ARMADA // ROCKETEER 1V1');
     expect(hud.lines).toHaveLength(4);
     // Line 1: Next step
-    expect(hud.lines[0]!.text).toContain('NEXT 1× armsolar');
+    expect(hud.lines[0]!.text).toContain('NEXT 1× Solar Collector');
     expect(hud.lines[0]!.text).toContain('in 0:08');
     expect(hud.lines[0]!.big).toBe(true);
     // Line 2: Plan pace
@@ -176,5 +180,106 @@ describe('Coach Engine: HUD Display Model', () => {
     expect(hud.lines[3]!.text).toBe('⚠ FACTORY IDLE');
     // Progress
     expect(hud.progress).toEqual({ done: 1, total: 2 });
+  });
+
+  it('renders "Vehicle Plant" for corvp with the real snapshot registry, never raw corvp', async () => {
+    const { createRegistry } = await import('../registry');
+    const aliasesData = (await import('../../../data/aliases.json')).default;
+    const factionsData = (await import('../../../data/factions.json')).default;
+    const defaultSnapshotData = (await import('../../../data/snapshots/test-31479-433a460/units.json')).default;
+    const { AliasesFileSchema, FactionsFileSchema, UnitSnapshotSchema } = await import('../schemas');
+
+    const snapshot = UnitSnapshotSchema.parse(defaultSnapshotData);
+    const factions = FactionsFileSchema.parse(factionsData);
+    const aliases = AliasesFileSchema.parse(aliasesData);
+    const realRegistry = createRegistry(snapshot, factions, aliases);
+
+    const plan: BuildPlan = {
+      schemaVersion: 1,
+      id: 'p-corvp',
+      title: 'Cortex Test',
+      factionId: 'cortex',
+      gameVersion: 'test-31479-433a460',
+      modes: ['1v1'],
+      role: 'any',
+      skill: 'intermediate',
+      opening: 'vehicle',
+      energyStyle: 'wind',
+      source: { kind: 'manual', createdAt: '2026-10-03' },
+      steps: [
+        {
+          id: 's0',
+          actor: { kind: 'commander' },
+          action: 'build',
+          unitId: 'corvp',
+          count: 1,
+          targetTime: 85
+        }
+      ]
+    };
+
+    const steps: CoachStep[] = [
+      { stepId: 's0', status: 'current', plannedStart: 0, plannedFinish: 85, actualFinish: null }
+    ];
+
+    const hud = buildCoachHud({
+      plan,
+      steps,
+      currentStepIndex: 0,
+      aheadBehindSec: 0,
+      activeAlerts: [],
+      registry: realRegistry,
+      clock: 10
+    });
+
+    expect(hud.lines[0]!.text).toContain('Vehicle Plant');
+    expect(hud.lines[0]!.text).not.toContain('corvp');
+  });
+
+  it('renders "Unknown unit" and never raw unitId when unit is missing from registry', () => {
+    const emptyRegistry = {
+      get: () => undefined
+    } as unknown as Registry;
+
+    const plan: BuildPlan = {
+      schemaVersion: 1,
+      id: 'p-missing',
+      title: 'Missing Unit Plan',
+      factionId: 'cortex',
+      gameVersion: '1.0.0',
+      modes: ['1v1'],
+      role: 'any',
+      skill: 'beginner',
+      opening: 'bot',
+      energyStyle: 'solar',
+      source: { kind: 'manual', createdAt: '2026-10-03' },
+      steps: [
+        {
+          id: 's0',
+          actor: { kind: 'commander' },
+          action: 'build',
+          unitId: 'cor_missing_xyz',
+          count: 1,
+          targetTime: 30
+        }
+      ]
+    };
+
+    const steps: CoachStep[] = [
+      { stepId: 's0', status: 'current', plannedStart: 0, plannedFinish: 30, actualFinish: null }
+    ];
+
+    const hud = buildCoachHud({
+      plan,
+      steps,
+      currentStepIndex: 0,
+      aheadBehindSec: null,
+      activeAlerts: [],
+      registry: emptyRegistry,
+      clock: 5
+    });
+
+    expect(hud.lines[0]!.text).toContain('Unknown unit');
+    expect(hud.lines[0]!.text).not.toContain('cor_missing_xyz');
   });
 });

@@ -65,7 +65,7 @@ export function CoachUpNext({
             if (!planStep) return null;
             const coachStep = idx < steps.length ? steps[idx] : null;
             const unitName = planStep.unitId && getUnitName ? getUnitName(planStep.unitId) : undefined;
-            const targetLabel = unitName || planStep.unitId || planStep.action;
+            const targetLabel = unitName ?? (planStep.unitId ? 'Unknown unit' : (planStep.text ?? planStep.action));
             const countPrefix = planStep.action === 'build' ? `${planStep.count}× ` : '';
             const plannedTime = coachStep ? coachStep.plannedStart : idx * 15;
 

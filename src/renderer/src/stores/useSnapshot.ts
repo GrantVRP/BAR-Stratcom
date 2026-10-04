@@ -39,8 +39,8 @@ export const useSnapshot = create<SnapshotState>()((set, get) => ({
   },
 
   getUnitName: (unitId?: string) => {
-    if (!unitId) return 'Unknown';
+    if (!unitId) return 'Unknown unit';
     const unit = get().getUnit(unitId);
-    return unit ? unit.name : unitId;
+    return unit ? unit.name : 'Unknown unit';
   }
 }));

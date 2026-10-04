@@ -5,6 +5,9 @@ import type { BuildPlan } from '../../../../core/schemas/plans';
 import type { Registry } from '../../../../core/registry';
 import { buildCoachHud } from '../../../../core/coach/display';
 
+import { useSnapshot } from '../../stores';
+import { getClientRegistry } from '../../lib/registry';
+
 export interface HudPreviewProps {
   hud?: CoachHud | null;
   coachState?: CoachState | null;
@@ -34,23 +37,30 @@ export function HudPreview({
   registry,
   className = ''
 }: HudPreviewProps): React.JSX.Element {
+  const unitSnapshot = useSnapshot((s) => s.snapshot);
+  const activeRegistry = React.useMemo(() => {
+    if (registry) return registry;
+    if (unitSnapshot) return getClientRegistry(unitSnapshot);
+    return null;
+  }, [registry, unitSnapshot]);
+
   const hud = React.useMemo<CoachHud | null>(() => {
     if (directHud) return directHud;
-    if (coachState && plan) {
+    if (coachState && plan && activeRegistry) {
       return buildCoachHud({
         plan,
         steps: coachState.steps,
         currentStepIndex: coachState.currentStepIndex,
         aheadBehindSec: coachState.aheadBehindSec,
         activeAlerts: coachState.alerts,
-        registry: registry ?? undefined,
+        registry: activeRegistry,
         clock: coachState.clock,
         factionId: plan.factionId,
         visible: true
       });
     }
     return null;
-  }, [directHud, coachState, plan, registry]);
+  }, [directHud, coachState, plan, activeRegistry]);
 
   return (
     <div

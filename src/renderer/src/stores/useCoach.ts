@@ -10,6 +10,7 @@ export interface CoachStoreState {
   lastCue: Cue | null;
   isRunning: boolean;
   mode: CoachMode;
+  demoId: string | null;
   error: string | null;
   start: (req: CoachStartRequest) => Promise<boolean>;
   stop: () => Promise<boolean>;
@@ -26,6 +27,7 @@ export const useCoach = create<CoachStoreState>()((set) => ({
   lastCue: null,
   isRunning: false,
   mode: 'off',
+  demoId: null,
   error: null,
 
   setCoachState: (coachState) => set({ coachState }),
@@ -35,7 +37,7 @@ export const useCoach = create<CoachStoreState>()((set) => ({
     set({ error: null });
     const res = await ipcClient.invoke('coach:start', req);
     if (res.ok) {
-      set({ isRunning: true, mode: req.mode, error: null });
+      set({ isRunning: true, mode: req.mode, demoId: req.demoId ?? null, error: null });
       return true;
     } else {
       set({ error: res.message });
@@ -47,7 +49,7 @@ export const useCoach = create<CoachStoreState>()((set) => ({
     set({ error: null });
     const res = await ipcClient.invoke('coach:stop');
     if (res.ok) {
-      set({ isRunning: false, mode: 'off', coachState: null, error: null });
+      set({ isRunning: false, mode: 'off', demoId: null, coachState: null, error: null });
       return true;
     } else {
       set({ error: res.message });
@@ -85,6 +87,7 @@ export const useCoach = create<CoachStoreState>()((set) => ({
       lastCue: null,
       isRunning: false,
       mode: 'off',
+      demoId: null,
       error: null
     })
 }));

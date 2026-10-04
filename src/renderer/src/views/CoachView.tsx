@@ -8,6 +8,8 @@ import { CoachTelemetry } from '../components/coach/CoachTelemetry';
 import { CoachUpNext } from '../components/coach/CoachUpNext';
 import { ipcClient } from '../lib/ipc-client';
 
+import { formatDemoHeader } from '../lib/demo-pairing';
+
 export interface CoachViewProps {
   standalone?: boolean;
 }
@@ -19,7 +21,7 @@ function formatClock(seconds: number): string {
 }
 
 export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Element {
-  const { coachState, isRunning, mode, stop, manualAction, markDone } = useCoach();
+  const { coachState, isRunning, mode, demoId, stop, manualAction, markDone } = useCoach();
   const snapshot = useLive((s) => s.snapshot);
   const { plans, activePlanId } = usePlans();
   const getUnitName = useSnapshot((s) => s.getUnitName);
@@ -37,8 +39,16 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
       const fromActive = plans.find((p) => p.id === activePlanId);
       if (fromActive) return fromActive;
     }
+    if (demoId) {
+      const fromDemo = plans.find(
+        (p) => p.id === demoId || (p.source && 'sessionId' in p.source && p.source.sessionId === demoId)
+      );
+      if (fromDemo) return fromDemo;
+    }
     return plans[0] ?? null;
-  }, [statePlanId, activePlanId, plans]);
+  }, [statePlanId, activePlanId, demoId, plans]);
+
+  const demoHeader = useMemo(() => formatDemoHeader(demoId, activePlan), [demoId, activePlan]);
 
   const currentStep = coachState?.steps[coachState.currentStepIndex] ?? null;
   const planStep =
@@ -92,8 +102,8 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
                       : 'bg-[#71717a]'
               }`}
             />
-            <span className="font-bold uppercase tracking-wider text-[11px]">
-              {mode === 'manual' ? 'MANUAL CLOCK' : mode === 'demo' ? 'DEMO 4×' : mode.toUpperCase()}
+            <span data-testid="coach-mode-badge" className="font-bold uppercase tracking-wider text-[11px]">
+              {mode === 'manual' ? 'MANUAL CLOCK' : mode === 'demo' ? demoHeader : mode.toUpperCase()}
             </span>
           </div>
           <span data-testid="coach-clock" className="text-xl font-bold tracking-wider text-[#f8fafc]">

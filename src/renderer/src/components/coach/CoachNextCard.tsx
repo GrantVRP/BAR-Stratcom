@@ -16,26 +16,34 @@ export interface CoachNextCardProps {
   className?: string;
 }
 
+function formatMinutesSeconds(seconds: number): string {
+  const total = Math.max(0, Math.floor(seconds));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
 function formatCountdown(
   plannedStart: number,
   plannedFinish: number,
   clock: number
 ): { text: string; tone: string } {
-  if (clock < plannedStart) {
-    const diff = plannedStart - clock;
-    const m = Math.floor(diff / 60);
-    const s = Math.floor(diff % 60);
-    return { text: `in ${m}:${s < 10 ? '0' : ''}${s}`, tone: 'text-[#38bdf8]' };
-  } else if (clock <= plannedFinish) {
-    const diff = plannedFinish - clock;
-    const m = Math.floor(diff / 60);
-    const s = Math.floor(diff % 60);
-    return { text: `in ${m}:${s < 10 ? '0' : ''}${s}`, tone: 'text-[#4ade80]' };
+  const targetTime = plannedFinish > 0 ? plannedFinish : plannedStart;
+  const targetStr = formatMinutesSeconds(targetTime);
+
+  if (clock <= targetTime) {
+    const diff = targetTime - clock;
+    const tone = clock < plannedStart ? 'text-[#38bdf8]' : 'text-[#4ade80]';
+    return {
+      text: `@${targetStr} (in ${formatMinutesSeconds(diff)})`,
+      tone
+    };
   } else {
-    const diff = clock - plannedFinish;
-    const m = Math.floor(diff / 60);
-    const s = Math.floor(diff % 60);
-    return { text: `+${m}:${s < 10 ? '0' : ''}${s}`, tone: 'text-[#f87171]' };
+    const late = clock - targetTime;
+    return {
+      text: `LATE +${formatMinutesSeconds(late)}`,
+      tone: 'text-[#f87171]'
+    };
   }
 }
 
@@ -81,7 +89,7 @@ export function CoachNextCard({
   }
 
   const unitName = planStep.unitId && getUnitName ? getUnitName(planStep.unitId) : undefined;
-  const stepLabel = unitName || planStep.unitId || planStep.action;
+  const stepLabel = unitName ?? (planStep.unitId ? 'Unknown unit' : (planStep.text ?? planStep.action));
   const countPrefix = planStep.action === 'build' ? `${planStep.count}× ` : '';
   const fullName = `${countPrefix}${stepLabel}`;
 

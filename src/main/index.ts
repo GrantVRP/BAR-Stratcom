@@ -4,6 +4,7 @@ import { broadcast, handle } from './ipc/register';
 import { importPlanWithDialog, exportPlanWithDialog, browseBarDirectory } from './plans/dialogs';
 import { openUserDataFolder, exportAllPlansWithDialog, clearUserSessions } from './data/handlers';
 
+import type { StateDoc } from '../core/schemas';
 import { defaultSettingsStore } from './settings/store';
 import { locateGame } from './game/locator';
 import { defaultWidgetInstaller } from './game/installer';
@@ -115,6 +116,11 @@ if (!gotTheLock) {
     });
 
     const initialSettings = defaultSettingsStore.getSettings();
+    if (initialSettings.bar.dataDir === null && !process.argv.includes('--no-bar')) {
+      void locateGame().then((loc) => {
+        if (loc?.dataDir) syncBridgeState();
+      });
+    }
     const initialWidgetStatus = defaultWidgetInstaller.status(initialSettings.bar.dataDir ?? undefined);
 
     const fileBridge = new FileBridge({
@@ -148,7 +154,9 @@ if (!gotTheLock) {
       healthManager.checkHealth();
     };
 
-    fileBridge.on('state', (stateDoc) => {
+    let activeDemoSource: DemoSource | null = null;
+
+    const broadcastLiveState = (stateDoc: StateDoc): void => {
       broadcast('live:state', {
         frame: stateDoc.frame,
         gameSeconds: stateDoc.gameSeconds,
@@ -163,6 +171,10 @@ if (!gotTheLock) {
         enemies: stateDoc.enemies,
         teams: stateDoc.teams
       });
+    };
+
+    fileBridge.on('state', (stateDoc) => {
+      if (!activeDemoSource) broadcastLiveState(stateDoc);
     });
 
     healthManager.on('health', (health) => {
@@ -200,8 +212,6 @@ if (!gotTheLock) {
       return res;
     });
 
-    let activeDemoSource: DemoSource | null = null;
-
     handle('demo:list', () => {
       return listDemos();
     });
@@ -210,21 +220,23 @@ if (!gotTheLock) {
       const registry = loadRegistry();
       const currentSettings = defaultSettingsStore.getSettings();
 
+      if (activeDemoSource) {
+        activeDemoSource.stop();
+        activeDemoSource = null;
+      }
+
       if (req.mode === 'demo') {
         if (!req.demoId) {
           throw new Error('Coach start in demo mode requires a demoId');
         }
         const dataDir = findDataDir();
         const fixtureDir = join(dataDir, 'fixtures', 'sessions', req.demoId);
-        if (activeDemoSource) {
-          activeDemoSource.stop();
-          activeDemoSource = null;
-        }
         const demoSource = new DemoSource({
           fixtureDir,
           speed: req.speed ?? 1
         });
         activeDemoSource = demoSource;
+        demoSource.on('state', broadcastLiveState);
 
         let plan = req.plan;
         if (!plan) {
@@ -310,61 +322,20 @@ if (!gotTheLock) {
       return { open, mode: mode ?? currentMode };
     });
 
-    handle('coach:getShortcutStatus', () => {
-      return getGlobalShortcutStatus();
-    });
-
-    handle('registry:getSnapshot', (req) => {
-      return loadSnapshot(req?.gameVersion);
-    });
-
-    handle('maps:list', () => {
-      return loadMaps();
-    });
-
-    handle('maps:get', (req) => {
-      return getMap(req.fileName);
-    });
-
-    handle('plans:list', () => {
-      return defaultPlanStore.list();
-    });
-
-    handle('plans:get', (req) => {
-      return defaultPlanStore.get(req.id);
-    });
-
-    handle('plans:save', (req) => {
-      return defaultPlanStore.save(req);
-    });
-
-    handle('plans:delete', (req) => {
-      return defaultPlanStore.delete(req.id);
-    });
-
-    handle('plans:import', (req) => {
-      return importPlanWithDialog(mainWindow, req);
-    });
-
-    handle('plans:export', (req) => {
-      return exportPlanWithDialog(mainWindow, req);
-    });
-
-    handle('game:browse', () => {
-      return browseBarDirectory(mainWindow);
-    });
-
-    handle('data:openFolder', () => {
-      return openUserDataFolder();
-    });
-
-    handle('data:exportAllPlans', () => {
-      return exportAllPlansWithDialog(mainWindow);
-    });
-
-    handle('data:clearSessions', () => {
-      return clearUserSessions();
-    });
+    handle('coach:getShortcutStatus', () => getGlobalShortcutStatus());
+    handle('registry:getSnapshot', (req) => loadSnapshot(req?.gameVersion));
+    handle('maps:list', () => loadMaps());
+    handle('maps:get', (req) => getMap(req.fileName));
+    handle('plans:list', () => defaultPlanStore.list());
+    handle('plans:get', (req) => defaultPlanStore.get(req.id));
+    handle('plans:save', (req) => defaultPlanStore.save(req));
+    handle('plans:delete', (req) => defaultPlanStore.delete(req.id));
+    handle('plans:import', (req) => importPlanWithDialog(mainWindow, req));
+    handle('plans:export', (req) => exportPlanWithDialog(mainWindow, req));
+    handle('game:browse', () => browseBarDirectory(mainWindow));
+    handle('data:openFolder', () => openUserDataFolder());
+    handle('data:exportAllPlans', () => exportAllPlansWithDialog(mainWindow));
+    handle('data:clearSessions', () => clearUserSessions());
 
     registerSessionHandlers();
 

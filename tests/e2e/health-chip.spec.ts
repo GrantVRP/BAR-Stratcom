@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
 test('health-chip: displays NO BAR when no BAR instance or data dir is configured', async () => {
-  const { app, close } = await launchApp();
+  const { app, close } = await launchApp(['--no-bar']);
   try {
     const page = await app.firstWindow();
 

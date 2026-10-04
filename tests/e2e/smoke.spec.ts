@@ -44,11 +44,11 @@ test('smoke: consolidated end-to-end journey (launch -> launcher -> skip onboard
 
       const plansGrid = page.getByTestId('plans-grid');
       await expect(plansGrid).toBeVisible();
-      const firstPlanCard = page.locator('[data-testid^="plan-card-"]').first();
-      await expect(firstPlanCard).toBeVisible();
+      const planCard = page.locator('[data-testid="plan-card-2026-10-01-cortex-1v1-vs-ai-barr"]');
+      await expect(planCard).toBeVisible();
 
       // 6. Plan Detail & Activation
-      await firstPlanCard.click();
+      await planCard.click();
       const planDetailView = page.getByTestId('view-plan-detail');
       await expect(planDetailView).toBeVisible({ timeout: 10000 });
       await expect(page.getByTestId('plan-timeline')).toBeVisible();
@@ -76,6 +76,17 @@ test('smoke: consolidated end-to-end journey (launch -> launcher -> skip onboard
         const clockText = await page.getByTestId('coach-clock').textContent();
         expect(clockText).not.toBe('0:00');
       }).toPass({ timeout: 10000 });
+
+      // Telemetry shows numeric metal and energy in demo
+      const telemetry = page.getByTestId('coach-telemetry');
+      await expect(telemetry).toBeVisible({ timeout: 10000 });
+      await expect(telemetry).toContainText('METAL');
+      await expect(telemetry).toContainText('ENERGY');
+
+      // HUD preview is visible and has no raw unit ids
+      const hudPreview = page.getByTestId('hud-preview');
+      await expect(hudPreview).toBeVisible({ timeout: 10000 });
+      expect(await hudPreview.textContent()).not.toContain('corvp');
 
       // Coach alert triggers
       const alertRegion = page.getByTestId('coach-alerts');

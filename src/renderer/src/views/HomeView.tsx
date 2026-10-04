@@ -1,44 +1,56 @@
-import React from 'react';
+import { useState } from 'react';
+import type { DemoInfo } from '../../../shared/ipc';
 import { useCoach, useLive, usePlans, useSettings } from '../stores';
+import { ipcClient } from '../lib/ipc-client';
+import { findMatchingDemoFixture } from '../lib/demo-pairing';
+import { DemoPickerModal } from '../components/coach/DemoPickerModal';
 import { Button } from '../components/ui/Button';
 import { Tag } from '../components/ui/Tag';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
 import { Provenance } from '../components/ui/Provenance';
-
-const CORTEX_DEMO_FIXTURE_ID = '2026-10-01-cortex-1v1-vs-ai-barr';
 
 export function HomeView(): React.JSX.Element {
   const { health } = useLive();
   const { plans, getActivePlan } = usePlans();
   const { start } = useCoach();
   const settings = useSettings((s) => s.settings);
+  const [demoPickerOpen, setDemoPickerOpen] = useState<boolean>(false);
+  const [demoList, setDemoList] = useState<DemoInfo[]>([]);
 
   const activePlan = getActivePlan() ?? plans[0] ?? null;
 
   async function handleStartLive(): Promise<void> {
     if (!activePlan) return;
     const ok = await start({ mode: 'live', planId: activePlan.id });
-    if (ok) {
-      window.location.hash = '#/coach';
-    }
+    if (ok) window.location.hash = '#/coach';
   }
 
   async function handleStartManual(): Promise<void> {
     if (!activePlan) return;
     const ok = await start({ mode: 'manual', planId: activePlan.id });
-    if (ok) {
-      window.location.hash = '#/coach';
-    }
+    if (ok) window.location.hash = '#/coach';
+  }
+
+  async function launchDemo(fixtureId: string): Promise<void> {
+    const ok = await start({
+      mode: 'demo',
+      demoId: fixtureId,
+      speed: 4,
+      plan: activePlan ?? undefined,
+      planId: activePlan?.id
+    });
+    if (ok) window.location.hash = '#/coach';
   }
 
   async function handleStartDemo(): Promise<void> {
-    const ok = await start({
-      mode: 'demo',
-      demoId: CORTEX_DEMO_FIXTURE_ID,
-      speed: 4
-    });
-    if (ok) {
-      window.location.hash = '#/coach';
+    const res = await ipcClient.invoke('demo:list');
+    const demos = res.ok ? res.data : [];
+    setDemoList(demos);
+    const match = findMatchingDemoFixture(activePlan, demos);
+    if (match) {
+      await launchDemo(match.id);
+    } else {
+      setDemoPickerOpen(true);
     }
   }
 
@@ -103,22 +115,10 @@ export function HomeView(): React.JSX.Element {
           </div>
 
           <div className="mt-4 pt-3 border-t border-[#1f2430] flex gap-2">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => {
-                window.location.hash = '#/settings';
-              }}
-              className="border border-[#27272a]"
-            >
+            <Button variant="default" size="sm" onClick={() => { window.location.hash = '#/settings'; }} className="border border-[#27272a]">
               SETTINGS
             </Button>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => void handleStartDemo()}
-              className="border border-[#38bdf8]/40 text-[#38bdf8]"
-            >
+            <Button variant="default" size="sm" onClick={() => void handleStartDemo()} className="border border-[#38bdf8]/40 text-[#38bdf8]">
               TEST DEMO
             </Button>
           </div>
@@ -192,23 +192,10 @@ export function HomeView(): React.JSX.Element {
             >
               START COACHING (LIVE)
             </Button>
-            <Button
-              variant="default"
-              size="md"
-              disabled={!activePlan}
-              onClick={() => void handleStartManual()}
-              data-testid="home-start-manual-btn"
-              className="flex-1 min-w-[150px] border border-[#fbbf24]/50 text-[#fbbf24] hover:bg-[#fbbf24]/10"
-            >
+            <Button variant="default" size="md" disabled={!activePlan} onClick={() => void handleStartManual()} data-testid="home-start-manual-btn" className="flex-1 min-w-[150px] border border-[#fbbf24]/50 text-[#fbbf24] hover:bg-[#fbbf24]/10">
               MANUAL CLOCK
             </Button>
-            <Button
-              variant="default"
-              size="md"
-              onClick={() => void handleStartDemo()}
-              data-testid="home-start-demo-btn"
-              className="flex-1 min-w-[120px] border border-[#38bdf8]/50 text-[#38bdf8] hover:bg-[#38bdf8]/10"
-            >
+            <Button variant="default" size="md" onClick={() => void handleStartDemo()} data-testid="home-start-demo-btn" className="flex-1 min-w-[120px] border border-[#38bdf8]/50 text-[#38bdf8] hover:bg-[#38bdf8]/10">
               DEMO 4×
             </Button>
           </div>
@@ -232,18 +219,21 @@ export function HomeView(): React.JSX.Element {
               metrics, benchmark bands, and tactical post-game analysis.
             </p>
           </div>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => {
-              window.location.hash = '#/review';
-            }}
-            className="border border-[#27272a]"
-          >
+          <Button variant="default" size="sm" onClick={() => { window.location.hash = '#/review'; }} className="border border-[#27272a]">
             VIEW REVIEWS
           </Button>
         </div>
       </div>
+
+      <DemoPickerModal
+        isOpen={demoPickerOpen}
+        demos={demoList}
+        onSelectDemo={(id) => {
+          setDemoPickerOpen(false);
+          void launchDemo(id);
+        }}
+        onClose={() => setDemoPickerOpen(false)}
+      />
     </div>
   );
 }

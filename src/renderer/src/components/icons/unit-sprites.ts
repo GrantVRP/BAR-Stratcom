@@ -9,6 +9,9 @@ const sprites32 = import.meta.glob('../../assets/unitpics-32/32/*.png', { eager:
 export const UNIT_ART_CREDIT =
   'Unit art: 32-bit pixel versions of the Beyond All Reason unit icons by IceXuick and Floris, used with permission.';
 
+export const FACTION_ART_CREDIT =
+  'Faction emblems: 32-bit versions of the Beyond All Reason faction icons, used with permission.';
+
 function byUnitId(files: Record<string, unknown>): Map<string, string> {
   const map = new Map<string, string>();
   for (const [file, url] of Object.entries(files)) {

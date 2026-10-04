@@ -1,56 +1,50 @@
 import React from 'react';
+import armada64 from '../../assets/factions-32/armada-64.png';
+import armada32 from '../../assets/factions-32/armada-32.png';
+import cortex64 from '../../assets/factions-32/cortex-64.png';
+import cortex32 from '../../assets/factions-32/cortex-32.png';
 
-export interface FactionEmblemProps extends React.SVGProps<SVGSVGElement> {
+/** 32-bit versions of the BAR faction icons (sidepics), used with permission (T10.6). */
+const EMBLEMS: Record<string, { 32: string; 64: string; label: string }> = {
+  armada: { 32: armada32, 64: armada64, label: 'Armada' },
+  cortex: { 32: cortex32, 64: cortex64, label: 'Cortex' }
+};
+
+export interface FactionEmblemProps {
   faction: 'armada' | 'cortex' | string;
   size?: number;
+  className?: string;
 }
 
-export function FactionEmblem({
-  faction,
-  size = 24,
-  className = '',
-  ...props
-}: FactionEmblemProps): React.JSX.Element {
-  const isArmada = faction.toLowerCase() === 'armada';
-  const color = isArmada ? '#449bed' : '#ff2244';
-
-  if (isArmada) {
+export function FactionEmblem({ faction, size = 24, className = '' }: FactionEmblemProps): React.JSX.Element {
+  const emblem = EMBLEMS[faction.toLowerCase()];
+  if (!emblem) {
+    // Factions without an emblem (e.g. Legion while it is disabled): a plain neutral badge
     return (
       <svg
-        viewBox="0 0 32 32"
+        viewBox="0 0 8 8"
         width={size}
         height={size}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={`inline-block pixelated align-middle ${className}`.trim()}
-        aria-label="Armada Faction Emblem"
-        {...props}
+        shapeRendering="crispEdges"
+        className={`inline-block align-middle ${className}`.trim()}
+        aria-label={`${faction} faction emblem`}
       >
-        {/* Original Geometric Armada Crest */}
-        <polygon points="16,2 28,14 24,18 16,10 8,18 4,14" fill={color} />
-        <polygon points="16,13 24,21 21,24 16,19 11,24 8,21" fill={color} opacity="0.85" />
-        <rect x="14" y="22" width="4" height="7" fill={color} />
-        <rect x="6" y="27" width="20" height="2" fill={color} opacity="0.7" />
+        <rect x="1" y="1" width="6" height="6" fill="#475569" />
+        <rect x="2" y="2" width="4" height="4" fill="#94a3b8" />
       </svg>
     );
   }
-
+  const native = size <= 32 ? 32 : 64;
   return (
-    <svg
-      viewBox="0 0 32 32"
+    <img
+      src={emblem[native]}
       width={size}
       height={size}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={`inline-block pixelated align-middle ${className}`.trim()}
-      aria-label="Cortex Faction Emblem"
-      {...props}
-    >
-      {/* Original Geometric Cortex Crest */}
-      <polygon points="16,3 28,10 28,22 16,29 4,22 4,10" stroke={color} strokeWidth="2.5" fill="#140608" />
-      <polygon points="16,8 23,16 16,24 9,16" fill={color} />
-      <rect x="14.5" y="11" width="3" height="10" fill="#ffffff" opacity="0.9" />
-      <rect x="11" y="14.5" width="10" height="3" fill="#ffffff" opacity="0.9" />
-    </svg>
+      alt={`${emblem.label} faction emblem`}
+      draggable={false}
+      data-faction-emblem={faction.toLowerCase()}
+      className={`inline-block select-none align-middle ${className}`.trim()}
+      style={{ imageRendering: size >= native ? 'pixelated' : 'auto' }}
+    />
   );
 }

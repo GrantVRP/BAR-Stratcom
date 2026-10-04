@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { alphaBounds, bandLightness, hardenAlpha, removeStrays, rimLight, selOutline, smoothClusters, type Rgba } from './pixel-art';
+import {
+  alphaBounds,
+  bandLightness,
+  bevel,
+  glint,
+  hardenAlpha,
+  removeStrays,
+  rimLight,
+  selOutline,
+  smoothClusters,
+  verticalShade,
+  type Rgba
+} from './pixel-art';
 
 /** Builds an RGBA image from rows; '#' = opaque colour, '.' = transparent, other letters = given colours. */
 function image(rows: string[], colours: Record<string, [number, number, number]> = { '#': [100, 120, 200] }): Rgba {
@@ -68,5 +80,22 @@ describe('pixel-art passes (T10.5)', () => {
   it('finds the bounding box of opaque pixels', () => {
     expect(alphaBounds(image(['....', '.##.', '..#.']), 1)).toEqual({ left: 1, top: 1, width: 2, height: 2 });
     expect(alphaBounds(image(['..']), 1)).toBeNull();
+  });
+
+  it('bevels flat emblems: lit top-left edge, shaded bottom-right edge, untouched middle', () => {
+    const img = image(['#####', '#####', '#####', '#####', '#####']);
+    bevel(img, 1, 0.5);
+    const px = (x: number, y: number): number => img.data[(y * 5 + x) * 4 + 2]!;
+    expect(px(0, 0)).toBeGreaterThan(200); // lit
+    expect(px(4, 4)).toBeLessThan(150); // shaded
+    expect(px(2, 2)).toBe(200); // middle unchanged
+  });
+
+  it('shades emblems in steps from light (top) to dark (bottom) and adds a glint', () => {
+    const img = image(['####', '####', '####', '####']);
+    verticalShade(img, 2, 0.2);
+    expect(img.data[2]!).toBeGreaterThan(img.data[(3 * 4) * 4 + 2]!);
+    glint(img, 1);
+    expect(Array.from(img.data.slice((1 * 4 + 1) * 4, (1 * 4 + 1) * 4 + 3))).toEqual([255, 255, 255]);
   });
 });

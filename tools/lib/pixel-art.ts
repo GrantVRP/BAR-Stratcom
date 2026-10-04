@@ -184,3 +184,62 @@ export function smoothClusters(img: Rgba): number {
   }
   return changes.length;
 }
+
+function shift(img: Rgba, i: number, amount: number): void {
+  for (let c = 0; c < 3; c++) {
+    const v = img.data[i + c]!;
+    img.data[i + c] = Math.round(amount >= 0 ? v + (255 - v) * amount : v * (1 + amount));
+  }
+}
+
+/**
+ * Bevel for flat emblems: pixels near a top-left edge are lit, pixels near a bottom-right edge are
+ * shaded, in `depth` stepped rings (strongest at the edge).
+ */
+export function bevel(img: Rgba, depth = 2, amount = 0.4): void {
+  const changes: Array<[number, number]> = [];
+  for (let y = 0; y < img.height; y++) {
+    for (let x = 0; x < img.width; x++) {
+      if (!opaque(img, x, y)) continue;
+      for (let d = 1; d <= depth; d++) {
+        const strength = amount * (1 - (d - 1) / depth);
+        if (!opaque(img, x - d, y - d) || !opaque(img, x, y - d) || !opaque(img, x - d, y)) {
+          changes.push([idx(img, x, y), strength]);
+          break;
+        }
+        if (!opaque(img, x + d, y + d) || !opaque(img, x, y + d) || !opaque(img, x + d, y)) {
+          changes.push([idx(img, x, y), -strength]);
+          break;
+        }
+      }
+    }
+  }
+  for (const [i, a] of changes) shift(img, i, a);
+}
+
+/** Stepped top-to-bottom shading: `bands` horizontal steps from +strength (top) to −strength (bottom). */
+export function verticalShade(img: Rgba, bands = 4, strength = 0.2): void {
+  for (let y = 0; y < img.height; y++) {
+    const step = Math.min(bands - 1, Math.floor((y / img.height) * bands));
+    const amount = strength - (2 * strength * step) / Math.max(1, bands - 1);
+    for (let x = 0; x < img.width; x++) if (opaque(img, x, y)) shift(img, idx(img, x, y), amount);
+  }
+}
+
+/** A small specular glint: the first `size` lit pixels found scanning from the top-left turn white. */
+export function glint(img: Rgba, size = 3): void {
+  let done = 0;
+  for (let s = 0; s < img.width + img.height && done < size; s++) {
+    for (let x = 0; x <= s && done < size; x++) {
+      const y = s - x;
+      if (y >= img.height || x >= img.width || !opaque(img, x, y)) continue;
+      // skip the outline ring: need opaque pixels further in
+      if (!opaque(img, x + 2, y + 2)) continue;
+      const i = idx(img, x + 1, y + 1);
+      img.data[i] = 255;
+      img.data[i + 1] = 255;
+      img.data[i + 2] = 255;
+      done++;
+    }
+  }
+}

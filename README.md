@@ -10,6 +10,8 @@ See the approved plan and architecture in [docs/plan/README.md](docs/plan/README
   used with permission. The originals are © IceXuick and Floris
   (CC BY-NC-ND, `/unitpics/` in the Beyond All Reason repository). The pixel versions are made by
   `tools/pixelate-unitpics.ts` and live in `src/renderer/src/assets/unitpics-32/`.
+- **Faction emblems:** 32-bit versions of the Beyond All Reason faction icons (`sidepics/`), used with
+  permission. Made by `tools/pixelate-factions.ts`, in `src/renderer/src/assets/factions-32/`.
 - Unit data comes from each player's own game through the StratCom widget. Beyond All Reason is made
   by its community: https://www.beyondallreason.info/
 - BAR StratCom is an unofficial community tool and is not affiliated with the Beyond All Reason team.

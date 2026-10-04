@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
-import { LaunchScene } from '../components/launch/LaunchScene';
+import { LaunchScene3D } from '../components/launch3d/LaunchScene3D';
 import { factionAccent } from '../lib/faction-style';
 
 export interface LaunchWindowProps {
@@ -100,7 +100,7 @@ export function LaunchWindow({
       onClick={handleLaunch}
       className="crt crt-soft fixed inset-0 z-50 h-screen w-screen cursor-pointer select-none overflow-hidden bg-[#0a0c14] text-[#e4e4e7]"
     >
-      <LaunchScene faction={faction} reducedMotion={reducedMotion} />
+      <LaunchScene3D faction={faction} reducedMotion={reducedMotion} />
 
       {/* Title */}
       <header className={`absolute left-1/2 top-6 z-[48] flex -translate-x-1/2 flex-col items-center gap-1 px-6 py-3 ${panel}`}>

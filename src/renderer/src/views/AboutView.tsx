@@ -2,6 +2,7 @@ import React from 'react';
 import { ViewPlaceholder } from './ViewPlaceholder';
 import { FACTION_ART_CREDIT, UNIT_ART_CREDIT } from '../components/icons/unit-sprites';
 import { SCENE_CREDIT } from '../components/launch/scene-assets';
+import { MODEL_CREDITS } from '../components/launch3d/assets3d';
 
 export function AboutView(): React.JSX.Element {
   return (
@@ -17,6 +18,7 @@ export function AboutView(): React.JSX.Element {
         <p className="font-mono text-sm text-zinc-200">{UNIT_ART_CREDIT}</p>
         <p className="font-mono text-sm text-zinc-200">{FACTION_ART_CREDIT}</p>
         <p className="font-mono text-sm text-zinc-200">{SCENE_CREDIT}</p>
+        <p className="font-mono text-sm text-zinc-200">{MODEL_CREDITS}</p>
         <p className="font-mono text-sm text-zinc-200">
           Unit data comes from your own Beyond All Reason game through the StratCom widget. Beyond All Reason is made by
           its community at beyondallreason.info.

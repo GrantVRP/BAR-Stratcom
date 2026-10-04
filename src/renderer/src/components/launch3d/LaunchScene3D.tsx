@@ -1,0 +1,113 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { WebGLRenderer, BasicShadowMap } from 'three';
+import { LaunchScene } from '../launch/LaunchScene';
+import { PixelPass } from './pixel-pass';
+import { buildLaunchWorld, type Faction3D, type LaunchWorld } from './scene-builder';
+
+export interface LaunchScene3DProps {
+  faction: Faction3D;
+  reducedMotion: boolean;
+}
+
+/** Screen pixels per scene pixel: about 427 scene pixels across, at least 2. */
+export function pixelSizeFor(width: number): number {
+  return Math.max(2, Math.round(width / 427));
+}
+
+/**
+ * The launcher's 3D scene in 32-bit pixel style (T06.15): Greenest Fields with its Aleppo pines, the
+ * faction's wind turbine spinning, and the Sprinter / Fiend walking up the track with its in-game
+ * walk animation. Falls back to the 2D pixel scene while loading and when WebGL is unavailable.
+ */
+export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): React.JSX.Element {
+  const hostRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const factionRef = useRef(faction);
+  const motionRef = useRef(reducedMotion);
+  const shownAt = useRef(0);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'failed'>('loading');
+
+  useEffect(() => {
+    if (factionRef.current !== faction) shownAt.current = performance.now();
+    factionRef.current = faction;
+    motionRef.current = reducedMotion;
+  }, [faction, reducedMotion]);
+
+  useEffect(() => {
+    const host = hostRef.current;
+    const canvas = canvasRef.current;
+    if (!host || !canvas) return;
+    let disposed = false;
+    let raf = 0;
+    let renderer: WebGLRenderer | null = null;
+    let world: LaunchWorld | null = null;
+    let pass: PixelPass | null = null;
+    let observer: ResizeObserver | null = null;
+
+    const resize = (): void => {
+      if (!renderer || !world || !pass) return;
+      const { clientWidth: w, clientHeight: h } = host;
+      renderer.setSize(w, h, false);
+      const low = PixelPass.lowRes(w, h, pixelSizeFor(w));
+      pass.setSize(low.w, low.h);
+      world.camera.aspect = w / Math.max(1, h);
+      world.camera.updateProjectionMatrix();
+    };
+
+    const start = async (): Promise<void> => {
+      try {
+        renderer = new WebGLRenderer({ canvas, antialias: false, powerPreference: 'low-power' });
+      } catch {
+        setStatus('failed');
+        return;
+      }
+      renderer.setPixelRatio(1);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = BasicShadowMap;
+      try {
+        world = await buildLaunchWorld();
+      } catch (err) {
+        console.warn('[launch3d] scene failed to load:', err);
+        setStatus('failed');
+        return;
+      }
+      if (disposed) return;
+      pass = new PixelPass(world.camera.near, world.camera.far);
+      resize();
+      observer = new ResizeObserver(resize);
+      observer.observe(host);
+      shownAt.current = performance.now();
+      setStatus('ready');
+      const frame = (now: number): void => {
+        // the frame timestamp can be a little earlier than when the scene was shown
+        world!.update(factionRef.current, Math.max(0, now - shownAt.current), motionRef.current);
+        pass!.render(renderer!, world!.scene, world!.camera);
+        raf = requestAnimationFrame(frame);
+      };
+      raf = requestAnimationFrame(frame);
+    };
+    void start();
+
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(raf);
+      observer?.disconnect();
+      world?.dispose();
+      pass?.dispose();
+      renderer?.dispose();
+    };
+  }, []);
+
+  return (
+    <div ref={hostRef} data-testid="launch-scene-3d" data-status={status} className="pointer-events-none absolute inset-0 overflow-hidden">
+      {status !== 'ready' && <LaunchScene faction={faction} reducedMotion={reducedMotion} />}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 h-full w-full"
+        style={{ imageRendering: 'pixelated', visibility: status === 'ready' ? 'visible' : 'hidden' }}
+        role="img"
+        aria-label={`${faction === 'armada' ? 'An Armada Sprinter' : 'A Cortex Fiend'} walking past a spinning wind turbine on Greenest Fields`}
+      />
+    </div>
+  );
+}

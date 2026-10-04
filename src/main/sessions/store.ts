@@ -200,7 +200,10 @@ export class SessionStore {
   /**
    * Retrieves a session by ID with meta, report, and optional lazy-loaded series data.
    */
-  public get(sessionId: string, options: { includeSeries?: boolean } = {}): SessionDetail | null {
+  public get(
+    sessionId: string,
+    options: { includeSeries?: boolean | 'events' } = {}
+  ): SessionDetail | null {
     if (this.inMemoryDemo && this.inMemoryDemo.meta.sessionId === sessionId) {
       return this.inMemoryDemo;
     }
@@ -263,7 +266,8 @@ export class SessionStore {
       const states: Array<Record<string, unknown>> = [];
       const events: Array<Record<string, unknown>> = [];
 
-      const stateLines = readStateLines(sessionDir);
+      // 'events' skips the (much larger) state series, e.g. for replay capture
+      const stateLines = options.includeSeries === 'events' ? [] : readStateLines(sessionDir);
       for (const line of stateLines) {
         try {
           states.push(JSON.parse(line));

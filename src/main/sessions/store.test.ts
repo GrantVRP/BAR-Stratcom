@@ -237,6 +237,17 @@ describe('SessionStore', () => {
       expect(detail?.series?.events[0]).toEqual({ f: 0, e: 'gamestart' });
     });
 
+    it('loads only the events series when asked for events', () => {
+      createSessionDir(validMeta, undefined, {
+        state: [JSON.stringify({ frame: 30, gameSeconds: 1 })],
+        events: [JSON.stringify({ f: 0, e: 'gamestart' })]
+      });
+
+      const detail = store.get(validMeta.sessionId, { includeSeries: 'events' });
+      expect(detail?.series?.states).toEqual([]);
+      expect(detail?.series?.events).toEqual([{ f: 0, e: 'gamestart' }]);
+    });
+
     it('lazy-loads series from compressed state.ndjson.gz', () => {
       createSessionDir(validMeta, undefined, {
         stateGz: [JSON.stringify({ frame: 30, gameSeconds: 1 })],
@@ -271,6 +282,13 @@ describe('SessionStore', () => {
 
     it('guards against path traversal on delete', () => {
       expect(store.delete('../some-dir')).toBe(false);
+    });
+
+    it('never deletes the sessions folder itself ("." or empty id)', () => {
+      createSessionDir(validMeta);
+      expect(store.delete('.')).toBe(false);
+      expect(store.delete('')).toBe(false);
+      expect(fs.existsSync(path.join(tmpDir, validMeta.sessionId))).toBe(true);
     });
   });
 

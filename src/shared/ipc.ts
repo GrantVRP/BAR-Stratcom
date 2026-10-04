@@ -3,6 +3,9 @@ import type { IpcChannel, IpcEventChannel } from './channels';
 import {
   BarSourceSchema,
   BuildPlanSchema,
+  CapturePlayerSchema,
+  CaptureToPlanRequestSchema,
+  CaptureToPlanResponseSchema,
   CoachStateSchema,
   CueSchema,
   LiveSnapshotSchema,
@@ -301,6 +304,18 @@ export const ipcContract = {
         success: z.boolean()
       })
       .strict()
+  },
+  'capture:listPlayers': {
+    request: z
+      .object({
+        sessionId: z.string()
+      })
+      .strict(),
+    response: z.array(CapturePlayerSchema)
+  },
+  'capture:toPlan': {
+    request: CaptureToPlanRequestSchema,
+    response: CaptureToPlanResponseSchema
   }
 } as const satisfies Record<IpcChannel, { request: z.ZodTypeAny; response: z.ZodTypeAny }>;
 

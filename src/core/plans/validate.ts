@@ -1,29 +1,7 @@
-import type { BuildPlan } from '../schemas';
+import type { BuildPlan, PlanIssue, PlanValidationResult } from '../schemas';
 import type { Registry } from '../registry';
 
-export type IssueCode =
-  | 'E_FACTION_DISABLED'
-  | 'E_UNKNOWN_UNIT'
-  | 'E_WRONG_FACTION'
-  | 'E_NOT_BUILDABLE'
-  | 'E_ACTOR_NOT_AVAILABLE'
-  | 'E_BAD_COUNT'
-  | 'E_MISSING_FIELD'
-  | 'W_TIME_ORDER'
-  | 'W_NO_ENERGY_BEFORE_FACTORY'
-  | 'W_STALE_VERSION';
-
-export interface PlanIssue {
-  code: IssueCode;
-  message: string;
-  stepId?: string;
-  path?: string[];
-}
-
-export interface PlanValidationResult {
-  errors: PlanIssue[];
-  warnings: PlanIssue[];
-}
+export type { IssueCode, PlanIssue, PlanValidationResult } from '../schemas/validation';
 
 /**
  * Validates a BuildPlan against the unit registry according to 03 §5.

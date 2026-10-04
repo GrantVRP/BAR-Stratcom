@@ -12,6 +12,7 @@ import { FileBridge } from './game/file-bridge';
 import { HealthManager } from './game/health';
 import { SessionRecorder } from './sessions/recorder';
 import { registerSessionHandlers } from './sessions/handlers';
+import { registerCaptureHandlers } from './capture/handlers';
 import { defaultCoachRunner } from './coach/runner';
 import { findDataDir, loadRegistry, loadSnapshot } from './registry/loader';
 import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
@@ -348,6 +349,7 @@ if (!gotTheLock) {
     handle('data:clearSessions', () => clearUserSessions());
 
     registerSessionHandlers();
+    registerCaptureHandlers();
 
     createWindow();
     registerAppGlobalShortcut();

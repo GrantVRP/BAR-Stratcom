@@ -276,17 +276,39 @@ export function eventsToPlan(input: EventsToPlanInput): BuildPlan {
   // Order grouped steps across actors by targetTime (and firstFrame as tie-breaker)
   groupedSteps.sort((a, b) => a.targetTime - b.targetTime || a.firstFrame - b.firstFrame);
 
-  // 5. Cap at 60 steps
-  const capped = groupedSteps.slice(0, 60);
+  // 5. Cap at 60 steps. A builder the plan never built (resurrected by a necro bot, or given by an
+  // ally) cannot be an actor: credit its work to the newest built instance of that unit, or skip it.
+  const builtActorsCount = new Map<string, number>();
+  const steps: BuildStep[] = [];
 
-  const steps: BuildStep[] = capped.map((s, idx) => ({
-    id: `s${idx + 1}`,
-    actor: s.actor,
-    action: 'build' as const,
-    unitId: s.unitId,
-    count: s.count,
-    targetTime: s.targetTime
-  }));
+  for (const s of groupedSteps) {
+    if (steps.length >= 60) break;
+
+    let actor = s.actor;
+    if (actor.kind === 'builder' || actor.kind === 'factory') {
+      const available = builtActorsCount.get(actor.unitId) ?? 0;
+      if (actor.index > available) {
+        if (available > 0) {
+          actor = { ...actor, index: available };
+        } else {
+          continue; // Actor not yet available in earlier steps
+        }
+      }
+    }
+
+    if (s.unitId) {
+      builtActorsCount.set(s.unitId, (builtActorsCount.get(s.unitId) ?? 0) + s.count);
+    }
+
+    steps.push({
+      id: `s${steps.length + 1}`,
+      actor,
+      action: 'build' as const,
+      unitId: s.unitId,
+      count: s.count,
+      targetTime: s.targetTime
+    });
+  }
 
   const factionId = meta.factionId ?? detectedFactionId ?? 'armada';
   const opening = deriveOpening(firstFactoryDef);

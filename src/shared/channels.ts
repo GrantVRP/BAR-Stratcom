@@ -29,7 +29,9 @@ export const IPC_CHANNELS = [
   'data:clearSessions',
   'sessions:list',
   'sessions:get',
-  'sessions:delete'
+  'sessions:delete',
+  'capture:listPlayers',
+  'capture:toPlan'
 ] as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[number];

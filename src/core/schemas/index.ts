@@ -11,3 +11,5 @@ export * from './report';
 export * from './benchmark';
 export * from './settings';
 export * from './protocol';
+export * from './validation';
+export * from './capture';

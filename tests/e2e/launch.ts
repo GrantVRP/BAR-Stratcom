@@ -9,8 +9,20 @@ export interface LaunchedApp {
   close: () => Promise<void>;
 }
 
-export async function launchApp(extraArgs: string[] = [], customTmpDir?: string): Promise<LaunchedApp> {
+export interface LaunchOptions {
+  /** Fixture folders (data/fixtures/sessions/<id>) copied into the temp profile's sessions/ before launch. */
+  seedSessions?: string[];
+}
+
+export async function launchApp(
+  extraArgs: string[] = [],
+  customTmpDir?: string,
+  options: LaunchOptions = {}
+): Promise<LaunchedApp> {
   const tmpDir = customTmpDir ?? fs.mkdtempSync(path.join(os.tmpdir(), 'stratcom-e2e-'));
+  for (const id of options.seedSessions ?? []) {
+    fs.cpSync(path.join('data', 'fixtures', 'sessions', id), path.join(tmpDir, 'sessions', id), { recursive: true });
+  }
   const app = await electron.launch({
     args: ['.', `--user-data-dir=${tmpDir}`, ...extraArgs]
   });

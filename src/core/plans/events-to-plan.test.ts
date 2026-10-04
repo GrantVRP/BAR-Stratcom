@@ -197,4 +197,59 @@ describe('eventsToPlan (04 §5.3, T04.4)', () => {
     // corstorm must not appear as a build step
     expect(plan.steps.some((s) => s.unitId === 'corstorm')).toBe(false);
   });
+const captureMeta = (sessionId: string): Parameters<typeof eventsToPlan>[0]['meta'] => ({
+    player: 'Player',
+    map: 'Ptaq',
+    source: {
+      kind: 'replay-capture',
+      sessionId,
+      player: 'Player',
+      map: 'Ptaq',
+      capturedAt: '2026-10-03T12:00:00Z'
+    }
+  });
+
+  it('credits builds of a resurrected constructor to a constructor the plan did build', () => {
+    // Mirrors the ptaq fixture, team 15: a necro bot resurrects a second constructor, which then builds.
+    const events: WidgetEvent[] = [
+      { tm: 0, e: 'created', d: 'corcom', u: 1, f: 0 },
+      { tm: 0, e: 'finished', d: 'corcom', u: 1, f: 0 },
+      { tm: 0, bd: 'corcom', b: 1, e: 'created', d: 'corlab', u: 10, f: 300 },
+      { tm: 0, e: 'finished', d: 'corlab', u: 10, f: 900 },
+      { tm: 0, bd: 'corlab', b: 10, e: 'created', d: 'corck', u: 20, f: 950 },
+      { tm: 0, e: 'finished', d: 'corck', u: 20, f: 1400 },
+      { tm: 0, bd: 'corlab', b: 10, e: 'created', d: 'cornecro', u: 21, f: 1500 },
+      { tm: 0, e: 'finished', d: 'cornecro', u: 21, f: 1800 },
+      { tm: 0, bd: 'corck', b: 20, e: 'created', d: 'cormex', u: 30, f: 1900 },
+      { tm: 0, e: 'finished', d: 'cormex', u: 30, f: 2200 },
+      { tm: 0, bd: 'cornecro', b: 21, e: 'created', d: 'corck', u: 22, f: 2400 },
+      { tm: 0, e: 'finished', d: 'corck', u: 22, f: 2400 },
+      { tm: 0, bd: 'corck', b: 22, e: 'created', d: 'corsolar', u: 31, f: 2700 },
+      { tm: 0, e: 'finished', d: 'corsolar', u: 31, f: 3000 }
+    ];
+
+    const plan = eventsToPlan({ registry, events, teamId: 0, meta: captureMeta('s-resurrected-con') });
+
+    const solar = plan.steps.find((s) => s.unitId === 'corsolar');
+    expect(solar?.actor).toEqual({ kind: 'builder', unitId: 'corck', index: 1 });
+    expect(plan.steps.filter((s) => s.unitId === 'corck')).toHaveLength(1);
+    expect(validatePlan(plan, registry).errors).toEqual([]);
+  });
+
+  it('skips builds by a constructor type the plan never built (e.g. one given by an ally)', () => {
+    const events: WidgetEvent[] = [
+      { tm: 0, e: 'created', d: 'corcom', u: 1, f: 0 },
+      { tm: 0, e: 'finished', d: 'corcom', u: 1, f: 0 },
+      { tm: 0, bd: 'corcom', b: 1, e: 'created', d: 'corlab', u: 10, f: 300 },
+      { tm: 0, e: 'finished', d: 'corlab', u: 10, f: 900 },
+      // u50 is a constructor this team never built
+      { tm: 0, bd: 'corck', b: 50, e: 'created', d: 'cormex', u: 30, f: 1000 },
+      { tm: 0, e: 'finished', d: 'cormex', u: 30, f: 1300 }
+    ];
+
+    const plan = eventsToPlan({ registry, events, teamId: 0, meta: captureMeta('s-given-con') });
+
+    expect(plan.steps.map((s) => s.unitId)).toEqual(['corlab']);
+    expect(validatePlan(plan, registry).errors).toEqual([]);
+  });
 });

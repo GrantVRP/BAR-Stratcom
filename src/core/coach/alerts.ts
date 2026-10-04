@@ -1,6 +1,7 @@
 import type { LiveSnapshot } from '../schemas/live';
 import type { AlertId, AlertSeverity } from '../schemas/coach';
 import { ANTI_AIR_UNIT_GROUPS } from './constants';
+import { bandAt } from '../benchmarks';
 import {
   type AlertCandidate,
   type AlertContext,
@@ -111,12 +112,13 @@ export function detectBenchmarkLow(ctx: AlertContext): AlertCandidate | null {
     return null;
   }
 
-  const point = benchmark.series.find((p) => Math.abs(p.t - roundedSec) <= 2);
-  if (!point) {
+  // pro band of the player's faction + mode; none past the end of the recorded series
+  const band = bandAt(benchmark, 'metalIncome', roundedSec);
+  if (!band) {
     return null;
   }
 
-  if (now.res.metal.income < point.metalIncome.p25) {
+  if (now.res.metal.income < band.p25) {
     return {
       id: 'BENCHMARK_LOW',
       severity: 'info',

@@ -11,15 +11,15 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { createRegistry, type Registry } from '../src/core/registry';
 import { eventsToPlan } from '../src/core/plans/events-to-plan';
 import { validatePlan } from '../src/core/plans/validate';
 import { simulate } from '../src/core/sim/simulate';
 import { avgWindFor, findMapByScriptName, stripMapVersionSuffix } from '../src/core/maps';
-import { AvgWindFileSchema, MapsFileSchema, SessionMetaSchema, SnapshotIndexSchema, UnitSnapshotSchema } from '../src/core/schemas';
+import { AvgWindFileSchema, MapsFileSchema, SessionMetaSchema } from '../src/core/schemas';
 import type { BuildPlan } from '../src/core/schemas';
 import type { WidgetEvent } from '../src/core/schemas/protocol';
 import { getMapSlug } from './lib/fixture-repair';
+import { enabledFactions, isAiPlayerName, registryLoader } from './lib/registry-for';
 import { matchProReplay, playerSkill, type ProListReplay } from './lib/pro-match';
 import { MATRIX_CELLS, cellKey, selectCandidates } from './lib/curate-select';
 import { hasOwnerDecisions, renderReview, type ReviewCandidate } from './lib/curate-review';
@@ -34,24 +34,6 @@ const MINIMUM = 16;
 
 const readJson = (p: string): unknown => JSON.parse(fs.readFileSync(p, 'utf-8'));
 
-function registryLoader(): (gameVersion: string) => Registry {
-  const index = SnapshotIndexSchema.parse(readJson(path.join(DATA, 'snapshots/index.json')));
-  const factions = readJson(path.join(DATA, 'factions.json')) as Parameters<typeof createRegistry>[1];
-  const aliases = readJson(path.join(DATA, 'aliases.json')) as Parameters<typeof createRegistry>[2];
-  const cache = new Map<string, Registry>();
-  return (gameVersion) => {
-    // the game's own snapshot when we have it, else the default (as capture:toPlan does)
-    const entry = index.available.find((a) => a.gameVersion === gameVersion) ?? index.available.find((a) => a.gameVersion === index.default)!;
-    let reg = cache.get(entry.gameVersion);
-    if (!reg) {
-      reg = createRegistry(UnitSnapshotSchema.parse(readJson(path.join(DATA, 'snapshots', entry.path))), factions, aliases);
-      cache.set(entry.gameVersion, reg);
-    }
-    return reg;
-  };
-}
-
-const isAiName = (name: string): boolean => name === 'AI' || name.endsWith('(AI)');
 const capital = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Spectator/replay sessions recorded since the list was generated that match no list replay. */
@@ -83,12 +65,8 @@ function main(): void {
   const listFile = readJson(path.join(ROOT, 'docs/plan/reports/h2-replay-list.json')) as { generatedAt: string; replays: ProListReplay[] };
   const maps = MapsFileSchema.parse(readJson(path.join(DATA, 'maps/maps.json'))).maps;
   const wind = AvgWindFileSchema.parse(readJson(path.join(DATA, 'wind/avg-wind.json'))).table;
-  const enabled = new Set(
-    (readJson(path.join(DATA, 'factions.json')) as { factions: Array<{ id: string; enabled: boolean }> }).factions
-      .filter((f) => f.enabled)
-      .map((f) => f.id)
-  );
-  const registryFor = registryLoader();
+  const enabled = enabledFactions(DATA);
+  const registryFor = registryLoader(DATA);
 
   const all: ReviewCandidate[] = [];
   const plans = new Map<string, BuildPlan>();
@@ -109,7 +87,7 @@ function main(): void {
     const mapRecord = findMapByScriptName(maps, meta.mapScriptName);
 
     for (const team of meta.teams) {
-      if (isAiName(team.playerName) || !team.factionId || !enabled.has(team.factionId)) continue;
+      if (isAiPlayerName(team.playerName) || !team.factionId || !enabled.has(team.factionId)) continue;
       const plan = eventsToPlan({
         registry,
         events,

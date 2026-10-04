@@ -216,7 +216,11 @@ export function ReviewView(): React.JSX.Element {
                     <MetricTiles metrics={report.metrics} />
                     <StepAdherenceChart steps={report.steps} plan={attachedPlan} />
                     <EconomyChart states={currentSessionDetail.series?.states} plan={attachedPlan} />
-                    <BenchmarkChart benchmark={report.benchmark} />
+                    <BenchmarkChart
+                      benchmark={report.benchmark}
+                      meta={currentSessionDetail.meta}
+                      states={currentSessionDetail.series?.states}
+                    />
                   </>
                 ) : (
                   <div className="p-8 text-center font-mono text-xs text-zinc-500">

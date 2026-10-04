@@ -33,6 +33,7 @@ export const IPC_CHANNELS = [
   'sessions:delete',
   'capture:listPlayers',
   'capture:toPlan',
+  'benchmarks:get',
   'intel:battles',
   'intel:leaderboard',
   'intel:replays',

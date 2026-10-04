@@ -3,6 +3,7 @@ import path from 'node:path';
 import {
   AliasesFileSchema,
   AvgWindFileSchema,
+  BenchmarkFileSchema,
   BuildPlanSchema,
   FactionsFileSchema,
   MapsFileSchema,
@@ -62,6 +63,12 @@ for (const file of jsonFiles) {
     } else if (file.endsWith('avg-wind.json')) {
       AvgWindFileSchema.parse(parsed);
       console.log(`validate:data: OK (avg wind schema) ${relPath}`);
+    } else if (relPath.replace(/\\/g, '/').includes('benchmarks/')) {
+      const bench = BenchmarkFileSchema.parse(parsed);
+      if (path.basename(file) !== `${bench.factionId}-${bench.mode}.json`) {
+        throw new Error(`benchmark file must be named <factionId>-<mode>.json, got ${path.basename(file)}`);
+      }
+      console.log(`validate:data: OK (benchmark schema) ${relPath}`);
     } else if (relPath.replace(/\\/g, '/').endsWith('snapshots/index.json')) {
       SnapshotIndexSchema.parse(parsed);
       console.log(`validate:data: OK (snapshot index schema) ${relPath}`);

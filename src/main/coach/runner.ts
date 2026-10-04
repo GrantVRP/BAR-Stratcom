@@ -3,7 +3,7 @@ import * as path from 'path';
 import type { BuildPlan } from '../../core/schemas/plans';
 import type { SimResult } from '../../core/sim/types';
 import type { LiveSnapshot } from '../../core/schemas/live';
-import type { CoachDoc } from '../../core/schemas/protocol';
+import type { CoachDoc, SessionFileDoc } from '../../core/schemas/protocol';
 import type { CoachState, Cue } from '../../core/schemas/coach';
 import type { Registry } from '../../core/registry';
 import type { BenchmarkFile } from '../../core/schemas/benchmark';
@@ -40,6 +40,8 @@ export interface CoachRunnerStartOptions {
   stratcomDir?: string | null;
   profile?: ProfileConfig;
   benchmark?: BenchmarkFile | null;
+  /** Finds the pro benchmark for a session's teams (T08.4); used when no fixed `benchmark` is given. */
+  benchmarkLoader?: (teams: SessionFileDoc['teams']) => BenchmarkFile | null;
   map?: CoachRunnerMapOptions;
   start?: {
     metal: number;
@@ -67,6 +69,7 @@ export class CoachRunner {
   private stratcomDir: string | null = null;
   private profile: ProfileConfig = DEFAULT_PROFILES.intermediate;
   private benchmark: BenchmarkFile | null = null;
+  private benchmarkLoader?: CoachRunnerStartOptions['benchmarkLoader'];
   private memory: CoachMemory = createInitialCoachMemory();
   private finishedLedger: FinishedLedger = createFinishedLedger();
   private latestState: LiveSnapshot | null = null;
@@ -77,7 +80,7 @@ export class CoachRunner {
 
   private stateHandler?: (state: LiveSnapshot) => void;
   private eventsHandler?: (events: unknown[]) => void;
-  private sessionHandler?: (session: { sessionId: string }) => void;
+  private sessionHandler?: (session: SessionFileDoc) => void;
   private heartbeatHandler?: (hb: { sessionId: string | null }) => void;
 
   private manualClock: ManualClock = new ManualClock({
@@ -147,6 +150,7 @@ export class CoachRunner {
     this.stratcomDir = options.stratcomDir ?? null;
     this.profile = options.profile ?? DEFAULT_PROFILES.intermediate;
     this.benchmark = options.benchmark ?? null;
+    this.benchmarkLoader = options.benchmark ? undefined : options.benchmarkLoader;
     this.onUpdate = options.onUpdate;
     this.onCue = options.onCue;
 
@@ -191,11 +195,14 @@ export class CoachRunner {
 
       this.sessionHandler = (session) => {
         this.currentSessionId = session.sessionId;
+        this.useSessionBenchmark(session);
       };
 
       this.heartbeatHandler = (hb) => {
         if (!this.currentSessionId && hb.sessionId) {
           this.currentSessionId = hb.sessionId;
+          const session = this.source?.getSession?.(hb.sessionId);
+          if (session) this.useSessionBenchmark(session);
         }
       };
 
@@ -217,6 +224,11 @@ export class CoachRunner {
       // In manual mode, tick at clock = 0 initially
       await this.tick();
     }
+  }
+
+  /** BENCHMARK_LOW compares with pros of the player's faction + mode (04 §7). */
+  private useSessionBenchmark(session: SessionFileDoc): void {
+    if (this.benchmarkLoader) this.benchmark = this.benchmarkLoader(session.teams);
   }
 
   public async stop(): Promise<void> {

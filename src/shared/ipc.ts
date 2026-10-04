@@ -2,6 +2,8 @@ import { z } from 'zod';
 import type { IpcChannel, IpcEventChannel } from './channels';
 import {
   BarSourceSchema,
+  BenchmarkFileSchema,
+  BenchmarkModeSchema,
   AliasesFileSchema,
   FactionsFileSchema,
   BuildPlanSchema,
@@ -329,6 +331,10 @@ export const ipcContract = {
   'capture:toPlan': {
     request: CaptureToPlanRequestSchema,
     response: CaptureToPlanResponseSchema
+  },
+  'benchmarks:get': {
+    request: z.object({ factionId: z.string().regex(/^[a-z]+$/), mode: BenchmarkModeSchema }).strict(),
+    response: BenchmarkFileSchema.nullable()
   },
   'intel:battles': {
     request: z.void().optional(),

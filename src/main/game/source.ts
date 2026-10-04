@@ -20,4 +20,6 @@ export interface BridgeSource {
   stop(): void;
   on<E extends BridgeEventName>(event: E, listener: BridgeEventMap[E]): this;
   off<E extends BridgeEventName>(event: E, listener: BridgeEventMap[E]): this;
+  /** A session doc this source has already emitted (lets a coach that starts mid-game find its teams). */
+  getSession?(sessionId: string): SessionFileDoc | null;
 }

@@ -1,6 +1,7 @@
 import type { BuildPlan } from '../schemas/plans';
 import type { SimResult, SimStepResult } from '../sim/types';
-import type { BenchmarkFile, Percentiles } from '../schemas/benchmark';
+import type { BenchmarkFile } from '../schemas/benchmark';
+import { percentileAt } from '../benchmarks';
 import type { Profile } from '../schemas/common';
 import {
   SessionReportSchema,
@@ -26,28 +27,6 @@ function isFactoryFallback(defId: string): boolean {
     lower.includes('hp') ||
     lower.includes('plat')
   );
-}
-
-/**
- * Piecewise-linear interpolation through (min→0, p25→25, p50→50, p75→75, max→100) (04 §4.1).
- */
-export function interpolatePercentile(p: Percentiles, value: number): number {
-  if (value <= 0) return 0;
-  const { p25, p50, p75 } = p;
-  if (value <= p25) {
-    return p25 > 0 ? Math.min(25, Math.round((value / p25) * 25)) : 25;
-  }
-  if (value <= p50) {
-    const range = p50 - p25;
-    return range > 0 ? Math.min(50, Math.round(25 + ((value - p25) / range) * 25)) : 50;
-  }
-  if (value <= p75) {
-    const range = p75 - p50;
-    return range > 0 ? Math.min(75, Math.round(50 + ((value - p50) / range) * 25)) : 75;
-  }
-  const max = p75 + Math.max(1, p75 - p50);
-  if (value >= max) return 100;
-  return Math.min(100, Math.round(75 + ((value - p75) / (max - p75)) * 25));
 }
 
 /**
@@ -149,18 +128,10 @@ export function analyze(
   // 3. Benchmark percentiles
   let benchmarkResult: SessionReportBenchmark | null = null;
   if (benchmark) {
-    const pt300 = benchmark.series.find((s) => s.t === 300);
-    const pt600 = benchmark.series.find((s) => s.t === 600);
-
-    const pMetal300 =
-      pt300 && metrics.incomeAt['300']
-        ? interpolatePercentile(pt300.metalIncome, metrics.incomeAt['300'].metal)
-        : null;
-
-    const pMetal600 =
-      pt600 && metrics.incomeAt['600']
-        ? interpolatePercentile(pt600.metalIncome, metrics.incomeAt['600'].metal)
-        : null;
+    const at300 = metrics.incomeAt['300'];
+    const at600 = metrics.incomeAt['600'];
+    const pMetal300 = at300 ? percentileAt(benchmark, 'metalIncome', 300, at300.metal) : null;
+    const pMetal600 = at600 ? percentileAt(benchmark, 'metalIncome', 600, at600.metal) : null;
 
     benchmarkResult = {
       percentileMetalAt300: pMetal300,

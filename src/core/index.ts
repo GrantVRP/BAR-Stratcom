@@ -7,3 +7,4 @@ export * from './plans';
 export * from './sim';
 export * from './coach';
 export * from './analysis';
+export * from './benchmarks';

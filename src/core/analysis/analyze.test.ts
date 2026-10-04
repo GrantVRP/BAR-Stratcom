@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { analyze, interpolatePercentile } from './analyze';
+import { analyze } from './analyze';
+import { interpolatePercentile } from '../benchmarks';
 import type { SessionMeta } from '../schemas/session';
 import type { StateDoc, WidgetEvent } from '../schemas/protocol';
 import type { BuildPlan } from '../schemas/plans';

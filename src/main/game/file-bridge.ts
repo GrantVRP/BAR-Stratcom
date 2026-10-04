@@ -6,6 +6,7 @@ import {
   StateDocSchema,
   WidgetEventSchema,
   WidgetHeartbeatSchema,
+  type SessionFileDoc,
   type StateDoc,
   type WidgetEvent,
   type WidgetHeartbeat
@@ -42,6 +43,7 @@ export class FileBridge extends EventEmitter implements BridgeSource {
 
   private eventsOffsets = new Map<string, number>();
   private processedSessions = new Set<string>();
+  private sessionDocs = new Map<string, SessionFileDoc>();
 
   // Infolog & script signal
   private lastScriptMtime: number | null = null;
@@ -306,6 +308,7 @@ export class FileBridge extends EventEmitter implements BridgeSource {
           const result = SessionFileDocSchema.safeParse(parsed);
           if (result.success) {
             this.processedSessions.add(file);
+            this.sessionDocs.set(result.data.sessionId, result.data);
             this.emit('session', result.data);
           }
         } catch {
@@ -348,6 +351,10 @@ export class FileBridge extends EventEmitter implements BridgeSource {
         }
       }
     }
+  }
+
+  getSession(sessionId: string): SessionFileDoc | null {
+    return this.sessionDocs.get(sessionId) ?? null;
   }
 
   getHealthInputs(): HealthDeriveInputs {

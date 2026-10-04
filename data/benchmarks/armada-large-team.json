@@ -1,0 +1,670 @@
+{
+  "schemaVersion": 1,
+  "factionId": "armada",
+  "mode": "large-team",
+  "gameVersions": [
+    "test-31030-23a0c35",
+    "test-31479-433a460"
+  ],
+  "sampleCount": 30,
+  "sources": [
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "Syphos",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "SkyFireEX",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "EpicTyrannus",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "Edd0Sensei",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "PlatinumBlonde",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "DRM",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "Kuchy",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "Hummell",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "KOT_",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "waine",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-82328a",
+      "player": "kistenair",
+      "replayId": "82328a6a6a5845e9a74cdbbae6716f0f"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "Immort",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "DRM",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "Kuchy",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "Syphos",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "Hummell",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "lebel",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "waine",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "watermeloans",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "Leohvm",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "[AFUS]Aleash",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "[Cookie]Baby_Evis",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-08-22-multi-large-team-pro-isthmus-9f1b8a",
+      "player": "CentientWaffle",
+      "replayId": "9f1b8a6a4691c418709ac4309b26c409"
+    },
+    {
+      "sessionId": "2026-10-03-multi-large-team-pro-ditched-3392c1",
+      "player": "kirinokirino",
+      "replayId": "3392c16a21c464dbcfbd01254b9bcc6b"
+    },
+    {
+      "sessionId": "2026-10-03-multi-large-team-pro-ditched-3392c1",
+      "player": "TM_SlickLikeVik",
+      "replayId": "3392c16a21c464dbcfbd01254b9bcc6b"
+    },
+    {
+      "sessionId": "2026-10-03-multi-large-team-pro-moonshine-run-787ac1",
+      "player": "TM_Austin",
+      "replayId": "787ac16ae120092fe1241a6c6c179a51"
+    },
+    {
+      "sessionId": "2026-10-03-multi-large-team-pro-moonshine-run-787ac1",
+      "player": "HamoodLovesEstorage",
+      "replayId": "787ac16ae120092fe1241a6c6c179a51"
+    },
+    {
+      "sessionId": "2026-10-03-multi-large-team-pro-moonshine-run-787ac1",
+      "player": "[RoX]pintle",
+      "replayId": "787ac16ae120092fe1241a6c6c179a51"
+    },
+    {
+      "sessionId": "2026-10-03-multi-large-team-pro-moonshine-run-787ac1",
+      "player": "OralnyDzikus",
+      "replayId": "787ac16ae120092fe1241a6c6c179a51"
+    },
+    {
+      "sessionId": "2026-10-03-multi-large-team-pro-moonshine-run-787ac1",
+      "player": "kirinokirino",
+      "replayId": "787ac16ae120092fe1241a6c6c179a51"
+    }
+  ],
+  "series": [
+    {
+      "t": 0,
+      "metalIncome": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "energyIncome": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      }
+    },
+    {
+      "t": 30,
+      "metalIncome": {
+        "p25": 5.05,
+        "p50": 6.6,
+        "p75": 6.61
+      },
+      "energyIncome": {
+        "p25": 30,
+        "p50": 30,
+        "p75": 50.75
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      }
+    },
+    {
+      "t": 60,
+      "metalIncome": {
+        "p25": 5.27,
+        "p50": 8.11,
+        "p75": 8.9
+      },
+      "energyIncome": {
+        "p25": 70,
+        "p50": 92.05,
+        "p75": 106.57
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 15.75
+      }
+    },
+    {
+      "t": 90,
+      "metalIncome": {
+        "p25": 6.6,
+        "p50": 8.9,
+        "p75": 8.91
+      },
+      "energyIncome": {
+        "p25": 90,
+        "p50": 127.02,
+        "p75": 161.16
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 15.75
+      }
+    },
+    {
+      "t": 120,
+      "metalIncome": {
+        "p25": 8.12,
+        "p50": 8.91,
+        "p75": 8.91
+      },
+      "energyIncome": {
+        "p25": 95.3,
+        "p50": 138.71,
+        "p75": 189.54
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 270
+      }
+    },
+    {
+      "t": 150,
+      "metalIncome": {
+        "p25": 8.9,
+        "p50": 8.91,
+        "p75": 11.21
+      },
+      "energyIncome": {
+        "p25": 132.5,
+        "p50": 174.44,
+        "p75": 236.24
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 117,
+        "p75": 607.5
+      }
+    },
+    {
+      "t": 180,
+      "metalIncome": {
+        "p25": 11.2,
+        "p50": 11.95,
+        "p75": 17.81
+      },
+      "energyIncome": {
+        "p25": 141.65,
+        "p50": 190.33,
+        "p75": 233.56
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 175.5,
+        "p75": 580.5
+      }
+    },
+    {
+      "t": 210,
+      "metalIncome": {
+        "p25": 11.21,
+        "p50": 13.21,
+        "p75": 17.49
+      },
+      "energyIncome": {
+        "p25": 150.21,
+        "p50": 180.63,
+        "p75": 229.95
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 276,
+        "p75": 730
+      }
+    },
+    {
+      "t": 240,
+      "metalIncome": {
+        "p25": 11.86,
+        "p50": 15.01,
+        "p75": 17.81
+      },
+      "energyIncome": {
+        "p25": 184.07,
+        "p50": 210.02,
+        "p75": 275.27
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 0,
+        "p50": 468.5,
+        "p75": 1162.5
+      }
+    },
+    {
+      "t": 270,
+      "metalIncome": {
+        "p25": 13.01,
+        "p50": 15.94,
+        "p75": 18.11
+      },
+      "energyIncome": {
+        "p25": 193.75,
+        "p50": 224.19,
+        "p75": 282.58
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 99,
+        "p50": 593,
+        "p75": 1561.25
+      }
+    },
+    {
+      "t": 300,
+      "metalIncome": {
+        "p25": 11.64,
+        "p50": 16.68,
+        "p75": 18.1
+      },
+      "energyIncome": {
+        "p25": 180,
+        "p50": 212.46,
+        "p75": 234.63
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 270,
+        "p50": 870,
+        "p75": 1358.75
+      }
+    },
+    {
+      "t": 330,
+      "metalIncome": {
+        "p25": 11.86,
+        "p50": 16.69,
+        "p75": 20.4
+      },
+      "energyIncome": {
+        "p25": 201,
+        "p50": 224,
+        "p75": 294.51
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 343,
+        "p50": 990.5,
+        "p75": 1911.75
+      }
+    },
+    {
+      "t": 360,
+      "metalIncome": {
+        "p25": 13.01,
+        "p50": 17.51,
+        "p75": 22.13
+      },
+      "energyIncome": {
+        "p25": 216.5,
+        "p50": 258.69,
+        "p75": 318.92
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 270,
+        "p50": 792,
+        "p75": 1706.25
+      }
+    },
+    {
+      "t": 390,
+      "metalIncome": {
+        "p25": 13.46,
+        "p50": 17.81,
+        "p75": 23.39
+      },
+      "energyIncome": {
+        "p25": 217.99,
+        "p50": 267.78,
+        "p75": 321.93
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 285,
+        "p50": 1074,
+        "p75": 1782.5
+      }
+    },
+    {
+      "t": 420,
+      "metalIncome": {
+        "p25": 13.01,
+        "p50": 17.66,
+        "p75": 22.78
+      },
+      "energyIncome": {
+        "p25": 169.32,
+        "p50": 240.59,
+        "p75": 300.55
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 270,
+        "p50": 1019.5,
+        "p75": 1760
+      }
+    },
+    {
+      "t": 450,
+      "metalIncome": {
+        "p25": 12.94,
+        "p50": 19.96,
+        "p75": 28.01
+      },
+      "energyIncome": {
+        "p25": 229.46,
+        "p50": 321.13,
+        "p75": 453.27
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 270,
+        "p50": 938.5,
+        "p75": 1800.75
+      }
+    },
+    {
+      "t": 480,
+      "metalIncome": {
+        "p25": 11.65,
+        "p50": 18.23,
+        "p75": 23.24
+      },
+      "energyIncome": {
+        "p25": 235.22,
+        "p50": 305.87,
+        "p75": 468.57
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 396.75,
+        "p50": 805,
+        "p75": 1702.5
+      }
+    },
+    {
+      "t": 510,
+      "metalIncome": {
+        "p25": 13.57,
+        "p50": 20.41,
+        "p75": 29.11
+      },
+      "energyIncome": {
+        "p25": 302.37,
+        "p50": 401.98,
+        "p75": 590.72
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 350.25,
+        "p50": 1050,
+        "p75": 2030
+      }
+    },
+    {
+      "t": 540,
+      "metalIncome": {
+        "p25": 13.78,
+        "p50": 21.21,
+        "p75": 31.5
+      },
+      "energyIncome": {
+        "p25": 365.04,
+        "p50": 488.34,
+        "p75": 658.33
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 364,
+        "p50": 1040,
+        "p75": 2211.25
+      }
+    },
+    {
+      "t": 570,
+      "metalIncome": {
+        "p25": 15.99,
+        "p50": 21.97,
+        "p75": 30.76
+      },
+      "energyIncome": {
+        "p25": 351.19,
+        "p50": 510.85,
+        "p75": 681.55
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 442.75,
+        "p50": 1077.5,
+        "p75": 2237.5
+      }
+    },
+    {
+      "t": 600,
+      "metalIncome": {
+        "p25": 15.84,
+        "p50": 24.31,
+        "p75": 36.66
+      },
+      "energyIncome": {
+        "p25": 356.36,
+        "p50": 475.89,
+        "p75": 715.53
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 442,
+        "p50": 1267,
+        "p75": 2558.75
+      }
+    },
+    {
+      "t": 630,
+      "metalIncome": {
+        "p25": 12.18,
+        "p50": 23.56,
+        "p75": 36.23
+      },
+      "energyIncome": {
+        "p25": 380.23,
+        "p50": 485,
+        "p75": 715.1
+      },
+      "buildPower": {
+        "p25": 0,
+        "p50": 0,
+        "p75": 0
+      },
+      "armyMetal": {
+        "p25": 332.5,
+        "p50": 1350,
+        "p75": 2591.75
+      }
+    }
+  ]
+}

@@ -13,6 +13,8 @@ import { HealthManager } from './game/health';
 import { SessionRecorder } from './sessions/recorder';
 import { registerSessionHandlers } from './sessions/handlers';
 import { registerCaptureHandlers } from './capture/handlers';
+import { registerBenchmarkHandlers } from './benchmarks/handlers';
+import { loadBenchmarkForTeams } from './benchmarks/loader';
 import { registerIntelHandlers } from './intel/handlers';
 import { defaultCoachRunner } from './coach/runner';
 import { findDataDir, loadRegistry, loadRegistryMeta, loadSnapshot } from './registry/loader';
@@ -251,7 +253,8 @@ if (!gotTheLock) {
           mode: 'demo',
           source: demoSource,
           registry,
-          stratcomDir: null
+          stratcomDir: null,
+          benchmarkLoader: loadBenchmarkForTeams
         });
 
         demoSource.on('end', () => {
@@ -280,7 +283,8 @@ if (!gotTheLock) {
         mode: req.mode,
         source: fileBridge,
         registry,
-        stratcomDir
+        stratcomDir,
+        benchmarkLoader: loadBenchmarkForTeams
       });
       return { ok: true };
     });
@@ -352,6 +356,7 @@ if (!gotTheLock) {
 
     registerSessionHandlers();
     registerCaptureHandlers();
+    registerBenchmarkHandlers();
     registerIntelHandlers();
 
     createWindow();

@@ -4,6 +4,7 @@ import type { SessionMeta } from '../../core/schemas/session';
 import { SessionReportSchema, type SessionReport } from '../../core/schemas/report';
 import { analyze } from '../../core/analysis/analyze';
 import { loadRegistry } from '../registry/loader';
+import { loadBenchmarkForTeams } from '../benchmarks/loader';
 import { defaultPlanStore } from '../plans/store';
 import { defaultSettingsStore } from '../settings/store';
 import { simulate } from '../../core/sim/simulate';
@@ -95,7 +96,7 @@ export async function generateReportForSession(
       },
       plan,
       planSim,
-      null, // benchmark null until T08.4
+      loadBenchmarkForTeams(meta.teams),
       profile,
       { pastReports }
     );

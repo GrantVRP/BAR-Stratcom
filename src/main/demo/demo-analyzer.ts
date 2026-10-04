@@ -8,6 +8,7 @@ import { simulate } from '../../core/sim/simulate';
 import { analyze } from '../../core/analysis/analyze';
 import { defaultSessionStore } from '../sessions/store';
 import { broadcast } from '../ipc/register';
+import { loadBenchmarkForTeams } from '../benchmarks/loader';
 
 export interface DemoCompletionOptions {
   demoSource: DemoSource;
@@ -50,7 +51,7 @@ export function handleDemoCompletion(options: DemoCompletionOptions): SessionDet
     },
     plan,
     planSim,
-    null,
+    loadBenchmarkForTeams(demoSource.getMeta().teams),
     profile
   );
 

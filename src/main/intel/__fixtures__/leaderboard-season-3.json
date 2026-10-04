@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Small Team",
+    "players": [
+      {
+        "id": 82263,
+        "name": "TM_autopilot",
+        "rating": 57.50050315870155
+      },
+      {
+        "id": 64215,
+        "name": "PRO_DoMiNo",
+        "rating": 52.710717840120004
+      },
+      {
+        "id": 139750,
+        "name": "TM_Sashkorin",
+        "rating": 51.84448462447801
+      }
+    ]
+  },
+  {
+    "name": "Large Team",
+    "players": [
+      {
+        "id": 59461,
+        "name": "[AFUS]Trotski",
+        "rating": 80.17091294404722
+      },
+      {
+        "id": 5467,
+        "name": "HelsHound",
+        "rating": 60.97440761930958
+      },
+      {
+        "id": 145902,
+        "name": "Hexu",
+        "rating": 60.96761234366948
+      }
+    ]
+  },
+  {
+    "name": "Duel",
+    "players": [
+      {
+        "id": 82263,
+        "name": "TM_autopilot",
+        "rating": 61.39659856990638
+      },
+      {
+        "id": 64215,
+        "name": "PRO_DoMiNo",
+        "rating": 58.92346040923953
+      },
+      {
+        "id": 139750,
+        "name": "TM_Sashkorin",
+        "rating": 56.111760232917035
+      }
+    ]
+  },
+  {
+    "name": "FFA",
+    "players": [
+      {
+        "id": 1332,
+        "name": "Flash",
+        "rating": 111.26080599151327
+      },
+      {
+        "id": 975,
+        "name": "StarDoM",
+        "rating": 81.42605226501328
+      },
+      {
+        "id": 9133,
+        "name": "TM_DDDDDDDD",
+        "rating": 71.17061812625488
+      }
+    ]
+  }
+]

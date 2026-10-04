@@ -13,3 +13,4 @@ export * from './settings';
 export * from './protocol';
 export * from './validation';
 export * from './capture';
+export * from './intel';

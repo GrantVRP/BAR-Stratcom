@@ -6,6 +6,13 @@ import {
   CapturePlayerSchema,
   CaptureToPlanRequestSchema,
   CaptureToPlanResponseSchema,
+  cachedSchema,
+  IntelBalancePageSchema,
+  IntelBattlesSchema,
+  IntelLeaderboardSchema,
+  IntelReplayDetailSchema,
+  IntelReplayPageSchema,
+  IntelReplaysRequestSchema,
   CoachStateSchema,
   CueSchema,
   LiveSnapshotSchema,
@@ -316,6 +323,26 @@ export const ipcContract = {
   'capture:toPlan': {
     request: CaptureToPlanRequestSchema,
     response: CaptureToPlanResponseSchema
+  },
+  'intel:battles': {
+    request: z.void().optional(),
+    response: cachedSchema(IntelBattlesSchema)
+  },
+  'intel:leaderboard': {
+    request: z.void().optional(),
+    response: cachedSchema(IntelLeaderboardSchema)
+  },
+  'intel:replays': {
+    request: IntelReplaysRequestSchema.optional(),
+    response: cachedSchema(IntelReplayPageSchema)
+  },
+  'intel:replay': {
+    request: z.object({ id: z.string().regex(/^[a-f0-9]{32}$/i) }).strict(),
+    response: cachedSchema(IntelReplayDetailSchema)
+  },
+  'intel:balance': {
+    request: z.object({ page: z.number().int().min(1).max(100).optional() }).strict().optional(),
+    response: cachedSchema(IntelBalancePageSchema)
   }
 } as const satisfies Record<IpcChannel, { request: z.ZodTypeAny; response: z.ZodTypeAny }>;
 

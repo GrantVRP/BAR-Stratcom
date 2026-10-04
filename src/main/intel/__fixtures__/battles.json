@@ -1,0 +1,167 @@
+[
+  {
+    "battleId": 4658,
+    "founder": {
+      "username": "Host[EU1][023]",
+      "userId": 239467,
+      "country": "AT",
+      "status": {
+        "ingame": true,
+        "away": false,
+        "rank": 0,
+        "moderator": false,
+        "bot": true
+      }
+    },
+    "game": "Beyond All Reason test-31479-433a460",
+    "locked": false,
+    "map": "Tropical Assault v3.0",
+    "mapHash": -1159729103,
+    "maxPlayers": 16,
+    "passworded": false,
+    "rank": 0,
+    "title": "Rotato Mutato | 8v8 | Min chev: 3",
+    "players": [
+      {
+        "username": "aikatsu",
+        "userId": 215863,
+        "country": "US",
+        "status": {
+          "ingame": true,
+          "away": false,
+          "rank": 5,
+          "moderator": false,
+          "bot": false
+        },
+        "lobbyReady": "No",
+        "skill": "[39.82 ??]",
+        "teamId": 10,
+        "gameReady": "Yes",
+        "gameStatus": "Playing",
+        "joinedGameAfterStart": false
+      },
+      {
+        "username": "Botnet",
+        "userId": 191693,
+        "country": "US",
+        "status": {
+          "ingame": true,
+          "away": false,
+          "rank": 4,
+          "moderator": false,
+          "bot": false
+        },
+        "lobbyReady": "No",
+        "skill": "[33.19 ??]",
+        "teamId": 11,
+        "gameReady": "Yes",
+        "gameStatus": "Playing",
+        "joinedGameAfterStart": false
+      },
+      {
+        "username": "[OLYMPUS]TOWNS",
+        "userId": 22418,
+        "country": "US",
+        "status": {
+          "ingame": true,
+          "away": false,
+          "rank": 5,
+          "moderator": false,
+          "bot": false
+        },
+        "skill": "[38.52 ??]",
+        "gameStatus": "Spectating",
+        "joinedGameAfterStart": false
+      }
+    ],
+    "spectators": 13,
+    "lobbyStatus": "running",
+    "gameType": "Team",
+    "preset": "team (Team Game Global Settings)",
+    "delaySinceLastGame": 938,
+    "gameStatus": "running",
+    "gameTime": 639,
+    "mapFileName": "tropical_assault_v3.0"
+  },
+  {
+    "battleId": 335,
+    "founder": {
+      "username": "Host[EU8][001]",
+      "userId": 340458,
+      "country": "CH",
+      "status": {
+        "ingame": true,
+        "away": false,
+        "rank": 0,
+        "moderator": false,
+        "bot": true
+      }
+    },
+    "game": "Beyond All Reason test-31479-433a460",
+    "locked": false,
+    "map": "All That Glitters v2.2.3",
+    "mapHash": -1965169428,
+    "maxPlayers": 16,
+    "passworded": false,
+    "rank": 0,
+    "title": "Glits | 8v8 | Min chev: 4 | Min rating: 10",
+    "players": [
+      {
+        "username": "BM_HotSausageDom",
+        "userId": 38001,
+        "country": "US",
+        "status": {
+          "ingame": true,
+          "away": false,
+          "rank": 5,
+          "moderator": false,
+          "bot": false
+        },
+        "lobbyReady": "No",
+        "skill": "[28.35 ??]",
+        "teamId": 6,
+        "gameReady": "Placed",
+        "gameStatus": "Playing",
+        "joinedGameAfterStart": false
+      },
+      {
+        "username": "ruskof",
+        "userId": 445639,
+        "country": "US",
+        "status": {
+          "ingame": true,
+          "away": false,
+          "rank": 4,
+          "moderator": false,
+          "bot": false
+        },
+        "skill": "[18.9 ???]",
+        "gameStatus": "Spectating",
+        "joinedGameAfterStart": false
+      },
+      {
+        "username": "ITz_MrGuyIsMe",
+        "userId": 548157,
+        "country": "US",
+        "status": {
+          "ingame": true,
+          "away": false,
+          "rank": 4,
+          "moderator": false,
+          "bot": false
+        },
+        "skill": "[26.62 ??]",
+        "gameStatus": "Not connected",
+        "joinedGameAfterStart": false
+      }
+    ],
+    "spectators": 10,
+    "lobbyStatus": "running",
+    "gameType": "Team",
+    "preset": "custom (Custom Battle)",
+    "delaySinceLastGame": 648,
+    "gameStatus": "running",
+    "gameTime": 314,
+    "mapFileName": "all_that_glitters_v2.2.3"
+  }
+]

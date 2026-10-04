@@ -13,6 +13,7 @@ import { HealthManager } from './game/health';
 import { SessionRecorder } from './sessions/recorder';
 import { registerSessionHandlers } from './sessions/handlers';
 import { registerCaptureHandlers } from './capture/handlers';
+import { registerIntelHandlers } from './intel/handlers';
 import { defaultCoachRunner } from './coach/runner';
 import { findDataDir, loadRegistry, loadSnapshot } from './registry/loader';
 import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
@@ -350,6 +351,7 @@ if (!gotTheLock) {
 
     registerSessionHandlers();
     registerCaptureHandlers();
+    registerIntelHandlers();
 
     createWindow();
     registerAppGlobalShortcut();

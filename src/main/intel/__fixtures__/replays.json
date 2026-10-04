@@ -1,0 +1,64 @@
+{
+  "totalResults": -1,
+  "page": 1,
+  "limit": 2,
+  "data": [
+    {
+      "id": "2ccec16a84002600f94d50118c7fd1b8",
+      "startTime": "2026-10-04T03:55:24.000Z",
+      "durationMs": 10867,
+      "Map": {
+        "fileName": "great_divide_v1",
+        "scriptName": "Great Divide V1"
+      },
+      "AllyTeams": [
+        {
+          "winningTeam": false,
+          "Players": [],
+          "AIs": []
+        },
+        {
+          "winningTeam": true,
+          "Players": [
+            {
+              "name": "phoenix511"
+            },
+            {
+              "name": "Foole"
+            }
+          ],
+          "AIs": []
+        }
+      ]
+    },
+    {
+      "id": "4fcbc16a01287afb838364a8360e6369",
+      "startTime": "2026-10-04T03:43:11.000Z",
+      "durationMs": 984067,
+      "Map": {
+        "fileName": "eclipsed_0.9.8",
+        "scriptName": "Eclipsed 0.9.8"
+      },
+      "AllyTeams": [
+        {
+          "winningTeam": false,
+          "Players": [
+            {
+              "name": "NTGuardian"
+            }
+          ],
+          "AIs": []
+        },
+        {
+          "winningTeam": true,
+          "Players": [
+            {
+              "name": "BeatenByChimp"
+            }
+          ],
+          "AIs": []
+        }
+      ]
+    }
+  ]
+}

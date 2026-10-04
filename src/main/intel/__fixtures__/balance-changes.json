@@ -1,0 +1,90 @@
+{
+  "totalResults": 998,
+  "page": 1,
+  "limit": 1,
+  "data": [
+    {
+      "sha": "61731fa4afb21c01e223011c63a83cb1d9892b56",
+      "date": "2026-09-30T20:33:51.000Z",
+      "message": "Balance patch: Vertical missile launchers + misc (#9415)\n\nStarburst launchers (vertical missile launchers) stats (turnrate,\nweaponacceleration, weapontimer, weaponvelocity, cruise_chase_factor)\nhave been adjusted to better fit the new tech. Fixes dead zones and\ninaccurate targeting hopefully in all scenarios.\nOverall the missiles are slightly faster, ~10% less time to reach a\ntarget at max range, but this is not strictly uniform across all units.\n\nEdgeeffectiveness (damage falloff rate) and impulse have been\nstandardised for these weapons, (tac)nukes at 0 EE, 1.1 impulse, EMP\nmissiles at 1EE, everything else at 0.5EE and 1 impulsefactor. Other\nstats slightly adjusted to compensate where needed.\n\nMissile hovercraft received a pure buff\nVehicle missile launchers got higher energy cost and buffed weapons.\nShiva got a nerf overall, but the Gantry itself was made cheaper to\ncompensate (now closer to Armada Gantry in price)\nTiger got nerfed, as it's a bit too efficient on open maps, even\nunmicroed. Its weapon gets less accurate and slower to fire.\nShuriken gets small speed nerf, to bring its powerlevel more in line\nwith other air units.\n\nMissile hovers:\n- EE 0.15 -> 0.5\n- Impulsefactor 1\n\n\nCatalyst\n- EE 0.55 -> 0.5\n\nJuggernaut Missile: \n- EE 0.85 -> 0.5\n- Damage 800 -> 1000\n\nTitan Missile:\n- EE 0.15 -> 0.5\n- Reloadtime 6.8 -> 7\n- Impulsefactor 1\n\nAmbassador: (And legavroc, basically same unit)\n- Energycost 6300 -> 10000\n- Missile: \n-  - EE 0.65 -> 0.5\n-  - Impulsefactor 0.8 -> 1\n-  - Damage 1900 -> 2000\n-  - AoE 150 -> 160\n\n\nNegotiator:\n- Energycost 6700 -> 9000\n- Missile: \n-  - EE 0.65 -> 0.5\n-  - Impulsefactor 0.8 -> 1\n-  - Reloadtime 16 -> 15\n\nArbiter:\n- Energycost 5800 -> 6500\n- EE 0.65 -> 0.5\n- Impulsefactor 0.8 -> 1\n- Damage 800 -> 850\n\nShiva:\n- 1600m -> 1700m\n- Cannon: AoE 176 -> 160\n- Missile:\n-  - EE 0.65 -> 0.5\n-  - Impulsefactor 0.8 -> 1\n\nCortex Gantry:\n- 8400m -> 8000m\n\nTiger:\n- 462 -> 410 LoS\n- DPS -4%\n- Projectile velocity 410 -> 330\n\nShuriken:\n- 280.5 -> 270 speed",
+      "url": "https://github.com/beyond-all-reason/Beyond-All-Reason/commit/61731fa4afb21c01e223011c63a83cb1d9892b56",
+      "author": {
+        "name": "Mitvit",
+        "img": "https://avatars.githubusercontent.com/u/112669238?v=4",
+        "url": "https://github.com/Mitvit"
+      },
+      "changes": [
+        {
+          "unit": {
+            "propertyId": "armemp",
+            "propertyName": "Paralyzer",
+            "changeType": "Modified",
+            "changes": [
+              {
+                "propertyId": "weapondefs",
+                "propertyName": "Weapons",
+                "changeType": "Modified",
+                "changes": [
+                  {
+                    "propertyId": "armemp_weapon",
+                    "propertyName": "Heavy long-range g2g EMP starburst rocket",
+                    "changeType": "Modified",
+                    "changes": [
+                      {
+                        "propertyId": "turnrate",
+                        "propertyName": "Turn Rate",
+                        "prevValue": 10000,
+                        "newValue": 19000,
+                        "changeType": "Buff",
+                        "percentChange": 0.9
+                      },
+                      {
+                        "propertyId": "weaponacceleration",
+                        "propertyName": "Weaponacceleration",
+                        "prevValue": 150,
+                        "newValue": 155,
+                        "changeType": "Unknown",
+                        "percentChange": 0.03333333333333333
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "unit": {
+            "propertyId": "armjuno",
+            "propertyName": "Juno",
+            "changeType": "Modified",
+            "changes": [
+              {
+                "propertyId": "weapondefs",
+                "propertyName": "Weapons",
+                "changeType": "Modified",
+                "changes": [
+                  {
+                    "propertyId": "juno_pulse",
+                    "propertyName": "Anti radar/minefield/jammer magnetic impulse rocket",
+                    "changeType": "Modified",
+                    "changes": [
+                      {
+                        "propertyId": "turnrate",
+                        "propertyName": "Turn Rate",
+                        "prevValue": 5500,
+                        "newValue": 12000,
+                        "changeType": "Buff",
+                        "percentChange": 1.1818181818181819
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

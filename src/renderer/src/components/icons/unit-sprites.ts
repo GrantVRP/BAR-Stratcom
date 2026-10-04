@@ -1,6 +1,6 @@
 /**
  * 32-bit pixel versions of the BAR unit icons (T10.5). Original unit icons by IceXuick and Floris
- * (Beyond All Reason), used with their permission (STATUS Q-04); converted by
+ * (Beyond All Reason), used with their permission; converted by
  * tools/pixelate-unitpics.ts. Units without a picture fall back to the original class sprites.
  */
 const sprites64 = import.meta.glob('../../assets/unitpics-32/64/*.png', { eager: true, query: '?url', import: 'default' });

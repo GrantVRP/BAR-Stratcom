@@ -1,5 +1,5 @@
 /**
- * Turns the BAR unit pictures (by IceXuick and Floris, used with permission, STATUS Q-04) into
+ * Turns the BAR unit pictures (by IceXuick and Floris, used with permission) into
  * 32-bit style pixel sprites for the app (T10.5).
  *
  * Pipeline per unit: drop the soft ground shadow → crop to the unit → a little more saturation and

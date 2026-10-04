@@ -1,7 +1,7 @@
 # Unit art credits
 
 These sprites are 32-bit pixel versions of the Beyond All Reason unit icons by **IceXuick and Floris**,
-made for BAR StratCom with their permission (2026-10-04, see `docs/plan/STATUS.md` Q-04).
+made for BAR StratCom with their permission.
 
 The original unit icons are © IceXuick and Floris, licensed CC BY-NC-ND (`/unitpics/` in the Beyond All
 Reason repository). Do not reuse these files outside BAR StratCom without asking the artists.

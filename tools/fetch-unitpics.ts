@@ -1,8 +1,8 @@
 /**
  * Downloads the Armada and Cortex unit pictures from beyondallreason.info (T10.5).
  *
- * The unit icons are by IceXuick and Floris (CC BY-NC-ND, /unitpics/ in the BAR repo). They gave the
- * owner permission on 2026-10-04 to make 32-bit pixel versions for BAR StratCom (STATUS Q-04).
+ * The unit icons are by IceXuick and Floris (CC BY-NC-ND, /unitpics/ in the BAR repo), used with their
+ * permission for 32-bit pixel versions in BAR StratCom.
  * Raw downloads go to data/raw/unitpics/ (git-ignored) and are never shipped; only the converted
  * sprites made by tools/pixelate-unitpics.ts are.
  *

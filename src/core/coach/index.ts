@@ -6,3 +6,4 @@ export * from './alerts';
 export * from './rules';
 export * from './display';
 export * from './evaluate';
+export * from './assist';

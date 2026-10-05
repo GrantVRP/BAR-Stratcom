@@ -6,6 +6,9 @@ export interface ToggleProps {
   label?: string;
   disabled?: boolean;
   className?: string;
+  /** Accessible name for the switch when there is no visible label. */
+  'aria-label'?: string;
+  'data-testid'?: string;
 }
 
 export const Toggle: React.FC<ToggleProps> = ({
@@ -13,7 +16,9 @@ export const Toggle: React.FC<ToggleProps> = ({
   onChange,
   label,
   disabled = false,
-  className = ''
+  className = '',
+  'aria-label': ariaLabel,
+  'data-testid': testId
 }) => {
   return (
     <label
@@ -25,6 +30,8 @@ export const Toggle: React.FC<ToggleProps> = ({
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-label={ariaLabel ?? label}
+        data-testid={testId}
         disabled={disabled}
         onClick={() => !disabled && onChange(!checked)}
         className={`relative inline-flex h-6 w-12 border-2 border-black transition-none focus-visible:outline-2 ${

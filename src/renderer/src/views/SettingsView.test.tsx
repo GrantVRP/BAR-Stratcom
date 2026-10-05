@@ -115,7 +115,7 @@ describe('SettingsView', () => {
       assistTab?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(container.querySelector('[data-testid="settings-section-assist"]')).not.toBeNull();
-    expect(container.textContent).toContain('GAMEPLAY ASSIST MODULES');
+    expect(container.textContent).toContain('IN-GAME ASSIST');
 
     // Switch to AI
     const aiTab = tabs.find((t) => t.textContent?.includes('AI'));

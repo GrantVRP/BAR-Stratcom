@@ -7,6 +7,7 @@ import type { CoachDoc, SessionFileDoc } from '../../core/schemas/protocol';
 import type { CoachState, Cue } from '../../core/schemas/coach';
 import type { Registry } from '../../core/registry';
 import type { BenchmarkFile } from '../../core/schemas/benchmark';
+import type { AssistSettings } from '../../core/schemas/settings';
 import { validatePlan } from '../../core/plans/validate';
 import { simulate } from '../../core/sim/simulate';
 import {
@@ -17,7 +18,8 @@ import {
   createFinishedLedger,
   createInitialCoachMemory,
   DEFAULT_PROFILES,
-  applyEventsToLedger
+  applyEventsToLedger,
+  ASSIST_OFF
 } from '../../core/coach';
 import type { BridgeSource } from '../game/source';
 import { broadcast } from '../ipc/register';
@@ -49,6 +51,8 @@ export interface CoachRunnerStartOptions {
     metalStorage: number;
     energyStorage: number;
   };
+  /** Settings → Assist, read every tick so a toggle applies at once (T09.2). */
+  assistSettings?: () => AssistSettings;
   onUpdate?: (state: CoachState) => void;
   onCue?: (cue: Cue) => void;
 }
@@ -77,6 +81,7 @@ export class CoachRunner {
   private currentSessionId: string | null = null;
   private onUpdate?: (state: CoachState) => void;
   private onCue?: (cue: Cue) => void;
+  private assistSettings?: () => AssistSettings;
 
   private stateHandler?: (state: LiveSnapshot) => void;
   private eventsHandler?: (events: unknown[]) => void;
@@ -153,6 +158,7 @@ export class CoachRunner {
     this.benchmarkLoader = options.benchmark ? undefined : options.benchmarkLoader;
     this.onUpdate = options.onUpdate;
     this.onCue = options.onCue;
+    this.assistSettings = options.assistSettings;
 
     this.running = true;
     this.seq = 1;
@@ -320,7 +326,8 @@ export class CoachRunner {
       memory: this.memory,
       mode: this.mode,
       chatEchoEnabled: true,
-      manualDoneStepIds: this.manualDoneStepIds
+      manualDoneStepIds: this.manualDoneStepIds,
+      assistSettings: this.assistSettings?.()
     });
 
     this.memory = evalResult.memory;
@@ -378,11 +385,7 @@ export class CoachRunner {
         progress: null
       },
       echo: [],
-      assist: {
-        armNext: null,
-        factoryQueue: null,
-        enabled: { armNext: false, factoryQueue: false }
-      }
+      assist: ASSIST_OFF
     };
     await this.writeDocAtomic(offDoc);
   }

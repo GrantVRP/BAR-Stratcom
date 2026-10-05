@@ -285,6 +285,7 @@ if (!gotTheLock) {
         source: fileBridge,
         registry,
         stratcomDir,
+        assistSettings: () => defaultSettingsStore.getSettings().assist,
         benchmarkLoader: loadBenchmarkForTeams
       });
       return { ok: true };

@@ -5,12 +5,14 @@ import type { Registry } from '../registry';
 import type { BenchmarkFile } from '../schemas/benchmark';
 import type { CoachState, Cue, CoachProjections } from '../schemas/coach';
 import type { CoachHud, CoachEcho, CoachAssist } from '../schemas/protocol';
+import type { AssistSettings } from '../schemas/settings';
 import type { FinishedLedger } from './ledger';
 import { trackSteps } from './tracker';
 import type { ProfileConfig } from './profiles';
 import { ALERT_DETECTORS, type AlertCandidate, isPlannedStall } from './alerts';
 import { type CoachMemory, updateAlertRules, resolveAudioCues } from './rules';
 import { buildCoachHud } from './display';
+import { buildCoachAssist } from './assist';
 import { CHAT_ECHO_COOLDOWN_SEC, ALL_ALERT_IDS } from './constants';
 
 export interface EvaluateInput {
@@ -26,6 +28,8 @@ export interface EvaluateInput {
   mode: 'live' | 'manual' | 'demo';
   chatEchoEnabled?: boolean;
   manualDoneStepIds?: ReadonlySet<string>;
+  /** Settings → Assist (T09.2); both off when omitted. */
+  assistSettings?: AssistSettings;
 }
 
 export interface CoachDisplay {
@@ -61,7 +65,8 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     memory,
     mode,
     chatEchoEnabled = false,
-    manualDoneStepIds
+    manualDoneStepIds,
+    assistSettings = { armNext: false, factoryQueue: false }
   } = input;
 
   const clock = now.gameSeconds;
@@ -238,20 +243,12 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     plannedStall
   });
 
-  const currentPlanStep =
-    trackerResult.currentStepIndex < plan.steps.length ? plan.steps[trackerResult.currentStepIndex] : null;
-
-  const assist: CoachAssist = {
-    armNext:
-      currentPlanStep && currentPlanStep.unitId
-        ? { unitId: currentPlanStep.unitId, stepId: currentPlanStep.id }
-        : null,
-    factoryQueue: null,
-    enabled: {
-      armNext: false,
-      factoryQueue: false
-    }
-  };
+  const assist: CoachAssist = buildCoachAssist({
+    plan,
+    steps: trackerResult.steps,
+    currentStepIndex: trackerResult.currentStepIndex,
+    enabled: assistSettings
+  });
 
   const display: CoachDisplay = {
     protocol: 1,

@@ -65,15 +65,15 @@ The widget registers actions with the BAR action handler. You can bind them in B
 
 | Action | Recommended Key | Description |
 |--------|-----------------|-------------|
-| `stratcom_hud_toggle` | `Ctrl+Shift+N` | Toggle visibility of the in-game Mini-HUD. Position and visibility persist across games. |
-| `stratcom_arm_next` | `Ctrl+Shift+A` | (Assist, when enabled in StratCom) With a builder or the commander selected, arms the build command of the next planned unit; you click to place it. Issues no order. Shows `ARMED: <name>` for 2 s. |
-| `stratcom_load_queue` | `Ctrl+Shift+Q` | (Assist, when enabled in StratCom) With the planned factory selected, queues its planned units (at most 20). Only in lobbies that allow unit-control widgets; otherwise shows `ASSIST BLOCKED BY LOBBY` and does nothing. |
+| `stratcom_hud_toggle` | `Ctrl+Shift+H` | Toggle visibility of the in-game Mini-HUD. Position and visibility persist across games. |
+| `stratcom_arm_next` | `Ctrl+Shift+N` | (Assist, when enabled in StratCom) With a builder or the commander selected, arms the build command of the next planned unit; you click to place it. Issues no order. Shows `ARMED: <name>` for 2 s. |
+| `stratcom_load_queue` | `Ctrl+Shift+J` | (Assist, when enabled in StratCom) With the planned factory selected, queues its planned units (at most 20). Only in lobbies that allow unit-control widgets; otherwise shows `ASSIST BLOCKED BY LOBBY` and does nothing. |
 
 ### Binding Example:
 ```text
-/bind Ctrl+Shift+N stratcom_hud_toggle
-/bind Ctrl+Shift+A stratcom_arm_next
-/bind Ctrl+Shift+Q stratcom_load_queue
+/bind Ctrl+Shift+H stratcom_hud_toggle
+/bind Ctrl+Shift+N stratcom_arm_next
+/bind Ctrl+Shift+J stratcom_load_queue
 ```
 
 ---

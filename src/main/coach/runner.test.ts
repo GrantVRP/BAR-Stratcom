@@ -148,6 +148,39 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
     }
   });
 
+  it('fills the assist payloads from Settings → Assist, read every tick (T09.2)', async () => {
+    vi.useFakeTimers();
+    try {
+      const runner = new CoachRunner();
+      let assist = { armNext: false, factoryQueue: false };
+      await runner.start({
+        plan: validPlan,
+        mode: 'live',
+        source: new FakeBridgeSource(),
+        registry,
+        stratcomDir: tmpDir,
+        assistSettings: () => assist
+      });
+      const read = (): ReturnType<typeof CoachDocSchema.parse> =>
+        CoachDocSchema.parse(JSON.parse(fs.readFileSync(path.join(tmpDir, 'coach.json'), 'utf8')));
+
+      expect(read().assist).toEqual({ armNext: null, factoryQueue: null, enabled: { armNext: false, factoryQueue: false } });
+
+      assist = { armNext: true, factoryQueue: true };
+      await runner.tick();
+      expect(read().assist).toEqual({
+        armNext: { unitId: 'armsolar', stepId: 's1' },
+        factoryQueue: { factoryUnitId: 'armlab', items: [{ unitId: 'armpw', count: 1 }] },
+        enabled: { armNext: true, factoryQueue: true }
+      });
+
+      await runner.stop();
+      expect(read().assist.enabled).toEqual({ armNext: false, factoryQueue: false });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('does not write coach.json in demo or manual mode', async () => {
     const runner = new CoachRunner();
     await runner.start({

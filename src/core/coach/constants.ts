@@ -72,3 +72,9 @@ export const ALL_ALERT_IDS: AlertId[] = [
   'SCOUT_REMINDER',
   'ENEMY_AIR_NO_AA'
 ];
+
+/**
+ * Most units one "load factory queue" press may queue (05 §8.3, T09.1); the widget enforces the same
+ * limit on its side.
+ */
+export const ASSIST_QUEUE_MAX_UNITS = 20;

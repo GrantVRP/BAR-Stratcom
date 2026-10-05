@@ -15,6 +15,9 @@ describe('AboutView (T06.16)', () => {
     expect(container.textContent).toContain('UNOFFICIAL COMMUNITY TOOL');
     expect(container.textContent).toContain('LICENSES & OPEN SOURCE');
     expect(container.querySelector('[data-testid="about-credits"]')).not.toBeNull();
+    // T09.2: the assist behaviour, with both action names
+    expect(container.querySelector('[data-testid="about-assist"]')?.textContent).toContain('stratcom_arm_next');
+    expect(container.querySelector('[data-testid="about-assist"]')?.textContent).toContain('stratcom_load_queue');
     expect(container.textContent).not.toContain('Subsystem operational');
     act(() => root.unmount());
   });

@@ -3,7 +3,8 @@ import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { CoachView } from './CoachView';
-import { useCoach, usePlans } from '../stores';
+import { useCoach, usePlans, useSettings } from '../stores';
+import { defaultSettings } from '../../../core/schemas/settings';
 import type { CoachState } from '../../../core/schemas/coach';
 import type { BuildPlan } from '../../../core/schemas/plans';
 
@@ -110,6 +111,21 @@ describe('CoachView', () => {
     expect(container.querySelector('[data-testid="coach-next-card"]')).not.toBeNull();
   });
 
+
+  it('shows ASSIST ON only while an in-game assist is switched on (T09.2)', () => {
+    const settings = defaultSettings();
+    useSettings.setState({ settings });
+    act(() => {
+      root.render(<CoachView />);
+    });
+    expect(container.querySelector('[data-testid="coach-assist-on"]')).toBeNull();
+
+    act(() => {
+      useSettings.setState({ settings: { ...settings, assist: { armNext: false, factoryQueue: true } } });
+    });
+    expect(container.querySelector('[data-testid="coach-assist-on"]')?.textContent).toBe('ASSIST ON');
+    useSettings.getState().reset();
+  });
   it('renders manual clock controls when in manual mode', () => {
     act(() => {
       useCoach.setState({

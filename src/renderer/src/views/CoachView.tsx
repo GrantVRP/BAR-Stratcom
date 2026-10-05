@@ -10,6 +10,7 @@ import { ipcClient } from '../lib/ipc-client';
 
 import { formatDemoHeader } from '../lib/demo-pairing';
 import { factionAccent } from '../lib/faction-style';
+import { isAssistOn } from '../lib/assist';
 
 export interface CoachViewProps {
   standalone?: boolean;
@@ -109,6 +110,15 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
           <span data-testid="coach-clock" className="text-xl font-bold tracking-wider text-[#f8fafc]">
             {formatClock(coachState?.clock ?? 0)}
           </span>
+          {isAssistOn(settings?.assist) && (
+            <span
+              data-testid="coach-assist-on"
+              title="In-game assist is on (Settings → Assist)"
+              className="border border-[#4ade80]/60 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-[#4ade80]"
+            >
+              ASSIST ON
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

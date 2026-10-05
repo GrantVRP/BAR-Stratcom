@@ -14,6 +14,7 @@ import { SessionRecorder } from './sessions/recorder';
 import { registerSessionHandlers } from './sessions/handlers';
 import { registerCaptureHandlers } from './capture/handlers';
 import { registerBenchmarkHandlers } from './benchmarks/handlers';
+import { registerAiHandlers } from './ai/handlers';
 import { loadBenchmarkForTeams } from './benchmarks/loader';
 import { registerIntelHandlers } from './intel/handlers';
 import { defaultCoachRunner } from './coach/runner';
@@ -357,6 +358,7 @@ if (!gotTheLock) {
     registerSessionHandlers();
     registerCaptureHandlers();
     registerBenchmarkHandlers();
+    registerAiHandlers();
     registerIntelHandlers();
 
     createWindow();

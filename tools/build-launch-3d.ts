@@ -21,6 +21,7 @@ import { decodeDds, type RgbaImage } from './bar3d/dds';
 import { flattenPieces, parseS3O } from './bar3d/s3o';
 import { decodeTga } from './bar3d/tga';
 import { groundTexture } from './bar3d/ground3d';
+import { fxLibrary, unitDeath } from './bar3d/death-assets';
 
 const RAW = path.resolve(process.cwd(), 'data/raw');
 const OUT = path.resolve(process.cwd(), 'src/renderer/src/assets/launch3d');
@@ -84,6 +85,35 @@ async function png(img: RgbaImage, size: number, colours?: number): Promise<Buff
   return colours ? resized.png({ palette: true, colors: colours, dither: 0 }).toBuffer() : resized.png({ compressionLevel: 9 }).toBuffer();
 }
 
+/** S3O wreck textures → launch asset names (no team colour on wrecks). */
+const WRECK_TEXTURE: Record<string, string> = { 'arm_wreck_color.dds': 'tex-arm-wreck', 'cor_color_wreck.dds': 'tex-cor-wreck' };
+
+/** Unit deaths: Killed() / DeathAnim() data, wreck models and textures, the explosion effects. */
+async function deathAssets(write: (name: string, data: string | Buffer) => void): Promise<void> {
+  const raw = (f: string): Buffer => fs.readFileSync(path.join(RAW, 'bar3d/death', f));
+  const text = (f: string): string => raw(f).toString('utf8');
+  const fxNames: string[] = [];
+  for (const unit of ['armfast', 'corpyro'] as const) {
+    const bos = fs.readFileSync(path.join(RAW, 'bar3d', `${unit}.bos`), 'utf8');
+    const { death, wreckModel } = unitDeath(unit, { bos, unitDefLua: text(`${unit}.lua`), unitExplosionsLua: text('Unit_Explosions.lua') });
+    if (wreckModel) {
+      const s3o = raw(`${wreckModel}.s3o`);
+      write(`model-${wreckModel}.json`, modelJson(s3o));
+      death.corpseTexture = WRECK_TEXTURE[parseS3O(s3o).texture1.toLowerCase()] ?? null;
+    }
+    write(`death-${unit}.json`, JSON.stringify(death));
+    fxNames.push(death.fx);
+  }
+  write('fx-library.json', JSON.stringify(fxLibrary(fxNames, text('genericunitexplosion.lua'), text('burn.lua'))));
+  const opaque = (img: RgbaImage): RgbaImage => {
+    const data = new Uint8ClampedArray(img.data);
+    for (let i = 3; i < data.length; i += 4) data[i] = 255;
+    return { ...img, data };
+  };
+  write('tex-arm-wreck.png', await png(opaque(decodeDds(raw('Arm_wreck_color.dds'), 512)), 512, 96));
+  write('tex-cor-wreck.png', await png(opaque(decodeDds(raw('cor_color_wreck.dds'), 512)), 512, 96));
+}
+
 export async function main(): Promise<void> {
   fs.mkdirSync(OUT, { recursive: true });
   const write = (name: string, data: string | Buffer): void => fs.writeFileSync(path.join(OUT, name), data);
@@ -105,6 +135,7 @@ export async function main(): Promise<void> {
   // The visible ground is the map's diffuse texture (from beyondallreason.info/map/greenest-fields);
   // the archive's *_albedo_specular.dds is the specular layer.
   write('tex-ground.png', await groundTexture(await rgbaFrom(path.join(RAW, 'greenest-fields/dry.webp')), GROUND_SIZE));
+  await deathAssets(write);
   console.log(`3D launch assets → ${OUT}`);
 }
 

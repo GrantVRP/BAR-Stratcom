@@ -1,0 +1,1 @@
+{"anim":null,"explodes":[{"piece":"pelvis","flags":["BITMAPONLY","NOHEATCLOUD"]},{"piece":"rthigh","flags":["BITMAPONLY","NOHEATCLOUD"]},{"piece":"torso","flags":["BITMAPONLY","NOHEATCLOUD"]},{"piece":"ruparm","flags":["BITMAPONLY","NOHEATCLOUD"]}],"corpse":"model-cor2X2C","corpseTexture":"tex-cor-wreck","fx":"genericunitexplosion-large-fire"}

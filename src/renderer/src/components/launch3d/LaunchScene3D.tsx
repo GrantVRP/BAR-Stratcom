@@ -25,6 +25,7 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
   const factionRef = useRef(faction);
   const motionRef = useRef(reducedMotion);
   const shownAt = useRef(0);
+  const worldRef = useRef<LaunchWorld | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'failed'>('loading');
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
       pass.setSize(low.w, low.h);
       world.camera.aspect = w / Math.max(1, h);
       world.camera.updateProjectionMatrix();
+      world.setTargetHeight(low.h);
     };
 
     const start = async (): Promise<void> => {
@@ -72,6 +74,7 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
         return;
       }
       if (disposed) return;
+      worldRef.current = world;
       pass = new PixelPass(world.camera.near, world.camera.far);
       resize();
       observer = new ResizeObserver(resize);
@@ -82,6 +85,9 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
         // the frame timestamp can be a little earlier than when the scene was shown
         world!.update(factionRef.current, Math.max(0, now - shownAt.current), motionRef.current);
         pass!.render(renderer!, world!.scene, world!.camera);
+        // where the unit is (fraction of the canvas), for tests that click it
+        const at = world!.runnerScreen(factionRef.current);
+        canvas.dataset.runner = at ? `${((at.x + 1) / 2).toFixed(3)},${((1 - at.y) / 2).toFixed(3)}` : '';
         raf = requestAnimationFrame(frame);
       };
       raf = requestAnimationFrame(frame);
@@ -90,6 +96,7 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
 
     return () => {
       disposed = true;
+      worldRef.current = null;
       cancelAnimationFrame(raf);
       observer?.disconnect();
       world?.dispose();
@@ -98,13 +105,31 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
     };
   }, []);
 
+  /** Pointer position in normalised device coordinates, and whether it is on the walking unit. */
+  const onUnit = (e: React.PointerEvent<HTMLCanvasElement>): boolean => {
+    const world = worldRef.current;
+    if (!world || motionRef.current) return false;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    const y = -(((e.clientY - r.top) / r.height) * 2 - 1);
+    return world.hitRunner(factionRef.current, x, y);
+  };
+
   return (
     <div ref={hostRef} data-testid="launch-scene-3d" data-status={status} className="pointer-events-none absolute inset-0 overflow-hidden">
       {status !== 'ready' && <LaunchScene faction={faction} reducedMotion={reducedMotion} />}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full"
-        style={{ imageRendering: 'pixelated', visibility: status === 'ready' ? 'visible' : 'hidden' }}
+        data-testid="launch-scene-canvas"
+        style={{ imageRendering: 'pixelated', visibility: status === 'ready' ? 'visible' : 'hidden', pointerEvents: status === 'ready' ? 'auto' : 'none' }}
+        onPointerMove={(e) => {
+          e.currentTarget.style.cursor = onUnit(e) ? 'pointer' : 'default';
+        }}
+        onPointerDown={(e) => {
+          // owner request: clicking the Sprinter / Fiend destroys it with its BAR death; a new one runs in 3 s later
+          if (onUnit(e)) worldRef.current?.kill(factionRef.current, Math.max(0, performance.now() - shownAt.current));
+        }}
         role="img"
         aria-label={`${faction === 'armada' ? 'An Armada Sprinter' : 'A Cortex Fiend'} walking past a spinning wind turbine on Greenest Fields`}
       />

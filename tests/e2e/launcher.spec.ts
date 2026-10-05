@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
-test('launcher: shows title screen on startup and a key press reaches Home', async () => {
+test('launcher: shows title screen on startup and only LAUNCH reaches Home', async () => {
   const { app, close } = await launchApp();
   try {
     const page = await app.firstWindow();
@@ -76,3 +76,36 @@ test('routing: unknown route displays 404 panel with link back to Home', async (
   }
 });
 
+
+test('launcher: clicking the walking unit destroys it, and a new one runs in later (owner request)', async () => {
+  test.setTimeout(60000);
+  const { app, close } = await launchApp();
+  try {
+    const page = await app.firstWindow();
+    const scene = page.getByTestId('launch-scene-3d');
+    await expect(scene).not.toHaveAttribute('data-status', 'loading', { timeout: 30000 });
+    test.skip((await scene.getAttribute('data-status')) !== 'ready', 'no WebGL on this machine: the 2D fallback has no units to click');
+
+    const canvas = page.getByTestId('launch-scene-canvas');
+    // wait until the unit is well inside the window, then click where the scene says it is
+    let at = '';
+    await expect
+      .poll(async () => {
+        at = (await canvas.getAttribute('data-runner')) ?? '';
+        const [x, y] = at.split(',').map(Number);
+        return at !== '' && x! > 0.15 && x! < 0.85 && y! > 0.2 && y! < 0.85;
+      }, { timeout: 20000 })
+      .toBe(true);
+    const box = (await canvas.boundingBox())!;
+    const [fx, fy] = at.split(',').map(Number);
+    await page.mouse.click(box.x + fx! * box.width, box.y + fy! * box.height);
+
+    // destroyed: no walking unit, and the launcher is still open (only LAUNCH enters the app)
+    await expect(canvas).toHaveAttribute('data-runner', '');
+    await expect(page.getByTestId('launch-window')).toBeVisible();
+    // death animation (under 2 s) + 3 s, then a new unit is walking again
+    await expect(canvas).not.toHaveAttribute('data-runner', '', { timeout: 10000 });
+  } finally {
+    await close();
+  }
+});

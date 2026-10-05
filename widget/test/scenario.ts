@@ -51,9 +51,14 @@ export interface ScenarioOptions {
   myAllyTeamId?: number;
   teams?: ScenarioTeam[];
   units?: ScenarioUnit[];
+  /** Spring.GetSelectedUnits() */
+  selectedUnits?: number[];
+  /** widget.canControlUnits; false = BAR's sandbox, where every Spring.GiveOrder* raises. */
+  canControlUnits?: boolean;
   windFunctions?: {
     averageWindLookup?: Record<string | number, Record<string | number, string | number>>;
-    getWindRisk?: () => number;
+    /** BAR's getWindRisk() returns a string percentage, e.g. "100" (engine-facts.md). */
+    windRisk?: string;
     isNoWind?: () => boolean;
   };
 }
@@ -75,6 +80,8 @@ export class Scenario {
   public unitDefsById: Map<number, UnitDefRecord> = new Map();
   public unitDefsByName: Map<string, { defId: number; def: UnitDefRecord }> = new Map();
   public windFunctions?: ScenarioOptions['windFunctions'];
+  public selectedUnits: number[];
+  public canControlUnits: boolean;
 
   get myPlayerName(): string {
     return this.teams.get(this.myTeamId)?.playerName ?? 'TestPlayer';
@@ -93,6 +100,8 @@ export class Scenario {
     this.myTeamId = options.myTeamId ?? 0;
     this.myAllyTeamId = options.myAllyTeamId ?? 0;
     this.windFunctions = options.windFunctions;
+    this.selectedUnits = options.selectedUnits ?? [];
+    this.canControlUnits = options.canControlUnits ?? true;
 
     // Index synthetic unitDefs
     testSnapshot.units.forEach((u, idx) => {

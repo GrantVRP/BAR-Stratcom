@@ -25,7 +25,9 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
       mapName: 'supreme_isthmus_v2.1',
       windMin: 0,
       windMax: 15,
-      tidal: 12
+      tidal: 12,
+      // BAR: windRiskLookup[0][15] == "11.8" (a string, like the average wind lookup)
+      windFunctions: { windRisk: '11.8' }
     });
     const harness = await createWidgetHarness(scenario);
     try {
@@ -36,7 +38,7 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
 
       const heartbeat = WidgetHeartbeatSchema.parse(raw);
       expect(heartbeat.protocol).toBe(1);
-      expect(heartbeat.widgetVersion).toBe('3.0.1');
+      expect(heartbeat.widgetVersion).toBe('3.0.2');
       expect(heartbeat.gameVersion).toBe('105.1.1-2550');
       expect(heartbeat.engineVersion).toBe('2026.07.04');
       expect(heartbeat.sessionId).toBeNull();
@@ -50,7 +52,7 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
       expect(heartbeat.map.windMax).toBe(15);
       expect(heartbeat.map.tidal).toBe(12);
       expect(heartbeat.map.avgWind).toBe(7.5);
-      expect(heartbeat.map.windRisk).toBe(1);
+      expect(heartbeat.map.windRisk).toBe(11.8);
       expect(heartbeat.perf).toBeNull();
       expect(heartbeat.degraded).toBe(false);
       expect(typeof heartbeat.heartbeat).toBe('number');
@@ -131,7 +133,7 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
 
       expect(probe).not.toBeNull();
       expect(probe!.protocol).toBe(1);
-      expect(probe!.widgetVersion).toBe('3.0.1');
+      expect(probe!.widgetVersion).toBe('3.0.2');
       expect(probe!.types.Game).toBe('table');
       expect(probe!.types.Engine).toBe('table');
       expect(probe!.canControlUnits).toBe(true);

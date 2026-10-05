@@ -284,6 +284,8 @@ export const SessionFileDocSchema = z
     protocol: ProtocolVersionSchema,
     kind: z.literal('session'),
     sessionId: z.string(),
+    /** Widget that wrote the file (from 3.0.2, T09.1; older files have none). */
+    widgetVersion: z.string().optional(),
     mode: z.enum(['player', 'spectator', 'replay']),
     gameVersion: z.string(),
     engineVersion: z.string(),

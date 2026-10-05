@@ -1,5 +1,5 @@
 -- License: GPL-2.0-or-later
--- STRATCOM_WIDGET_VERSION 3.0.1
+-- STRATCOM_WIDGET_VERSION 3.0.2
 -- STRATCOM_PROTOCOL 1
 
 function widget:GetInfo()
@@ -53,10 +53,11 @@ local spGetTeamList = Spring.GetTeamList
 local spGetTeamInfo = Spring.GetTeamInfo
 local spGetAIInfo = Spring.GetAIInfo
 local spGetGaiaTeamID = Spring.GetGaiaTeamID
+local spGetSelectedUnits = Spring.GetSelectedUnits
 
 -- Constants & State
 local PROTOCOL = 1
-local WIDGET_VERSION = "3.0.1"
+local WIDGET_VERSION = "3.0.2"
 local DIR = "stratcom/"
 
 local jsonNull = (type(Json) == "table" and Json.null) or nil
@@ -245,9 +246,10 @@ local function resolveWindInfo(wMin, wMax)
   end
 
   if type(wf.getWindRisk) == "function" or type(wf.getWindRisk) == "userdata" then
+    -- BAR returns the risk as a string ("100"), like the average wind lookup (engine-facts.md)
     local okRisk, r = pcall(wf.getWindRisk)
-    if okRisk and type(r) == "number" then
-      risk = r
+    if okRisk and r ~= nil then
+      risk = tonumber(r)
     end
   end
 
@@ -460,6 +462,7 @@ local function writeSessionFile(hasStart)
     protocol = PROTOCOL,
     kind = "session",
     sessionId = currentSessionId,
+    widgetVersion = WIDGET_VERSION,
     mode = mode,
     gameVersion = (Game and Game.gameVersion) or "unknown",
     engineVersion = (Engine and Engine.version) or "unknown",
@@ -669,11 +672,14 @@ local function writeSensorState()
     stateDoc.commander = { alive = commanderAlive, idle = commanderIdle }
     stateDoc.bp = { total = bpTotal, active = bpActive }
 
+    -- Gaia (neutral) units such as critters are not enemies (H1b: a Seagull raised "enemy air")
     local enemies = {}
+    local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
     local visibleUnits = (spGetVisibleUnits and spGetVisibleUnits()) or {}
     for _, u in ipairs(visibleUnits) do
       local uAlly = spGetUnitAllyTeam and spGetUnitAllyTeam(u)
-      if uAlly and uAlly ~= myAlly then
+      local uTeam = spGetUnitTeam and spGetUnitTeam(u)
+      if uAlly and uAlly ~= myAlly and uTeam ~= gaiaTeam then
         local defId = spGetUnitDefID and spGetUnitDefID(u)
         if defId and defId > 0 and UnitDefs and UnitDefs[defId] then
           local def = UnitDefs[defId]
@@ -949,6 +955,132 @@ local function getCapturedTeamCount()
   return count
 end
 
+-- Opt-in assist (05 §8.3, D-06). The functions below are the only place that may issue orders
+-- (lint:lua allows GiveOrder* only inside functions named assist*).
+local ASSIST_MAX_ORDERS = 20
+local ASSIST_MESSAGE_SEC = 2
+local assistMessage = nil -- { text, tone, ttl } shown on the HUD for 2 s
+
+local function showAssistMessage(text, tone)
+  assistMessage = { text = text, tone = tone or "info", ttl = ASSIST_MESSAGE_SEC }
+end
+
+local function isTable(v)
+  return type(v) == "table" or type(v) == "userdata"
+end
+
+local function defHumanName(def)
+  return def.translatedHumanName or def.humanName or def.name
+end
+
+-- coach.json `assist` block when the given switch is on in both places (enabled + payload)
+local function assistPayload(key)
+  local a = currentCoachDoc and currentCoachDoc.assist
+  if not isTable(a) or not isTable(a.enabled) or a.enabled[key] ~= true then
+    return nil
+  end
+  local payload = a[key]
+  if not isTable(payload) then
+    return nil
+  end
+  return payload
+end
+
+local function canBuild(builderDefId, defId)
+  local builderDef = UnitDefs and UnitDefs[builderDefId]
+  if not builderDef or not isTable(builderDef.buildOptions) then
+    return false
+  end
+  for _, opt in ipairs(builderDef.buildOptions) do
+    if opt == defId then
+      return true
+    end
+  end
+  return false
+end
+
+-- Arms the build command of the next step; the player clicks to place it. Issues no order.
+local function assistArmNext()
+  local target = assistPayload("armNext")
+  if not target then
+    return false
+  end
+  local def = type(target.unitId) == "string" and UnitDefNames and UnitDefNames[target.unitId]
+  if not def or not def.id then
+    showAssistMessage("UNKNOWN UNIT IN PLAN", "warn")
+    return false
+  end
+  local hasBuilder = false
+  for _, uId in ipairs((spGetSelectedUnits and spGetSelectedUnits()) or {}) do
+    if canBuild(spGetUnitDefID and spGetUnitDefID(uId), def.id) then
+      hasBuilder = true
+      break
+    end
+  end
+  if not hasBuilder then
+    showAssistMessage("SELECT A BUILDER FIRST", "warn")
+    return false
+  end
+  local cmdIndex = nil
+  for index, desc in pairs((spGetActiveCmdDescs and spGetActiveCmdDescs()) or {}) do
+    if isTable(desc) and desc.id == -def.id then
+      cmdIndex = index
+      break
+    end
+  end
+  if not cmdIndex or not spSetActiveCommand then
+    showAssistMessage("SELECT A BUILDER FIRST", "warn")
+    return false
+  end
+  spSetActiveCommand(cmdIndex)
+  showAssistMessage("ARMED: " .. defHumanName(def), "good")
+  return true
+end
+
+-- Queues the planned units in the selected factory. Needs a lobby that allows unit-control widgets.
+local function assistLoadQueue()
+  local queue = assistPayload("factoryQueue")
+  if not queue or type(queue.factoryUnitId) ~= "string" or not isTable(queue.items) then
+    return false
+  end
+  if widget.canControlUnits ~= true then
+    showAssistMessage("ASSIST BLOCKED BY LOBBY", "warn")
+    return false
+  end
+  local factoryDef = UnitDefNames and UnitDefNames[queue.factoryUnitId]
+  local factoryId = nil
+  for _, uId in ipairs((spGetSelectedUnits and spGetSelectedUnits()) or {}) do
+    if factoryDef and spGetUnitDefID and spGetUnitDefID(uId) == factoryDef.id then
+      factoryId = uId
+      break
+    end
+  end
+  if not factoryId then
+    showAssistMessage("SELECT THE FACTORY FIRST", "warn")
+    return false
+  end
+  local issued = 0
+  for _, item in ipairs(queue.items) do
+    local def = isTable(item) and type(item.unitId) == "string" and UnitDefNames[item.unitId]
+    local count = isTable(item) and math.floor(tonumber(item.count) or 0) or 0
+    if def and def.id and canBuild(factoryDef.id, def.id) then
+      for _ = 1, count do
+        if issued >= ASSIST_MAX_ORDERS then
+          break
+        end
+        -- pcall: a sandboxed GiveOrder raises, and an error here would unload the widget
+        if not pcall(Spring.GiveOrderToUnit, factoryId, -def.id, {}, {}) then
+          showAssistMessage("ASSIST BLOCKED BY LOBBY", "warn")
+          return false
+        end
+        issued = issued + 1
+      end
+    end
+  end
+  showAssistMessage("QUEUED " .. issued .. " UNITS", "good")
+  return issued > 0
+end
+
 local function drawHud()
   local t0 = spGetTimer and spGetTimer()
 
@@ -1017,6 +1149,9 @@ local function drawHud()
           big = (l.big == true)
         })
       end
+    end
+    if assistMessage then
+      table.insert(itemsToDraw, { text = assistMessage.text, tone = assistMessage.tone, big = false })
     end
   end
 
@@ -1114,6 +1249,20 @@ local function drawHud()
   end
 end
 
+-- Actions the player binds in BAR, e.g. /bind Ctrl+Shift+N stratcom_arm_next (05 §8.3)
+local function registerAction(name, fn)
+  if not widgetHandler then
+    return
+  end
+  pcall(function()
+    if widgetHandler.AddAction then
+      widgetHandler:AddAction(name, fn)
+    elseif widgetHandler.actionHandler and widgetHandler.actionHandler.AddAction then
+      widgetHandler.actionHandler:AddAction(widget, name, fn)
+    end
+  end)
+end
+
 -- Call-ins (05 §4)
 function widget:Initialize()
   startRecorded = false
@@ -1126,21 +1275,18 @@ function widget:Initialize()
   exportUnitdefs()
   exportWindLookup()
   readCoach()
-  if widgetHandler then
-    pcall(function()
-      if widgetHandler.AddAction then
-        widgetHandler:AddAction("stratcom_hud_toggle", function()
-          config.hudVisible = not config.hudVisible
-          return true
-        end)
-      elseif widgetHandler.actionHandler and widgetHandler.actionHandler.AddAction then
-        widgetHandler.actionHandler:AddAction(widget, "stratcom_hud_toggle", function()
-          config.hudVisible = not config.hudVisible
-          return true
-        end)
-      end
-    end)
-  end
+  registerAction("stratcom_hud_toggle", function()
+    config.hudVisible = not config.hudVisible
+    return true
+  end)
+  registerAction("stratcom_arm_next", function()
+    assistArmNext()
+    return true
+  end)
+  registerAction("stratcom_load_queue", function()
+    assistLoadQueue()
+    return true
+  end)
   local frame = (spGetGameFrame and spGetGameFrame()) or 0
   if frame > 0 and not gameStarted then
     widget:GameStart()
@@ -1198,6 +1344,13 @@ function widget:GameFrame(n)
 end
 
 function widget:Update(dt)
+  if assistMessage then
+    assistMessage.ttl = assistMessage.ttl - (dt or 0)
+    if assistMessage.ttl <= 0 then
+      assistMessage = nil
+    end
+  end
+
   timeSinceCoachRead = timeSinceCoachRead + (dt or 0)
   if timeSinceCoachRead >= 0.5 then
     timeSinceCoachRead = 0

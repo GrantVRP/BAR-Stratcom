@@ -18,6 +18,14 @@ Per **Standing Order S-7**, test doubles, harnesses, and scenario builders **mus
 | `Spring.GetPlayerInfo(playerID)` | `(name, active, spectator, teamID, allyTeamID, pingTime, cpuUsage, country, rank, customPlayerKeys)` | Host: `("Grant_P", true, false, 0, 0, ...)` | Recoil Lua API (`Spring.GetPlayerInfo`). First return value is player name. |
 | `Spring.GetFactoryCommands(unitID, [count])` | `table` or `number` | In engine 2026.07+, `GetFactoryCommands(u, 0)` may return a number (count) rather than a table | Recoil Lua API deprecation observed during H1. |
 | `Spring.GetWind()` | `(dirX, dirY, dirZ, strength, normDirX, normDirY, normDirZ)` | `select(4, Spring.GetWind())` returns float strength | Recoil Lua API (`Spring.GetWind`). |
+| `common/wind_functions.getWindRisk()` | `string` (percent of time wind < 6) | `"11.8"` for wind 0–15, `"100"`/`"0"` as the fallback when the pair is not in the table | BAR `common/wind_functions.lua` (`windRiskLookup`, string values; checked 2026-10-05). Read with `tonumber()` (T09.1). |
+| `UnitDefs[unitDefID].id` | `number` | `UnitDefs[232].id == 232` | Recoil `LuaUnitDefs`. |
+| `UnitDefs[unitDefID].buildOptions` | `table<number, number>` (array of **unitDefIDs**, not names; unknown names skipped) | `{ 45, 51, 60, … }` | Recoil `rts/Lua/LuaUnitDefs.cpp` `BuildOptions()` pushes `unitDefIDsMap[name]` (checked 2026-10-05). |
+| `Spring.GetSelectedUnits()` | `table<number, number>` (array of unitIDs) | `{ 1201, 1305 }` | Recoil Lua API; BAR `gui_gridmenu.lua`. |
+| `Spring.GetActiveCmdDescs()` | table of command descriptions keyed by **index** (`i + CMD_INDEX_OFFSET`, i.e. from 1), each with `id`, `name`, `action`, `type`, `hidden`, `disabled`, `params` | build commands have `id == -unitDefID`; the list follows the current selection | Recoil `LuaUnsyncedRead::GetActiveCmdDescs` (checked 2026-10-05). |
+| `Spring.SetActiveCommand(index)` | `boolean` | takes the same key as `GetActiveCmdDescs` (subtracts `CMD_INDEX_OFFSET`); BAR's own build menu calls `SetActiveCommand(Spring.GetCmdDescIndex(-unitDefID))` | Recoil `LuaUnsyncedCtrl::SetActiveCommandByIndex`; BAR `gui_gridmenu.lua`. |
+| `Spring.GiveOrder*` in a lobby without `allowunitcontrolwidgets` | **raises** `"User 'unit control' widgets disallowed on this game"` | `widget.canControlUnits == false`; an error in a call-in makes BAR remove the widget | BAR `luaui/barwidgets.lua` `CreateSandboxedSystem` (checked 2026-10-05). |
+| Gaia team | `Spring.GetGaiaTeamID()`; Gaia is its own ally team | critters such as `critter_gull` (Seagull) belong to Gaia and are visible | H1b Armada capture (Seagull recorded as an enemy for 199 s). |
 
 ---
 
@@ -46,3 +54,19 @@ Per **Standing Order S-7**, test doubles, harnesses, and scenario builders **mus
    - Any record/map field (`counts`, `enemies`, `teams[].counts`) that may be empty in Lua will appear as `[]` in raw JSON exports.
    - Domain schemas accept `[]` via Zod preprocess and normalize it to `{}`.
 
+
+6. **Wind Risk (`resolveWindInfo`)**:
+   - `getWindRisk()` returns a **string** (like the average wind lookup). Convert with `tonumber()`;
+     a `type(r) == "number"` check drops every real value (the heartbeat's `windRisk` was always
+     `null` before widget 3.0.2).
+
+7. **Assist Actions (`assistArmNext`, `assistLoadQueue`, T09.1)**:
+   - `buildOptions` holds unitDefIDs; compare with `UnitDefNames[name].id`, never with names.
+   - Find the build command by iterating `GetActiveCmdDescs()` with `pairs` and matching
+     `desc.id == -unitDefID`; pass that key to `SetActiveCommand`.
+   - Never call `Spring.GiveOrder*` unless `widget.canControlUnits == true`, and wrap the call in
+     `pcall`: in the sandbox it raises, and an error in a call-in unloads the widget.
+
+8. **Enemies (`writeSensorState`)**:
+   - Units of the Gaia team (`Spring.GetGaiaTeamID()`) are neutral: exclude them from `enemies`
+     even though their ally team differs from ours.

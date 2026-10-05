@@ -4,6 +4,7 @@ import { LuaFactory, type LuaEngine } from 'wasmoon';
 import { InMemoryFs } from './fs';
 import { LUA_IO_OS_BOOTSTRAP, LUA_JSON_BOOTSTRAP, LUA_SPRING_BOOTSTRAP } from './lua-bootstrap';
 import { createScenario, type Scenario } from './scenario';
+import { installOrderMocks } from './harness-orders';
 
 export { InMemoryFs };
 
@@ -24,6 +25,10 @@ export interface WidgetHarness {
   drawCalls: () => DrawCall[];
   echoMessages: () => string[];
   actions: () => Map<string, unknown>;
+  /** Indexes passed to Spring.SetActiveCommand. */
+  activeCommands: () => number[];
+  /** Orders that reached Spring.GiveOrderToUnit (none in the sandbox). */
+  orders: () => Array<{ unitId: number; cmdId: number }>;
   close: () => void;
 }
 
@@ -174,11 +179,15 @@ export async function createWidgetHarness(
 
   engine.doStringSync(LUA_SPRING_BOOTSTRAP);
 
+  // 4b. Selection, command panel and orders (T09.1)
+  const orderRecorders = installOrderMocks(engine, scenario);
+
   // 5. UnitDefs & UnitDefNames pure Lua tables
   const unitDefsMap: Record<string, unknown> = {};
 
   scenario.unitDefsById.forEach((record, defId) => {
     unitDefsMap[String(defId)] = {
+      id: defId,
       name: record.id,
       translatedHumanName: record.name,
       translatedTooltip: record.tooltip,
@@ -205,7 +214,10 @@ export async function createWidgetHarness(
       tidalGenerator: record.economy.tidalGenerator,
       energyStorage: record.economy.energyStorage,
       metalStorage: record.economy.metalStorage,
-      buildOptions: record.buildOptions,
+      // the engine lists build options as unitDefIDs (Recoil LuaUnitDefs BuildOptions), skipping unknown names
+      buildOptions: record.buildOptions
+        .map((name) => scenario.unitDefsByName.get(name.toLowerCase())?.defId)
+        .filter((id): id is number => id !== undefined),
       customParams: {
         techlevel: String(record.techLevel ?? 1),
         unitgroup: record.unitGroup ?? 'other',
@@ -295,6 +307,7 @@ export async function createWidgetHarness(
   // 9. require mock (common/wind_functions as native Lua table with real BAR shape: numeric keys, string values)
   const windFuncsData = scenario.windFunctions?.averageWindLookup ?? { '0': { '15': '7.5' } };
   engine.global.set('__wind_lookup_json', JSON.stringify(windFuncsData));
+  engine.global.set('__wind_risk', scenario.windFunctions?.windRisk ?? '0');
   engine.doStringSync(`
     local rawWind = Json.decode(__wind_lookup_json)
     local realWindLookup = {}
@@ -308,7 +321,7 @@ export async function createWidgetHarness(
     end
     __common_wind_functions = {
       averageWindLookup = realWindLookup,
-      getWindRisk = function() return 1 end,
+      getWindRisk = function() return __wind_risk end,
       isNoWind = function() return false end
     }
   `);
@@ -330,10 +343,11 @@ export async function createWidgetHarness(
     end
   `);
 
-  // 10. widget table initialization
+  // 10. widget table initialization (BAR sets canControlUnits from allowunitcontrolwidgets)
+  engine.global.set('__can_control_units', scenario.canControlUnits);
   engine.doStringSync(`
     widget = {
-      canControlUnits = true
+      canControlUnits = __can_control_units
     }
   `);
 
@@ -369,6 +383,8 @@ export async function createWidgetHarness(
     drawCalls: () => [...recordedDrawCalls],
     echoMessages: () => [...recordedEchoMessages],
     actions: () => new Map(recordedActions),
+    activeCommands: () => [...orderRecorders.activeCommands],
+    orders: () => [...orderRecorders.orders],
     close: () => {
       engine.global.close();
     }

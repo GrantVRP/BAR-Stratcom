@@ -72,33 +72,25 @@ export function LaunchWindow({
     setFaction((prev) => (prev === 'armada' ? 'cortex' : 'armada'));
   }, []);
 
-  // Keyboard navigation: press any key to launch; arrows switch faction
+  // Arrows switch faction. Only the LAUNCH button enters the app (owner request, T06.16).
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent): void {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
         toggleFaction();
-        return;
       }
-      // Ignore modifier keys alone
-      if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) {
-        return;
-      }
-      e.preventDefault();
-      handleLaunch();
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleLaunch, toggleFaction]);
+  }, [toggleFaction]);
 
   const panel = 'border-2 border-black bg-[#0a0c14]/90 shadow-[4px_4px_0px_#000]';
 
   return (
     <div
       data-testid="launch-window"
-      onClick={handleLaunch}
-      className="crt crt-soft fixed inset-0 z-50 h-screen w-screen cursor-pointer select-none overflow-hidden bg-[#0a0c14] text-[#e4e4e7]"
+      className="crt crt-soft fixed inset-0 z-50 h-screen w-screen select-none overflow-hidden bg-[#0a0c14] text-[#e4e4e7]"
     >
       <LaunchScene3D faction={faction} reducedMotion={reducedMotion} />
 
@@ -125,21 +117,12 @@ export function LaunchWindow({
         <button
           type="button"
           data-testid="launcher-button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleLaunch();
-          }}
+          onClick={handleLaunch}
           style={{ backgroundColor: factionColor, fontFamily: "'Press Start 2P', monospace" }}
           className="cursor-pointer border-2 border-black px-10 py-4 text-base font-bold uppercase tracking-wider text-white shadow-[4px_4px_0px_#000] transition-none active:translate-y-1 active:shadow-none"
         >
           LAUNCH
         </button>
-        <div
-          style={{ fontFamily: "'Press Start 2P', monospace" }}
-          className={`whitespace-nowrap px-3 py-2 text-[10px] uppercase tracking-wider text-zinc-300 ${panel} ${reducedMotion ? '' : 'animate-pulse'}`}
-        >
-          [PRESS ANY KEY OR CLICK TO CONTINUE]
-        </div>
       </div>
 
       {/* Footer (owner request: no disclaimer line here; the unofficial notice is on the top-bar tag and About page) */}

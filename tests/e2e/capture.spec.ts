@@ -10,7 +10,7 @@ test('captures a plan from a recorded replay session and saves it to the library
 
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible({ timeout: 10000 });
-    await page.keyboard.press('Space');
+    await page.getByTestId('launcher-button').click();
     await expect(launcher).not.toBeVisible();
 
     const skipBtn = page.getByTestId('onboarding-skip-btn');

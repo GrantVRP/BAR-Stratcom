@@ -17,7 +17,7 @@ test('settings: changing skill profile persists across restart', async () => {
       // Dismiss launcher
       const launcher1 = page1.getByTestId('launch-window');
       await expect(launcher1).toBeVisible();
-      await page1.keyboard.press('Space');
+      await page1.getByTestId('launcher-button').click();
       await expect(launcher1).not.toBeVisible();
 
       // Navigate to Settings view
@@ -52,7 +52,7 @@ test('settings: changing skill profile persists across restart', async () => {
       // Dismiss launcher
       const launcher2 = page2.getByTestId('launch-window');
       await expect(launcher2).toBeVisible();
-      await page2.keyboard.press('Space');
+      await page2.getByTestId('launcher-button').click();
       await expect(launcher2).not.toBeVisible();
 
       // Navigate to Settings view

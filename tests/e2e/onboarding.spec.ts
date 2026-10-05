@@ -10,7 +10,7 @@ test('onboarding: a fresh profile dir auto-runs wizard, skip reaches Home, and r
     // 1. Dismiss launcher
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible();
-    await page.keyboard.press('Space');
+    await page.getByTestId('launcher-button').click();
     await expect(launcher).not.toBeVisible();
 
     // 2. Fresh profile dir without BAR path auto-runs the onboarding wizard

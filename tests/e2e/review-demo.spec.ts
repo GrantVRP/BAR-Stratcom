@@ -9,7 +9,7 @@ test('demo completion triggers in-memory review report with DEMO badge (T07.4)',
     // 1. Dismiss launcher
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible({ timeout: 10000 });
-    await page.keyboard.press('Space');
+    await page.getByTestId('launcher-button').click();
     await expect(launcher).not.toBeVisible();
 
     // 2. Reach Home view (skip onboarding if fresh profile)

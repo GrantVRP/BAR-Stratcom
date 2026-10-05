@@ -7,7 +7,7 @@ test('unit catalog: legacy name search, original icons and dossier (T10.3)', asy
     const page = await app.firstWindow();
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible({ timeout: 10000 });
-    await page.keyboard.press('Space');
+    await page.getByTestId('launcher-button').click();
     const skipBtn = page.getByTestId('onboarding-skip-btn');
     if (await skipBtn.isVisible()) await skipBtn.click();
 

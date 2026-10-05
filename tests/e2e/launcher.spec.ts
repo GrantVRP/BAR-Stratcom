@@ -10,12 +10,15 @@ test('launcher: shows title screen on startup and a key press reaches Home', asy
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible();
 
-    // Title; the unofficial notice lives on the in-app top bar tag and About page (owner request, T06.16)
+    // Title; the unofficial notice lives on the About page (owner request, T06.16)
     await expect(launcher).toContainText('BAR STRATCOM');
     await expect(launcher).not.toContainText('NOT AFFILIATED');
 
-    // Press Space key to launch into Home
+    // Only the LAUNCH button enters the app: a key press keeps the launcher open (T06.16)
+    await expect(launcher).not.toContainText('PRESS ANY KEY');
     await page.keyboard.press('Space');
+    await expect(launcher).toBeVisible();
+    await page.getByTestId('launcher-button').click();
 
     // Launcher should close
     await expect(launcher).not.toBeVisible();
@@ -44,7 +47,7 @@ test('routing: unknown route displays 404 panel with link back to Home', async (
     // Dismiss launcher
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible();
-    await page.keyboard.press('Space');
+    await page.getByTestId('launcher-button').click();
     await expect(launcher).not.toBeVisible();
 
     const skipBtn = page.getByTestId('onboarding-skip-btn');

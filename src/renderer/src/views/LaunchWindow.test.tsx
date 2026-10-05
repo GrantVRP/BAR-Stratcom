@@ -34,7 +34,8 @@ describe('LaunchWindow (06 §4.1, T06.3)', () => {
     expect(container.textContent).toContain('3.0.0-dev.0');
     // owner request (T06.16): no disclaimer line on the launcher; it is on the top bar tag and About page
     expect(container.textContent).not.toContain('NOT AFFILIATED');
-    expect(container.textContent).toContain('PRESS ANY KEY OR CLICK TO CONTINUE');
+    // only the LAUNCH button enters the app, so there is no "press any key" hint (T06.16)
+    expect(container.textContent).not.toContain('PRESS ANY KEY');
   });
 
   it('switches faction between Armada and Cortex on toggle click', async () => {
@@ -86,27 +87,17 @@ describe('LaunchWindow (06 §4.1, T06.3)', () => {
     expect(onStart).toHaveBeenCalledTimes(1);
   });
 
-  it('triggers onStart on Space key press', async () => {
+  it('does not start on a key press or a click outside the LAUNCH button (owner request, T06.16)', async () => {
     const onStart = vi.fn();
     await act(async () => {
       root.render(<LaunchWindow onStart={onStart} />);
     });
 
     await act(async () => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', code: 'Space', bubbles: true }));
-    });
-
-    expect(onStart).toHaveBeenCalledTimes(1);
-  });
-
-  it('ignores modifier keys alone', async () => {
-    const onStart = vi.fn();
-    await act(async () => {
-      root.render(<LaunchWindow onStart={onStart} />);
-    });
-
-    await act(async () => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift', bubbles: true }));
+      for (const key of [' ', 'Enter', 'a', 'Shift', 'Escape']) {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+      }
+      (container.querySelector('[data-testid="launch-window"]') as HTMLElement).click();
     });
 
     expect(onStart).not.toHaveBeenCalled();

@@ -57,6 +57,12 @@ describe('TopBar PLAN chip (T10.7)', () => {
     expect(title().style.color).toBe('#449bed');
   });
 
+  it('has no UNOFFICIAL tag (owner request, T06.16; the notice is on the About page)', async () => {
+    await act(async () => root.render(<TopBar />));
+    expect(container.querySelector('[data-testid="unofficial-tag"]')).toBeNull();
+    expect(container.textContent).not.toContain('UNOFFICIAL');
+  });
+
   it('stays neutral when no plan is active', async () => {
     await act(async () => root.render(<TopBar />));
     expect(chip().getAttribute('data-faction')).toBe('none');

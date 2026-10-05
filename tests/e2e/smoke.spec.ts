@@ -22,7 +22,7 @@ test('smoke: consolidated end-to-end journey (launch -> launcher -> skip onboard
       // 2. Launcher Title Screen
       const launcher = page.getByTestId('launch-window');
       await expect(launcher).toBeVisible({ timeout: 10000 });
-      await page.keyboard.press('Space');
+      await page.getByTestId('launcher-button').click();
       await expect(launcher).not.toBeVisible();
 
       // 3. Skip Onboarding (fresh profile)
@@ -129,7 +129,7 @@ test('smoke: consolidated end-to-end journey (launch -> launcher -> skip onboard
       // Dismiss launcher
       const launcher2 = page2.getByTestId('launch-window');
       await expect(launcher2).toBeVisible({ timeout: 10000 });
-      await page2.keyboard.press('Space');
+      await page2.getByTestId('launcher-button').click();
       await expect(launcher2).not.toBeVisible();
 
       // Navigate to Settings

@@ -1,24 +1,24 @@
 import React from 'react';
-import { Tag } from '../ui/Tag';
 import { useLive } from '../../stores/useLive';
 import { usePlans } from '../../stores/usePlans';
 import { FactionEmblem } from '../ui/FactionEmblem';
 import { factionAccent } from '../../lib/faction-style';
 import type { HealthStatus } from '../../../../shared/ipc';
 
-const STATUS_LABELS: Record<HealthStatus, { text: string; variant: 'good' | 'warn' | 'danger' | 'default' }> = {
-  'no-bar': { text: 'NO BAR', variant: 'danger' },
-  'widget-missing': { text: 'WIDGET MISSING', variant: 'warn' },
-  'widget-outdated': { text: 'WIDGET UPDATE', variant: 'warn' },
-  'bar-idle': { text: 'BAR IDLE', variant: 'warn' },
-  'pregame': { text: 'PREGAME', variant: 'good' },
-  'live': { text: 'LIVE', variant: 'good' },
-  'spectating': { text: 'SPECTATING', variant: 'default' },
-  'replay': { text: 'REPLAY', variant: 'default' },
-  'widgets-disabled': { text: 'WIDGETS DISABLED', variant: 'danger' },
-  'widget-stalled': { text: 'WIDGET STALLED', variant: 'danger' },
-  'protocol-mismatch': { text: 'PROTOCOL ERROR', variant: 'danger' }
-};
+const STATUS_LABELS: Record<HealthStatus, { text: string; variant: 'good' | 'warn' | 'danger' | 'default' }> =
+  {
+    'no-bar': { text: 'NO BAR', variant: 'danger' },
+    'widget-missing': { text: 'WIDGET MISSING', variant: 'warn' },
+    'widget-outdated': { text: 'WIDGET UPDATE', variant: 'warn' },
+    'bar-idle': { text: 'BAR IDLE', variant: 'warn' },
+    pregame: { text: 'PREGAME', variant: 'good' },
+    live: { text: 'LIVE', variant: 'good' },
+    spectating: { text: 'SPECTATING', variant: 'default' },
+    replay: { text: 'REPLAY', variant: 'default' },
+    'widgets-disabled': { text: 'WIDGETS DISABLED', variant: 'danger' },
+    'widget-stalled': { text: 'WIDGET STALLED', variant: 'danger' },
+    'protocol-mismatch': { text: 'PROTOCOL ERROR', variant: 'danger' }
+  };
 
 export function TopBar(): React.JSX.Element {
   const health = useLive((s) => s.health);
@@ -30,7 +30,6 @@ export function TopBar(): React.JSX.Element {
     text: health.status.toUpperCase(),
     variant: 'danger' as const
   };
-
 
   return (
     <header className="flex h-14 items-center justify-between border-b-2 border-zinc-800 bg-[#0c0e18] px-4 select-none">
@@ -67,7 +66,11 @@ export function TopBar(): React.JSX.Element {
           style={planAccent ? { borderColor: planAccent, backgroundColor: `${planAccent}1f` } : undefined}
         >
           <span
-            style={{ fontFamily: "'Press Start 2P', monospace", color: planAccent, opacity: planAccent ? 0.8 : undefined }}
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              color: planAccent,
+              opacity: planAccent ? 0.8 : undefined
+            }}
             className="text-[10px] text-zinc-500 uppercase"
           >
             PLAN:
@@ -81,15 +84,9 @@ export function TopBar(): React.JSX.Element {
             {activePlan ? activePlan.title : 'NONE ACTIVE'}
           </span>
         </div>
-
       </div>
 
-      {/* Right side: Unofficial Tag linking to About */}
-      <div className="flex items-center gap-3">
-        <a href="#/about" data-testid="unofficial-tag" title="Unofficial community software (click for details)">
-          <Tag variant="warn">UNOFFICIAL</Tag>
-        </a>
-      </div>
+      {/* No UNOFFICIAL tag here (owner request, T06.16); the notice is on the About page */}
     </header>
   );
 }

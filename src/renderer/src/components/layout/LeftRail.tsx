@@ -5,6 +5,7 @@ import {
   Crosshair,
   BarChart2,
   Cpu,
+  Radar,
   Settings,
   Info,
   Palette
@@ -22,12 +23,13 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// Intel and Maps join the menu once their pages are built (T10.2, T10.4); no "coming soon" entries.
+// Maps joins the menu once its page is built (T10.4); no "coming soon" entries.
 const NAV_ITEMS: NavItem[] = [
   { id: 'home', hash: '#/home', label: 'HOME', icon: Home },
   { id: 'library', hash: '#/library', label: 'LIBRARY', icon: BookOpen },
   { id: 'coach', hash: '#/coach', label: 'COACH', icon: Crosshair },
   { id: 'review', hash: '#/review', label: 'REVIEW', icon: BarChart2 },
+  { id: 'intel', hash: '#/intel', label: 'INTEL', icon: Radar },
   { id: 'units', hash: '#/units', label: 'UNITS', icon: Cpu },
   { id: 'settings', hash: '#/settings', label: 'SETTINGS', icon: Settings }
 ];

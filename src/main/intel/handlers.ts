@@ -3,8 +3,11 @@ import { app } from 'electron';
 import { handle } from '../ipc/register';
 import { IntelCache } from './cache';
 import { IntelService } from './service';
+import { fakeIntelEnabled, fixtureFetch } from './fake';
 
 function defaultService(): IntelService {
+  // e2e: recorded answers from the repo (the app runs from the project root there)
+  if (fakeIntelEnabled()) return new IntelService(new IntelCache({ dir: null }), fixtureFetch(path.join(process.cwd(), 'src/main/intel/__fixtures__')));
   let dir: string | null = null;
   try {
     dir = path.join(app.getPath('userData'), 'cache');

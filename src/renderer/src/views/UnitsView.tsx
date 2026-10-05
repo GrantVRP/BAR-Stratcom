@@ -9,6 +9,11 @@ import { UnitDossier } from '../components/units/UnitDossier';
 import { Drawer } from '../components/ui/Drawer';
 import { Provenance } from '../components/ui/Provenance';
 
+/** `#/units/<unitId>` opens that unit's dossier (links from Intel → Balance, T10.2). */
+function unitFromHash(): string | null {
+  return /^#\/units\/([a-z0-9_]+)$/.exec(window.location.hash)?.[1] ?? null;
+}
+
 /** Unit catalog with original class icons and a dossier drawer (06 §4.8, T10.3). */
 export function UnitsView(): React.JSX.Element {
   const { snapshot, factions, load } = useSnapshot();
@@ -20,7 +25,7 @@ export function UnitsView(): React.JSX.Element {
   const [unitClass, setUnitClass] = useState<UnitClass | 'all'>('all');
   const [tech, setTech] = useState<number | 'all'>('all');
   const [query, setQuery] = useState('');
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(unitFromHash);
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
@@ -94,7 +99,16 @@ export function UnitsView(): React.JSX.Element {
         ))}
       </div>
 
-      <Drawer open={Boolean(openUnit)} onClose={() => setOpenId(null)} title="UNIT DOSSIER" width="w-[28rem]">
+      <Drawer
+        open={Boolean(openUnit)}
+        onClose={() => {
+          setOpenId(null);
+          // leave a unit deep link, so reopening the catalog does not reopen the dossier
+          if (unitFromHash()) window.location.hash = '#/units';
+        }}
+        title="UNIT DOSSIER"
+        width="w-[28rem]"
+      >
         {openUnit && registry && snapshot && (
           <UnitDossier unit={openUnit} registry={registry} plans={plans} gameVersion={snapshot.gameVersion} onOpenUnit={setOpenId} />
         )}

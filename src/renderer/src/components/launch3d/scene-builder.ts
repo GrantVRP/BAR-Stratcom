@@ -183,7 +183,8 @@ export async function buildLaunchWorld(): Promise<LaunchWorld> {
     update(faction, ms, still) {
       for (const f of ['armada', 'cortex'] as const) {
         turbines[f].root.visible = f === faction;
-        runners[f].model.root.visible = f === faction;
+        // the active unit's visibility comes from its walk or its death (hidden once it has exploded)
+        if (f !== faction) runners[f].model.root.visible = false;
       }
       const t = TURBINE[faction];
       turbines[faction].pieces.get(t.rotor)!.rotation.z = still ? 0 : -((ms / 1000) * ROTOR_SPEED_DEG * DEG);
@@ -199,6 +200,7 @@ export async function buildLaunchWorld(): Promise<LaunchWorld> {
       fx.update(runner.death.particles());
       if (runner.death.dying) {
         runner.place = null;
+        runner.model.root.visible = !runner.death.exploded;
         const back = runner.death.respawnAt;
         if (back === null || ms < back) return;
         runner.death.revive();

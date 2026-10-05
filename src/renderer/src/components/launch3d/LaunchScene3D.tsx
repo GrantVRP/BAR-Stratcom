@@ -17,7 +17,7 @@ export function pixelSizeFor(width: number): number {
 /**
  * The launcher's 3D scene in 32-bit pixel style (T06.15): Greenest Fields with its Aleppo pines, the
  * faction's wind turbine spinning, and the Sprinter / Fiend walking up the track with its in-game
- * walk animation. Falls back to the 2D pixel scene while loading and when WebGL is unavailable.
+ * walk animation. Falls back to the 2D pixel scene when WebGL is unavailable.
  */
 export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): React.JSX.Element {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -117,7 +117,8 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
 
   return (
     <div ref={hostRef} data-testid="launch-scene-3d" data-status={status} className="pointer-events-none absolute inset-0 overflow-hidden">
-      {status !== 'ready' && <LaunchScene faction={faction} reducedMotion={reducedMotion} />}
+      {/* the 2D pixel scene only stands in when WebGL is unavailable; while 3D loads the page stays dark (owner request) */}
+      {status === 'failed' && <LaunchScene faction={faction} reducedMotion={reducedMotion} />}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full"

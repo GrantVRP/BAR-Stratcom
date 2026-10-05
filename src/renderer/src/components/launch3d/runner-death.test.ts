@@ -45,20 +45,22 @@ function setup(): { scene: Scene; player: UnitDeathPlayer; unit: ReturnType<type
 }
 
 describe('launch scene unit death (owner request)', () => {
-  it('plays the death animation, breaks the leg off, then explodes into the wreck', () => {
+  it('starts the collapse on the click (idle lead-in skipped), breaks the leg off, then explodes into the wreck', () => {
     const { scene, player, unit, wreck } = setup();
     expect(wreck.root.visible).toBe(false);
     player.kill(1000, { x: 50, z: -20, heading: 1 }, { turn: {}, move: {} });
     expect(player.dying).toBe(true);
-    expect(player.respawnAt).toBe(1000 + 500 + 3000);
+    // the 300 ms idle block is skipped: 200 ms of animation, then 3 s until the next unit
+    expect(player.respawnAt).toBe(1000 + 200 + 3000);
 
-    player.update(1350);
+    player.update(1050);
     expect(unit.pieces.get('lleg')!.visible).toBe(false);
     expect(unit.pieces.get('pelvis')!.rotation.x).toBeLessThan(0);
     expect(scene.children.length).toBeGreaterThan(2); // the leg flies as a separate object
-    expect(unit.root.visible).toBe(true);
+    expect(player.exploded).toBe(false);
 
-    player.update(1520);
+    player.update(1220);
+    expect(player.exploded).toBe(true);
     expect(unit.root.visible).toBe(false);
     expect(wreck.root.visible).toBe(true);
     expect([wreck.root.position.x, wreck.root.position.z, wreck.root.rotation.y]).toEqual([50, -20, 1]);
@@ -69,7 +71,7 @@ describe('launch scene unit death (owner request)', () => {
     const { player, unit, wreck } = setup();
     player.kill(0, { x: 0, z: 0, heading: 0 }, { turn: {}, move: {} });
     player.kill(100, { x: 9, z: 9, heading: 0 }, { turn: {}, move: {} });
-    expect(player.respawnAt).toBe(3500);
+    expect(player.respawnAt).toBe(3200);
     player.update(600);
     player.revive();
     expect(player.dying).toBe(false);

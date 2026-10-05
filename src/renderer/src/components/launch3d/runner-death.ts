@@ -5,6 +5,7 @@ import {
   deathDuration,
   deathEvents,
   deathPose,
+  skipLeadingIdle,
   launchDebris,
   stepDebris,
   type Debris,
@@ -68,8 +69,10 @@ export class UnitDeathPlayer {
   private place: Placement = { x: 0, z: 0, heading: 0 };
   private fromPose: Pose = { turn: {}, move: {} };
   private animMs = 0;
+  /** the death animation without its idle lead-in, so the collapse starts on the click */
+  private readonly anim: UnitDeath['anim'];
   private eventsUpTo = -1;
-  private exploded = false;
+  private hasExploded = false;
   private pieces: FlyingPiece[] = [];
   private run: FxRun = { frame: 0, particles: [], pending: [] };
   private lastStep = 0;
@@ -82,7 +85,8 @@ export class UnitDeathPlayer {
     private readonly wreck: Model3D | null,
     private readonly fx: FxLibrary
   ) {
-    this.animMs = deathDuration(death);
+    this.anim = death.anim ? skipLeadingIdle(death.anim) : null;
+    this.animMs = deathDuration({ anim: this.anim });
     if (wreck) {
       wreck.root.visible = false;
       scene.add(wreck.root);
@@ -91,6 +95,11 @@ export class UnitDeathPlayer {
 
   get dying(): boolean {
     return this.killedAt !== null;
+  }
+
+  /** The unit has exploded: only the wreck, debris and effects remain. */
+  get exploded(): boolean {
+    return this.killedAt !== null && this.hasExploded;
   }
 
   /** When the next unit may run in (ms), or null while alive. */
@@ -108,7 +117,7 @@ export class UnitDeathPlayer {
     this.place = place;
     this.fromPose = pose;
     this.eventsUpTo = -1;
-    this.exploded = false;
+    this.hasExploded = false;
     this.rng = mulberry32(Math.floor(ms) | 1);
     this.lastStep = ms;
   }
@@ -132,14 +141,14 @@ export class UnitDeathPlayer {
   update(ms: number): void {
     if (this.killedAt !== null) {
       const t = ms - this.killedAt;
-      if (this.death.anim && t < this.animMs) applyPiecePose(this.model, deathPose(this.death.anim, t, this.fromPose));
-      if (this.death.anim) {
-        const ev = deathEvents(this.death.anim, this.eventsUpTo, t);
+      if (this.anim && t < this.animMs) applyPiecePose(this.model, deathPose(this.anim, t, this.fromPose));
+      if (this.anim) {
+        const ev = deathEvents(this.anim, this.eventsUpTo, t);
         for (const name of ev.hide) this.model.pieces.get(name)!.visible = false;
         for (const e of ev.explode) this.breakOff(e);
         this.eventsUpTo = t;
       }
-      if (!this.exploded && t >= this.animMs) this.explode();
+      if (!this.hasExploded && t >= this.animMs) this.explode();
     }
     const frames = Math.floor((ms - this.lastStep) / FRAME_MS);
     if (frames <= 0) return;
@@ -148,7 +157,7 @@ export class UnitDeathPlayer {
   }
 
   private explode(): void {
-    this.exploded = true;
+    this.hasExploded = true;
     for (const e of this.death.explodes) this.breakOff(e);
     this.model.root.visible = false;
     if (this.wreck) {

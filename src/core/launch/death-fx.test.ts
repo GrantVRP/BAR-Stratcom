@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { colorAt, evalNum, fxDone, startFx, stepFx, type FxLibrary } from './fx';
-import { MAP_GRAVITY, deathDuration, deathEvents, deathPose, launchDebris, stepDebris, type DeathKeyframe } from './death3d';
+import { MAP_GRAVITY, deathDuration, deathEvents, deathPose, launchDebris, skipLeadingIdle, stepDebris, type DeathKeyframe } from './death3d';
 import { mulberry32 } from './scene3d';
 
 const zero = (): number => 0;
@@ -100,6 +100,14 @@ const anim: DeathKeyframe[] = [
 ];
 
 describe('death animation playback', () => {
+  it('drops the idle lead-in so the death starts on the hit (owner request)', () => {
+    const trimmed = skipLeadingIdle(anim);
+    expect(trimmed).toHaveLength(2);
+    expect(trimmed[0]!.hide).toEqual(['lleg']);
+    expect(deathDuration({ anim: trimmed })).toBe(300);
+    expect(skipLeadingIdle([anim[0]!])).toEqual([]);
+  });
+
   it('lasts the sum of its blocks', () => {
     expect(deathDuration({ anim })).toBe(600);
     expect(deathDuration({ anim: null })).toBe(0);

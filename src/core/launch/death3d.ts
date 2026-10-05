@@ -44,6 +44,17 @@ export const RESPAWN_DELAY_MS = 3000;
 export const MAP_GRAVITY = 120 / 900;
 export const FRAME_MS = 1000 / 30;
 
+/**
+ * Drops the blocks at the start of a death animation that change nothing (the Sprinter's bake opens
+ * with a 0.3 s wait), so the collapse starts as soon as the unit is hit (owner request).
+ */
+export function skipLeadingIdle(anim: readonly DeathKeyframe[]): DeathKeyframe[] {
+  const first = anim.findIndex(
+    (k) => Object.keys(k.turn).length > 0 || Object.keys(k.move).length > 0 || k.explode.length > 0 || k.hide.length > 0
+  );
+  return first < 0 ? [] : anim.slice(first);
+}
+
 export function deathDuration(death: Pick<UnitDeath, 'anim'>): number {
   return (death.anim ?? []).reduce((sum, k) => sum + k.ms, 0);
 }

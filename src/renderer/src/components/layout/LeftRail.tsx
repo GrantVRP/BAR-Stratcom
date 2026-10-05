@@ -6,6 +6,7 @@ import {
   BarChart2,
   Cpu,
   Radar,
+  Map as MapIcon,
   Settings,
   Info,
   Palette
@@ -23,7 +24,7 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// Maps joins the menu once its page is built (T10.4); no "coming soon" entries.
+// Every view in 06 §2 has its page now; no "coming soon" entries.
 const NAV_ITEMS: NavItem[] = [
   { id: 'home', hash: '#/home', label: 'HOME', icon: Home },
   { id: 'library', hash: '#/library', label: 'LIBRARY', icon: BookOpen },
@@ -31,6 +32,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'review', hash: '#/review', label: 'REVIEW', icon: BarChart2 },
   { id: 'intel', hash: '#/intel', label: 'INTEL', icon: Radar },
   { id: 'units', hash: '#/units', label: 'UNITS', icon: Cpu },
+  { id: 'maps', hash: '#/maps', label: 'MAPS', icon: MapIcon },
   { id: 'settings', hash: '#/settings', label: 'SETTINGS', icon: Settings }
 ];
 

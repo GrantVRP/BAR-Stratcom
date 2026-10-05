@@ -13,6 +13,8 @@ export const IPC_CHANNELS = [
   'registry:getMeta',
   'maps:list',
   'maps:get',
+  'maps:minimap',
+  'maps:notes',
   'plans:list',
   'plans:get',
   'plans:save',

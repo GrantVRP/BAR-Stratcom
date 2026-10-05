@@ -22,7 +22,7 @@ import { useCoach, useLive, usePlans, useSessions, useSettings, useSnapshot } fr
 import { setupAudioCueListener } from './audio/sounds';
 import { ReportReadyToast } from './components/review/ReportReadyToast';
 
-// Alt+7 (Maps) returns with its page (T10.4)
+// Alt+1…8 follow the left menu (06 §2)
 const ALT_ROUTES: Record<string, string> = {
   '1': '#/home',
   '2': '#/library',
@@ -30,6 +30,7 @@ const ALT_ROUTES: Record<string, string> = {
   '4': '#/review',
   '5': '#/intel',
   '6': '#/units',
+  '7': '#/maps',
   '8': '#/settings'
 };
 

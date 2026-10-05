@@ -20,7 +20,8 @@ const ROUTES: ReadonlyArray<{ match: string; status: number; file: string }> = [
   { match: 'leaderboard?season=3', status: 200, file: 'leaderboard-season-3.json' },
   { match: '/replays?', status: 200, file: 'replays.json' },
   { match: '/replays/', status: 200, file: 'replay-detail.json' },
-  { match: '/balance-changes', status: 200, file: 'balance-changes.json' }
+  { match: '/balance-changes', status: 200, file: 'balance-changes.json' },
+  { match: 'map_list.validated.json', status: 200, file: 'map-list.json' }
 ];
 
 export function fixtureFetch(dir: string): FetchFn {

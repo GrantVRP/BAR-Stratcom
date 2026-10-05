@@ -12,6 +12,7 @@ import { SimGraph } from '../components/SimGraph';
 import { PlanDetailHeader } from '../components/plans/PlanDetailHeader';
 import { SharePlanDialog } from '../components/plans/SharePlanDialog';
 import { AdaptPlanDialog } from '../components/plans/AdaptPlanDialog';
+import { AiDraftDialog } from '../components/plans/AiDraftDialog';
 import { Button } from '../components/ui/Button';
 
 export interface PlanDetailViewProps {
@@ -28,7 +29,7 @@ function formatProvenanceLine(source: BuildPlan['source']): string {
     case 'replay-capture': return `CAPTURED // from ${source.player} on ${source.map}, ${d(source.capturedAt)}`;
     case 'own-game': return `SAMPLE // owner game vs AI, ${source.map}, ${d(source.capturedAt)}`;
     case 'adapted': return `ADAPTED // from ${source.fromPlanId}, ${d(source.createdAt)}`;
-    case 'ai-draft': return `AI DRAFT // ${source.provider}/${source.model}, ${d(source.createdAt)}`;
+    case 'ai-draft': return `${source.provider}/${source.model}, ${d(source.createdAt)}`; // the AI DRAFT badge sits beside it
     default: return `MANUAL // ${d(source.createdAt)}`;
   }
 }
@@ -45,6 +46,8 @@ export function PlanDetailView({
   const [selectedMap, setSelectedMap] = useState<MapRecord | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [adaptOpen, setAdaptOpen] = useState(false);
+  const [draftOpen, setDraftOpen] = useState(false);
+  const aiOn = useSettings((s) => (s.settings?.ai.provider ?? 'none') !== 'none');
 
   useEffect(() => {
     let active = true;
@@ -174,15 +177,22 @@ export function PlanDetailView({
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">MAP</div>
-          <Button
-            variant="default"
-            size="sm"
-            data-testid="btn-adapt-plan"
-            disabled={!selectedMap}
-            onClick={() => setAdaptOpen(true)}
-          >
-            ADAPT TO THIS MAP
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {aiOn && (
+              <Button variant="ghost" size="sm" data-testid="btn-draft-variant" onClick={() => setDraftOpen(true)}>
+                DRAFT VARIANT WITH AI
+              </Button>
+            )}
+            <Button
+              variant="default"
+              size="sm"
+              data-testid="btn-adapt-plan"
+              disabled={!selectedMap}
+              onClick={() => setAdaptOpen(true)}
+            >
+              ADAPT TO THIS MAP
+            </Button>
+          </div>
         </div>
         <MapCombobox
           selectedMap={selectedMap}
@@ -221,6 +231,17 @@ export function PlanDetailView({
               setAdaptOpen(false);
               onSelectPlan?.(saved);
             }
+          }}
+        />
+      )}
+
+      {draftOpen && (
+        <AiDraftDialog
+          initial={{ factionId: plan.factionId, mode: plan.modes[0], role: plan.role, opening: plan.opening, skill: plan.skill, map: selectedMap }}
+          onClose={() => setDraftOpen(false)}
+          onSaved={(saved) => {
+            setDraftOpen(false);
+            onSelectPlan?.(saved);
           }}
         />
       )}

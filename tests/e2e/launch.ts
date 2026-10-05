@@ -12,6 +12,8 @@ export interface LaunchedApp {
 export interface LaunchOptions {
   /** Fixture folders (data/fixtures/sessions/<id>) copied into the temp profile's sessions/ before launch. */
   seedSessions?: string[];
+  /** Extra environment for the app (e.g. STRATCOM_FAKE_AI=1, honoured only in non-packaged builds). */
+  env?: Record<string, string>;
 }
 
 export async function launchApp(
@@ -24,7 +26,8 @@ export async function launchApp(
     fs.cpSync(path.join('data', 'fixtures', 'sessions', id), path.join(tmpDir, 'sessions', id), { recursive: true });
   }
   const app = await electron.launch({
-    args: ['.', `--user-data-dir=${tmpDir}`, ...extraArgs]
+    args: ['.', `--user-data-dir=${tmpDir}`, ...extraArgs],
+    ...(options.env ? { env: { ...process.env, ...options.env } as Record<string, string> } : {})
   });
 
   const close = async () => {

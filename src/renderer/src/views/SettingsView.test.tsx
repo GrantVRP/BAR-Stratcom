@@ -21,6 +21,9 @@ vi.mock('../lib/ipc-client', () => ({
           }
         });
       }
+      if (channel === 'ai:listProviders') {
+        return Promise.resolve({ ok: true, data: [] });
+      }
       if (channel === 'coach:getShortcutStatus') {
         return Promise.resolve({
           ok: true,
@@ -120,7 +123,7 @@ describe('SettingsView', () => {
       aiTab?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(container.querySelector('[data-testid="settings-section-ai"]')).not.toBeNull();
-    expect(container.textContent).toContain('AI ADVISOR CONFIGURATION');
+    expect(container.textContent).toContain('AI DRAFTING');
 
     // Switch to App
     const appTab = tabs.find((t) => t.textContent?.includes('APP'));

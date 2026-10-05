@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FileUp, Plus } from 'lucide-react';
 import type { BuildPlan } from '../../../core/schemas';
-import { usePlans } from '../stores';
+import { usePlans, useSettings } from '../stores';
 import { PlanDetailView } from './PlanDetailView';
 import { PlanEditorView } from './PlanEditorView';
 import { LibraryFilters } from '../components/plans/LibraryFilters';
 import { LibraryPlanCard } from '../components/plans/LibraryPlanCard';
 import { ImportPlanDialog } from '../components/plans/ImportPlanDialog';
+import { AiDraftDialog } from '../components/plans/AiDraftDialog';
 import { Button } from '../components/ui/Button';
 import { PageHeader } from '../components/ui/PageHeader';
 
@@ -16,7 +17,7 @@ function formatProvenanceLine(source: BuildPlan['source']): string {
     case 'replay-capture': return `CAPTURED // ${source.player}`;
     case 'own-game': return `SAMPLE // ${source.map}`;
     case 'adapted': return 'ADAPTED';
-    case 'ai-draft': return 'AI DRAFT';
+    case 'ai-draft': return `AI DRAFT // ${source.model}`;
     default: return 'MANUAL';
   }
 }
@@ -33,6 +34,8 @@ export function LibraryView(): React.JSX.Element {
 
   const [editingPlan, setEditingPlan] = useState<BuildPlan | null | 'new'>(null);
   const [importOpen, setImportOpen] = useState(false);
+  const [draftOpen, setDraftOpen] = useState(false);
+  const aiOn = useSettings((s) => (s.settings?.ai.provider ?? 'none') !== 'none');
 
   const [search, setSearch] = useState('');
   const [factionFilter, setFactionFilter] = useState('all');
@@ -134,6 +137,11 @@ export function LibraryView(): React.JSX.Element {
               <FileUp className="size-3.5" />
               IMPORT
             </Button>
+            {aiOn && (
+              <Button variant="default" size="md" onClick={() => setDraftOpen(true)} data-testid="btn-draft-ai">
+                DRAFT WITH AI
+              </Button>
+            )}
             <Button variant="primary" size="md" onClick={() => setEditingPlan('new')} data-testid="btn-create-plan" className="gap-1.5">
               <Plus className="size-3.5" />
               NEW PLAN
@@ -195,6 +203,17 @@ export function LibraryView(): React.JSX.Element {
           window.location.hash = `#/library/${plan.id}`;
         }}
       />
+
+      {draftOpen && (
+        <AiDraftDialog
+          onClose={() => setDraftOpen(false)}
+          onSaved={(plan) => {
+            setDraftOpen(false);
+            setSelectedPlanId(plan.id);
+            window.location.hash = `#/library/${plan.id}`;
+          }}
+        />
+      )}
     </div>
   );
 }

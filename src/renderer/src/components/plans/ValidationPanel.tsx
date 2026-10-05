@@ -5,11 +5,14 @@ import type { PlanValidationResult } from '../../../../core/plans';
 export interface ValidationPanelProps {
   validation: PlanValidationResult;
   className?: string;
+  /** Panel heading (the editor validates live; an AI draft shows its final report). */
+  title?: string;
 }
 
 export function ValidationPanel({
   validation,
-  className = ''
+  className = '',
+  title = 'LIVE VALIDATION'
 }: ValidationPanelProps): React.JSX.Element {
   const { errors, warnings } = validation;
   const isValid = errors.length === 0;
@@ -18,7 +21,7 @@ export function ValidationPanel({
     <div className={`p-3 pixel-box bg-[#0c0e18] space-y-2.5 ${className}`} data-testid="editor-validation-panel">
       <div className="flex items-center justify-between">
         <span className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">
-          LIVE VALIDATION
+          {title}
         </span>
         {isValid ? (
           <span

@@ -12,6 +12,7 @@ import { draftPlan, type DraftProgress, type DraftResult } from './draft';
 import { defaultKeyStore, type KeyStore } from './keys';
 import { PROVIDERS, createProvider, type ClientFactories } from './providers';
 import { ANTHROPIC_DEFAULT_MODEL } from './providers/anthropic';
+import { createFakeProvider, fakeAiEnabled } from './providers/fake';
 import { defaultGeminiModel } from './providers/gemini';
 import { AiError, CLOUD_TIMEOUT_MS, LOCAL_TIMEOUT_MS, type AiModel, type AiProvider, type ProviderId } from './types';
 
@@ -26,15 +27,20 @@ export interface AiHandlerDeps {
   windTable?: () => Record<string, Record<string, number>> | null;
   now?: () => Date;
   progress?: (progress: DraftProgress) => void;
+  /** Use the fake provider (default: STRATCOM_FAKE_AI=1 in a non-packaged build). */
+  fake?: boolean;
 }
 
 const timeoutFor = (provider: ProviderId): number => (PROVIDERS.find((p) => p.id === provider)!.local ? LOCAL_TIMEOUT_MS : CLOUD_TIMEOUT_MS);
 
 function providerFor(provider: ProviderId, baseUrl: string | null | undefined, deps: AiHandlerDeps): AiProvider {
+  if (deps.fake ?? fakeAiEnabled()) return createFakeProvider(provider);
   const settings = (deps.settings ?? defaultSettingsStore).getSettings();
+  // a saved base URL is used only when it is http(s), like one sent over IPC
+  const saved = settings.ai.provider === provider && settings.ai.baseUrl && /^https?:\/\/\S+$/.test(settings.ai.baseUrl) ? settings.ai.baseUrl : null;
   return createProvider(provider, {
     apiKey: (deps.keys ?? defaultKeyStore).getKey(provider),
-    baseUrl: baseUrl ?? (settings.ai.provider === provider ? settings.ai.baseUrl : null),
+    baseUrl: baseUrl ?? saved,
     anthropicFallbacks: settings.ai.anthropicFallbacks,
     clients: deps.clients
   });

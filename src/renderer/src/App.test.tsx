@@ -29,7 +29,8 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
             data: {
               profile: 'intermediate',
               bar: { dataDir: 'C:/Games/BAR', source: 'default' },
-              launcher: { showOnStart: true }
+              launcher: { showOnStart: true },
+              ai: { provider: 'none', model: null, baseUrl: null, anthropicFallbacks: false }
             }
           };
         }

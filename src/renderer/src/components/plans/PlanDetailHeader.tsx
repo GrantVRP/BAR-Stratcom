@@ -4,6 +4,7 @@ import type { BuildPlan } from '../../../../core/schemas';
 import { FactionEmblem } from '../ui/FactionEmblem';
 import { factionAccent } from '../../lib/faction-style';
 import { Button } from '../ui/Button';
+import { Provenance } from '../ui/Provenance';
 
 export interface PlanDetailHeaderProps {
   plan: BuildPlan;
@@ -96,8 +97,9 @@ export function PlanDetailHeader({
 
       {/* Provenance and description */}
       <div className="pt-2 border-t border-zinc-800 text-xs text-zinc-400 space-y-1">
-        <div className="text-[10px] font-pixel-heading text-zinc-400 truncate">
-          {provenanceText}
+        <div className="flex min-w-0 items-center gap-2 text-[10px] font-pixel-heading text-zinc-400">
+          {plan.source.kind === 'ai-draft' && <Provenance kind="AI DRAFT" />}
+          <span className="truncate">{provenanceText}</span>
         </div>
         {plan.description && (
           <div className="text-zinc-300 text-xs leading-relaxed">{plan.description}</div>

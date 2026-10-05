@@ -3,6 +3,7 @@ import type { LiveSnapshot } from '../../../../core/schemas/live';
 import type { CoachProjections } from '../../../../core/schemas/coach';
 import { MetalIcon } from '../ui/MetalIcon';
 import { EnergyIcon } from '../ui/EnergyIcon';
+import { Provenance } from '../ui/Provenance';
 
 export interface CoachTelemetryProps {
   snapshot?: LiveSnapshot | null;
@@ -53,6 +54,10 @@ export function CoachTelemetry({
       data-testid="coach-telemetry"
       className={`rounded border border-[#27272a] bg-[#12131a] p-3 font-mono text-xs space-y-2.5 ${className}`}
     >
+      <div className="flex items-center justify-between">
+        <span className="font-['Press_Start_2P'] text-[10px] text-[#a1a1aa]">TELEMETRY</span>
+        <Provenance kind="MEASURED" tooltip="Live from your game through the StratCom widget" />
+      </div>
       {/* Metal Row */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">

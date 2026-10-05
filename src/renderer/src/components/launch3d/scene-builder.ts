@@ -1,3 +1,4 @@
+import { LAUNCH_RUNNER, LAUNCH_TURBINE } from '../launch/constants';
 import {
   AmbientLight,
   Color,
@@ -48,10 +49,10 @@ export type Faction3D = 'armada' | 'cortex';
 const DEG = Math.PI / 180;
 /** BAR script angle signs in three.js space (y and z turn the other way). */
 export const AXIS_SIGN = { x: 1, y: -1, z: -1 } as const;
-const RUNNER: Record<Faction3D, 'armfast' | 'corpyro'> = { armada: 'armfast', cortex: 'corpyro' };
+const RUNNER: Record<Faction3D, (typeof LAUNCH_RUNNER)[Faction3D]> = LAUNCH_RUNNER;
 const TURBINE: Record<Faction3D, { model: string; yaw: string; rotor: string; tex: string }> = {
-  armada: { model: 'armwin', yaw: 'turbine', rotor: 'blades', tex: 'tex-arm' },
-  cortex: { model: 'corwin', yaw: 'cradle', rotor: 'fan', tex: 'tex-cor' }
+  armada: { model: LAUNCH_TURBINE.armada, yaw: 'turbine', rotor: 'blades', tex: 'tex-arm' },
+  cortex: { model: LAUNCH_TURBINE.cortex, yaw: 'cradle', rotor: 'fan', tex: 'tex-cor' }
 };
 
 function toonRamp(): DataTexture {

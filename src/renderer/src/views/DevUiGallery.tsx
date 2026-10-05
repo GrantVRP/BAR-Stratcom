@@ -22,8 +22,8 @@ export function DevUiGallery(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState('primitives');
   const [sliderVal, setSliderVal] = useState(65);
   const [toggleVal, setToggleVal] = useState(true);
-  const [inputVal, setInputVal] = useState('Armada Rocketeer');
-  const [selectVal, setSelectVal] = useState('armpw');
+  const [inputVal, setInputVal] = useState('Sample text');
+  const [selectVal, setSelectVal] = useState('option-a');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -128,9 +128,9 @@ export function DevUiGallery(): React.JSX.Element {
                 value={selectVal}
                 onChange={(e) => setSelectVal(e.target.value)}
                 options={[
-                  { value: 'armpw', label: 'Armada - Pawns' },
-                  { value: 'corak', label: 'Cortex - A.K.' },
-                  { value: 'armrock', label: 'Armada - Rocketeer' }
+                  { value: 'option-a', label: 'Option A' },
+                  { value: 'option-b', label: 'Option B' },
+                  { value: 'option-c', label: 'Option C' }
                 ]}
                 className="w-full"
               />

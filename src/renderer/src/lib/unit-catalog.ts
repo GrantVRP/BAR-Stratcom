@@ -81,7 +81,7 @@ export function filterCatalog(registry: Registry, filter: CatalogFilter): Catalo
   return entries.sort(
     (a, b) =>
       Number(b.match === 'exact') - Number(a.match === 'exact') ||
-      (a.unit.techLevel ?? 9) - (b.unit.techLevel ?? 9) ||
+      (a.unit.techLevel ?? Infinity) - (b.unit.techLevel ?? Infinity) ||
       CLASS_ORDER.indexOf(a.unitClass) - CLASS_ORDER.indexOf(b.unitClass) ||
       a.unit.metalCost - b.unit.metalCost ||
       a.unit.name.localeCompare(b.unit.name)

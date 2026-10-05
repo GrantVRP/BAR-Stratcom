@@ -12,7 +12,7 @@ for (const [file, url] of Object.entries(files)) {
 
 export type SceneFaction = 'armada' | 'cortex';
 
-export const RUNNER_UNIT: Record<SceneFaction, string> = { armada: 'armfast', cortex: 'corpyro' };
+export const RUNNER_UNIT: Record<SceneFaction, string> = LAUNCH_RUNNER;
 
 /** URL of a scene sprite by file name (without .png); throws if the asset build is missing it. */
 export function sceneAsset(name: string): string {
@@ -21,4 +21,5 @@ export function sceneAsset(name: string): string {
   return url;
 }
 
-export const SCENE_CREDIT = 'Launch scene: the Greenest Fields map by IceXuick, used with permission.';
+export const SCENE_CREDIT = 'Launch scene: the Greenest Fields map by IceXuick, used with permission.';import { LAUNCH_RUNNER } from './constants';
+

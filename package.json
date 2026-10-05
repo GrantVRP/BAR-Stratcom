@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
     "lint": "eslint .",
     "lint:lua": "tsx tools/lint-lua.ts",
+    "audit:fabrication": "tsx tools/audit-fabrication.ts",
     "validate:data": "tsx tools/validate-data.ts",
     "test": "vitest",
     "test:watch": "vitest",
@@ -24,7 +25,7 @@
     "format:check": "prettier --check --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx,css,json}\" \"tools/**/*.{ts,js,mjs}\" \"tests/**/*.{ts,js}\" \"docs/**/*.json\" \"widget/**/*.{ts,tsx,json}\"",
     "check:typography": "tsx tools/check-typography.ts",
     "golden:update": "node -e \"console.log('No golden files to update.')\"",
-    "verify": "npm run typecheck && npm run lint && npm run lint:lua && npm run validate:data && npm run check:typography && vitest run --coverage && npm run build && npm run test:e2e"
+    "verify": "npm run typecheck && npm run lint && npm run lint:lua && npm run audit:fabrication && npm run validate:data && npm run check:typography && vitest run --coverage && npm run build && npm run test:e2e"
   },
   "engines": {
     "node": ">=22.0.0"

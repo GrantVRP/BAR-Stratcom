@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef, useCallback } from 'react';
 import type { BuildPlan, MapRecord } from '../../../../core/schemas';
 import { simulate, toChartSeries, type ChartSeries, type SimInput } from '../../../../core/sim';
 import { avgWindFor } from '../../../../core/maps';
+import { FALLBACK_MEX_YIELD } from '../../../../core/plans/constants';
 import { Provenance } from '../ui/Provenance';
 import { MetalIcon } from '../ui/MetalIcon';
 import { EnergyIcon } from '../ui/EnergyIcon';
@@ -69,7 +70,7 @@ export function SimGraph({
           windMin: mapRecord?.wind.min ?? 0,
           windMax: mapRecord?.wind.max ?? 0,
           tidalStrength: mapRecord?.tidalStrength ?? 0,
-          mexYield: mapRecord?.mexYield?.value ?? 1.5,
+          mexYield: mapRecord?.mexYield?.value ?? FALLBACK_MEX_YIELD,
           mexYieldProvenance: mapRecord?.mexYield?.provenance ?? 'estimated'
         }
       };

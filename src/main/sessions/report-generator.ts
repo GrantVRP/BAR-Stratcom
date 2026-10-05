@@ -12,6 +12,7 @@ import { readStateLines, readEventsLines, SessionStore } from './store';
 import type { Registry } from '../../core/registry';
 import type { PlanStore } from '../plans/store';
 import type { SettingsStore } from '../settings/store';
+import { simMapFor } from '../maps/sim-map';
 
 export interface ReportGeneratorOptions {
   sessionDir: string;
@@ -68,14 +69,7 @@ export async function generateReportForSession(
         planSim = simulate({
           plan,
           registry,
-          map: {
-            windAvg: 12,
-            windMin: 5,
-            windMax: 20,
-            tidalStrength: 0,
-            mexYield: 1.5,
-            mexYieldProvenance: 'estimated'
-          },
+          map: simMapFor(meta.mapScriptName),
           options: { schedule: 'respect-targets' }
         });
       }

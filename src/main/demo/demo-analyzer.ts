@@ -9,6 +9,7 @@ import { analyze } from '../../core/analysis/analyze';
 import { defaultSessionStore } from '../sessions/store';
 import { broadcast } from '../ipc/register';
 import { loadBenchmarkForTeams } from '../benchmarks/loader';
+import { simMapFor } from '../maps/sim-map';
 
 export interface DemoCompletionOptions {
   demoSource: DemoSource;
@@ -30,14 +31,7 @@ export function handleDemoCompletion(options: DemoCompletionOptions): SessionDet
     planSim = simulate({
       plan,
       registry,
-      map: {
-        windAvg: 12,
-        windMin: 5,
-        windMax: 20,
-        tidalStrength: 0,
-        mexYield: 1.5,
-        mexYieldProvenance: 'estimated'
-      },
+      map: simMapFor(demoSource.getMeta().mapScriptName),
       options: { schedule: 'respect-targets' }
     });
   }

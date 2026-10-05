@@ -14,6 +14,7 @@ import { SharePlanDialog } from '../components/plans/SharePlanDialog';
 import { AdaptPlanDialog } from '../components/plans/AdaptPlanDialog';
 import { AiDraftDialog } from '../components/plans/AiDraftDialog';
 import { Button } from '../components/ui/Button';
+import { Provenance } from '../components/ui/Provenance';
 
 export interface PlanDetailViewProps {
   plan: BuildPlan;
@@ -215,6 +216,7 @@ export function PlanDetailView({
           <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">
             BUILD TIMELINE (<span data-num="true">{plan.steps.length}</span> STEPS)
           </div>
+          <Provenance kind="MEASURED" tooltip="Unit costs from your game's unit data" />
         </div>
         <PlanTimeline plan={plan} />
       </div>

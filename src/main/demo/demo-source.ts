@@ -1,3 +1,4 @@
+import { simMapFor, type SimMap } from '../maps/sim-map';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as zlib from 'zlib';
@@ -129,6 +130,7 @@ export class DemoSource extends EventEmitter implements BridgeSource {
   private timer: NodeJS.Timeout | null = null;
 
   private meta: SessionMeta;
+  private readonly simMap: SimMap;
   private states: StateDoc[] = [];
   private events: WidgetEvent[] = [];
 
@@ -145,6 +147,8 @@ export class DemoSource extends EventEmitter implements BridgeSource {
     const metaPath = path.join(this.fixtureDir, 'meta.json');
     const rawMeta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
     this.meta = SessionMetaSchema.parse(rawMeta);
+    // the fixture's real map (data/maps + BAR's wind table), not made-up wind values (T11.1)
+    this.simMap = simMapFor(this.meta.mapScriptName);
 
     const stateLines = readStateLines(this.fixtureDir);
     this.states = stateLines.map((l) => StateDocSchema.parse(JSON.parse(l)));
@@ -220,9 +224,9 @@ export class DemoSource extends EventEmitter implements BridgeSource {
       engineVersion: this.meta.engineVersion,
       map: {
         scriptName: this.meta.mapScriptName,
-        windMin: 5,
-        windMax: 25,
-        tidal: 0
+        windMin: this.simMap.windMin,
+        windMax: this.simMap.windMax,
+        tidal: this.simMap.tidalStrength
       },
       teams: this.meta.teams.map((t) => ({
         teamId: t.teamId,
@@ -351,11 +355,11 @@ export class DemoSource extends EventEmitter implements BridgeSource {
       gameOver,
       map: {
         scriptName: this.meta.mapScriptName,
-        windMin: 5,
-        windMax: 25,
-        avgWind: null,
+        windMin: this.simMap.windMin,
+        windMax: this.simMap.windMax,
+        avgWind: this.simMap.windAvg,
         windRisk: null,
-        tidal: 0
+        tidal: this.simMap.tidalStrength
       },
       perf: null,
       degraded: false,

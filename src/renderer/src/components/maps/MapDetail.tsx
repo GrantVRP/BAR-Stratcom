@@ -63,6 +63,10 @@ export function MapDetail({ map, onAdapted }: { map: MapRecord; onAdapted: (plan
         <MinimapPanel map={map} />
         <div className="space-y-3">
           <WindTurbine avgWind={avgWind} faction={plans.find((p) => p.id === activePlanId)?.factionId} />
+          <div className="flex items-center justify-between">
+            <span className="font-['Press_Start_2P'] text-[10px] uppercase text-zinc-400">Map data</span>
+            <Provenance kind="MEASURED" tooltip="From BAR's map data (api.bar-rts.com); average wind from BAR's wind table" />
+          </div>
           <dl data-testid="map-facts">
             <Row label="Size">{`${map.sizeX} × ${map.sizeZ}`}</Row>
             <Row label="Wind">{`${map.wind.min}–${map.wind.max}`}</Row>

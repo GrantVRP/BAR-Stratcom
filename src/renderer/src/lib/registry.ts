@@ -1,33 +1,12 @@
 import { createRegistry, type Registry } from '../../../core/registry';
-import type { UnitSnapshot, FactionsFile, AliasesFile } from '../../../core/schemas';
+import { AliasesFileSchema, FactionsFileSchema, type UnitSnapshot, type FactionsFile, type AliasesFile } from '../../../core/schemas';
+import factionsJson from '../../../../data/factions.json';
+import aliasesJson from '../../../../data/aliases.json';
 
-// Boot/test fallback until `registry:getMeta` has loaded the real data/factions.json + aliases.json
-const defaultFactions: FactionsFile = {
-  schemaVersion: 1,
-  factions: [
-    {
-      id: 'armada',
-      displayName: 'Armada',
-      unitPrefix: 'arm',
-      enabled: true,
-      accent: '#449bed',
-      commanderIds: ['armcom']
-    },
-    {
-      id: 'cortex',
-      displayName: 'Cortex',
-      unitPrefix: 'cor',
-      enabled: true,
-      accent: '#ff2244',
-      commanderIds: ['corcom']
-    }
-  ]
-};
-
-const defaultAliases: AliasesFile = {
-  schemaVersion: 1,
-  aliases: []
-};
+// Boot/test fallback until `registry:getMeta` answers: the same data/factions.json and aliases.json
+// the main process serves (bundled at build time), never a hand-typed copy (T11.1)
+const defaultFactions: FactionsFile = FactionsFileSchema.parse(factionsJson);
+const defaultAliases: AliasesFile = AliasesFileSchema.parse(aliasesJson);
 
 let cachedRegistry: Registry | null = null;
 let cachedVersion: string | null = null;

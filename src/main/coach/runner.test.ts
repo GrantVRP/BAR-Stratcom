@@ -181,6 +181,37 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
     }
   });
 
+  it('simulates an unknown map without wind, then once on the map the session names (T11.1)', async () => {
+    vi.useFakeTimers();
+    try {
+      const runner = new CoachRunner();
+      const source = new FakeBridgeSource();
+      const resolved: string[] = [];
+      const resolveMap = (scriptName: string) => {
+        resolved.push(scriptName);
+        return { windAvg: 14.2, windMin: 1, windMax: 19, tidalStrength: 21, mexYield: 1.5, mexYieldProvenance: 'estimated' as const };
+      };
+      await runner.start({ plan: validPlan, mode: 'live', source, registry, stratcomDir: tmpDir, resolveMap });
+      const session = {
+        protocol: 1 as const, kind: 'session' as const, sessionId: 's-1', mode: 'player' as const, gameVersion: 'test', engineVersion: 'test',
+        map: { scriptName: 'Supreme Isthmus v2.1', windMin: 1, windMax: 19, tidal: 21 }, teams: [], start: null
+      };
+      source.emit('session', session);
+      source.emit('session', session);
+      expect(resolved).toEqual(['Supreme Isthmus v2.1']); // once per start
+      await runner.stop();
+
+      // an explicit map wins: no re-simulation
+      const again: string[] = [];
+      await runner.start({ plan: validPlan, mode: 'live', source, registry, stratcomDir: tmpDir, map: { windAvg: 9 }, resolveMap: (n) => (again.push(n), resolveMap(n)) });
+      source.emit('session', session);
+      expect(again).toEqual([]);
+      await runner.stop();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('does not write coach.json in demo or manual mode', async () => {
     const runner = new CoachRunner();
     await runner.start({

@@ -24,6 +24,7 @@ import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
 import { handleDemoCompletion } from './demo/demo-analyzer';
 import { defaultPlanStore } from './plans/store';
 import { getMap, loadMaps } from './maps/loader';
+import { simMapFor } from './maps/sim-map';
 import {
   isCoachWindowOpen,
   openCoachWindow,
@@ -256,7 +257,8 @@ if (!gotTheLock) {
           source: demoSource,
           registry,
           stratcomDir: null,
-          benchmarkLoader: loadBenchmarkForTeams
+          benchmarkLoader: loadBenchmarkForTeams,
+          resolveMap: (scriptName) => simMapFor(scriptName)
         });
 
         demoSource.on('end', () => {
@@ -287,7 +289,8 @@ if (!gotTheLock) {
         registry,
         stratcomDir,
         assistSettings: () => defaultSettingsStore.getSettings().assist,
-        benchmarkLoader: loadBenchmarkForTeams
+        benchmarkLoader: loadBenchmarkForTeams,
+        resolveMap: (scriptName) => simMapFor(scriptName)
       });
       return { ok: true };
     });

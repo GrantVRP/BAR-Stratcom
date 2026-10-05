@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import type { BuildPlan } from '../../core/schemas/plans';
-import type { SimResult } from '../../core/sim/types';
+import type { SimInput, SimResult } from '../../core/sim/types';
+import { FALLBACK_MEX_YIELD } from '../../core/plans/constants';
 import type { LiveSnapshot } from '../../core/schemas/live';
 import type { CoachDoc, SessionFileDoc } from '../../core/schemas/protocol';
 import type { CoachState, Cue } from '../../core/schemas/coach';
@@ -51,6 +52,8 @@ export interface CoachRunnerStartOptions {
     metalStorage: number;
     energyStorage: number;
   };
+  /** The map a session is played on, as simulator input (used when `map` is not given; T11.1). */
+  resolveMap?: (scriptName: string) => SimInput['map'];
   /** Settings → Assist, read every tick so a toggle applies at once (T09.2). */
   assistSettings?: () => AssistSettings;
   onUpdate?: (state: CoachState) => void;
@@ -82,6 +85,8 @@ export class CoachRunner {
   private onUpdate?: (state: CoachState) => void;
   private onCue?: (cue: Cue) => void;
   private assistSettings?: () => AssistSettings;
+  private resolveMap?: (scriptName: string) => SimInput['map'];
+  private simStart?: CoachRunnerStartOptions['start'];
 
   private stateHandler?: (state: LiveSnapshot) => void;
   private eventsHandler?: (events: unknown[]) => void;
@@ -129,25 +134,19 @@ export class CoachRunner {
       throw new Error(`Plan validation failed: ${errors.map((e) => e.message).join('; ')}`);
     }
 
-    // 2. Simulate plan once
+    // 2. Simulate the plan; an unknown map is simulated without wind (flagged), never with a made-up
+    // "typical" wind, and re-simulated once the session names the map (resolveMap)
     const mapInput = {
-      windAvg: options.map?.windAvg ?? 12,
-      windMin: options.map?.windMin ?? 5,
-      windMax: options.map?.windMax ?? 20,
+      windAvg: options.map?.windAvg ?? null,
+      windMin: options.map?.windMin ?? 0,
+      windMax: options.map?.windMax ?? 0,
       tidalStrength: options.map?.tidalStrength ?? 0,
-      mexYield: options.map?.mexYield ?? 1.5,
+      mexYield: options.map?.mexYield ?? FALLBACK_MEX_YIELD,
       mexYieldProvenance: options.map?.mexYieldProvenance ?? ('estimated' as const)
     };
-
-    this.planSim = simulate({
-      plan: options.plan,
-      registry: options.registry,
-      map: mapInput,
-      start: options.start,
-      options: {
-        schedule: 'respect-targets'
-      }
-    });
+    this.simStart = options.start;
+    this.resolveMap = options.map ? undefined : options.resolveMap;
+    this.planSim = this.simulatePlan(options.plan, options.registry, mapInput);
 
     this.plan = options.plan;
     this.mode = options.mode;
@@ -235,6 +234,15 @@ export class CoachRunner {
   /** BENCHMARK_LOW compares with pros of the player's faction + mode (04 §7). */
   private useSessionBenchmark(session: SessionFileDoc): void {
     if (this.benchmarkLoader) this.benchmark = this.benchmarkLoader(session.teams);
+    // the session names the map: simulate the plan on it (real wind from BAR's table)
+    if (this.resolveMap && this.plan && this.registry) {
+      this.planSim = this.simulatePlan(this.plan, this.registry, this.resolveMap(session.map.scriptName));
+      this.resolveMap = undefined;
+    }
+  }
+
+  private simulatePlan(plan: BuildPlan, registry: Registry, map: SimInput['map']): SimResult {
+    return simulate({ plan, registry, map, start: this.simStart, options: { schedule: 'respect-targets' } });
   }
 
   public async stop(): Promise<void> {
@@ -378,12 +386,7 @@ export class CoachRunner {
       sessionId: this.currentSessionId,
       mode: 'off',
       generatedAtSec: Math.floor(Date.now() / 1000),
-      hud: {
-        visible: false,
-        title: 'OFF',
-        lines: [],
-        progress: null
-      },
+      hud: { visible: false, title: 'OFF', lines: [], progress: null },
       echo: [],
       assist: ASSIST_OFF
     };

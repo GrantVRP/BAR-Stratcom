@@ -21,7 +21,8 @@ function getBuilderDefId(a: Actor, reg: import('../../../../core/registry').Regi
     try {
       return reg.commanderOf(f).id;
     } catch {
-      return 'armcom';
+      // unknown or disabled faction: no commander, so nothing to build (never another faction's list)
+      return '';
     }
   }
   return a.unitId;

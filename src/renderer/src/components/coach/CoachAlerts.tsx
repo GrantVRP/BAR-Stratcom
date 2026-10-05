@@ -21,7 +21,7 @@ export function CoachAlerts({ alerts, className = '' }: CoachAlertsProps): React
       {topAlerts.length === 0 ? (
         <div className="rounded border border-[#27272a]/60 bg-[#12131a]/50 px-3 py-2 text-xs text-[#71717a] flex items-center gap-2">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#4ade80]/60" />
-          <span>NOMINAL // NO ACTIVE THREATS</span>
+          <span>NO ALERTS</span>
         </div>
       ) : (
         topAlerts.map((alert) => {

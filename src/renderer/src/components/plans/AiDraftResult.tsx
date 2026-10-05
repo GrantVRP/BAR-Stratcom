@@ -57,8 +57,11 @@ export function AiDraftResult({ result, map }: AiDraftResultProps): React.JSX.El
 
       {plan && (
         <div className="space-y-1.5">
-          <div className="font-pixel-heading text-[10px] text-zinc-400">
-            STEPS (<span data-num="true">{plan.steps.length}</span>)
+          <div className="flex items-center gap-2 font-pixel-heading text-[10px] text-zinc-400">
+            <span>
+              STEPS (<span data-num="true">{plan.steps.length}</span>)
+            </span>
+            <Provenance kind="MEASURED" tooltip="Unit costs from your game's unit data" />
           </div>
           <div className="max-h-64 overflow-y-auto">
             <PlanTimeline plan={plan} />

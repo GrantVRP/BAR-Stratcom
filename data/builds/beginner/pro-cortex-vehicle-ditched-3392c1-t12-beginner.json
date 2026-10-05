@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-vehicle-ditched-3392c1-t12-beginner",
+  "title": "Vehicle wind // Ditched // Beginner",
+  "description": "The first 12 steps of Luckelazer's opening, merged and re-timed for a calmer start.",
+  "factionId": "cortex",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "vehicle",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-cortex-vehicle-ditched-3392c1-t12",
+    "transforms": [
+      "base(pro-cortex-vehicle-ditched-3392c1-t12)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 2,
+      "targetTime": 13
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 25
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 1,
+      "targetTime": 31.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corvp",
+      "count": 1,
+      "targetTime": 37.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 4,
+      "targetTime": 56.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 1,
+      "targetTime": 56.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfav",
+      "count": 2,
+      "targetTime": 84.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 84.5
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corgator",
+      "count": 2,
+      "targetTime": 100.5
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 3,
+      "targetTime": 140.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corlevlr",
+      "count": 1,
+      "targetTime": 131.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 2,
+    "windMax": 20,
+    "maps": [
+      "Ditched_V1"
+    ]
+  }
+}

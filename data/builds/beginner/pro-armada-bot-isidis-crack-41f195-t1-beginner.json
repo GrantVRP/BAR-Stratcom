@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-bot-isidis-crack-41f195-t1-beginner",
+  "title": "Bot wind // Isidis crack // Beginner",
+  "description": "The first 12 steps of [teh]Teddy's opening, merged and re-timed for a calmer start.",
+  "factionId": "armada",
+  "gameVersion": "test-31152-2fc9ad5",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "bot",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-armada-bot-isidis-crack-41f195-t1",
+    "transforms": [
+      "base(pro-armada-bot-isidis-crack-41f195-t1)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 6
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 11.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 23.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armlab",
+      "count": 1,
+      "targetTime": 34.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 5,
+      "targetTime": 51.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflea",
+      "count": 1,
+      "targetTime": 51.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 1,
+      "targetTime": 57
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflea",
+      "count": 3,
+      "targetTime": 80
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 3,
+      "targetTime": 96.5
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 80
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpw",
+      "count": 5,
+      "targetTime": 165.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 2,
+    "windMax": 20,
+    "maps": [
+      "Isidis crack 1.1"
+    ]
+  }
+}

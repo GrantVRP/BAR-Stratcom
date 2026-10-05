@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-air-isidis-crack-9481b9-t1-beginner",
+  "title": "Air mixed // Isidis crack // Beginner",
+  "description": "The first 12 steps of PRO_rANDY's opening, merged and re-timed for a calmer start.",
+  "factionId": "armada",
+  "gameVersion": "test-31422-df3633c",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "air",
+  "energyStyle": "mixed",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-armada-air-isidis-crack-9481b9-t1",
+    "transforms": [
+      "base(pro-armada-air-isidis-crack-9481b9-t1)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 12
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 23
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 29
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armap",
+      "count": 1,
+      "targetTime": 40
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armkam",
+      "count": 1,
+      "targetTime": 58.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 2,
+      "targetTime": 58.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 76.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 82
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armkam",
+      "count": 1,
+      "targetTime": 92.5
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armca",
+      "count": 1,
+      "targetTime": 126.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armhvytrans",
+      "count": 1,
+      "targetTime": 160
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 2,
+    "windMax": 20,
+    "maps": [
+      "Isidis crack 1.1"
+    ]
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-vehicle-feast-of-hades-8ba7b5-t0-beginner",
+  "title": "Vehicle wind // Feast of Hades // Beginner",
+  "description": "The first 12 steps of BM_akumar6's opening, merged and re-timed for a calmer start.",
+  "factionId": "cortex",
+  "gameVersion": "test-31405-aa9c710",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "vehicle",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-cortex-vehicle-feast-of-hades-8ba7b5-t0",
+    "transforms": [
+      "base(pro-cortex-vehicle-feast-of-hades-8ba7b5-t0)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 3,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 2,
+      "targetTime": 19.5
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 2,
+      "targetTime": 38.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corvp",
+      "count": 1,
+      "targetTime": 50.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfav",
+      "count": 2,
+      "targetTime": 69.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 2,
+      "targetTime": 85.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 8,
+      "targetTime": 69.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 113.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 2,
+      "targetTime": 141.5
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfav",
+      "count": 25,
+      "targetTime": 197.5
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 153.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 141.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 4,
+    "windMax": 14,
+    "maps": [
+      "Feast of Hades 1.0.1"
+    ]
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-bot-feast-of-hades-03e4a1-t0-beginner",
+  "title": "Bot wind // Feast of Hades // Beginner",
+  "description": "The first 12 steps of TM_autopilot's opening, merged and re-timed for a calmer start.",
+  "factionId": "cortex",
+  "gameVersion": "test-31251-0ceadc7",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "bot",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-cortex-bot-feast-of-hades-03e4a1-t0",
+    "transforms": [
+      "base(pro-cortex-bot-feast-of-hades-03e4a1-t0)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 3,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 19.5
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 3,
+      "targetTime": 29
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corlab",
+      "count": 1,
+      "targetTime": 47
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 4,
+      "targetTime": 64
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornecro",
+      "count": 1,
+      "targetTime": 64
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corck",
+      "count": 2,
+      "targetTime": 83
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corak",
+      "count": 4,
+      "targetTime": 131
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 2,
+      "targetTime": 88
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 107
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corck",
+      "count": 2,
+      "targetTime": 165
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 131
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 4,
+    "windMax": 14,
+    "maps": [
+      "Feast of Hades 1.0.1"
+    ]
+  }
+}

@@ -4,3 +4,4 @@ export * from './events-to-plan';
 export * from './capture';
 export * from './adapt';
 export * from './diff';
+export * from './simplify';

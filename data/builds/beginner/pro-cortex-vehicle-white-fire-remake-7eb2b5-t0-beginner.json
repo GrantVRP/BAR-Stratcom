@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-vehicle-white-fire-remake-7eb2b5-t0-beginner",
+  "title": "Vehicle mixed // White Fire Remake // Beginner",
+  "description": "The first 12 steps of OralnyDzikus's opening, merged and re-timed for a calmer start.",
+  "factionId": "cortex",
+  "gameVersion": "test-31405-aa9c710",
+  "modes": [
+    "small-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "vehicle",
+  "energyStyle": "mixed",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-cortex-vehicle-white-fire-remake-7eb2b5-t0",
+    "transforms": [
+      "base(pro-cortex-vehicle-white-fire-remake-7eb2b5-t0)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 1,
+      "targetTime": 13
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 19
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 25.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 2,
+      "targetTime": 35
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corvp",
+      "count": 1,
+      "targetTime": 47
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 2,
+      "targetTime": 66
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 66
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 2,
+      "targetTime": 75.5
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 94
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfav",
+      "count": 1,
+      "targetTime": 122
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corcv",
+      "count": 1,
+      "targetTime": 130
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 2,
+    "windMax": 14,
+    "maps": [
+      "White Fire Remake 1.3"
+    ]
+  }
+}

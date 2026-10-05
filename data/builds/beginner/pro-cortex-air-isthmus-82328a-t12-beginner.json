@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-air-isthmus-82328a-t12-beginner",
+  "title": "Air wind // Supreme Isthmus // Beginner",
+  "description": "The first 12 steps of RogShotz's opening, merged and re-timed for a calmer start.",
+  "factionId": "cortex",
+  "gameVersion": "test-31030-23a0c35",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "air",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-cortex-air-isthmus-82328a-t12",
+    "transforms": [
+      "base(pro-cortex-air-isthmus-82328a-t12)",
+      "retime(asap)",
+      "stall-fix(corwin)",
+      "stall-fix(corwin)",
+      "stall-fix(corwin)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corap",
+      "count": 1,
+      "targetTime": 13
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 31
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 31
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 2,
+      "targetTime": 47
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 40.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 4,
+      "targetTime": 47
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 95
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corvalk",
+      "count": 1,
+      "targetTime": 111
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 10,
+      "targetTime": 77.5
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 138.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corvalk",
+      "count": 2,
+      "targetTime": 154.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 1,
+    "windMax": 19,
+    "maps": [
+      "Supreme Isthmus v2.1"
+    ]
+  }
+}

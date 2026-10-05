@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { BuildPlan } from '../../src/core/schemas';
+import { reviewApproves } from './review-log';
 
 export interface CuratedGuardResult {
   valid: boolean;
@@ -61,13 +62,17 @@ export function validateCuratedPlanGuard(
     };
   }
 
-  const logContent = fs.readFileSync(reviewLogPath, 'utf-8');
-  const hasApproval = logContent.includes(plan.id) && logContent.toLowerCase().includes('approve');
-  if (!hasApproval) {
+  // the plan's own section must say "DECISION: approve" (a rejected plan's id is in the log too)
+  if (!reviewApproves(fs.readFileSync(reviewLogPath, 'utf-8'), plan.id)) {
     return {
       valid: false,
       reason: `Plan "${plan.id}" does not appear as "approve" in REVIEW-LOG.md`
     };
+  }
+
+  // a published curated plan credits its reviewer (T08.9)
+  if (plan.source.reviewedBy.trim() === '' || plan.source.reviewedAt.trim() === '') {
+    return { valid: false, reason: `Plan "${plan.id}" is published without reviewedBy / reviewedAt` };
   }
 
   return { valid: true };

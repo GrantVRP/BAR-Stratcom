@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-air-moonshine-run-787ac1-t4-beginner",
+  "title": "Air solar // Moonshine Run // Beginner",
+  "description": "The first 12 steps of [RoX]pintle's opening, merged and re-timed for a calmer start.",
+  "factionId": "armada",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "air",
+  "energyStyle": "solar",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-armada-air-moonshine-run-787ac1-t4",
+    "transforms": [
+      "base(pro-armada-air-moonshine-run-787ac1-t4)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 12
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 21
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 27
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armap",
+      "count": 1,
+      "targetTime": 36
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armpeep",
+      "count": 2,
+      "targetTime": 54.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 2,
+      "targetTime": 54.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfig",
+      "count": 1,
+      "targetTime": 92.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 3,
+      "targetTime": 72.5
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfig",
+      "count": 3,
+      "targetTime": 116
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 99.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armkam",
+      "count": 1,
+      "targetTime": 186.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 0,
+    "windMax": 0,
+    "maps": [
+      "Moonshine Run v1.0.1"
+    ]
+  }
+}

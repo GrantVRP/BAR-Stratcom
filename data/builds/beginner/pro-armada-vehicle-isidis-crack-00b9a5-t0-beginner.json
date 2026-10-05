@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-vehicle-isidis-crack-00b9a5-t0-beginner",
+  "title": "Vehicle wind // Isidis crack // Beginner",
+  "description": "The first 12 steps of PRO_BCTV's opening, merged and re-timed for a calmer start.",
+  "factionId": "armada",
+  "gameVersion": "test-31251-0ceadc7",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "vehicle",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-armada-vehicle-isidis-crack-00b9a5-t0",
+    "transforms": [
+      "base(pro-armada-vehicle-isidis-crack-00b9a5-t0)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 3,
+      "targetTime": 6
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armvp",
+      "count": 1,
+      "targetTime": 22.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 2,
+      "targetTime": 41.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 41.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 52.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfav",
+      "count": 3,
+      "targetTime": 68.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 64.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 1,
+      "targetTime": 91
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 4,
+      "targetTime": 118
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 76.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 82
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 2,
+    "windMax": 20,
+    "maps": [
+      "Isidis crack 1.1"
+    ]
+  }
+}

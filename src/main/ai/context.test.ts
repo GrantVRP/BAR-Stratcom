@@ -138,19 +138,25 @@ describe('AI draft context (T08.7, 04 §6.1)', () => {
 
   it('picks curated examples first, closest to the intent, cut before disallowed units', () => {
     const intent: DraftIntent = { factionId: 'cortex', mode: '1v1', role: 'any', opening: 'vehicle', skill: 'beginner' };
-    expect(selectExamples(library, intent).every((p) => p.factionId === 'cortex' && p.source.kind === 'own-game')).toBe(true);
-    expect(selectExamples(library, intent)).toHaveLength(2);
-    expect(selectExamples(library, intent)[0]!.opening).toBe('vehicle');
+    // the published library (T08.9): curated pro builds, closest first
+    const fromLibrary = selectExamples(library, intent);
+    expect(fromLibrary).toHaveLength(2);
+    expect(fromLibrary.every((p) => p.factionId === 'cortex' && p.source.kind === 'curated')).toBe(true);
+    expect(fromLibrary[0]).toMatchObject({ opening: 'vehicle', modes: ['1v1'] });
+    // without curated plans, the player's captured games
+    const samples = library.filter((p) => p.source.kind === 'own-game');
+    expect(selectExamples(samples, intent).every((p) => p.factionId === 'cortex' && p.source.kind === 'own-game')).toBe(true);
+    expect(selectExamples(samples, intent)[0]!.opening).toBe('vehicle');
 
     const curated = withTech3('cortex');
-    expect(selectExamples([...library, curated], intent)).toEqual([curated]);
+    expect(selectExamples([...samples, curated], intent)).toEqual([curated]);
     const allowed = new Set(reachableUnits(registry, 'cortex').map((u) => u.id));
     const draft = exampleDraft(curated, allowed)!;
     // stops before the tech-3 step; the reclaim step is left out
     expect((draft.steps as unknown[]).length).toBe(1);
     expect(exampleDraft({ ...curated, steps: curated.steps.slice(2) }, allowed)).toBeNull();
 
-    const ctx = buildContext({ registry, intent, map: null, avgWind: null, library: [...library, curated] });
+    const ctx = buildContext({ registry, intent, map: null, avgWind: null, library: [...samples, curated] });
     expect(ctx.user).toContain('Example 1, Pro on Isthmus, 2026-09-01:');
     expect(selectExamples(library, { ...intent, factionId: 'legion' })).toEqual([]);
   });

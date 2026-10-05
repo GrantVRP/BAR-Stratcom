@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-vehicle-tangerine-remake-b5089a-t0-beginner",
+  "title": "Vehicle wind // Tangerine Remake // Beginner",
+  "description": "The first 12 steps of Leohvm's opening, merged and re-timed for a calmer start.",
+  "factionId": "armada",
+  "gameVersion": "test-31197-038e78b",
+  "modes": [
+    "small-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "vehicle",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-armada-vehicle-tangerine-remake-b5089a-t0",
+    "transforms": [
+      "base(pro-armada-vehicle-tangerine-remake-b5089a-t0)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 12
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armvp",
+      "count": 1,
+      "targetTime": 23
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfav",
+      "count": 5,
+      "targetTime": 42
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 4,
+      "targetTime": 42
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 64
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 1,
+      "targetTime": 79.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 70
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 75.5
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 1,
+      "targetTime": 93
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armjanus",
+      "count": 1,
+      "targetTime": 120
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 3,
+      "targetTime": 79.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 5,
+    "windMax": 25,
+    "maps": [
+      "Tangerine_Remake 1.0"
+    ]
+  }
+}

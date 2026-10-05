@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-bot-ditched-3392c1-t9-beginner",
+  "title": "Bot wind // Ditched // Beginner",
+  "description": "The first 12 steps of JTL's opening, merged and re-timed for a calmer start.",
+  "factionId": "cortex",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "bot",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-cortex-bot-ditched-3392c1-t9",
+    "transforms": [
+      "base(pro-cortex-bot-ditched-3392c1-t9)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 1,
+      "targetTime": 13
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 19
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 2,
+      "targetTime": 25.5
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corlab",
+      "count": 1,
+      "targetTime": 37.5
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 4,
+      "targetTime": 54.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corck",
+      "count": 1,
+      "targetTime": 54.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corak",
+      "count": 5,
+      "targetTime": 78.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cornanotc",
+      "count": 1,
+      "targetTime": 78.5
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "builder",
+        "unitId": "corck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 141
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corck",
+      "count": 1,
+      "targetTime": 121
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 78.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 2,
+    "windMax": 20,
+    "maps": [
+      "Ditched_V1"
+    ]
+  }
+}

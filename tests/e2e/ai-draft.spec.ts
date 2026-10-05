@@ -44,22 +44,22 @@ test('AI draft: pick a provider, draft, save, find it in the library (T08.8, fak
     await expect(page.getByTestId('view-plan-detail')).toBeVisible({ timeout: 10000 });
     await expect(page.getByTestId('view-plan-detail')).toContainText('ollama/stratcom-fake');
     await expect(page.getByTestId('view-plan-detail').getByTestId('provenance-AI DRAFT')).toBeVisible();
-    // DRAFT VARIANT WITH AI prefills from the plan
-    await page.getByTestId('btn-draft-variant').click();
-    await expect(page.getByTestId('ai-draft-opening')).toHaveValue('hover');
-    await page.keyboard.press('Escape');
-    await expect(page.getByTestId('ai-draft-form')).toHaveCount(0);
-
     const saved = await page.evaluate(async () => {
       const win = globalThis as unknown as {
         stratcom: { invoke: (channel: string, arg?: unknown) => Promise<{ ok: boolean; data: unknown }> };
       };
       const res = await win.stratcom.invoke('plans:list', undefined);
-      const plans = (res.ok ? res.data : []) as Array<{ id: string; source: { kind: string; model?: string } }>;
+      const plans = (res.ok ? res.data : []) as Array<{ id: string; opening: string; source: { kind: string; model?: string } }>;
       return plans.filter((p) => p.source.kind === 'ai-draft');
     });
     expect(saved).toHaveLength(1);
     expect(saved[0]!.source.model).toBe('stratcom-fake');
+
+    // DRAFT VARIANT WITH AI prefills from the plan (the fake copies the closest library build, so read its opening)
+    await page.getByTestId('btn-draft-variant').click();
+    await expect(page.getByTestId('ai-draft-opening')).toHaveValue(saved[0]!.opening);
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('ai-draft-form')).toHaveCount(0);
 
     await page.getByTestId('btn-back-to-library').click();
     await expect(page.getByTestId(`plan-card-${saved[0]!.id}`)).toContainText('AI DRAFT // stratcom-fake');

@@ -3,6 +3,7 @@ import { Button } from '../ui/Button';
 import { usePlans, useSettings } from '../../stores';
 import type { BuildPlan } from '../../../../core/schemas';
 import { FactionTag } from '../ui/FactionTag';
+import { suggestPlans } from '../../lib/plan-suggestions';
 
 export interface StepPlanOrDemoProps {
   onBack: () => void;
@@ -21,10 +22,9 @@ export function StepPlanOrDemo({ onBack, onNext, onTryDemo }: StepPlanOrDemoProp
     }
   }, [plans.length, loadPlans]);
 
-  // Pick up to 3 suggested plans (prefer plans matching profile, or take first 3)
+  // 3 suggestions from the curated library and its beginner variants (T08.9)
   const currentProfile = settings?.profile ?? 'intermediate';
-  const matchingPlans = plans.filter((p) => p.skill === currentProfile);
-  const suggestedPlans: BuildPlan[] = (matchingPlans.length >= 3 ? matchingPlans : plans).slice(0, 3);
+  const suggestedPlans: BuildPlan[] = suggestPlans(plans, currentProfile);
 
   const handleSelectPlan = async (plan: BuildPlan): Promise<void> => {
     setActivePlanId(plan.id);

@@ -1,0 +1,429 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-cortex-air-isthmus-82328a-t12",
+  "title": "Air wind // Supreme Isthmus",
+  "description": "First 10 minutes of RogShotz (Cortex) in a 8v8 on Supreme Isthmus v2.1, played 2026-08-22.",
+  "factionId": "cortex",
+  "gameVersion": "test-31030-23a0c35",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "advanced",
+  "opening": "air",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "curated",
+    "replayId": "82328a6a6a5845e9a74cdbbae6716f0f",
+    "player": "RogShotz",
+    "playerRating": 42.71,
+    "map": "Supreme Isthmus v2.1",
+    "playedAt": "2026-08-22",
+    "gameVersion": "test-31030-23a0c35",
+    "reviewedBy": "Grant_P",
+    "reviewedAt": "2026-10-05"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 2,
+      "targetTime": 3.6
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corap",
+      "count": 1,
+      "targetTime": 20
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corsolar",
+      "count": 1,
+      "targetTime": 32.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 49.9
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 2,
+      "targetTime": 59.7
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormex",
+      "count": 1,
+      "targetTime": 60.5
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 1,
+      "targetTime": 72.5
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 102.8
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corvalk",
+      "count": 1,
+      "targetTime": 112.1
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corwin",
+      "count": 10,
+      "targetTime": 122
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 124.6
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corvalk",
+      "count": 2,
+      "targetTime": 140.9
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corestor",
+      "count": 1,
+      "targetTime": 204
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corfink",
+      "count": 1,
+      "targetTime": 229.9
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 5,
+      "targetTime": 249.3
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "cormakr",
+      "count": 6,
+      "targetTime": 260
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 2,
+      "targetTime": 318.4
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corap",
+      "count": 1,
+      "targetTime": 376.5
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 6,
+      "targetTime": 387.6
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "corap",
+      "count": 1,
+      "targetTime": 493
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 501.6
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 504
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 507.5
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 509.9
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 513.4
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 515.9
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 519.4
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 521.9
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 525.4
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 528.4
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corhvytrans",
+      "count": 1,
+      "targetTime": 532.9
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 541.4
+    },
+    {
+      "id": "s33",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 1,
+      "targetTime": 543.9
+    },
+    {
+      "id": "s34",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corbw",
+      "count": 1,
+      "targetTime": 547.4
+    },
+    {
+      "id": "s35",
+      "actor": {
+        "kind": "factory",
+        "unitId": "corap",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "corveng",
+      "count": 15,
+      "targetTime": 549.9
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays."
+}

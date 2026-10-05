@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-bot-ditched-3392c1-t8-beginner",
+  "title": "Bot wind // Ditched // Beginner",
+  "description": "The first 12 steps of TM_SlickLikeVik's opening, merged and re-timed for a calmer start.",
+  "factionId": "armada",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "bot",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-armada-bot-ditched-3392c1-t8",
+    "transforms": [
+      "base(pro-armada-bot-ditched-3392c1-t8)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 3,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 4,
+      "targetTime": 18
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armlab",
+      "count": 1,
+      "targetTime": 40
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armck",
+      "count": 3,
+      "targetTime": 57
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 3,
+      "targetTime": 57
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 80
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armwar",
+      "count": 2,
+      "targetTime": 126
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 73.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 103
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 126
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armck",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 102.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 79.5
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 2,
+    "windMax": 20,
+    "maps": [
+      "Ditched_V1"
+    ]
+  }
+}

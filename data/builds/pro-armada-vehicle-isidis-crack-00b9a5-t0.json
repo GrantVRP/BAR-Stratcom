@@ -1,0 +1,665 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-vehicle-isidis-crack-00b9a5-t0",
+  "title": "Vehicle wind // Isidis crack",
+  "description": "First 10 minutes of PRO_BCTV (Armada) in a 1v1 on Isidis crack 1.1, played 2026-09-12.",
+  "factionId": "armada",
+  "gameVersion": "test-31251-0ceadc7",
+  "modes": [
+    "1v1"
+  ],
+  "role": "any",
+  "skill": "advanced",
+  "opening": "vehicle",
+  "energyStyle": "wind",
+  "source": {
+    "kind": "curated",
+    "replayId": "00b9a56a26349ddd7f0aaa7bc4af1e39",
+    "player": "PRO_BCTV",
+    "playerRating": 52.26,
+    "map": "Isidis crack 1.1",
+    "playedAt": "2026-09-12",
+    "gameVersion": "test-31251-0ceadc7",
+    "reviewedBy": "Grant_P",
+    "reviewedAt": "2026-10-05"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 3.5
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 3,
+      "targetTime": 10
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armvp",
+      "count": 1,
+      "targetTime": 29.5
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 2,
+      "targetTime": 48.7
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 2,
+      "targetTime": 49
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 62
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfav",
+      "count": 3,
+      "targetTime": 77.3
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 99.5
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 1,
+      "targetTime": 101.3
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 4,
+      "targetTime": 129.8
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 131.5
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 143.5
+    },
+    {
+      "id": "s13",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 150.5
+    },
+    {
+      "id": "s14",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 154.5
+    },
+    {
+      "id": "s15",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 162
+    },
+    {
+      "id": "s16",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 166
+    },
+    {
+      "id": "s17",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 179
+    },
+    {
+      "id": "s18",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 5,
+      "targetTime": 189.3
+    },
+    {
+      "id": "s19",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 190
+    },
+    {
+      "id": "s20",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 220.5
+    },
+    {
+      "id": "s21",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 242.5
+    },
+    {
+      "id": "s22",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 2,
+      "targetTime": 255.6
+    },
+    {
+      "id": "s23",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armrad",
+      "count": 1,
+      "targetTime": 272.4
+    },
+    {
+      "id": "s24",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 14,
+      "targetTime": 276.9
+    },
+    {
+      "id": "s25",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 285.6
+    },
+    {
+      "id": "s26",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 287.5
+    },
+    {
+      "id": "s27",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 291.6
+    },
+    {
+      "id": "s28",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 310
+    },
+    {
+      "id": "s29",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 328.3
+    },
+    {
+      "id": "s30",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 333.1
+    },
+    {
+      "id": "s31",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 334
+    },
+    {
+      "id": "s32",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 351.5
+    },
+    {
+      "id": "s33",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 382.6
+    },
+    {
+      "id": "s34",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 394
+    },
+    {
+      "id": "s35",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 398.5
+    },
+    {
+      "id": "s36",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 1,
+      "targetTime": 404.4
+    },
+    {
+      "id": "s37",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 407.2
+    },
+    {
+      "id": "s38",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armflash",
+      "count": 16,
+      "targetTime": 415.4
+    },
+    {
+      "id": "s39",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 430.6
+    },
+    {
+      "id": "s40",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 430.9
+    },
+    {
+      "id": "s41",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 445
+    },
+    {
+      "id": "s42",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 2,
+      "targetTime": 468
+    },
+    {
+      "id": "s43",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 484.4
+    },
+    {
+      "id": "s44",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 3
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 485.8
+    },
+    {
+      "id": "s45",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 489.2
+    },
+    {
+      "id": "s46",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 492
+    },
+    {
+      "id": "s47",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 4,
+      "targetTime": 506.5
+    },
+    {
+      "id": "s48",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 527.5
+    },
+    {
+      "id": "s49",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 1,
+      "targetTime": 540
+    },
+    {
+      "id": "s50",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 4
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 7,
+      "targetTime": 542.2
+    },
+    {
+      "id": "s51",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armlab",
+      "count": 1,
+      "targetTime": 548.5
+    },
+    {
+      "id": "s52",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armstump",
+      "count": 3,
+      "targetTime": 559.3
+    },
+    {
+      "id": "s53",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 5
+      },
+      "action": "build",
+      "unitId": "armnanotc",
+      "count": 1,
+      "targetTime": 563.4
+    },
+    {
+      "id": "s54",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 4,
+      "targetTime": 575
+    },
+    {
+      "id": "s55",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armlab",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armwar",
+      "count": 1,
+      "targetTime": 588
+    },
+    {
+      "id": "s56",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 5
+      },
+      "action": "build",
+      "unitId": "armwin",
+      "count": 1,
+      "targetTime": 594.9
+    },
+    {
+      "id": "s57",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 5
+      },
+      "action": "build",
+      "unitId": "armllt",
+      "count": 1,
+      "targetTime": 596.3
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays."
+}

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "id": "pro-armada-vehicle-moonshine-run-787ac1-t0-beginner",
+  "title": "Vehicle solar // Moonshine Run // Beginner",
+  "description": "The first 12 steps of TM_Austin's opening, merged and re-timed for a calmer start.",
+  "factionId": "armada",
+  "gameVersion": "test-31479-433a460",
+  "modes": [
+    "large-team"
+  ],
+  "role": "any",
+  "skill": "beginner",
+  "opening": "vehicle",
+  "energyStyle": "solar",
+  "source": {
+    "kind": "adapted",
+    "fromPlanId": "pro-armada-vehicle-moonshine-run-787ac1-t0",
+    "transforms": [
+      "base(pro-armada-vehicle-moonshine-run-787ac1-t0)",
+      "retime(asap)",
+      "simplify(12)"
+    ],
+    "createdAt": "2026-10-05T00:00:00.000Z"
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 3,
+      "targetTime": 0
+    },
+    {
+      "id": "s2",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 18
+    },
+    {
+      "id": "s3",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 27
+    },
+    {
+      "id": "s4",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 2,
+      "targetTime": 33
+    },
+    {
+      "id": "s5",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armvp",
+      "count": 1,
+      "targetTime": 51
+    },
+    {
+      "id": "s6",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 2,
+      "targetTime": 70
+    },
+    {
+      "id": "s7",
+      "actor": {
+        "kind": "commander"
+      },
+      "action": "build",
+      "unitId": "armsolar",
+      "count": 1,
+      "targetTime": 70
+    },
+    {
+      "id": "s8",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armfav",
+      "count": 4,
+      "targetTime": 124
+    },
+    {
+      "id": "s9",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 97
+    },
+    {
+      "id": "s10",
+      "actor": {
+        "kind": "factory",
+        "unitId": "armvp",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armcv",
+      "count": 1,
+      "targetTime": 154
+    },
+    {
+      "id": "s11",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 2
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 124
+    },
+    {
+      "id": "s12",
+      "actor": {
+        "kind": "builder",
+        "unitId": "armcv",
+        "index": 1
+      },
+      "action": "build",
+      "unitId": "armmex",
+      "count": 1,
+      "targetTime": 117
+    }
+  ],
+  "notes": "Reclaim actions are not recorded in replays.",
+  "mapFit": {
+    "windMin": 0,
+    "windMax": 0,
+    "maps": [
+      "Moonshine Run v1.0.1"
+    ]
+  }
+}

@@ -133,7 +133,7 @@ describe('validateCuratedPlanGuard (T06.11, S-10)', () => {
     try {
       fs.writeFileSync(
         path.join(tmpBuilds, 'REVIEW-LOG.md'),
-        '# Review Log\n- curated-valid-replay: approve (verified by owner)\n'
+        '# Review Log\n\n### 1. Test\n\n- Plan: `curated-valid-replay` · Armada · 1v1\n\nDECISION: approve\n'
       );
       const planWithValidReplayId: BuildPlan = {
         ...samplePlan,
@@ -153,6 +153,17 @@ describe('validateCuratedPlanGuard (T06.11, S-10)', () => {
 
       const res = validateCuratedPlanGuard(planWithValidReplayId, tmpBuilds);
       expect(res.valid).toBe(true);
+
+      // T08.9: a published curated plan must credit its reviewer
+      const unreviewed: BuildPlan = { ...planWithValidReplayId, source: { ...planWithValidReplayId.source, reviewedBy: '' } as BuildPlan['source'] };
+      expect(validateCuratedPlanGuard(unreviewed, tmpBuilds).reason).toContain('without reviewedBy');
+
+      // a rejected section is no approval, even with the word "approve" elsewhere in the log
+      fs.writeFileSync(
+        path.join(tmpBuilds, 'REVIEW-LOG.md'),
+        '# Review Log\nChange each line to approve or reject.\n\n### 1. Test\n\n- Plan: `curated-valid-replay` · Armada · 1v1\n\nDECISION: reject — reason: duplicate\n'
+      );
+      expect(validateCuratedPlanGuard(planWithValidReplayId, tmpBuilds).valid).toBe(false);
     } finally {
       fs.rmSync(tmpBuilds, { recursive: true, force: true });
     }

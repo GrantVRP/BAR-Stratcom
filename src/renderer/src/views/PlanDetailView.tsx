@@ -11,6 +11,8 @@ import { PlanTimeline } from '../components/plans/PlanTimeline';
 import { SimGraph } from '../components/SimGraph';
 import { PlanDetailHeader } from '../components/plans/PlanDetailHeader';
 import { SharePlanDialog } from '../components/plans/SharePlanDialog';
+import { AdaptPlanDialog } from '../components/plans/AdaptPlanDialog';
+import { Button } from '../components/ui/Button';
 
 export interface PlanDetailViewProps {
   plan: BuildPlan;
@@ -42,6 +44,7 @@ export function PlanDetailView({
   const snapshot = useSnapshot((s) => s.snapshot);
   const [selectedMap, setSelectedMap] = useState<MapRecord | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [adaptOpen, setAdaptOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -167,10 +170,19 @@ export function PlanDetailView({
         onShare={() => setShareOpen(true)}
       />
 
-      {/* Map Selector */}
+      {/* Map Selector, with ADAPT next to the map it adapts to (04 §5.2, T08.5) */}
       <div className="space-y-1.5">
-        <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">
-          MAP
+        <div className="flex items-center justify-between">
+          <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">MAP</div>
+          <Button
+            variant="default"
+            size="sm"
+            data-testid="btn-adapt-plan"
+            disabled={!selectedMap}
+            onClick={() => setAdaptOpen(true)}
+          >
+            ADAPT TO THIS MAP
+          </Button>
         </div>
         <MapCombobox
           selectedMap={selectedMap}
@@ -196,6 +208,22 @@ export function PlanDetailView({
         </div>
         <PlanTimeline plan={plan} />
       </div>
+
+      {selectedMap && (
+        <AdaptPlanDialog
+          open={adaptOpen}
+          plan={plan}
+          map={selectedMap}
+          onClose={() => setAdaptOpen(false)}
+          onSave={async (adapted) => {
+            const saved = await savePlan(adapted);
+            if (saved) {
+              setAdaptOpen(false);
+              onSelectPlan?.(saved);
+            }
+          }}
+        />
+      )}
 
       {/* Share Dialog */}
       <SharePlanDialog

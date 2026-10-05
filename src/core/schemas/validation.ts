@@ -11,7 +11,8 @@ export const IssueCodeSchema = z.enum([
   'E_MISSING_FIELD',
   'W_TIME_ORDER',
   'W_NO_ENERGY_BEFORE_FACTORY',
-  'W_STALE_VERSION'
+  'W_STALE_VERSION',
+  'W_WIND_UNKNOWN'
 ]);
 
 export type IssueCode = z.infer<typeof IssueCodeSchema>;

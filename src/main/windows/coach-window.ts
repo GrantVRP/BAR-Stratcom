@@ -1,5 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { join } from 'node:path';
+import { devRendererUrl } from './dev-url';
 import { defaultSettingsStore } from '../settings/store';
 import type { CoachWindowBounds } from '../../core/schemas';
 
@@ -110,8 +111,9 @@ export function openCoachWindow(modeOverride?: 'second-monitor' | 'overlay'): Br
   });
 
   // Load coach window route
-  if (process.env.ELECTRON_RENDERER_URL) {
-    win.loadURL(`${process.env.ELECTRON_RENDERER_URL}#/coach-window`);
+  const devUrl = devRendererUrl();
+  if (devUrl) {
+    win.loadURL(`${devUrl}#/coach-window`);
   } else {
     win.loadFile(join(__dirname, '../renderer/index.html'), { hash: '/coach-window' });
   }

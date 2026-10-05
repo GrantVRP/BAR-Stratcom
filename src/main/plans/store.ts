@@ -5,6 +5,7 @@ import { BuildPlanSchema, type BuildPlan } from '../../core/schemas';
 import { decodePlan, encodePlan } from '../../core/sharecode';
 import { planFromFile, planToDiscordText } from '../../core/plans/files';
 import { findDataDir } from '../registry/loader';
+import { isSafeName, namedFile } from '../fs/path-guard';
 
 export interface PlanStoreOptions {
   userDataDir?: string;
@@ -93,7 +94,9 @@ export class PlanStore {
 
   get(id: string): BuildPlan | null {
     // Check user plans first
-    const userFile = path.join(this.userDataDir, `${id}.json`);
+    // ids name files: a plain name only (path guard, T11.2)
+    if (!isSafeName(id)) return null;
+    const userFile = namedFile(this.userDataDir, id, '.json');
     if (fs.existsSync(userFile)) {
       try {
         const content = fs.readFileSync(userFile, 'utf-8');
@@ -139,7 +142,7 @@ export class PlanStore {
   save(plan: BuildPlan): BuildPlan {
     const validated = BuildPlanSchema.parse(plan);
     fs.mkdirSync(this.userDataDir, { recursive: true });
-    const targetFile = path.join(this.userDataDir, `${validated.id}.json`);
+    const targetFile = namedFile(this.userDataDir, validated.id, '.json');
     fs.writeFileSync(targetFile, `${JSON.stringify(validated, null, 2)}\n`, 'utf-8');
     return validated;
   }
@@ -147,7 +150,7 @@ export class PlanStore {
   delete(id: string): { ok: boolean } {
     // Check if it's a bundled plan
     const isBundled = this.readPlansFromDir(this.bundledDir).some((p) => p.id === id);
-    const userFile = path.join(this.userDataDir, `${id}.json`);
+    const userFile = namedFile(this.userDataDir, id, '.json');
     const hasUserOverride = fs.existsSync(userFile);
 
     if (isBundled && !hasUserOverride) {

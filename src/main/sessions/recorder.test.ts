@@ -264,4 +264,14 @@ describe('SessionRecorder (02 §4.1, 03 §7.6, §8)', () => {
 
     recorder.detach();
   });
+
+  it('ignores a session id that is not a plain name (path guard, T11.2)', () => {
+    const fakeSource = new FakeBridgeSource();
+    const recorder = new SessionRecorder({ sessionsDir: tmpUserDir, stratcomDir: tmpStratcomDir });
+    recorder.attach(fakeSource);
+    fakeSource.emit('session', { ...sampleSessionDoc, sessionId: '../escaped' });
+    fakeSource.emit('state', { ...sampleStateDoc, sessionId: '../escaped' });
+    expect(recorder.getActiveSessionId()).toBeNull();
+    expect(fs.existsSync(path.join(tmpUserDir, '..', 'escaped'))).toBe(false);
+  });
 });

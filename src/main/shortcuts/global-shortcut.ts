@@ -2,6 +2,7 @@ import { globalShortcut } from 'electron';
 import { defaultSettingsStore } from '../settings/store';
 import { defaultCoachRunner } from '../coach/runner';
 import { toggleCoachWindow } from '../windows/coach-window';
+import { isAllowedGlobalShortcut } from './accelerator';
 
 export type ShortcutStatus = 'registered' | 'busy' | 'disabled';
 
@@ -33,7 +34,8 @@ export function registerAppGlobalShortcut(): { shortcut: string | null; status: 
   const settings = defaultSettingsStore.getSettings();
   const shortcut = settings.globalShortcut;
 
-  if (!shortcut || shortcut.trim() === '') {
+  // never a single key (08 §6): a stored shortcut without Ctrl/Alt/Win is not registered
+  if (!shortcut || shortcut.trim() === '' || !isAllowedGlobalShortcut(shortcut.trim())) {
     activeShortcut = null;
     currentStatus = 'disabled';
     return { shortcut: null, status: 'disabled' };

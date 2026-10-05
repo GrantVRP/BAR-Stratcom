@@ -25,6 +25,8 @@ import { handleDemoCompletion } from './demo/demo-analyzer';
 import { defaultPlanStore } from './plans/store';
 import { getMap, loadMaps } from './maps/loader';
 import { simMapFor } from './maps/sim-map';
+import { isAllowedGlobalShortcut } from './shortcuts/accelerator';
+import { devRendererUrl } from './windows/dev-url';
 import {
   isCoachWindowOpen,
   openCoachWindow,
@@ -61,15 +63,9 @@ function createWindow(): void {
     mainWindow?.show();
   });
 
-  // Deny window.open requests
-  mainWindow.webContents.setWindowOpenHandler(() => {
-    return { action: 'deny' };
-  });
-
-  // Deny in-app navigation
-  mainWindow.webContents.on('will-navigate', (event) => {
-    event.preventDefault();
-  });
+  // Deny window.open requests and in-app navigation (02 §6)
+  mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  mainWindow.webContents.on('will-navigate', (event) => event.preventDefault());
 
   // Forward renderer console logs
   mainWindow.webContents.on('console-message', (event) => {
@@ -77,8 +73,9 @@ function createWindow(): void {
   });
 
   // Load renderer
-  if (process.env.ELECTRON_RENDERER_URL) {
-    mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
+  const devUrl = devRendererUrl();
+  if (devUrl) {
+    mainWindow.loadURL(devUrl);
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
@@ -116,6 +113,9 @@ if (!gotTheLock) {
     });
 
     handle('settings:set', (req) => {
+      if (req?.globalShortcut && !isAllowedGlobalShortcut(req.globalShortcut)) {
+        throw new Error('A global shortcut needs Ctrl, Alt or the Windows key plus one other key (no single keys)');
+      }
       const updated = defaultSettingsStore.updateSettings(req ?? {});
       if (req && 'globalShortcut' in req) {
         registerAppGlobalShortcut();

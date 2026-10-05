@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { isSafeName } from '../fs/path-guard';
 import type { BridgeSource } from '../game/source';
 import type { SessionFileDoc, StateDoc, WidgetEvent, WidgetHeartbeat } from '../../core/schemas/protocol';
 import { SessionMetaSchema, type SessionMeta } from '../../core/schemas/session';
@@ -215,6 +216,8 @@ export class SessionRecorder {
   }
 
   private startSession(sessionId: string): void {
+    // the id names a folder under userData/sessions: a plain name only (path guard, T11.2)
+    if (!isSafeName(sessionId)) return;
     this.activeSessionId = sessionId;
     this.sessionDoc = null;
     this.finalised = false;

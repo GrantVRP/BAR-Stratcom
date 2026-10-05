@@ -30,7 +30,11 @@ export function AppSettingsSection(): React.JSX.Element {
 
   const handleApplyShortcut = async (): Promise<void> => {
     const trimmed = shortcutInput.trim();
-    await updateSettings({ globalShortcut: trimmed || null });
+    // main refuses single keys (08 §6); keep the input and say why
+    if (!(await updateSettings({ globalShortcut: trimmed || null }))) {
+      setShortcutFeedback(useSettings.getState().error ?? 'Shortcut not saved');
+      return;
+    }
     setCustomInput(null);
     const res = await ipcClient.invoke('coach:getShortcutStatus');
     if (res.ok) {

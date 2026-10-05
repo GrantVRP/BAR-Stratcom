@@ -30,6 +30,7 @@ export interface AiProvider {
 export type AiErrorCode =
   | 'NO_KEY'
   | 'NO_ENCRYPTION'
+  | 'NOT_CONFIGURED'
   | 'AUTH'
   | 'RATE_LIMIT'
   | 'TIMEOUT'
@@ -41,6 +42,7 @@ export type AiErrorCode =
 const MESSAGES: Record<AiErrorCode, string> = {
   NO_KEY: 'No API key saved for this provider',
   NO_ENCRYPTION: 'Secure key storage is not available on this system, so the key was not saved',
+  NOT_CONFIGURED: 'Choose an AI provider and model in Settings',
   AUTH: 'Invalid key',
   RATE_LIMIT: 'Rate limited, retry later',
   TIMEOUT: 'The provider took too long to answer',

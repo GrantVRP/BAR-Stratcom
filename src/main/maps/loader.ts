@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { MapsFileSchema, type MapRecord } from '../../core/schemas';
+import { AvgWindFileSchema, MapsFileSchema, type MapRecord } from '../../core/schemas';
 import { findDataDir } from '../registry/loader';
 
 let cachedMaps: MapRecord[] | null = null;
@@ -49,4 +49,20 @@ export function getMap(fileName: string, customDataDir?: string): MapRecord | nu
 export function clearMapsCache(): void {
   cachedMaps = null;
   cachedMapByFileName = null;
+}
+
+let cachedWind: Record<string, Record<string, number>> | null | undefined;
+
+/** The game's average wind table (data/wind/avg-wind.json, by min → max wind); null when missing. */
+export function loadAvgWindTable(customDataDir?: string): Record<string, Record<string, number>> | null {
+  if (cachedWind !== undefined && !customDataDir) return cachedWind;
+  let table: Record<string, Record<string, number>> | null = null;
+  try {
+    const file = path.join(customDataDir ?? findDataDir(), 'wind', 'avg-wind.json');
+    table = AvgWindFileSchema.parse(JSON.parse(fs.readFileSync(file, 'utf-8'))).table;
+  } catch {
+    table = null;
+  }
+  if (!customDataDir) cachedWind = table;
+  return table;
 }

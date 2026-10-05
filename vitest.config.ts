@@ -46,10 +46,11 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      include: ['src/core/**'],
-      exclude: ['src/core/**/*.test.ts'],
+      include: ['src/core/**', 'src/main/ai/**'],
+      exclude: ['src/core/**/*.test.ts', 'src/main/ai/**/*.test.ts', 'src/main/ai/__test__/**'],
       thresholds: {
         'src/core/**': { lines: 85 },
+        'src/main/ai/**': { lines: 85 },
         'src/core/{sim,coach,analysis,registry,sharecode}/**': { lines: 90 }
       }
     }

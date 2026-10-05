@@ -40,6 +40,8 @@ export const IPC_CHANNELS = [
   'ai:hasKey',
   'ai:listModels',
   'ai:test',
+  'ai:draft',
+  'ai:cancel',
   'intel:battles',
   'intel:leaderboard',
   'intel:replays',
@@ -54,7 +56,8 @@ export const IPC_EVENT_CHANNELS = [
   'live:state',
   'coach:update',
   'coach:cue',
-  'review:ready'
+  'review:ready',
+  'ai:progress'
 ] as const;
 
 export type IpcEventChannel = (typeof IPC_EVENT_CHANNELS)[number];

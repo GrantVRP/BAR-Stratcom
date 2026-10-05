@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { IpcChannel, IpcEventChannel } from './channels';
-import { aiIpcContract } from './ipc-ai';
+import { aiIpcContract, aiIpcEvents } from './ipc-ai';
 import {
   BarSourceSchema,
   BenchmarkFileSchema,
@@ -365,7 +365,8 @@ export const ipcEvents = {
   'live:state': LiveSnapshotSchema,
   'coach:update': CoachStateSchema,
   'coach:cue': CueSchema,
-  'review:ready': z.object({ sessionId: z.string() }).strict()
+  'review:ready': z.object({ sessionId: z.string() }).strict(),
+  ...aiIpcEvents
 } as const satisfies Record<IpcEventChannel, z.ZodTypeAny>;
 
 export type IpcContract = typeof ipcContract;

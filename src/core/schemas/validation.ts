@@ -9,6 +9,7 @@ export const IssueCodeSchema = z.enum([
   'E_ACTOR_NOT_AVAILABLE',
   'E_BAD_COUNT',
   'E_MISSING_FIELD',
+  'E_SCHEMA',
   'W_TIME_ORDER',
   'W_NO_ENERGY_BEFORE_FACTORY',
   'W_STALE_VERSION',

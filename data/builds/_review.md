@@ -31,7 +31,7 @@ as the app (average wind of the map, default start).
 - 60 steps · first factory Bot Lab (`armlab`) at 0:44
 - Sim on Isidis crack 1.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 2. Bot wind // Isidis crack
 
@@ -41,7 +41,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Bot Lab (`armlab`) at 0:50
 - Sim on Isidis crack 1.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: reject — reason: near-duplicate of #1 (same map; from 1:00 the same lab build: Tick, construction bots, Pawns, construction turret); #1 is the higher-skill player
 
 ### 3. Bot wind // Ditched
 
@@ -51,7 +51,7 @@ DECISION: approve | reject — reason:
 - 50 steps · first factory Bot Lab (`armlab`) at 0:48
 - Sim on Ditched_V1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 4. Bot wind // Supreme Isthmus
 
@@ -61,7 +61,7 @@ DECISION: approve | reject — reason:
 - 34 steps · first factory Bot Lab (`armlab`) at 1:04
 - Sim on Supreme Isthmus v2.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 5. Vehicle wind // Isidis crack
 
@@ -71,7 +71,7 @@ DECISION: approve | reject — reason:
 - 57 steps · first factory Vehicle Plant (`armvp`) at 0:29
 - Sim on Isidis crack 1.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 6. Vehicle wind // Cape Violet
 
@@ -81,7 +81,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Vehicle Plant (`armvp`) at 0:37
 - Sim on Cape_Violet_V1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 7. Vehicle solar // Moonshine Run
 
@@ -91,7 +91,7 @@ DECISION: approve | reject — reason:
 - 47 steps · first factory Vehicle Plant (`armvp`) at 1:05
 - Sim on Moonshine Run v1.0.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated, windUnknown)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 8. Vehicle wind // Tangerine Remake
 
@@ -101,7 +101,7 @@ DECISION: approve | reject — reason:
 - 38 steps · first factory Vehicle Plant (`armvp`) at 0:28
 - Sim on Tangerine_Remake 1.0: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 9. Air mixed // Isidis crack
 
@@ -111,7 +111,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Aircraft Plant (`armap`) at 0:48
 - Sim on Isidis crack 1.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 10. Air solar // Moonshine Run
 
@@ -121,7 +121,7 @@ DECISION: approve | reject — reason:
 - 35 steps · first factory Aircraft Plant (`armap`) at 0:53
 - Sim on Moonshine Run v1.0.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated, windUnknown)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 11. Bot wind // Feast of Hades
 
@@ -131,7 +131,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Bot Lab (`corlab`) at 0:54
 - Sim on Feast of Hades 1.0.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 12. Bot wind // Isidis crack
 
@@ -141,7 +141,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Bot Lab (`corlab`) at 0:40
 - Sim on Isidis crack 1.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: reject — reason: near-duplicate of #11 (same commander opening into construction bots and mass Grunts, about 95% the same unit mix by metal); #11 is the higher-skill player
 
 ### 13. Bot wind // Supreme Isthmus
 
@@ -151,7 +151,7 @@ DECISION: approve | reject — reason:
 - 41 steps · first factory Bot Lab (`corlab`) at 0:18
 - Sim on Supreme Isthmus v2.1: energy stall 231 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: reject — reason: odd for a bot plan: a token bot lab, then a tech-2 vehicle rush by 3:10 that leans on team resources; 231 s energy stall in the sim
 
 ### 14. Bot wind // Ditched
 
@@ -161,7 +161,7 @@ DECISION: approve | reject — reason:
 - 45 steps · first factory Bot Lab (`corlab`) at 0:43
 - Sim on Ditched_V1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 15. Vehicle wind // Feast of Hades
 
@@ -171,7 +171,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Vehicle Plant (`corvp`) at 0:59
 - Sim on Feast of Hades 1.0.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 16. Vehicle wind // Feast of Hades
 
@@ -181,7 +181,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Vehicle Plant (`corvp`) at 1:01
 - Sim on Feast of Hades 1.0.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: reject — reason: near-duplicate: same game as #15 with the same vehicle plant into Rascal/Incisor plan, and the same commander opening as #17
 
 ### 17. Vehicle mixed // White Fire Remake
 
@@ -191,7 +191,7 @@ DECISION: approve | reject — reason:
 - 60 steps · first factory Vehicle Plant (`corvp`) at 0:55
 - Sim on White Fire Remake 1.3: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 18. Vehicle wind // Ditched
 
@@ -201,7 +201,7 @@ DECISION: approve | reject — reason:
 - 48 steps · first factory Vehicle Plant (`corvp`) at 0:44
 - Sim on Ditched_V1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 19. Air wind // Supreme Isthmus
 
@@ -211,7 +211,7 @@ DECISION: approve | reject — reason:
 - 35 steps · first factory Aircraft Plant (`corap`) at 0:20
 - Sim on Supreme Isthmus v2.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ### 20. Air solar // Moonshine Run
 
@@ -221,7 +221,7 @@ DECISION: approve | reject — reason:
 - 38 steps · first factory Aircraft Plant (`corap`) at 0:58
 - Sim on Moonshine Run v1.0.1: energy stall 0 s · metal stall 0 s (startEstimated, mexYieldEstimated, windUnknown)
 
-DECISION: approve | reject — reason:
+DECISION: approve
 
 ## Unmatched sessions
 

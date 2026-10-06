@@ -13,6 +13,7 @@ import { ALERT_DETECTORS, type AlertCandidate, isPlannedStall } from './alerts';
 import { type CoachMemory, updateAlertRules, resolveAudioCues } from './rules';
 import { buildCoachHud } from './display';
 import { buildCoachAssist } from './assist';
+import { trackEnemySightings } from './hud-boxes';
 import { CHAT_ECHO_COOLDOWN_SEC, ALL_ALERT_IDS } from './constants';
 
 export interface EvaluateInput {
@@ -230,6 +231,9 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     plannedStall = 'metal';
   }
 
+  const enemySeenAt = trackEnemySightings(memory.enemySeenAt ?? {}, now.enemies, clock);
+  state.enemySeenAt = enemySeenAt;
+
   const hud = buildCoachHud({
     plan,
     steps: trackerResult.steps,
@@ -240,7 +244,9 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     clock,
     factionId: now.me?.factionId ?? plan.factionId,
     visible: mode !== 'manual',
-    plannedStall
+    plannedStall,
+    enemies: now.enemies,
+    enemySeenAt
   });
 
   const assist: CoachAssist = buildCoachAssist({
@@ -265,7 +271,8 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
     lastChatEchoAt: newLastChatEchoAt,
     dueStepIds: trackerResult.dueStepIds,
     doneStepIds: trackerResult.doneStepIds,
-    skippedStepIds: trackerResult.skippedStepIds
+    skippedStepIds: trackerResult.skippedStepIds,
+    enemySeenAt
   };
 
   const cues = mode === 'manual' ? emittedCues.filter((c) => c.alertId === 'STEP_DUE') : emittedCues;

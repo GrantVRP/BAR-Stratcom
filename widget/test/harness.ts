@@ -5,6 +5,7 @@ import { InMemoryFs } from './fs';
 import { LUA_IO_OS_BOOTSTRAP, LUA_JSON_BOOTSTRAP, LUA_SPRING_BOOTSTRAP } from './lua-bootstrap';
 import { createScenario, type Scenario } from './scenario';
 import { installOrderMocks } from './harness-orders';
+import { installGlMocks, installSensorMocks } from './harness-sensors';
 
 export { InMemoryFs };
 
@@ -181,6 +182,7 @@ export async function createWidgetHarness(
 
   // 4b. Selection, command panel and orders (T09.1)
   const orderRecorders = installOrderMocks(engine, scenario);
+  installSensorMocks(engine, scenario);
 
   // 5. UnitDefs & UnitDefNames pure Lua tables
   const unitDefsMap: Record<string, unknown> = {};
@@ -261,30 +263,7 @@ export async function createWidgetHarness(
   `);
 
   // 7. gl mock
-  engine.global.set('__record_draw_call', (name: string, args: unknown[]) => {
-    recordedDrawCalls.push({ name, args });
-  });
-
-  engine.doStringSync(`
-    gl = {}
-    local glMethods = {
-      "Color", "Text", "Rect", "BeginText", "EndText",
-      "PushMatrix", "PopMatrix", "Translate", "Scale", "LineWidth", "Shape"
-    }
-    for _, name in ipairs(glMethods) do
-      gl[name] = function(...)
-        __record_draw_call(name, { ... })
-      end
-    end
-    gl.TexRect = function(...) __record_draw_call("TexRect", { ... }) end
-    -- engine-facts.md: Texture true when bound ('#'..known unitDefID, false); GetTextWidth at size 1 (0.5/char)
-    gl.Texture = function(arg)
-      __record_draw_call("Texture", { arg })
-      local id = type(arg) == "string" and arg:sub(1, 1) == "#" and tonumber(arg:sub(2))
-      return type(arg) == "boolean" or (id and UnitDefs[id] ~= nil) or false
-    end
-    gl.GetTextWidth = function(text) return #tostring(text) * 0.5 end
-  `);
+  installGlMocks(engine, (name, args) => recordedDrawCalls.push({ name, args }));
 
   // 8. widgetHandler mock
   engine.global.set('__record_action', (name: string, fn: unknown) => {

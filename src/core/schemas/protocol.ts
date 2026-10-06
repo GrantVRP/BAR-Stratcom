@@ -219,6 +219,18 @@ export const CoachHudAlertSchema = z
 
 export type CoachHudAlert = z.infer<typeof CoachHudAlertSchema>;
 
+/** The radar box (from widget 3.0.6, T09.5): the widget draws the scope from the game; `lines` are the
+ *  enemy contacts the app lists under it (identified enemies in LOS). */
+export const CoachHudRadarSchema = z
+  .object({
+    /** Elmos from the centre to the scope's side edges (top and bottom: half). */
+    range: z.number().int().min(500).max(8000),
+    lines: z.array(CoachHudLineSchema).max(3)
+  })
+  .strict();
+
+export type CoachHudRadar = z.infer<typeof CoachHudRadarSchema>;
+
 export const CoachHudSchema = z
   .object({
     visible: z.boolean(),
@@ -230,6 +242,8 @@ export const CoachHudSchema = z
     build: CoachHudBoxSchema.nullable().optional(),
     /** The factories' next builds (from 3.0.4); null when no factory build is pending. */
     factory: CoachHudBoxSchema.nullable().optional(),
+    /** Radar scope + enemy contacts (from 3.0.6); null without enemy data. */
+    radar: CoachHudRadarSchema.nullable().optional(),
     /** Up to two active alerts (from 3.0.5), drawn under the boxes. */
     alerts: z.array(CoachHudAlertSchema).max(2).optional()
   })

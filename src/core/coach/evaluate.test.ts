@@ -116,6 +116,29 @@ describe('Coach Engine: evaluate()', () => {
     expect(result.display.hud.visible).toBe(true);
   });
 
+  it('remembers when each enemy type was first seen and gives the radar its contacts (T09.5)', () => {
+    const tick = (gameSeconds: number, enemies: Record<string, number>, memory = createInitialCoachMemory()) =>
+      evaluate({
+        plan,
+        planSim,
+        registry: mockRegistry,
+        now: makeSnapshot({ gameSeconds, enemies }),
+        history: [],
+        finished: createFinishedLedger(),
+        benchmark: null,
+        profile: INTERMEDIATE_PROFILE,
+        memory,
+        mode: 'live'
+      });
+    const first = tick(10, { armmex: 2 });
+    const second = tick(40, { armmex: 3 }, first.memory);
+    expect(second.memory.enemySeenAt).toEqual({ armmex: 10 });
+    expect(second.state.enemySeenAt).toEqual({ armmex: 10 });
+    expect(CoachStateSchema.safeParse(second.state).success).toBe(true);
+    expect(second.display.hud.radar).toEqual({ range: 2400, lines: [{ text: '3× Metal Extractor', tone: 'info', right: '0:30 ago' }] });
+    expect(tick(50, {}, second.memory).memory.enemySeenAt).toEqual({});
+  });
+
   it('runs manual mode with HUD hidden and no sensor alerts', () => {
     const memory = createInitialCoachMemory();
     // Snapshot with critical energy stall that would normally trigger danger alert

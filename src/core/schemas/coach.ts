@@ -94,7 +94,9 @@ export const CoachStateSchema = z
     aheadBehindSec: z.number().nullable(),
     alerts: z.array(AlertSchema),
     projections: CoachProjectionsSchema,
-    profile: ProfileSchema
+    profile: ProfileSchema,
+    /** Game second each enemy type currently in sight was first seen (T09.5). */
+    enemySeenAt: z.record(z.string(), z.number()).optional()
   })
   .strict();
 

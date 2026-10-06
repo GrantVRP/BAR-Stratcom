@@ -1,8 +1,8 @@
 import type { Alert, CoachStep } from '../schemas/coach';
 import type { BuildPlan, BuildStep } from '../schemas/plans';
-import type { CoachHudAlert, CoachHudBox, CoachHudLine, CoachHudMeta } from '../schemas/protocol';
+import type { CoachHudAlert, CoachHudBox, CoachHudLine, CoachHudMeta, CoachHudRadar } from '../schemas/protocol';
 import type { Registry } from '../registry';
-import { fitText, timeSuffix, unitLabel } from './hud-text';
+import { fitText, formatTimeMinutesSeconds, timeSuffix, unitLabel } from './hud-text';
 import { pendingBuilderSteps, pendingFactoryBuilds } from './queues';
 
 /**
@@ -123,4 +123,49 @@ export function buildHudAlerts(activeAlerts: readonly Alert[], plannedStall: 'en
   const alerts: CoachHudAlert[] = activeAlerts.slice(0, 2).map((a) => ({ text: fitText(a.text, 36), tone: a.severity }));
   if (alerts.length < 2 && plannedStall) alerts.push({ text: 'PLANNED STALL', tone: 'info' });
   return alerts;
+}
+
+/** Elmos from the centre of the widget's radar scope to its side edges: a zoom choice, not a game value. */
+export const HUD_RADAR_RANGE = 2400;
+const CONTACT_ROWS = 3;
+const NEW_CONTACT_SEC = 15;
+
+/** When each enemy type in sight was first seen; a type that leaves sight starts again when it returns. */
+export function trackEnemySightings(
+  previous: Readonly<Record<string, number>>,
+  enemies: Readonly<Record<string, number>>,
+  clock: number
+): Record<string, number> {
+  const next: Record<string, number> = {};
+  for (const [unitId, count] of Object.entries(enemies)) {
+    if (count > 0) next[unitId] = previous[unitId] ?? clock;
+  }
+  return next;
+}
+
+/**
+ * RADAR (T09.5): the widget draws the scope itself; these are the enemy contacts under it — the
+ * biggest groups of identified enemies in sight (newest first on ties), "NEW" (warn) for 15 s after
+ * a type is first seen, then how long it has been in sight.
+ */
+export function buildRadarBox(
+  enemies: Readonly<Record<string, number>>,
+  seenAt: Readonly<Record<string, number>>,
+  registry: Registry,
+  clock: number
+): CoachHudRadar {
+  const groups = Object.entries(enemies)
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1] || (seenAt[b[0]] ?? clock) - (seenAt[a[0]] ?? clock) || a[0].localeCompare(b[0]))
+    .slice(0, CONTACT_ROWS);
+  const lines: CoachHudLine[] = groups.map(([unitId, count]) => {
+    const age = Math.max(0, clock - (seenAt[unitId] ?? clock));
+    const fresh = age <= NEW_CONTACT_SEC;
+    return {
+      text: fitText(`${count}× ${unitLabel(registry, unitId)}`, ROW_TEXT_MAX),
+      tone: fresh ? 'warn' : 'info',
+      right: fresh ? 'NEW' : fitText(`${formatTimeMinutesSeconds(age)} ago`, 9)
+    };
+  });
+  return { range: HUD_RADAR_RANGE, lines };
 }

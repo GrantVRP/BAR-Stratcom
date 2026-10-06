@@ -38,7 +38,7 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
 
       const heartbeat = WidgetHeartbeatSchema.parse(raw);
       expect(heartbeat.protocol).toBe(1);
-      expect(heartbeat.widgetVersion).toBe('3.0.5');
+      expect(heartbeat.widgetVersion).toBe('3.0.6');
       expect(heartbeat.gameVersion).toBe('105.1.1-2550');
       expect(heartbeat.engineVersion).toBe('2026.07.04');
       expect(heartbeat.sessionId).toBeNull();
@@ -133,7 +133,7 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
 
       expect(probe).not.toBeNull();
       expect(probe!.protocol).toBe(1);
-      expect(probe!.widgetVersion).toBe('3.0.5');
+      expect(probe!.widgetVersion).toBe('3.0.6');
       expect(probe!.types.Game).toBe('table');
       expect(probe!.types.Engine).toBe('table');
       expect(probe!.canControlUnits).toBe(true);

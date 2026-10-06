@@ -4,7 +4,7 @@ import type { BuildPlan } from '../schemas/plans';
 import type { Registry } from '../registry';
 import { nextBuilderStep } from './queues';
 import { paddedLine, timeSuffix, truncateTo36, unitLabel } from './hud-text';
-import { buildBuildBox, buildFactoryBox, buildHudAlerts } from './hud-boxes';
+import { buildBuildBox, buildFactoryBox, buildHudAlerts, buildRadarBox } from './hud-boxes';
 
 export { clearWarnedMissingUnits, formatTimeMinutesSeconds, truncateTo36 } from './hud-text';
 export { buildFactoryBox } from './hud-boxes';
@@ -20,6 +20,9 @@ export interface BuildHudInput {
   factionId?: string | null;
   visible?: boolean;
   plannedStall?: 'energy' | 'metal' | null;
+  /** Identified enemies in LOS by unit (state.json); the radar box lists them. */
+  enemies?: Readonly<Record<string, number>>;
+  enemySeenAt?: Readonly<Record<string, number>>;
 }
 
 /**
@@ -37,7 +40,9 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     clock,
     factionId,
     visible = true,
-    plannedStall = null
+    plannedStall = null,
+    enemies,
+    enemySeenAt
   } = input;
 
   const lines: CoachHudLine[] = [];
@@ -133,6 +138,7 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     progress,
     build: plan ? buildBuildBox({ plan, steps, currentStepIndex, aheadBehindSec, registry, clock }) : null,
     factory: plan ? buildFactoryBox(plan, steps, registry, clock) : null,
+    radar: enemies ? buildRadarBox(enemies, enemySeenAt ?? {}, registry, clock) : null,
     alerts: buildHudAlerts(activeAlerts, plannedStall)
   };
 }

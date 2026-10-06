@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CoachHud, CoachHudAlert, CoachHudBox, CoachHudLine } from '../../../../core/schemas/protocol';
+import type { CoachHud, CoachHudAlert, CoachHudBox, CoachHudLine, CoachHudRadar } from '../../../../core/schemas/protocol';
 import { UnitIcon } from '../icons/UnitIcon';
 import { factionAccent } from '../../lib/faction-style';
 
@@ -79,6 +79,28 @@ function Box({ box, accent }: { box: CoachHudBox; accent: string }): React.JSX.E
   );
 }
 
+/**
+ * RADAR: the game draws the scope from unit positions the app never receives, so the preview shows
+ * the frame and says so; the header counts the identified enemies in sight, then the contact rows.
+ */
+function RadarBox({ radar, accent, inSight }: { radar: CoachHudRadar; accent: string; inSight: number | null }): React.JSX.Element {
+  return (
+    <div data-testid="hud-box-radar" className="bg-[#0a0c14]/85 px-3 pb-2" style={{ borderTop: `3px solid ${accent}` }}>
+      <div className="flex items-center justify-between border-b border-white/[0.08] py-1.5 text-[12px] text-[#94a3b8]">
+        <span>RADAR</span>
+        <span className="flex gap-3">
+          <span>{radar.range} RANGE</span>
+          {inSight !== null && <span className={inSight > 0 ? TONE_TEXT.danger : ''}>{inSight > 0 ? `${inSight} IN SIGHT` : 'NO CONTACT'}</span>}
+        </span>
+      </div>
+      <div className="mt-1.5 flex h-[84px] items-center justify-center bg-black/25 text-[11px] text-[#64748b]">
+        Unit positions are drawn in game
+      </div>
+      {radar.lines.length > 0 && <BoxRows lines={radar.lines} />}
+    </div>
+  );
+}
+
 function Alerts({ alerts }: { alerts: readonly CoachHudAlert[] }): React.JSX.Element {
   return (
     <div data-testid="hud-alerts" className="space-y-1 bg-[#0a0c14]/85 px-3 py-1.5">
@@ -97,7 +119,7 @@ function Alerts({ alerts }: { alerts: readonly CoachHudAlert[] }): React.JSX.Ele
  * (05 §8.1, T09.4), with the app's own unit icons where the game draws its build pictures; 400 px wide
  * because the app's monospace font is wider than the game's.
  */
-export function HudBoxesPreview({ hud, factionId }: { hud: CoachHud; factionId?: string | null }): React.JSX.Element {
+export function HudBoxesPreview({ hud, factionId, inSight = null }: { hud: CoachHud; factionId?: string | null; inSight?: number | null }): React.JSX.Element {
   const accent = factionAccent(factionId);
   const boxes = [hud.build, hud.factory].filter((b): b is CoachHudBox => !!b);
   return (
@@ -105,6 +127,7 @@ export function HudBoxesPreview({ hud, factionId }: { hud: CoachHud; factionId?:
       {boxes.map((box) => (
         <Box key={box.title} box={box} accent={accent} />
       ))}
+      {hud.radar && <RadarBox radar={hud.radar} accent={accent} inSight={inSight} />}
       {hud.alerts && hud.alerts.length > 0 && <Alerts alerts={hud.alerts} />}
     </div>
   );

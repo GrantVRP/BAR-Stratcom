@@ -28,6 +28,8 @@ export interface CoachMemory {
   dueStepIds: Set<string>;
   doneStepIds: Set<string>;
   skippedStepIds: Set<string>;
+  /** Game second each enemy type currently in sight was first seen (radar contacts, T09.5). */
+  enemySeenAt?: Readonly<Record<string, number>>;
 }
 
 export function createInitialCoachMemory(): CoachMemory {
@@ -37,7 +39,8 @@ export function createInitialCoachMemory(): CoachMemory {
     lastChatEchoAt: -Infinity,
     dueStepIds: new Set<string>(),
     doneStepIds: new Set<string>(),
-    skippedStepIds: new Set<string>()
+    skippedStepIds: new Set<string>(),
+    enemySeenAt: {}
   };
 }
 

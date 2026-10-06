@@ -149,20 +149,8 @@ describe('Widget Sensor state.json (05 §6, 03 §7.2, T02.4)', () => {
     const enemyUnit = createScenarioUnit('armpw', scenario, { teamId: 1 });
     scenario.addUnit(enemyUnit);
 
-    // Radar blip enemy: defId = 0 (unidentified)
-    scenario.addUnit({
-      id: 9999,
-      defId: 0,
-      unitDefName: 'unknown_blip',
-      teamId: 1,
-      health: 100,
-      maxHealth: 100,
-      isBuilding: false,
-      isBeingBuilt: false,
-      buildProgress: 1,
-      currentBuildPower: 0,
-      position: { x: 500, y: 0, z: 500 }
-    });
+    // Radar blip enemy: on radar only, type not known (GetUnitDefID answers nil, engine-facts.md)
+    scenario.addUnit(createScenarioUnit('armpw', scenario, { id: 9999, teamId: 1, sensor: 'radar', position: { x: 500, y: 0, z: 500 } }));
 
     const harness = await createWidgetHarness(scenario);
     try {

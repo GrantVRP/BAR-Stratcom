@@ -29,6 +29,13 @@ Per **Standing Order S-7**, test doubles, harnesses, and scenario builders **mus
 | `gl.Text(text, x, y, size, options)` | draws; returns nothing | options are letters: `o` outline, `O` light outline, `r` right-aligned at x, `c` centred, `s` shadow, `v`/`t`/`b`/`x` vertical anchors | Recoil `rts/Lua/LuaOpenGL.cpp` `LuaOpenGL::Text` (checked 2026-10-06). |
 | `gl.GetTextWidth(text)` | `number`: width at size 1 (multiply by the font size) | used to place right-aligned header items | Recoil `LuaOpenGL::GetTextWidth` (checked 2026-10-06). |
 | `gl.Texture('#' .. unitDefID)` | `boolean`: true when bound, false for an unknown unitDefID; `gl.Texture(false)` unbinds (true) | binds the unit's build picture inside the engine; draw it with `gl.TexRect(x1, y1, x2, y2)` | Recoil `LuaOpenGL::Texture`, `LuaOpenGLUtils::ParseTextureImage` case `'#'` (checked 2026-10-06). In-engine texture, never shipped by the app (05 §8.1, A-11). |
+| `Spring.GetVisibleUnits([teamID[, radius[, icons]]])` | `UnitID[]` | units **in the camera view** (`readMap->GridVisibility` with the active camera) that are in LOS — not every enemy the player knows about | Recoil `LuaUnsyncedRead::GetVisibleUnits` (checked 2026-10-06). Widgets before 3.0.6 counted `enemies` with it, so off-screen enemies were missed. |
+| `Spring.GetAllUnits()` | `UnitID[]` | for a player: own and allied units plus enemy units in LOS **or radar** (`LuaUtils::IsUnitVisible`) | Recoil `LuaSyncedRead::GetAllUnits` (checked 2026-10-06). |
+| `Spring.GetUnitLosState(unitID, allyTeamID)` | `{ los?: true, radar?: true, typed?: true }` or nil | `los` = in line of sight now; `typed` = its type is known (in LOS, or seen and kept on radar since) | Recoil `LuaSyncedRead::GetUnitLosState` (checked 2026-10-06). |
+| `Spring.GetUnitDefID(unitID)` (enemy) | `number` or nil | nil for a radar blip whose type is not known (`LuaUtils::IsUnitTyped`) | Recoil `LuaSyncedRead::GetUnitDefID` / `IsUnitTyped` (checked 2026-10-06). |
+| `Spring.GetUnitPosition(unitID)` (enemy) | `x, y, z` or nothing | answers for units in LOS or radar; radar-only units get the engine's radar error added (as on the minimap) | Recoil `GetSolidObjectPosition` + `GetLuaErrorVector` (checked 2026-10-06). |
+| `Spring.GetTeamStartPosition(teamID)` | `x, y, z, isValid` | allied teams only | Recoil `LuaSyncedRead::GetTeamStartPosition` (checked 2026-10-06). |
+| `gl.CreateList(fn, ...)` / `gl.CallList(id)` / `gl.DeleteList(id)` | CreateList → list index (`0` on failure); runs `fn(...)` while recording, callable outside draw call-ins; CallList only while drawing | marked deprecated-GL (a warning only when the engine's deprecated-GL warning level is raised) | Recoil `LuaOpenGL::CreateList`/`CallList`/`DeleteList` (checked 2026-10-06). |
 | Gaia team | `Spring.GetGaiaTeamID()`; Gaia is its own ally team | critters such as `critter_gull` (Seagull) belong to Gaia and are visible | H1b Armada capture (Seagull recorded as an enemy for 199 s). |
 
 ---
@@ -74,3 +81,9 @@ Per **Standing Order S-7**, test doubles, harnesses, and scenario builders **mus
 8. **Enemies (`writeSensorState`)**:
    - Units of the Gaia team (`Spring.GetGaiaTeamID()`) are neutral: exclude them from `enemies`
      even though their ally team differs from ours.
+   - `enemies` is every identified enemy in LOS (03 §7.3): iterate `Spring.GetAllUnits()` and keep
+     units whose `GetUnitLosState(u, myAllyTeam).los` is true — never `GetVisibleUnits` (camera only).
+
+9. **Radar scope (3.0.6)**: enemy blips come from `GetAllUnits()` (LOS or radar), positions from
+   `GetUnitPosition` (radar error included by the engine); a blip whose `GetUnitDefID` is nil is an
+   unidentified radar contact. Centre: the commander, else `GetTeamStartPosition(myTeam)`.

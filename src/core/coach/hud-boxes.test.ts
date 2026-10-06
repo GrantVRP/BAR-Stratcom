@@ -4,7 +4,7 @@ import type { Alert, CoachStep, CoachStepStatus } from '../schemas/coach';
 import type { Registry } from '../registry';
 import { CoachHudSchema } from '../schemas/protocol';
 import { buildCoachHud } from './display';
-import { actorTag, buildBuildBox, buildFactoryBox, buildHudAlerts, paceMeta } from './hud-boxes';
+import { HUD_RADAR_RANGE, actorTag, buildBuildBox, buildFactoryBox, buildHudAlerts, buildRadarBox, paceMeta, trackEnemySightings } from './hud-boxes';
 import { nextBuilderStep, nextFactoryRun } from './queues';
 
 const COM = { kind: 'commander' } as const;
@@ -169,5 +169,36 @@ describe('HUD boxes (owner requests T09.3/T09.4)', () => {
     expect(hud.build?.lines[0]!.unitId).toBe('armwin');
     expect(hud.factory?.lines[0]!.unitId).toBe('armck');
     expect(hud.alerts).toEqual([]);
+  });
+});
+
+describe('radar contacts (owner request T09.5)', () => {
+  it('sightings: the first time is kept while in sight, dropped when gone, restarted on return', () => {
+    let seen = trackEnemySightings({}, { armpw: 2 }, 100);
+    expect(seen).toEqual({ armpw: 100 });
+    seen = trackEnemySightings(seen, { armpw: 3, armrock: 1 }, 110);
+    expect(seen).toEqual({ armpw: 100, armrock: 110 });
+    seen = trackEnemySightings(seen, { armrock: 1, armpw: 0 }, 120);
+    expect(seen).toEqual({ armrock: 110 });
+    expect(trackEnemySightings(seen, { armpw: 1 }, 130)).toEqual({ armpw: 130 });
+  });
+
+  it('rows: biggest groups first, newest first on ties, NEW for 15 s then time in sight, at most 3', () => {
+    const radar = buildRadarBox({ armpw: 4, armrock: 2, armflea: 2, armham: 1 }, { armpw: 0, armrock: 50, armflea: 90, armham: 99 }, registry, 100);
+    expect(radar.range).toBe(HUD_RADAR_RANGE);
+    expect(radar.lines).toEqual([
+      { text: '4× Pawn', tone: 'info', right: '1:40 ago' },
+      { text: '2× Tick', tone: 'warn', right: 'NEW' },
+      { text: '2× Rocketeer', tone: 'info', right: '0:50 ago' }
+    ]);
+  });
+
+  it('no enemies in sight: no rows (the widget still draws the scope); no enemy data: no radar', () => {
+    expect(buildRadarBox({ armpw: 0 }, {}, registry, 10)).toEqual({ range: HUD_RADAR_RANGE, lines: [] });
+    const hud = (enemies?: Record<string, number>) =>
+      buildCoachHud({ plan: opening, steps: tracked(opening, 0), currentStepIndex: 0, aheadBehindSec: null, activeAlerts: [], registry, clock: 0, ...(enemies ? { enemies } : {}) });
+    expect(hud().radar).toBeNull();
+    expect(CoachHudSchema.safeParse(hud({ armpw: 1 })).success).toBe(true);
+    expect(hud({ armpw: 1 }).radar?.lines[0]).toEqual({ text: '1× Pawn', tone: 'warn', right: 'NEW' });
   });
 });

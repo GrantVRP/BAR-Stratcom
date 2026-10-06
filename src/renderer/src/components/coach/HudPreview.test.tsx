@@ -85,6 +85,23 @@ describe('HudPreview', () => {
     expect(container.textContent).not.toContain('ARMADA // TEST PLAN'); // the single panel is for older widgets
   });
 
+  it('shows the RADAR box: range, a frame that says the game draws the positions, the contact rows (T09.5)', () => {
+    const hud: CoachHud = {
+      visible: true,
+      title: 'T',
+      progress: null,
+      lines: [],
+      radar: { range: 2400, lines: [{ text: '4× Pawn', tone: 'warn', right: 'NEW' }] }
+    };
+    act(() => {
+      root.render(<HudPreview hud={hud} />);
+    });
+    const radar = container.querySelector('[data-testid="hud-box-radar"]')!;
+    expect(radar.textContent).toContain('2400 RANGE');
+    expect(radar.textContent).toContain('Unit positions are drawn in game');
+    expect(radar.querySelector('[data-testid="hud-row"]')?.textContent).toBe('4× PawnNEW');
+  });
+
   it('renders waiting state when no hud or state is provided', () => {
     act(() => {
       root.render(<HudPreview hud={null} />);

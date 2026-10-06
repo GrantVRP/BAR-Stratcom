@@ -39,7 +39,9 @@ local spGetUnitCommands = Spring.GetUnitCommands
 local spGetUnitCommandCount = Spring.GetUnitCommandCount
 local spGetFactoryCommands = Spring.GetFactoryCommands
 local spGetFactoryCommandCount = Spring.GetFactoryCommandCount
-local spGetVisibleUnits = Spring.GetVisibleUnits
+local spGetAllUnits = Spring.GetAllUnits
+local spGetUnitLosState = Spring.GetUnitLosState
+local spGetTeamStartPosition = Spring.GetTeamStartPosition
 local spGetWind = Spring.GetWind
 local spEcho = Spring.Echo
 local spGetTimer = Spring.GetTimer
@@ -57,7 +59,7 @@ local spGetSelectedUnits = Spring.GetSelectedUnits
 
 -- Constants & State
 local PROTOCOL = 1
-local WIDGET_VERSION = "3.0.5"
+local WIDGET_VERSION = "3.0.6"
 local DIR = "stratcom/"
 
 local jsonNull = (type(Json) == "table" and Json.null) or nil
@@ -96,6 +98,12 @@ local TONE_COLORS = {
 -- HUD boxes (05 §8.1, T09.4): one look for every box. Size and brightness carry the levels: headers and
 -- tags quiet, the big row brightest, queue rows dimmer; colour is kept for meaning (late, pace, alerts).
 local HUD_WIDTH = 360 -- px at 1080p, before scaling
+-- Radar scope (T09.5): a 2:1 strip, its side edges `range` elmos from the centre, top/bottom half that
+local RADAR_SCOPE_H = 168 -- px at 1080p
+local RADAR_MAX_OWN = 300
+local RADAR_MAX_ENEMY = 200
+local radar = { seq = 0, range = 2400, centred = false, commander = false, own = {}, enemy = {}, contacts = 0 }
+local radarList = { id = nil, seq = -1, x = 0, y = 0, scale = 0 }
 local HUD_TEXT = {
   label = { 148 / 255, 163 / 255, 184 / 255, 1.0 },     -- #94a3b8 headers
   tag = { 100 / 255, 116 / 255, 139 / 255, 1.0 },       -- #64748b who builds it
@@ -286,6 +294,8 @@ local function runProbe()
       ["Spring.GetUnitCommandCount"] = type(Spring and Spring.GetUnitCommandCount),
       ["Spring.GetFactoryCommands"] = type(Spring and Spring.GetFactoryCommands),
       ["Spring.GetVisibleUnits"] = type(Spring and Spring.GetVisibleUnits),
+      ["Spring.GetAllUnits"] = type(Spring and Spring.GetAllUnits),
+      ["Spring.GetUnitLosState"] = type(Spring and Spring.GetUnitLosState),
       ["Spring.SetActiveCommand"] = type(Spring and Spring.SetActiveCommand),
       ["Spring.GetActiveCmdDescs"] = type(Spring and Spring.GetActiveCmdDescs),
       ["widgetHandler.actionHandler:AddAction"] = type(widgetHandler and widgetHandler.actionHandler and widgetHandler.actionHandler.AddAction),
@@ -689,11 +699,13 @@ local function writeSensorState()
     -- Gaia (neutral) units such as critters are not enemies (H1b: a Seagull raised "enemy air")
     local enemies = {}
     local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
-    local visibleUnits = (spGetVisibleUnits and spGetVisibleUnits()) or {}
-    for _, u in ipairs(visibleUnits) do
+    -- every identified enemy in LOS (03 §7.3); GetVisibleUnits would only see the camera view (engine-facts.md)
+    local knownUnits = (spGetAllUnits and spGetAllUnits()) or {}
+    for _, u in ipairs(knownUnits) do
       local uAlly = spGetUnitAllyTeam and spGetUnitAllyTeam(u)
       local uTeam = spGetUnitTeam and spGetUnitTeam(u)
-      if uAlly and uAlly ~= myAlly and uTeam ~= gaiaTeam then
+      local los = uAlly and uAlly ~= myAlly and uTeam ~= gaiaTeam and spGetUnitLosState and spGetUnitLosState(u, myAlly)
+      if type(los) == "table" and los.los then
         local defId = spGetUnitDefID and spGetUnitDefID(u)
         if defId and defId > 0 and UnitDefs and UnitDefs[defId] then
           local def = UnitDefs[defId]
@@ -1169,6 +1181,103 @@ local function drawPanel(x, top, width, height, title, tag, items, scale, border
   end
 end
 
+-- Radar blips (05 §8.1, T09.5), refreshed every 15 frames: own units and every enemy the player has in
+-- LOS or radar (GetAllUnits), positions from the engine (radar error included), relative to the
+-- commander (else the start position), normalised to the scope: x by range, z by range / 2.
+local function updateRadar(range)
+  local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
+  local myAlly = (spGetMyAllyTeamID and spGetMyAllyTeamID()) or 0
+  local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
+  local cx, cz, commander = nil, nil, false
+  local ownPos = {}
+  for _, u in ipairs((spGetTeamUnits and spGetTeamUnits(myTeam)) or {}) do
+    local x, _, z = spGetUnitPosition(u)
+    if x then
+      local defId = spGetUnitDefID and spGetUnitDefID(u)
+      local def = defId and UnitDefs and UnitDefs[defId]
+      if not commander and def and def.customParams and def.customParams.iscommander == "1" then
+        cx, cz, commander = x, z, true
+      end
+      if #ownPos < RADAR_MAX_OWN then
+        ownPos[#ownPos + 1] = { x, z }
+      end
+    end
+  end
+  if not cx and spGetTeamStartPosition then
+    local sx, _, sz, valid = spGetTeamStartPosition(myTeam)
+    if sx and valid ~= false then
+      cx, cz = sx, sz
+    end
+  end
+
+  radar.seq = radar.seq + 1
+  radar.range = range
+  radar.centred = (cx ~= nil)
+  radar.commander = commander
+  radar.own, radar.enemy, radar.contacts = {}, {}, 0
+  if not cx then
+    return
+  end
+  local zRange = range / 2
+  for _, p in ipairs(ownPos) do
+    local nx, nz = (p[1] - cx) / range, (p[2] - cz) / zRange
+    if math.abs(nx) <= 1 and math.abs(nz) <= 1 then
+      radar.own[#radar.own + 1] = { nx, nz }
+    end
+  end
+  for _, u in ipairs((spGetAllUnits and spGetAllUnits()) or {}) do
+    local uAlly = spGetUnitAllyTeam and spGetUnitAllyTeam(u)
+    local uTeam = spGetUnitTeam and spGetUnitTeam(u)
+    if uAlly and uAlly ~= myAlly and uTeam ~= gaiaTeam then
+      local x, _, z = spGetUnitPosition(u)
+      if x then
+        radar.contacts = radar.contacts + 1
+        if #radar.enemy < RADAR_MAX_ENEMY then
+          local nx, nz = (x - cx) / range, (z - cz) / zRange
+          local k = math.max(math.abs(nx), math.abs(nz))
+          local outside = k > 1
+          local identified = (spGetUnitDefID and spGetUnitDefID(u)) ~= nil
+          if outside then
+            nx, nz = nx / k, nz / k -- pinned to the edge, pointing where it is
+          end
+          radar.enemy[#radar.enemy + 1] = { nx, nz, outside, identified }
+        end
+      end
+    end
+  end
+end
+
+-- The dots, recorded into a display list: a faint cross through the centre, own units green, enemies
+-- red (dimmer when pinned to the edge or not identified), the commander a light square in the middle
+local function drawRadarDots(sx, sy, halfW, halfH, scale)
+  gl.Color(1, 1, 1, 0.06)
+  gl.Rect(sx - halfW, sy - 0.5 * scale, sx + halfW, sy + 0.5 * scale)
+  gl.Rect(sx - 0.5 * scale, sy - halfH, sx + 0.5 * scale, sy + halfH)
+  local g = TONE_COLORS.good
+  gl.Color(g[1], g[2], g[3], 0.75)
+  local own = 1.5 * scale
+  for _, p in ipairs(radar.own) do
+    local px, py = sx + p[1] * halfW, sy - p[2] * halfH
+    gl.Rect(px - own, py - own, px + own, py + own)
+  end
+  local d = TONE_COLORS.danger
+  local foe = 2 * scale
+  for _, p in ipairs(radar.enemy) do
+    local px, py = sx + p[1] * halfW, sy - p[2] * halfH
+    gl.Color(d[1], d[2], d[3], (p[3] or not p[4]) and 0.5 or 1.0)
+    gl.Rect(px - foe, py - foe, px + foe, py + foe)
+  end
+  if radar.commander then
+    local c = HUD_TEXT.primary
+    gl.Color(c[1], c[2], c[3], 1.0)
+    gl.Rect(sx - 2.5 * scale, sy - 2.5 * scale, sx + 2.5 * scale, sy + 2.5 * scale)
+  end
+end
+
+local function radarBoxHeight(items, scale)
+  return (24 + 6 + RADAR_SCOPE_H + 6 + 8) * scale + #items * 20 * scale
+end
+
 local function setColor(c)
   gl.Color(c[1], c[2], c[3], c[4])
 end
@@ -1231,7 +1340,7 @@ end
 
 -- One box: quiet header (title left, meta right-aligned), then rows in three columns: who (tag or the
 -- big row's build picture), what, when (right-aligned). A tag is drawn only when it changes.
-local function drawBox(x, top, width, height, box, scale, accent)
+local function drawBoxFrame(x, top, width, height, title, meta, scale, accent)
   local padX = 12 * scale
   local headerH = 24 * scale
 
@@ -1242,22 +1351,25 @@ local function drawBox(x, top, width, height, box, scale, accent)
 
   local headerY = top - headerH + 7 * scale
   setColor(HUD_TEXT.label)
-  gl.Text(box.title, x + padX, headerY, 12 * scale, "o")
+  gl.Text(title, x + padX, headerY, 12 * scale, "o")
   local rx = x + width - padX
-  for i = #box.meta, 1, -1 do
-    local m = box.meta[i]
+  for i = #meta, 1, -1 do
+    local m = meta[i]
     setColor(toneOr(m.tone, HUD_TEXT.label))
     gl.Text(m.text, rx, headerY, 12 * scale, "or")
     rx = rx - textWidth(m.text, 12 * scale) - 12 * scale
   end
   gl.Color(1, 1, 1, 0.08)
   gl.Rect(x + padX, top - headerH, x + width - padX, top - headerH + scale)
+end
 
+-- Rows from y down: who (tag or the big row's build picture), what, when (right-aligned)
+local function drawRows(items, x, y, width, scale)
+  local padX = 12 * scale
   local nameX = x + padX + 40 * scale
   local rightX = x + width - padX
-  local y = top - headerH - 6 * scale
   local prevTag = nil
-  for _, item in ipairs(box.items) do
+  for _, item in ipairs(items) do
     -- the tone colours the timing; a row without one (PLAN COMPLETE) takes it on its text
     local textTone = (item.right == nil) and item.tone or "info"
     if item.big then
@@ -1295,6 +1407,49 @@ local function drawBox(x, top, width, height, box, scale, accent)
     end
     prevTag = item.tag or prevTag
   end
+end
+
+local function drawBox(x, top, width, height, box, scale, accent)
+  drawBoxFrame(x, top, width, height, box.title, box.meta, scale, accent)
+  drawRows(box.items, x, top - 30 * scale, width, scale)
+end
+
+-- RADAR: the scope (from a display list, rebuilt when the blips refresh or the HUD moves), then the
+-- app's enemy contact rows
+local function drawRadarBox(x, top, width, height, items, scale, accent)
+  local meta = { { text = tostring(radar.range) .. " RANGE", tone = "info" } }
+  if radar.contacts > 0 then
+    meta[2] = { text = radar.contacts .. ((radar.contacts == 1) and " CONTACT" or " CONTACTS"), tone = "danger" }
+  else
+    meta[2] = { text = "NO CONTACT", tone = "info" }
+  end
+  drawBoxFrame(x, top, width, height, "RADAR", meta, scale, accent)
+
+  local padX = 12 * scale
+  local scopeTop = top - 30 * scale
+  local scopeH = RADAR_SCOPE_H * scale
+  gl.Color(0, 0, 0, 0.25)
+  gl.Rect(x + padX, scopeTop - scopeH, x + width - padX, scopeTop)
+  local sx, sy = x + width / 2, scopeTop - scopeH / 2
+  local halfW, halfH = width / 2 - padX, scopeH / 2
+  if radar.centred then
+    if gl.CreateList and gl.CallList then
+      local stale = radarList.seq ~= radar.seq or radarList.x ~= sx or radarList.y ~= sy or radarList.scale ~= scale
+      if radarList.id == nil or stale then
+        if radarList.id and gl.DeleteList then
+          gl.DeleteList(radarList.id)
+        end
+        radarList.id = gl.CreateList(drawRadarDots, sx, sy, halfW, halfH, scale)
+        radarList.seq, radarList.x, radarList.y, radarList.scale = radar.seq, sx, sy, scale
+      end
+      if radarList.id and radarList.id ~= 0 then
+        gl.CallList(radarList.id)
+      end
+    else
+      drawRadarDots(sx, sy, halfW, halfH, scale)
+    end
+  end
+  drawRows(items, x, scopeTop - scopeH - 6 * scale, width, scale)
 end
 
 local function alertsHeight(alerts, scale)
@@ -1350,6 +1505,14 @@ local function drawBoxes(hud, vsx, vsy, scale)
     box.height = boxHeight(box.items, scale)
     total = total + box.height + ((i > 1) and gap or 0)
   end
+  local radarItems = nil
+  if isTable(hud.radar) and detectMode() == "player" then
+    radarItems = hudItems(hud.radar.lines)
+    while #radarItems > 3 do
+      table.remove(radarItems)
+    end
+    total = total + ((#boxes > 0) and gap or 0) + radarBoxHeight(radarItems, scale)
+  end
   local aH = alertsHeight(alerts, scale)
   if aH > 0 then
     total = total + gap + aH
@@ -1361,6 +1524,11 @@ local function drawBoxes(hud, vsx, vsy, scale)
   for _, box in ipairs(boxes) do
     drawBox(x, top, width, box.height, box, scale, accent)
     top = top - box.height - gap
+  end
+  if radarItems then
+    local h = radarBoxHeight(radarItems, scale)
+    drawRadarBox(x, top, width, h, radarItems, scale, accent)
+    top = top - h - gap
   end
   if aH > 0 then
     drawAlerts(x, top, width, alerts, scale)
@@ -1413,7 +1581,7 @@ local function drawHud()
   end
 
   local hud = currentCoachDoc.hud
-  if not isStale and not isSpec and isTable(hud) and (isTable(hud.build) or isTable(hud.factory)) then
+  if not isStale and not isSpec and isTable(hud) and (isTable(hud.build) or isTable(hud.factory) or isTable(hud.radar)) then
     if gl then
       drawBoxes(hud, vsx, vsy, scale)
     end
@@ -1578,6 +1746,14 @@ function widget:GameFrame(n)
       spEcho("BAR StratCom GameFrame error: " .. tostring(err))
     end
   end
+  local radarDoc = currentCoachDoc and isTable(currentCoachDoc.hud) and currentCoachDoc.hud.radar
+  if n % 15 == 0 and isTable(radarDoc) and config.hudVisible ~= false and detectMode() == "player" then
+    local range = math.max(500, math.min(8000, tonumber(radarDoc.range) or 2400))
+    local ok, err = pcall(updateRadar, range)
+    if not ok and spEcho then
+      spEcho("BAR StratCom radar error: " .. tostring(err))
+    end
+  end
   -- per-frame cost (08 §5 budget): average over 30-frame windows (including the snapshot frame), smoothed
   if t0 and spDiffTimers and spGetTimer then
     frameTimeSum = frameTimeSum + spDiffTimers(spGetTimer(), t0, true)
@@ -1622,6 +1798,10 @@ function widget:Shutdown()
         widgetHandler.actionHandler:RemoveAction(widget, "stratcom_hud_toggle")
       end
     end)
+  end
+  if radarList.id and gl and gl.DeleteList then
+    gl.DeleteList(radarList.id)
+    radarList.id = nil
   end
   flushEvents()
   writeHeartbeat()

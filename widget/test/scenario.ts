@@ -18,6 +18,9 @@ export interface ScenarioUnit {
   commandCount?: number;
   isUnitBuilding?: boolean;
   factoryCommands?: unknown[];
+  /** What the local player knows of an enemy unit (default 'los'): in LOS, a radar blip of unknown
+   *  type, a radar blip whose type was seen, or nothing (engine-facts.md). */
+  sensor?: 'los' | 'radar' | 'radar-typed' | 'hidden';
 }
 
 export interface ScenarioTeam {
@@ -35,6 +38,8 @@ export interface ScenarioTeam {
   energyIncome: number;
   startUnit?: string | number | null;
   aiName?: string;
+  /** Spring.GetTeamStartPosition (answered for allied teams only). */
+  startPos?: { x: number; y: number; z: number };
 }
 
 export interface ScenarioOptions {

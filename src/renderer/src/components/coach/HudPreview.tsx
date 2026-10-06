@@ -5,7 +5,7 @@ import type { BuildPlan } from '../../../../core/schemas/plans';
 import type { Registry } from '../../../../core/registry';
 import { buildCoachHud } from '../../../../core/coach/display';
 
-import { useSnapshot } from '../../stores';
+import { useLive, useSnapshot } from '../../stores';
 import { getClientRegistry } from '../../lib/registry';
 import { HudBoxesPreview } from './HudBoxesPreview';
 
@@ -39,6 +39,7 @@ export function HudPreview({
   className = ''
 }: HudPreviewProps): React.JSX.Element {
   const unitSnapshot = useSnapshot((s) => s.snapshot);
+  const enemies = useLive((s) => s.snapshot?.enemies);
   const activeRegistry = React.useMemo(() => {
     if (registry) return registry;
     if (unitSnapshot) return getClientRegistry(unitSnapshot);
@@ -57,17 +58,18 @@ export function HudPreview({
         registry: activeRegistry,
         clock: coachState.clock,
         factionId: plan.factionId,
-        visible: true
+        visible: true,
+        ...(enemies ? { enemies, enemySeenAt: coachState.enemySeenAt ?? {} } : {})
       });
     }
     return null;
-  }, [directHud, coachState, plan, activeRegistry]);
+  }, [directHud, coachState, plan, activeRegistry, enemies]);
 
-  if (hud && (hud.build || hud.factory)) {
+  if (hud && (hud.build || hud.factory || hud.radar)) {
     return (
       <div data-testid="hud-preview" className={`rounded border border-[#27272a] bg-[#07090e]/95 p-3 shadow-lg ${className}`}>
         <div className="mb-2 text-[10px] uppercase tracking-wider text-[#71717a]">WIDGET DISPLAY</div>
-        <HudBoxesPreview hud={hud} factionId={plan?.factionId ?? null} />
+        <HudBoxesPreview hud={hud} factionId={plan?.factionId ?? null} inSight={enemies ? Object.values(enemies).reduce((n, c) => n + c, 0) : null} />
       </div>
     );
   }

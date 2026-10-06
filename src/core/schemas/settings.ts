@@ -41,9 +41,21 @@ export const SoundSettingsSchema = z
 
 export type SoundSettings = z.infer<typeof SoundSettingsSchema>;
 
+/** Which boxes the widget shows while coaching a plan (owner request T09.6); missing = all shown. */
+export const HudBoxesSettingsSchema = z
+  .object({
+    build: z.boolean(),
+    factory: z.boolean(),
+    radar: z.boolean()
+  })
+  .strict();
+
+export type HudBoxesSettings = z.infer<typeof HudBoxesSettingsSchema>;
+
 export const HudSettingsSchema = z
   .object({
-    enabled: z.boolean()
+    enabled: z.boolean(),
+    boxes: HudBoxesSettingsSchema.optional()
   })
   .strict();
 
@@ -155,7 +167,8 @@ export function defaultSettings(): Settings {
     },
     chatEcho: false,
     hud: {
-      enabled: true
+      enabled: true,
+      boxes: { build: true, factory: true, radar: true }
     },
     coachWindow: {
       alwaysOnTop: false,

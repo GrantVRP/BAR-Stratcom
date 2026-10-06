@@ -148,24 +148,42 @@ export function trackEnemySightings(
  * biggest groups of identified enemies in sight (newest first on ties), "NEW" (warn) for 15 s after
  * a type is first seen, then how long it has been in sight.
  */
+export interface RadarContact {
+  unitId: string;
+  count: number;
+  /** Seconds since this type came into sight. */
+  ageSec: number;
+  /** In sight for 15 s or less. */
+  fresh: boolean;
+}
+
+/** Identified enemies in sight, biggest groups first, newest first on ties (widget rows and app list). */
+export function radarContacts(
+  enemies: Readonly<Record<string, number>>,
+  seenAt: Readonly<Record<string, number>>,
+  clock: number
+): RadarContact[] {
+  return Object.entries(enemies)
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1] || (seenAt[b[0]] ?? clock) - (seenAt[a[0]] ?? clock) || a[0].localeCompare(b[0]))
+    .map(([unitId, count]) => {
+      const ageSec = Math.max(0, clock - (seenAt[unitId] ?? clock));
+      return { unitId, count, ageSec, fresh: ageSec <= NEW_CONTACT_SEC };
+    });
+}
+
 export function buildRadarBox(
   enemies: Readonly<Record<string, number>>,
   seenAt: Readonly<Record<string, number>>,
   registry: Registry,
   clock: number
 ): CoachHudRadar {
-  const groups = Object.entries(enemies)
-    .filter(([, count]) => count > 0)
-    .sort((a, b) => b[1] - a[1] || (seenAt[b[0]] ?? clock) - (seenAt[a[0]] ?? clock) || a[0].localeCompare(b[0]))
-    .slice(0, CONTACT_ROWS);
-  const lines: CoachHudLine[] = groups.map(([unitId, count]) => {
-    const age = Math.max(0, clock - (seenAt[unitId] ?? clock));
-    const fresh = age <= NEW_CONTACT_SEC;
-    return {
-      text: fitText(`${count}× ${unitLabel(registry, unitId)}`, ROW_TEXT_MAX),
-      tone: fresh ? 'warn' : 'info',
-      right: fresh ? 'NEW' : fitText(`${formatTimeMinutesSeconds(age)} ago`, 9)
-    };
-  });
+  const lines: CoachHudLine[] = radarContacts(enemies, seenAt, clock)
+    .slice(0, CONTACT_ROWS)
+    .map((c) => ({
+      text: fitText(`${c.count}× ${unitLabel(registry, c.unitId)}`, ROW_TEXT_MAX),
+      tone: c.fresh ? 'warn' : 'info',
+      right: c.fresh ? 'NEW' : fitText(`${formatTimeMinutesSeconds(c.ageSec)} ago`, 9)
+    }));
   return { range: HUD_RADAR_RANGE, lines };
 }

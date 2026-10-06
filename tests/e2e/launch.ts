@@ -26,7 +26,8 @@ export async function launchApp(
     fs.cpSync(path.join('data', 'fixtures', 'sessions', id), path.join(tmpDir, 'sessions', id), { recursive: true });
   }
   const app = await electron.launch({
-    args: ['.', `--user-data-dir=${tmpDir}`, ...extraArgs],
+    // --no-bar: never find the owner's real game folder (no coach.json writes, no session clean-up there)
+    args: ['.', `--user-data-dir=${tmpDir}`, '--no-bar', ...extraArgs],
     ...(options.env ? { env: { ...process.env, ...options.env } as Record<string, string> } : {})
   });
 

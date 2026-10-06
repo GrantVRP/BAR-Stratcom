@@ -99,7 +99,7 @@ export const CoachStartRequestSchema = z
   .object({
     planId: z.string().optional(),
     plan: BuildPlanSchema.optional(),
-    mode: z.enum(['live', 'manual', 'demo']),
+    mode: z.enum(['live', 'manual', 'demo', 'radar']),
     demoId: z.string().optional(),
     speed: z.number().optional()
   })

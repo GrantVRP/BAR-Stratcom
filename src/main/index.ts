@@ -19,9 +19,10 @@ import { loadBenchmarkForTeams } from './benchmarks/loader';
 import { registerIntelHandlers } from './intel/handlers';
 import { registerMapHandlers } from './maps/handlers';
 import { defaultCoachRunner } from './coach/runner';
-import { findDataDir, loadRegistry, loadRegistryMeta, loadSnapshot } from './registry/loader';
-import { DemoSource, derivePlanFromDemo, listDemos } from './demo/demo-source';
-import { handleDemoCompletion } from './demo/demo-analyzer';
+import { loadRegistry, loadRegistryMeta, loadSnapshot } from './registry/loader';
+import { type DemoSource, listDemos } from './demo/demo-source';
+import { startDemoCoaching } from './demo/start-demo';
+import { defaultRadarRunner } from './coach/radar-runner';
 import { defaultPlanStore } from './plans/store';
 import { getMap, loadMaps } from './maps/loader';
 import { simMapFor } from './maps/sim-map';
@@ -233,44 +234,21 @@ if (!gotTheLock) {
         activeDemoSource = null;
       }
 
+      await defaultRadarRunner.stop();
       if (req.mode === 'demo') {
         if (!req.demoId) {
           throw new Error('Coach start in demo mode requires a demoId');
         }
-        const dataDir = findDataDir();
-        const fixtureDir = join(dataDir, 'fixtures', 'sessions', req.demoId);
-        const demoSource = new DemoSource({
-          fixtureDir,
-          speed: req.speed ?? 1
-        });
-        activeDemoSource = demoSource;
-        demoSource.on('state', broadcastLiveState);
+        const profile = currentSettings.profile ?? 'intermediate';
+        activeDemoSource = await startDemoCoaching({ demoId: req.demoId, speed: req.speed, plan: req.plan, registry, profile, onState: broadcastLiveState });
+        return { ok: true };
+      }
 
-        let plan = req.plan;
-        if (!plan) {
-          plan = derivePlanFromDemo(demoSource, registry);
-        }
-
-        await defaultCoachRunner.start({
-          plan,
-          mode: 'demo',
-          source: demoSource,
-          registry,
-          stratcomDir: null,
-          benchmarkLoader: loadBenchmarkForTeams,
-          resolveMap: (scriptName) => simMapFor(scriptName)
-        });
-
-        demoSource.on('end', () => {
-          handleDemoCompletion({
-            demoSource,
-            plan: plan ?? null,
-            registry,
-            profile: currentSettings.profile ?? 'intermediate'
-          });
-        });
-
-        demoSource.start();
+      const stratcomDir = currentSettings.bar.dataDir ? join(currentSettings.bar.dataDir, 'stratcom') : null;
+      const hudSettings = () => defaultSettingsStore.getSettings().hud;
+      if (req.mode === 'radar') {
+        await defaultCoachRunner.stop();
+        defaultRadarRunner.start({ source: fileBridge, registry, stratcomDir, profile: currentSettings.profile ?? 'intermediate', hudSettings });
         return { ok: true };
       }
 
@@ -281,7 +259,6 @@ if (!gotTheLock) {
       if (!plan) {
         throw new Error('Coach start requires a plan object or valid planId');
       }
-      const stratcomDir = currentSettings.bar.dataDir ? join(currentSettings.bar.dataDir, 'stratcom') : null;
       await defaultCoachRunner.start({
         plan,
         mode: req.mode,
@@ -289,6 +266,7 @@ if (!gotTheLock) {
         registry,
         stratcomDir,
         assistSettings: () => defaultSettingsStore.getSettings().assist,
+        hudSettings,
         benchmarkLoader: loadBenchmarkForTeams,
         resolveMap: (scriptName) => simMapFor(scriptName)
       });
@@ -300,6 +278,7 @@ if (!gotTheLock) {
         activeDemoSource.stop();
         activeDemoSource = null;
       }
+      await defaultRadarRunner.stop();
       await defaultCoachRunner.stop();
       return { ok: true };
     });

@@ -81,7 +81,7 @@ export const CoachProjectionsSchema = z
 
 export type CoachProjections = z.infer<typeof CoachProjectionsSchema>;
 
-export const CoachModeSchema = z.enum(['live', 'manual', 'demo']);
+export const CoachModeSchema = z.enum(['live', 'manual', 'demo', 'radar']);
 export type CoachMode = z.infer<typeof CoachModeSchema>;
 
 export const CoachStateSchema = z

@@ -6,6 +6,8 @@ import { CoachNextCard } from '../components/coach/CoachNextCard';
 import { CoachAlerts } from '../components/coach/CoachAlerts';
 import { CoachTelemetry } from '../components/coach/CoachTelemetry';
 import { CoachUpNext } from '../components/coach/CoachUpNext';
+import { HudBoxSwitches } from '../components/coach/HudBoxSwitches';
+import { RadarContacts } from '../components/coach/RadarContacts';
 import { ipcClient } from '../lib/ipc-client';
 
 import { formatDemoHeader } from '../lib/demo-pairing';
@@ -94,7 +96,7 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
           <div className="flex items-center gap-1.5 rounded bg-[#18181b] px-2 py-1 text-xs">
             <span
               className={`h-2 w-2 rounded-full ${
-                mode === 'live'
+                mode === 'live' || mode === 'radar'
                   ? 'bg-[#4ade80] animate-pulse'
                   : mode === 'demo'
                     ? 'bg-[#38bdf8]'
@@ -104,7 +106,7 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
               }`}
             />
             <span data-testid="coach-mode-badge" className="font-bold uppercase tracking-wider text-[11px]">
-              {mode === 'manual' ? 'MANUAL CLOCK' : mode === 'demo' ? demoHeader : mode.toUpperCase()}
+              {mode === 'manual' ? 'MANUAL CLOCK' : mode === 'demo' ? demoHeader : mode === 'radar' ? 'RADAR (NO PLAN)' : mode.toUpperCase()}
             </span>
           </div>
           <span data-testid="coach-clock" className="text-xl font-bold tracking-wider text-[#f8fafc]">
@@ -122,6 +124,8 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
         </div>
 
         <div className="flex items-center gap-3">
+          {mode !== 'radar' && (
+            <>
           <span className="text-xs uppercase text-[#a1a1aa] truncate max-w-[200px] hidden sm:inline">
             <span style={{ color: factionAccent(activePlan?.factionId) }}>{activePlan?.factionId.toUpperCase()}</span> //{' '}
             {activePlan?.title.toUpperCase()}
@@ -132,6 +136,8 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
           >
             {coachState ? `${coachState.currentStepIndex + 1}/${coachState.steps.length}` : '0/0'}
           </span>
+            </>
+          )}
           {!standalone && (
             <Button
               variant="ghost"
@@ -151,6 +157,12 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
       </div>
 
       {/* Main Content Area */}
+      {mode === 'radar' ? (
+        <div className="grid flex-1 grid-cols-1 content-start gap-4 overflow-y-auto pr-1 md:grid-cols-2">
+          <RadarContacts enemies={snapshot?.enemies ?? null} seenAt={coachState?.enemySeenAt ?? {}} clock={coachState?.clock ?? 0} getUnitName={getUnitName} />
+          {!isOverlay && <CoachTelemetry snapshot={snapshot} projections={null} />}
+        </div>
+      ) : (
       <div className="flex-1 space-y-4 overflow-y-auto pr-1">
         <CoachNextCard
           currentStep={currentStep}
@@ -193,9 +205,11 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
           </div>
         )}
 
-        {/* In-game widget preview: demo only (live players see the real HUD in game) */}
+        {/* Which widget boxes show in game (T09.6), then the demo's preview of them */}
+        {!isOverlay && mode !== 'manual' && <HudBoxSwitches />}
         {mode === 'demo' && !isOverlay && <HudPreview coachState={coachState} plan={activePlan} />}
       </div>
+      )}
     </div>
   );
 }

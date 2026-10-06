@@ -126,14 +126,14 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
       const content1 = JSON.parse(fs.readFileSync(coachFile, 'utf8'));
       const parsed1 = CoachDocSchema.parse(content1);
       expect(parsed1.mode).toBe('live');
-      expect(parsed1.seq).toBe(1);
+      expect(parsed1.seq).toBeGreaterThanOrEqual(Date.now()); // never below the wall clock in ms (T09.6)
 
       // Advance tick
       await runner.tick();
 
       const content2 = JSON.parse(fs.readFileSync(coachFile, 'utf8'));
       const parsed2 = CoachDocSchema.parse(content2);
-      expect(parsed2.seq).toBe(2);
+      expect(parsed2.seq).toBeGreaterThan(parsed1.seq);
 
       await runner.stop();
       expect(runner.isRunning()).toBe(false);
@@ -143,6 +143,21 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
       const parsedStop = CoachDocSchema.parse(contentStop);
       expect(parsedStop.mode).toBe('off');
       expect(parsedStop.hud.visible).toBe(false);
+      expect(parsedStop.seq).toBeGreaterThan(parsed2.seq);
+
+      // a restarted runner keeps counting up: the widget ignores a seq that is not higher (T09.6)
+      await runner.start({
+        plan: validPlan,
+        mode: 'live',
+        source: fakeSource,
+        registry,
+        stratcomDir: tmpDir,
+        hudSettings: () => ({ enabled: true, boxes: { build: false, factory: true, radar: true } })
+      });
+      const restarted = CoachDocSchema.parse(JSON.parse(fs.readFileSync(coachFile, 'utf8')));
+      expect(restarted.seq).toBeGreaterThan(parsedStop.seq);
+      expect(restarted.hud.build).toBeNull(); // Settings: BUILDINGS box off
+      await runner.stop();
     } finally {
       vi.useRealTimers();
     }

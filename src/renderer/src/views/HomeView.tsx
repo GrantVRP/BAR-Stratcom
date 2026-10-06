@@ -34,6 +34,11 @@ export function HomeView(): React.JSX.Element {
     if (ok) window.location.hash = '#/coach';
   }
 
+  async function handleStartRadar(): Promise<void> {
+    const ok = await start({ mode: 'radar' });
+    if (ok) window.location.hash = '#/coach';
+  }
+
   async function handleStartManual(): Promise<void> {
     if (!activePlan) return;
     const ok = await start({ mode: 'manual', planId: activePlan.id });
@@ -121,10 +126,23 @@ export function HomeView(): React.JSX.Element {
             >
               START COACHING (LIVE)
             </Button>
-            <Button variant="default" size="sm" disabled={!activePlan} onClick={() => void handleStartManual()} data-testid="home-start-manual-btn">
+            {/* Levels (T09.6): one primary; RADAR, the other way to play a real game, secondary beside it;
+                the practice modes quiet, on their own row */}
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => void handleStartRadar()}
+              data-testid="home-start-radar-btn"
+              title="Live radar in game: your units and every enemy you see or have on radar. No plan needed."
+            >
+              RADAR (NO PLAN)
+            </Button>
+          </div>
+          <div className="-mt-2 flex flex-wrap items-center gap-1">
+            <Button variant="ghost" size="sm" disabled={!activePlan} onClick={() => void handleStartManual()} data-testid="home-start-manual-btn">
               MANUAL CLOCK
             </Button>
-            <Button variant="default" size="sm" onClick={() => void handleStartDemo()} data-testid="home-start-demo-btn">
+            <Button variant="ghost" size="sm" onClick={() => void handleStartDemo()} data-testid="home-start-demo-btn">
               DEMO 4×
             </Button>
           </div>

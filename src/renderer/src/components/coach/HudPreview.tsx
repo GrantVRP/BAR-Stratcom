@@ -4,8 +4,9 @@ import type { CoachState } from '../../../../core/schemas/coach';
 import type { BuildPlan } from '../../../../core/schemas/plans';
 import type { Registry } from '../../../../core/registry';
 import { buildCoachHud } from '../../../../core/coach/display';
+import { applyHudSettings } from '../../../../core/coach/hud-settings';
 
-import { useLive, useSnapshot } from '../../stores';
+import { useLive, useSettings, useSnapshot } from '../../stores';
 import { getClientRegistry } from '../../lib/registry';
 import { HudBoxesPreview } from './HudBoxesPreview';
 
@@ -40,6 +41,7 @@ export function HudPreview({
 }: HudPreviewProps): React.JSX.Element {
   const unitSnapshot = useSnapshot((s) => s.snapshot);
   const enemies = useLive((s) => s.snapshot?.enemies);
+  const hudSettings = useSettings((s) => s.settings?.hud);
   const activeRegistry = React.useMemo(() => {
     if (registry) return registry;
     if (unitSnapshot) return getClientRegistry(unitSnapshot);
@@ -49,7 +51,8 @@ export function HudPreview({
   const hud = React.useMemo<CoachHud | null>(() => {
     if (directHud) return directHud;
     if (coachState && plan && activeRegistry) {
-      return buildCoachHud({
+      // the same boxes the game shows: the IN-GAME HUD switches apply here too (T09.6)
+      return applyHudSettings(buildCoachHud({
         plan,
         steps: coachState.steps,
         currentStepIndex: coachState.currentStepIndex,
@@ -60,10 +63,10 @@ export function HudPreview({
         factionId: plan.factionId,
         visible: true,
         ...(enemies ? { enemies, enemySeenAt: coachState.enemySeenAt ?? {} } : {})
-      });
+      }), { enabled: true, boxes: hudSettings?.boxes });
     }
     return null;
-  }, [directHud, coachState, plan, activeRegistry, enemies]);
+  }, [directHud, coachState, plan, activeRegistry, enemies, hudSettings]);
 
   if (hud && (hud.build || hud.factory || hud.radar)) {
     return (

@@ -3,7 +3,7 @@ import type { CoachState, Cue } from '../../../core/schemas';
 import type { CoachStartRequest } from '../../../shared/ipc';
 import { ipcClient } from '../lib/ipc-client';
 
-export type CoachMode = 'live' | 'manual' | 'demo' | 'off';
+export type CoachMode = 'live' | 'manual' | 'demo' | 'radar' | 'off';
 
 export interface CoachStoreState {
   coachState: CoachState | null;

@@ -26,6 +26,9 @@ import type { BridgeSource } from '../game/source';
 import { broadcast } from '../ipc/register';
 import { ManualClock } from './manual-clock';
 import { TickStats, noTelemetrySnapshot, type TickSummary } from './tick-support';
+import { nextCoachSeq } from './coach-seq';
+import { applyHudSettings } from '../../core/coach/hud-settings';
+import type { HudSettings } from '../../core/schemas/settings';
 
 export interface CoachRunnerMapOptions {
   windAvg?: number | null;
@@ -57,6 +60,8 @@ export interface CoachRunnerStartOptions {
   resolveMap?: (scriptName: string) => SimInput['map'];
   /** Settings → Assist, read every tick so a toggle applies at once (T09.2). */
   assistSettings?: () => AssistSettings;
+  /** Settings → hud (display on/off, which boxes), read every tick (T09.6). */
+  hudSettings?: () => HudSettings;
   onUpdate?: (state: CoachState) => void;
   onCue?: (cue: Cue) => void;
 }
@@ -86,6 +91,7 @@ export class CoachRunner {
   private onUpdate?: (state: CoachState) => void;
   private onCue?: (cue: Cue) => void;
   private assistSettings?: () => AssistSettings;
+  private hudSettings?: () => HudSettings;
   private readonly tickStats = new TickStats();
   private resolveMap?: (scriptName: string) => SimInput['map'];
   private simStart?: CoachRunnerStartOptions['start'];
@@ -160,6 +166,7 @@ export class CoachRunner {
     this.onUpdate = options.onUpdate;
     this.onCue = options.onCue;
     this.assistSettings = options.assistSettings;
+    this.hudSettings = options.hudSettings;
 
     this.running = true;
     this.seq = 1;
@@ -323,11 +330,11 @@ export class CoachRunner {
     if (this.mode === 'live' && this.stratcomDir) {
       const doc: CoachDoc = {
         protocol: 1,
-        seq: this.seq++,
+        seq: (this.seq = nextCoachSeq()),
         sessionId: this.currentSessionId,
         mode: 'live',
         generatedAtSec: Math.floor(Date.now() / 1000),
-        hud: evalResult.display.hud,
+        hud: applyHudSettings(evalResult.display.hud, this.hudSettings?.()),
         echo: evalResult.display.echo,
         assist: evalResult.display.assist
       };
@@ -358,7 +365,7 @@ export class CoachRunner {
     if (!this.stratcomDir) return;
     const offDoc: CoachDoc = {
       protocol: 1,
-      seq: this.seq++,
+      seq: (this.seq = nextCoachSeq()),
       sessionId: this.currentSessionId,
       mode: 'off',
       generatedAtSec: Math.floor(Date.now() / 1000),

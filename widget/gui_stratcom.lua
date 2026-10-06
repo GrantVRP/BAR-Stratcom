@@ -59,7 +59,7 @@ local spGetSelectedUnits = Spring.GetSelectedUnits
 
 -- Constants & State
 local PROTOCOL = 1
-local WIDGET_VERSION = "3.0.6"
+local WIDGET_VERSION = "3.0.7"
 local DIR = "stratcom/"
 
 local jsonNull = (type(Json) == "table" and Json.null) or nil
@@ -98,12 +98,13 @@ local TONE_COLORS = {
 -- HUD boxes (05 §8.1, T09.4): one look for every box. Size and brightness carry the levels: headers and
 -- tags quiet, the big row brightest, queue rows dimmer; colour is kept for meaning (late, pace, alerts).
 local HUD_WIDTH = 360 -- px at 1080p, before scaling
--- Radar scope (T09.5): a 2:1 strip, its side edges `range` elmos from the centre, top/bottom half that
-local RADAR_SCOPE_H = 168 -- px at 1080p
+-- Radar scope (T09.5/T09.6): side edges `range` elmos from the centre, same scale both ways; a 2:1 strip
+-- under the plan boxes, a square when the radar is the only box (radar mode, or the others switched off)
+local RADAR_SCOPE_H = 168 -- px at 1080p (the strip)
 local RADAR_MAX_OWN = 300
 local RADAR_MAX_ENEMY = 200
 local radar = { seq = 0, range = 2400, centred = false, commander = false, own = {}, enemy = {}, contacts = 0 }
-local radarList = { id = nil, seq = -1, x = 0, y = 0, scale = 0 }
+local radarList = { id = nil, seq = -1, x = 0, y = 0, h = 0, scale = 0 }
 local HUD_TEXT = {
   label = { 148 / 255, 163 / 255, 184 / 255, 1.0 },     -- #94a3b8 headers
   tag = { 100 / 255, 116 / 255, 139 / 255, 1.0 },       -- #64748b who builds it
@@ -1182,8 +1183,8 @@ local function drawPanel(x, top, width, height, title, tag, items, scale, border
 end
 
 -- Radar blips (05 §8.1, T09.5), refreshed every 15 frames: own units and every enemy the player has in
--- LOS or radar (GetAllUnits), positions from the engine (radar error included), relative to the
--- commander (else the start position), normalised to the scope: x by range, z by range / 2.
+-- LOS or radar (GetAllUnits), positions from the engine (radar error included), as elmos from the
+-- commander (else the start position); the scope scales them when it draws.
 local function updateRadar(range)
   local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
   local myAlly = (spGetMyAllyTeamID and spGetMyAllyTeamID()) or 0
@@ -1218,12 +1219,8 @@ local function updateRadar(range)
   if not cx then
     return
   end
-  local zRange = range / 2
   for _, p in ipairs(ownPos) do
-    local nx, nz = (p[1] - cx) / range, (p[2] - cz) / zRange
-    if math.abs(nx) <= 1 and math.abs(nz) <= 1 then
-      radar.own[#radar.own + 1] = { nx, nz }
-    end
+    radar.own[#radar.own + 1] = { p[1] - cx, p[2] - cz }
   end
   for _, u in ipairs((spGetAllUnits and spGetAllUnits()) or {}) do
     local uAlly = spGetUnitAllyTeam and spGetUnitAllyTeam(u)
@@ -1233,14 +1230,7 @@ local function updateRadar(range)
       if x then
         radar.contacts = radar.contacts + 1
         if #radar.enemy < RADAR_MAX_ENEMY then
-          local nx, nz = (x - cx) / range, (z - cz) / zRange
-          local k = math.max(math.abs(nx), math.abs(nz))
-          local outside = k > 1
-          local identified = (spGetUnitDefID and spGetUnitDefID(u)) ~= nil
-          if outside then
-            nx, nz = nx / k, nz / k -- pinned to the edge, pointing where it is
-          end
-          radar.enemy[#radar.enemy + 1] = { nx, nz, outside, identified }
+          radar.enemy[#radar.enemy + 1] = { x - cx, z - cz, (spGetUnitDefID and spGetUnitDefID(u)) ~= nil }
         end
       end
     end
@@ -1250,6 +1240,7 @@ end
 -- The dots, recorded into a display list: a faint cross through the centre, own units green, enemies
 -- red (dimmer when pinned to the edge or not identified), the commander a light square in the middle
 local function drawRadarDots(sx, sy, halfW, halfH, scale)
+  local ppe = halfW / radar.range -- pixels per elmo, the same both ways (north up)
   gl.Color(1, 1, 1, 0.06)
   gl.Rect(sx - halfW, sy - 0.5 * scale, sx + halfW, sy + 0.5 * scale)
   gl.Rect(sx - 0.5 * scale, sy - halfH, sx + 0.5 * scale, sy + halfH)
@@ -1257,15 +1248,21 @@ local function drawRadarDots(sx, sy, halfW, halfH, scale)
   gl.Color(g[1], g[2], g[3], 0.75)
   local own = 1.5 * scale
   for _, p in ipairs(radar.own) do
-    local px, py = sx + p[1] * halfW, sy - p[2] * halfH
-    gl.Rect(px - own, py - own, px + own, py + own)
+    local dx, dy = p[1] * ppe, p[2] * ppe
+    if math.abs(dx) <= halfW and math.abs(dy) <= halfH then
+      gl.Rect(sx + dx - own, sy - dy - own, sx + dx + own, sy - dy + own)
+    end
   end
   local d = TONE_COLORS.danger
   local foe = 2 * scale
   for _, p in ipairs(radar.enemy) do
-    local px, py = sx + p[1] * halfW, sy - p[2] * halfH
-    gl.Color(d[1], d[2], d[3], (p[3] or not p[4]) and 0.5 or 1.0)
-    gl.Rect(px - foe, py - foe, px + foe, py + foe)
+    local dx, dy = p[1] * ppe, p[2] * ppe
+    local k = math.max(math.abs(dx) / halfW, math.abs(dy) / halfH)
+    if k > 1 then
+      dx, dy = dx / k, dy / k -- pinned to the edge, pointing where it is
+    end
+    gl.Color(d[1], d[2], d[3], (k > 1 or not p[3]) and 0.5 or 1.0)
+    gl.Rect(sx + dx - foe, sy - dy - foe, sx + dx + foe, sy - dy + foe)
   end
   if radar.commander then
     local c = HUD_TEXT.primary
@@ -1274,8 +1271,8 @@ local function drawRadarDots(sx, sy, halfW, halfH, scale)
   end
 end
 
-local function radarBoxHeight(items, scale)
-  return (24 + 6 + RADAR_SCOPE_H + 6 + 8) * scale + #items * 20 * scale
+local function radarBoxHeight(items, scale, scopeH)
+  return (24 + 6 + 6 + 8) * scale + scopeH + #items * 20 * scale
 end
 
 local function setColor(c)
@@ -1416,7 +1413,7 @@ end
 
 -- RADAR: the scope (from a display list, rebuilt when the blips refresh or the HUD moves), then the
 -- app's enemy contact rows
-local function drawRadarBox(x, top, width, height, items, scale, accent)
+local function drawRadarBox(x, top, width, height, items, scale, accent, scopeH)
   local meta = { { text = tostring(radar.range) .. " RANGE", tone = "info" } }
   if radar.contacts > 0 then
     meta[2] = { text = radar.contacts .. ((radar.contacts == 1) and " CONTACT" or " CONTACTS"), tone = "danger" }
@@ -1427,20 +1424,20 @@ local function drawRadarBox(x, top, width, height, items, scale, accent)
 
   local padX = 12 * scale
   local scopeTop = top - 30 * scale
-  local scopeH = RADAR_SCOPE_H * scale
   gl.Color(0, 0, 0, 0.25)
   gl.Rect(x + padX, scopeTop - scopeH, x + width - padX, scopeTop)
   local sx, sy = x + width / 2, scopeTop - scopeH / 2
   local halfW, halfH = width / 2 - padX, scopeH / 2
   if radar.centred then
     if gl.CreateList and gl.CallList then
-      local stale = radarList.seq ~= radar.seq or radarList.x ~= sx or radarList.y ~= sy or radarList.scale ~= scale
+      local stale = radarList.seq ~= radar.seq or radarList.x ~= sx or radarList.y ~= sy or radarList.h ~= halfH
+        or radarList.scale ~= scale
       if radarList.id == nil or stale then
         if radarList.id and gl.DeleteList then
           gl.DeleteList(radarList.id)
         end
         radarList.id = gl.CreateList(drawRadarDots, sx, sy, halfW, halfH, scale)
-        radarList.seq, radarList.x, radarList.y, radarList.scale = radar.seq, sx, sy, scale
+        radarList.seq, radarList.x, radarList.y, radarList.h, radarList.scale = radar.seq, sx, sy, halfH, scale
       end
       if radarList.id and radarList.id ~= 0 then
         gl.CallList(radarList.id)
@@ -1505,13 +1502,16 @@ local function drawBoxes(hud, vsx, vsy, scale)
     box.height = boxHeight(box.items, scale)
     total = total + box.height + ((i > 1) and gap or 0)
   end
-  local radarItems = nil
+  local radarItems, scopeH = nil, RADAR_SCOPE_H * scale
   if isTable(hud.radar) and detectMode() == "player" then
     radarItems = hudItems(hud.radar.lines)
     while #radarItems > 3 do
       table.remove(radarItems)
     end
-    total = total + ((#boxes > 0) and gap or 0) + radarBoxHeight(radarItems, scale)
+    if #boxes == 0 then
+      scopeH = width - 24 * scale -- alone: a square
+    end
+    total = total + ((#boxes > 0) and gap or 0) + radarBoxHeight(radarItems, scale, scopeH)
   end
   local aH = alertsHeight(alerts, scale)
   if aH > 0 then
@@ -1526,8 +1526,8 @@ local function drawBoxes(hud, vsx, vsy, scale)
     top = top - box.height - gap
   end
   if radarItems then
-    local h = radarBoxHeight(radarItems, scale)
-    drawRadarBox(x, top, width, h, radarItems, scale, accent)
+    local h = radarBoxHeight(radarItems, scale, scopeH)
+    drawRadarBox(x, top, width, h, radarItems, scale, accent, scopeH)
     top = top - h - gap
   end
   if aH > 0 then
@@ -1581,7 +1581,7 @@ local function drawHud()
   end
 
   local hud = currentCoachDoc.hud
-  if not isStale and not isSpec and isTable(hud) and (isTable(hud.build) or isTable(hud.factory) or isTable(hud.radar)) then
+  if not isStale and not isSpec and isTable(hud) and (isTable(hud.build) or isTable(hud.factory) or isTable(hud.radar) or isTable(hud.alerts)) then
     if gl then
       drawBoxes(hud, vsx, vsy, scale)
     end

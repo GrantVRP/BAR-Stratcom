@@ -181,4 +181,48 @@ describe('radar scope (05 §8.1, widget 3.0.6, T09.5)', () => {
       harness.close();
     }
   });
+
+  it('radar alone (radar mode, or the other boxes off): a square scope, so the south blip fits', async () => {
+    const harness = await createWidgetHarness(battlefield());
+    try {
+      const doc = coachDoc();
+      harness.setTime(1001);
+      harness.fs.writeJson('stratcom/coach.json', { ...doc, hud: { ...doc.hud, build: null, factory: null, alerts: [] } });
+      harness.callin('Initialize');
+      harness.callin('GameFrame', 15);
+      harness.clearDrawCalls();
+      harness.callin('DrawScreen');
+      const all = rects(harness.drawCalls());
+      // the scope background: 12 px in from each side of the 360 px box, 336 px tall (square)
+      const scope = all.find((r) => r[0] === 1248 + 12 && r[2] === 1248 + 348 && r[7] === 0.25)!;
+      expect(scope[3]! - scope[1]!).toBe(336);
+      // the radar-only blip 600 south: inside the square at full scale (0.25 of the 168 px half-height)
+      const red = rects(listCalls(harness.drawCalls())).filter((d) => d[4]! > 0.9 && d[5]! < 0.5);
+      const sy = scope[3]! - 168;
+      expect(red.some((d) => Math.abs((d[1]! + d[3]!) / 2 - (sy - 168 * 0.25)) < 0.01)).toBe(true);
+    } finally {
+      harness.close();
+    }
+  });
+
+  it('every box switched off: only the alerts are drawn, no radar refresh', async () => {
+    const harness = await createWidgetHarness(battlefield());
+    try {
+      const doc = coachDoc();
+      harness.setTime(1001);
+      harness.fs.writeJson('stratcom/coach.json', {
+        ...doc,
+        hud: { ...doc.hud, build: null, factory: null, radar: null, alerts: [{ text: 'ENERGY STALL', tone: 'danger' }] }
+      });
+      harness.callin('Initialize');
+      harness.callin('GameFrame', 15);
+      harness.clearDrawCalls();
+      harness.callin('DrawScreen');
+      const texts = harness.drawCalls().filter((c) => c.name === 'Text').map((c) => String(c.args[0]));
+      expect(texts).toEqual(['ENERGY STALL']);
+      expect(harness.drawCalls().some((c) => c.name === 'CreateList')).toBe(false);
+    } finally {
+      harness.close();
+    }
+  });
 });

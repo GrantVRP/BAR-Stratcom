@@ -1,5 +1,5 @@
 -- License: GPL-2.0-or-later
--- STRATCOM_WIDGET_VERSION 3.0.2
+-- STRATCOM_WIDGET_VERSION 3.0.3
 -- STRATCOM_PROTOCOL 1
 
 function widget:GetInfo()
@@ -57,7 +57,7 @@ local spGetSelectedUnits = Spring.GetSelectedUnits
 
 -- Constants & State
 local PROTOCOL = 1
-local WIDGET_VERSION = "3.0.2"
+local WIDGET_VERSION = "3.0.3"
 local DIR = "stratcom/"
 
 local jsonNull = (type(Json) == "table" and Json.null) or nil
@@ -78,6 +78,9 @@ local seenEchoIds = {}
 local seenEchoQueue = {}
 local MAX_SEEN_ECHOS = 64
 local lastDrawMs = 0
+local lastFrameMs = 0
+local frameTimeSum = 0
+local frameCount = 0
 local isDragging = false
 local dragOffsetX = 0
 local dragOffsetY = 0
@@ -299,9 +302,9 @@ local function writeHeartbeat()
   local avgWind, windRisk = resolveWindInfo(wMin, wMax)
 
   local perfData = jsonNull
-  if lastSnapshotMs > 0 or lastDrawMs > 0 then
+  if lastSnapshotMs > 0 or lastDrawMs > 0 or lastFrameMs > 0 then
     perfData = {
-      frameMs = 0,
+      frameMs = lastFrameMs,
       drawMs = lastDrawMs,
       snapshotMs = lastSnapshotMs
     }
@@ -709,7 +712,8 @@ local function writeSensorState()
 
   local t1 = spGetTimer and spGetTimer()
   if t0 and t1 and spDiffTimers then
-    lastSnapshotMs = spDiffTimers(t1, t0)
+    -- DiffTimers answers in seconds unless asked for milliseconds (engine-facts.md)
+    lastSnapshotMs = spDiffTimers(t1, t0, true)
   end
 end
 
@@ -1240,7 +1244,7 @@ local function drawHud()
   end
 
   if t0 and spDiffTimers and spGetTimer then
-    local dt = spDiffTimers(spGetTimer(), t0)
+    local dt = spDiffTimers(spGetTimer(), t0, true)
     if lastDrawMs == 0 then
       lastDrawMs = dt
     else
@@ -1328,6 +1332,7 @@ function widget:GameOver(winners)
 end
 
 function widget:GameFrame(n)
+  local t0 = spGetTimer and spGetTimer()
   if not gameStarted and n > 0 then
     widget:GameStart()
   end
@@ -1339,6 +1344,16 @@ function widget:GameFrame(n)
     end)
     if not ok and spEcho then
       spEcho("BAR StratCom GameFrame error: " .. tostring(err))
+    end
+  end
+  -- per-frame cost (08 §5 budget): average over 30-frame windows (including the snapshot frame), smoothed
+  if t0 and spDiffTimers and spGetTimer then
+    frameTimeSum = frameTimeSum + spDiffTimers(spGetTimer(), t0, true)
+    frameCount = frameCount + 1
+    if frameCount >= 30 then
+      local avg = frameTimeSum / frameCount
+      lastFrameMs = (lastFrameMs == 0) and avg or (lastFrameMs * 0.8 + avg * 0.2)
+      frameTimeSum, frameCount = 0, 0
     end
   end
 end

@@ -14,6 +14,8 @@
     "lint": "eslint .",
     "lint:lua": "tsx tools/lint-lua.ts",
     "audit:fabrication": "tsx tools/audit-fabrication.ts",
+    "perf:coach": "tsx src/main/perf/coach-bench.ts",
+    "perf:app": "npm run build && tsx tools/perf/app-perf.ts",
     "validate:data": "tsx tools/validate-data.ts",
     "test": "vitest",
     "test:watch": "vitest",

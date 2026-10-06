@@ -25,6 +25,7 @@ import {
 import type { BridgeSource } from '../game/source';
 import { broadcast } from '../ipc/register';
 import { ManualClock } from './manual-clock';
+import { TickStats, noTelemetrySnapshot, type TickSummary } from './tick-support';
 
 export interface CoachRunnerMapOptions {
   windAvg?: number | null;
@@ -85,6 +86,7 @@ export class CoachRunner {
   private onUpdate?: (state: CoachState) => void;
   private onCue?: (cue: Cue) => void;
   private assistSettings?: () => AssistSettings;
+  private readonly tickStats = new TickStats();
   private resolveMap?: (scriptName: string) => SimInput['map'];
   private simStart?: CoachRunnerStartOptions['start'];
 
@@ -284,43 +286,11 @@ export class CoachRunner {
       return;
     }
 
-    let now: LiveSnapshot;
-    if (this.mode === 'manual') {
-      const clock = this.manualClock.getClock();
-      now = {
-        frame: clock * 30,
-        gameSeconds: clock,
-        me: {
-          teamId: 0,
-          allyTeamId: 0,
-          playerName: 'Player',
-          factionId: this.plan.factionId,
-          startUnitId: null
-        },
-        wind: { current: 10 },
-        res: null,
-        counts: {},
-        builders: { total: 0, idle: 0 },
-        factories: { total: 0, idle: 0 },
-        commander: { alive: true, idle: false },
-        bp: { total: 300, active: 300 },
-        enemies: {}
-      };
-    } else {
-      now = this.latestState ?? {
-        frame: 0,
-        gameSeconds: 0,
-        me: null,
-        wind: { current: 10 },
-        res: null,
-        counts: {},
-        builders: { total: 0, idle: 0 },
-        factories: { total: 0, idle: 0 },
-        commander: { alive: true, idle: false },
-        bp: { total: 300, active: 300 },
-        enemies: {}
-      };
-    }
+    const tickStart = performance.now();
+    const now: LiveSnapshot =
+      this.mode === 'manual'
+        ? noTelemetrySnapshot(this.manualClock.getClock())
+        : (this.latestState ?? noTelemetrySnapshot(0));
 
     const evalResult = evaluate({
       plan: this.plan,
@@ -368,6 +338,12 @@ export class CoachRunner {
         // Ignore periodic write failures; next tick retries
       }
     }
+    this.tickStats.record(performance.now() - tickStart);
+  }
+
+  /** Tick duration (evaluate + write) over the last ticks: the 08 §5 budget is p95 ≤ 10 ms (T11.3). */
+  public getTickStats(): TickSummary {
+    return this.tickStats.summary();
   }
 
   private async writeDocAtomic(doc: CoachDoc): Promise<void> {

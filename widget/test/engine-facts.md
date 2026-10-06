@@ -25,6 +25,7 @@ Per **Standing Order S-7**, test doubles, harnesses, and scenario builders **mus
 | `Spring.GetActiveCmdDescs()` | table of command descriptions keyed by **index** (`i + CMD_INDEX_OFFSET`, i.e. from 1), each with `id`, `name`, `action`, `type`, `hidden`, `disabled`, `params` | build commands have `id == -unitDefID`; the list follows the current selection | Recoil `LuaUnsyncedRead::GetActiveCmdDescs` (checked 2026-10-05). |
 | `Spring.SetActiveCommand(index)` | `boolean` | takes the same key as `GetActiveCmdDescs` (subtracts `CMD_INDEX_OFFSET`); BAR's own build menu calls `SetActiveCommand(Spring.GetCmdDescIndex(-unitDefID))` | Recoil `LuaUnsyncedCtrl::SetActiveCommandByIndex`; BAR `gui_gridmenu.lua`. |
 | `Spring.GiveOrder*` in a lobby without `allowunitcontrolwidgets` | **raises** `"User 'unit control' widgets disallowed on this game"` | `widget.canControlUnits == false`; an error in a call-in makes BAR remove the widget | BAR `luaui/barwidgets.lua` `CreateSandboxedSystem` (checked 2026-10-05). |
+| `Spring.DiffTimers(endTimer, startTimer[, returnMs[, fromMicroSecs]])` | `number`, **seconds** unless `returnMs` is true | `DiffTimers(t1, t0, true)` → milliseconds | Recoil `LuaUnsyncedRead::DiffTimers` (checked 2026-10-05). Widgets before 3.0.3 reported seconds as `drawMs` / `snapshotMs` and never measured `frameMs` (T11.3). |
 | Gaia team | `Spring.GetGaiaTeamID()`; Gaia is its own ally team | critters such as `critter_gull` (Seagull) belong to Gaia and are visible | H1b Armada capture (Seagull recorded as an enemy for 199 s). |
 
 ---

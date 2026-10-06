@@ -218,7 +218,7 @@ describe('Carried-over H1b fixes (T09.1)', () => {
       harness.callin('Initialize');
       harness.callin('GameStart');
       const file = harness.fs.list('stratcom/session-')[0]!;
-      expect(SessionFileDocSchema.parse(harness.fs.readJson(file)).widgetVersion).toBe('3.0.2');
+      expect(SessionFileDocSchema.parse(harness.fs.readJson(file)).widgetVersion).toBe('3.0.3');
     } finally {
       harness.close();
     }

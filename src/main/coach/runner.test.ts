@@ -212,6 +212,19 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
     }
   });
 
+  it('measures each tick (evaluate + write) for the 08 §5 budget (T11.3)', async () => {
+    // real timers: fake timers also freeze performance.now()
+    const runner = new CoachRunner();
+    await runner.start({ plan: validPlan, mode: 'live', source: new FakeBridgeSource(), registry, stratcomDir: tmpDir });
+    await runner.tick();
+    await runner.tick();
+    const stats = runner.getTickStats();
+    expect(stats.count).toBeGreaterThanOrEqual(3); // the start tick + two
+    expect(stats.p95).toBeGreaterThan(0);
+    expect(stats.max).toBeGreaterThanOrEqual(stats.p50);
+    await runner.stop();
+  });
+
   it('does not write coach.json in demo or manual mode', async () => {
     const runner = new CoachRunner();
     await runner.start({

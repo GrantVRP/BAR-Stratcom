@@ -349,7 +349,8 @@ Spring = {
   end,
   Echo = function(text) __sp_echo(text) end,
   GetTimer = function() return 1000 end,
-  DiffTimers = function() return 0.001 end,
+  -- seconds by default, milliseconds when asked (Recoil LuaUnsyncedRead::DiffTimers); 1 ms per call here
+  DiffTimers = function(_, _, returnMs) if returnMs then return 1 else return 0.001 end end,
   GetModOptions = function()
     return { allowuserwidgets = "1", allowunitcontrolwidgets = "1" }
   end,

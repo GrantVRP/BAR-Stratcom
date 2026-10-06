@@ -101,6 +101,8 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
       observer?.disconnect();
       world?.dispose();
       pass?.dispose();
+      // dispose() alone keeps the WebGL context (and its GPU memory) until garbage collection (T11.3)
+      renderer?.forceContextLoss();
       renderer?.dispose();
     };
   }, []);

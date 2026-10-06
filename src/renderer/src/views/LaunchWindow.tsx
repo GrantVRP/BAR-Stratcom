@@ -36,6 +36,8 @@ function playArcadeStartChime(): void {
       osc.start(now + idx * 0.07);
       osc.stop(now + idx * 0.07 + 0.18);
     });
+    // close the context after the chime, or Chromium's audio service stays up for nothing (T11.3)
+    setTimeout(() => void ctx.close().catch(() => undefined), 1000);
   } catch {
     // Silent fallback if audio context fails
   }

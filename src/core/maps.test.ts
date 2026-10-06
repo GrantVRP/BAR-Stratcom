@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import mapsData from '../../data/maps/maps.json';
-import { avgWindFor, findMapByScriptName, stripMapVersionSuffix } from './maps';
+import { avgWindFor, findMapByScriptName, stripMapVersionSuffix, windRiskFor } from './maps';
 import { type MapRecord, MapsFileSchema } from './schemas';
 
 describe('src/core/maps logic (03 §4, T01.5)', () => {
@@ -91,6 +91,15 @@ describe('src/core/maps logic (03 §4, T01.5)', () => {
     it('leaves unversioned map names intact', () => {
       expect(stripMapVersionSuffix('Starwatcher')).toBe('Starwatcher');
       expect(stripMapVersionSuffix('Red River')).toBe('Red River');
+    });
+  });
+
+  describe('windRiskFor (Q-06)', () => {
+    it('reads BAR’s risk table by [min][max] and is null when it has no entry', () => {
+      const risk = { '2': { '20': 6.6 } };
+      expect(windRiskFor(sampleMaps[0]!, risk)).toBe(6.6);
+      expect(windRiskFor({ ...sampleMaps[0]!, wind: { min: 5, max: 15 } }, risk)).toBeNull();
+      expect(windRiskFor(sampleMaps[0]!, null)).toBeNull();
     });
   });
 

@@ -83,7 +83,7 @@ describe('MapsView (T10.4, 06 §4.9)', () => {
     const facts = q('map-facts')!.textContent!;
     expect(facts).toContain('12 × 8');
     expect(facts).toContain('14.2 (BAR table)');
-    expect(facts).toContain('Wind riskunknown');
+    expect(facts).toContain('Wind risk7.4% below 6 (BAR table)');
     expect(facts).toContain('#1 // 300 games in 30 days');
     expect(container.querySelectorAll('[data-testid="map-start-position"]')).toHaveLength(2);
     expect(q('map-minimap')!.querySelector('img')!.getAttribute('src')).toBe('https://maps-metadata.beyondallreason.dev/i/busy.webp');
@@ -98,6 +98,7 @@ describe('MapsView (T10.4, 06 §4.9)', () => {
     expect(window.location.hash).toBe('#/maps/Calm');
     const facts = q('map-facts')!.textContent!;
     expect(facts).toContain('Avg windunknown');
+    expect(facts).toContain('Wind riskunknown'); // wind 0–0 is in neither BAR table
     expect(facts).toContain('Mex yield2.1 MEASURED');
     expect(q('wind-turbine')!.textContent).toBe('avg wind unknown');
     expect(q('wind-turbine-rotor')!.getAttribute('class')).not.toContain('animate-spin');

@@ -23,7 +23,7 @@ test('maps: list by popularity, search, map facts with BAR wind table, minimap c
     await expect(detail).toContainText('Isidis crack 1.1 // by Phalange');
     await expect(page.getByTestId('map-facts')).toContainText('14 × 14');
     await expect(page.getByTestId('map-facts')).toContainText('14.9 (BAR table)');
-    await expect(page.getByTestId('map-facts')).toContainText('unknown'); // wind risk
+    await expect(page.getByTestId('map-facts')).toContainText('6.6% below 6 (BAR table)'); // wind risk
     await expect(page.getByTestId('map-start-position')).toHaveCount(8);
     await expect(page.getByTestId('map-minimap-credit')).toContainText('maps-metadata.beyondallreason.dev // map by Phalange');
     await expect(page.getByTestId('wind-turbine')).toContainText('avg wind 14.9 (BAR table)');

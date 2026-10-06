@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { avgWindFor } from '../../../../core/maps';
+import { avgWindFor, windRiskFor } from '../../../../core/maps';
 import type { BuildPlan, MapNotesFile, MapRecord } from '../../../../core/schemas';
 import { ipcClient } from '../../lib/ipc-client';
-import { AVG_WIND_TABLE } from '../../lib/wind-table';
+import { AVG_WIND_TABLE, WIND_RISK_TABLE } from '../../lib/wind-table';
 import { usePlans } from '../../stores';
 import { AdaptPlanDialog } from '../plans/AdaptPlanDialog';
 import { Button } from '../ui/Button';
@@ -31,6 +31,7 @@ export function MapDetail({ map, onAdapted }: { map: MapRecord; onAdapted: (plan
   const [planId, setPlanId] = useState<string | null>(null);
   const [adaptOpen, setAdaptOpen] = useState(false);
   const avgWind = avgWindFor(map, AVG_WIND_TABLE);
+  const windRisk = windRiskFor(map, WIND_RISK_TABLE);
 
   useEffect(() => {
     let active = true;
@@ -65,14 +66,16 @@ export function MapDetail({ map, onAdapted }: { map: MapRecord; onAdapted: (plan
           <WindTurbine avgWind={avgWind} faction={plans.find((p) => p.id === activePlanId)?.factionId} />
           <div className="flex items-center justify-between">
             <span className="font-['Press_Start_2P'] text-[10px] uppercase text-zinc-400">Map data</span>
-            <Provenance kind="MEASURED" tooltip="From BAR's map data (api.bar-rts.com); average wind from BAR's wind table" />
+            <Provenance kind="MEASURED" tooltip="From BAR's map data (api.bar-rts.com); average wind and wind risk from BAR's wind tables" />
           </div>
           <dl data-testid="map-facts">
             <Row label="Size">{`${map.sizeX} × ${map.sizeZ}`}</Row>
             <Row label="Wind">{`${map.wind.min}–${map.wind.max}`}</Row>
             <Row label="Avg wind">{avgWind === null ? 'unknown' : `${round1(avgWind)} (BAR table)`}</Row>
             <Row label="Wind risk">
-              <span title="BAR's wind-risk table is not in the exported game data yet">unknown</span>
+              <span title="Share of the time the wind is below 6, from BAR's wind-risk table">
+                {windRisk === null ? 'unknown' : `${round1(windRisk)}% below 6 (BAR table)`}
+              </span>
             </Row>
             <Row label="Tidal">{map.tidalStrength}</Row>
             <Row label="Max metal">{map.maxMetal}</Row>

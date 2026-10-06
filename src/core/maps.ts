@@ -56,3 +56,11 @@ export function avgWindFor(
 
   return null;
 }
+
+/**
+ * BAR's wind risk for a map (percent of the time the wind is below 6), from the risk table imported with
+ * the averages (Q-06). Null when the table or the [min][max] entry is missing; never estimated.
+ */
+export function windRiskFor(map: MapRecord, riskTable?: Record<string, Record<string, number>> | null): number | null {
+  return avgWindFor(map, riskTable);
+}

@@ -57,7 +57,7 @@ local spGetSelectedUnits = Spring.GetSelectedUnits
 
 -- Constants & State
 local PROTOCOL = 1
-local WIDGET_VERSION = "3.0.4"
+local WIDGET_VERSION = "3.0.5"
 local DIR = "stratcom/"
 
 local jsonNull = (type(Json) == "table" and Json.null) or nil
@@ -91,6 +91,17 @@ local TONE_COLORS = {
   warn = { 251 / 255, 191 / 255, 36 / 255, 1.0 },    -- #fbbf24
   danger = { 248 / 255, 113 / 255, 113 / 255, 1.0 }, -- #f87171
   dim = { 113 / 255, 113 / 255, 122 / 255, 1.0 }     -- #71717a
+}
+
+-- HUD boxes (05 §8.1, T09.4): one look for every box. Size and brightness carry the levels: headers and
+-- tags quiet, the big row brightest, queue rows dimmer; colour is kept for meaning (late, pace, alerts).
+local HUD_WIDTH = 360 -- px at 1080p, before scaling
+local HUD_TEXT = {
+  label = { 148 / 255, 163 / 255, 184 / 255, 1.0 },     -- #94a3b8 headers
+  tag = { 100 / 255, 116 / 255, 139 / 255, 1.0 },       -- #64748b who builds it
+  primary = { 244 / 255, 244 / 255, 245 / 255, 1.0 },   -- #f4f4f5 the big row
+  secondary = { 161 / 255, 161 / 255, 170 / 255, 1.0 }, -- #a1a1aa queue rows
+  muted = { 113 / 255, 113 / 255, 122 / 255, 1.0 }      -- #71717a queue timings
 }
 
 local config = {
@@ -1094,7 +1105,14 @@ local function hudItems(rawLines)
   for i = 1, math.min(4, #rawLines) do
     local l = rawLines[i]
     if isTable(l) then
-      table.insert(items, { text = tostring(l.text or ""), tone = l.tone or "info", big = (l.big == true) })
+      table.insert(items, {
+        text = tostring(l.text or ""),
+        tone = l.tone or "info",
+        big = (l.big == true),
+        right = (type(l.right) == "string") and l.right or nil,
+        tag = (type(l.tag) == "string") and l.tag or nil,
+        unitId = (type(l.unitId) == "string") and l.unitId or nil
+      })
     end
   end
   return items
@@ -1151,6 +1169,204 @@ local function drawPanel(x, top, width, height, title, tag, items, scale, border
   end
 end
 
+local function setColor(c)
+  gl.Color(c[1], c[2], c[3], c[4])
+end
+
+-- Width of text at a font size (gl.GetTextWidth answers for size 1)
+local function textWidth(text, size)
+  local w = gl.GetTextWidth and gl.GetTextWidth(text)
+  if type(w) == "number" then
+    return w * size
+  end
+  return #text * size * 0.6
+end
+
+-- A tone's colour, or the fallback for plain info
+local function toneOr(tone, fallback)
+  if tone ~= "info" and TONE_COLORS[tone] then
+    return TONE_COLORS[tone]
+  end
+  return fallback
+end
+
+local function factionAccent()
+  local myFaction = resolveFaction((spGetMyTeamID and spGetMyTeamID()) or 0)
+  if myFaction == "cortex" then
+    return { 255 / 255, 34 / 255, 68 / 255 }
+  elseif myFaction == "legion" then
+    return { 46 / 255, 196 / 255, 182 / 255 }
+  end
+  return { 68 / 255, 155 / 255, 237 / 255 } -- Armada default
+end
+
+-- coach.json box -> { title, meta, items } or nil
+local function boxFrom(raw)
+  if not isTable(raw) or type(raw.title) ~= "string" then
+    return nil
+  end
+  local items = hudItems(raw.lines)
+  if #items == 0 then
+    return nil
+  end
+  local meta = {}
+  if isTable(raw.meta) then
+    for i = 1, math.min(3, #raw.meta) do
+      local m = raw.meta[i]
+      if isTable(m) and type(m.text) == "string" then
+        table.insert(meta, { text = m.text, tone = m.tone or "info" })
+      end
+    end
+  end
+  return { title = string.upper(raw.title), meta = meta, items = items }
+end
+
+local function boxHeight(items, scale)
+  local h = 38 * scale -- header 24 + 6 above the rows + 8 below
+  for _, item in ipairs(items) do
+    h = h + (item.big and (40 * scale) or (20 * scale))
+  end
+  return h
+end
+
+-- One box: quiet header (title left, meta right-aligned), then rows in three columns: who (tag or the
+-- big row's build picture), what, when (right-aligned). A tag is drawn only when it changes.
+local function drawBox(x, top, width, height, box, scale, accent)
+  local padX = 12 * scale
+  local headerH = 24 * scale
+
+  gl.Color(10 / 255, 12 / 255, 20 / 255, 0.85)
+  gl.Rect(x, top - height, x + width, top)
+  gl.Color(accent[1], accent[2], accent[3], 1.0) -- faction accent on the top edge only
+  gl.Rect(x, top - 3 * scale, x + width, top)
+
+  local headerY = top - headerH + 7 * scale
+  setColor(HUD_TEXT.label)
+  gl.Text(box.title, x + padX, headerY, 12 * scale, "o")
+  local rx = x + width - padX
+  for i = #box.meta, 1, -1 do
+    local m = box.meta[i]
+    setColor(toneOr(m.tone, HUD_TEXT.label))
+    gl.Text(m.text, rx, headerY, 12 * scale, "or")
+    rx = rx - textWidth(m.text, 12 * scale) - 12 * scale
+  end
+  gl.Color(1, 1, 1, 0.08)
+  gl.Rect(x + padX, top - headerH, x + width - padX, top - headerH + scale)
+
+  local nameX = x + padX + 40 * scale
+  local rightX = x + width - padX
+  local y = top - headerH - 6 * scale
+  local prevTag = nil
+  for _, item in ipairs(box.items) do
+    -- the tone colours the timing; a row without one (PLAN COMPLETE) takes it on its text
+    local textTone = (item.right == nil) and item.tone or "info"
+    if item.big then
+      local def = item.unitId and UnitDefNames and UnitDefNames[item.unitId]
+      if def and gl.Texture and gl.TexRect then
+        gl.Color(1, 1, 1, 1)
+        if gl.Texture("#" .. def.id) then
+          gl.TexRect(x + padX, y - 36 * scale, x + padX + 32 * scale, y - 4 * scale)
+          gl.Texture(false)
+        end
+      end
+      if item.tag then
+        setColor(HUD_TEXT.tag)
+        gl.Text(item.tag, nameX, y - 13 * scale, 11 * scale, "o")
+      end
+      setColor(toneOr(textTone, HUD_TEXT.primary))
+      gl.Text(item.text, nameX, y - 33 * scale, 19 * scale, "o")
+      if item.right then
+        setColor(toneOr(item.tone, HUD_TEXT.secondary))
+        gl.Text(item.right, rightX, y - 33 * scale, 15 * scale, "or")
+      end
+      y = y - 40 * scale
+    else
+      if item.tag and item.tag ~= prevTag then
+        setColor(HUD_TEXT.tag)
+        gl.Text(item.tag, x + padX, y - 15 * scale, 11 * scale, "o")
+      end
+      setColor(toneOr(textTone, HUD_TEXT.secondary))
+      gl.Text(item.text, nameX, y - 15 * scale, 15 * scale, "o")
+      if item.right then
+        setColor(toneOr(item.tone, HUD_TEXT.muted))
+        gl.Text(item.right, rightX, y - 15 * scale, 13 * scale, "or")
+      end
+      y = y - 20 * scale
+    end
+    prevTag = item.tag or prevTag
+  end
+end
+
+local function alertsHeight(alerts, scale)
+  if #alerts == 0 then
+    return 0
+  end
+  return 12 * scale + #alerts * 22 * scale
+end
+
+-- Alerts under the boxes: a severity bar and the text in the alert's colour
+local function drawAlerts(x, top, width, alerts, scale)
+  gl.Color(10 / 255, 12 / 255, 20 / 255, 0.85)
+  gl.Rect(x, top - alertsHeight(alerts, scale), x + width, top)
+  local y = top - 6 * scale
+  for _, a in ipairs(alerts) do
+    setColor(TONE_COLORS[a.tone] or TONE_COLORS.info)
+    gl.Rect(x + 12 * scale, y - 19 * scale, x + 16 * scale, y - 3 * scale)
+    gl.Text(a.text, x + 24 * scale, y - 16 * scale, 15 * scale, "o")
+    y = y - 22 * scale
+  end
+end
+
+-- The HUD from widget 3.0.5: BUILDINGS, FACTORY and alerts, stacked under the dragged position
+local function drawBoxes(hud, vsx, vsy, scale)
+  local boxes = {}
+  for _, raw in ipairs({ hud.build, hud.factory }) do
+    local box = boxFrom(raw)
+    if box then
+      table.insert(boxes, box)
+    end
+  end
+  local alerts = {}
+  if isTable(hud.alerts) then
+    for i = 1, math.min(2, #hud.alerts) do
+      local a = hud.alerts[i]
+      if isTable(a) and type(a.text) == "string" then
+        table.insert(alerts, { text = a.text, tone = a.tone or "info" })
+      end
+    end
+  end
+  if assistMessage then
+    table.insert(alerts, { text = assistMessage.text, tone = assistMessage.tone })
+  end
+  local en = currentCoachDoc.assist and currentCoachDoc.assist.enabled
+  if boxes[1] and isTable(en) and (en.armNext or en.factoryQueue) then
+    table.insert(boxes[1].meta, 1, { text = "ASSIST", tone = "good" })
+  end
+
+  local width = HUD_WIDTH * scale
+  local gap = 8 * scale
+  local total = 0
+  for i, box in ipairs(boxes) do
+    box.height = boxHeight(box.items, scale)
+    total = total + box.height + ((i > 1) and gap or 0)
+  end
+  local aH = alertsHeight(alerts, scale)
+  if aH > 0 then
+    total = total + gap + aH
+  end
+
+  local x = math.max(0, math.min(vsx - width, config.hudX or (vsx * 0.65)))
+  local top = math.max(total, math.min(vsy, config.hudY or (vsy - 60 * scale)))
+  local accent = factionAccent()
+  for _, box in ipairs(boxes) do
+    drawBox(x, top, width, box.height, box, scale, accent)
+    top = top - box.height - gap
+  end
+  if aH > 0 then
+    drawAlerts(x, top, width, alerts, scale)
+  end
+end
+
 local function drawHud()
   local t0 = spGetTimer and spGetTimer()
 
@@ -1196,9 +1412,22 @@ local function drawHud()
     scale = 0.5
   end
 
+  local hud = currentCoachDoc.hud
+  if not isStale and not isSpec and isTable(hud) and (isTable(hud.build) or isTable(hud.factory)) then
+    if gl then
+      drawBoxes(hud, vsx, vsy, scale)
+    end
+    if t0 and spDiffTimers and spGetTimer then
+      local dt = spDiffTimers(spGetTimer(), t0, true)
+      lastDrawMs = (lastDrawMs == 0) and dt or (lastDrawMs * 0.9 + dt * 0.1)
+    end
+    return
+  end
+
+  -- Single panel: offline / spectator line, or a coach.json from an app before 3.0.5
   local paddingY = 8 * scale
   local titleHeight = 24 * scale
-  local panelWidth = 320 * scale
+  local panelWidth = HUD_WIDTH * scale
 
   local itemsToDraw = {}
   if isStale then
@@ -1213,35 +1442,15 @@ local function drawHud()
     end
   end
 
-  -- Factory box under the main panel: the factory's next builds (owner request, T09.3)
-  local factoryItems, factoryTitle = {}, nil
-  local fbox = currentCoachDoc.hud and currentCoachDoc.hud.factory
-  if not isStale and not isSpec and isTable(fbox) and type(fbox.title) == "string" then
-    factoryItems = hudItems(fbox.lines)
-    if #factoryItems > 0 then
-      factoryTitle = string.upper(fbox.title)
-    end
-  end
-
-  local gap = 6 * scale
   local panelHeight = titleHeight + itemsHeight(itemsToDraw, scale) + paddingY * 2
-  local factoryHeight = titleHeight + itemsHeight(factoryItems, scale) + paddingY * 2
-  local totalHeight = panelHeight + (factoryTitle and (gap + factoryHeight) or 0)
 
   local defaultX = vsx * 0.65
   local defaultY = vsy - (60 * scale)
   local hudX = math.max(0, math.min(vsx - panelWidth, config.hudX or defaultX))
-  local hudY = math.max(totalHeight, math.min(vsy, config.hudY or defaultY))
+  local hudY = math.max(panelHeight, math.min(vsy, config.hudY or defaultY))
 
   if gl then
-    local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
-    local myFaction = resolveFaction(myTeam)
-    local border = { 68 / 255, 155 / 255, 237 / 255 } -- Armada default
-    if myFaction == "cortex" then
-      border = { 255 / 255, 34 / 255, 68 / 255 }
-    elseif myFaction == "legion" then
-      border = { 46 / 255, 196 / 255, 182 / 255 }
-    end
+    local border = factionAccent()
 
     -- Title
     local titleText = "STRATCOM"
@@ -1264,9 +1473,6 @@ local function drawHud()
     end
 
     drawPanel(hudX, hudY, panelWidth, panelHeight, titleText, assistTag, itemsToDraw, scale, border)
-    if factoryTitle then
-      drawPanel(hudX, hudY - panelHeight - gap, panelWidth, factoryHeight, factoryTitle, "", factoryItems, scale, border)
-    end
   end
 
   if t0 and spDiffTimers and spGetTimer then
@@ -1555,7 +1761,7 @@ function widget:MousePress(mx, my, button)
     scale = 0.5
   end
 
-  local panelWidth = 320 * scale
+  local panelWidth = HUD_WIDTH * scale
   local titleHeight = 24 * scale
   local defaultX = vsx * 0.65
   local defaultY = vsy - (60 * scale)
@@ -1589,7 +1795,7 @@ function widget:MouseMove(mx, my, dx, dy, button)
     scale = 0.5
   end
 
-  local panelWidth = 320 * scale
+  local panelWidth = HUD_WIDTH * scale
   local titleHeight = 24 * scale
 
   local newX = mx - dragOffsetX
@@ -1609,7 +1815,7 @@ end
 
 function widget:ViewResize(vsx, vsy)
   if config.hudX and vsx and vsx > 0 then
-    local panelWidth = 320
+    local panelWidth = HUD_WIDTH
     if config.hudX > vsx - panelWidth then
       config.hudX = math.max(0, vsx - panelWidth)
     end

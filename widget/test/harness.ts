@@ -276,6 +276,14 @@ export async function createWidgetHarness(
         __record_draw_call(name, { ... })
       end
     end
+    gl.TexRect = function(...) __record_draw_call("TexRect", { ... }) end
+    -- engine-facts.md: Texture true when bound ('#'..known unitDefID, false); GetTextWidth at size 1 (0.5/char)
+    gl.Texture = function(arg)
+      __record_draw_call("Texture", { arg })
+      local id = type(arg) == "string" and arg:sub(1, 1) == "#" and tonumber(arg:sub(2))
+      return type(arg) == "boolean" or (id and UnitDefs[id] ~= nil) or false
+    end
+    gl.GetTextWidth = function(text) return #tostring(text) * 0.5 end
   `);
 
   // 8. widgetHandler mock

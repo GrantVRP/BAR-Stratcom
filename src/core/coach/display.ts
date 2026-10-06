@@ -1,26 +1,13 @@
-import type { CoachHud, CoachHudBox, CoachHudLine } from '../schemas/protocol';
+import type { CoachHud, CoachHudLine } from '../schemas/protocol';
 import type { CoachStep, Alert } from '../schemas/coach';
 import type { BuildPlan } from '../schemas/plans';
 import type { Registry } from '../registry';
-import { nextBuilderStep, nextFactoryRun } from './queues';
+import { nextBuilderStep } from './queues';
+import { paddedLine, timeSuffix, truncateTo36, unitLabel } from './hud-text';
+import { buildBuildBox, buildFactoryBox, buildHudAlerts } from './hud-boxes';
 
-export function formatTimeMinutesSeconds(seconds: number): string {
-  const total = Math.max(0, Math.floor(seconds));
-  const m = Math.floor(total / 60);
-  const s = total % 60;
-  return `${m}:${s < 10 ? '0' : ''}${s}`;
-}
-
-export function truncateTo36(text: string): string {
-  if (text.length <= 36) return text;
-  return `${text.slice(0, 35)}…`;
-}
-
-const warnedMissingUnits = new Set<string>();
-
-export function clearWarnedMissingUnits(): void {
-  warnedMissingUnits.clear();
-}
+export { clearWarnedMissingUnits, formatTimeMinutesSeconds, truncateTo36 } from './hud-text';
+export { buildFactoryBox } from './hud-boxes';
 
 export interface BuildHudInput {
   plan?: BuildPlan | null;
@@ -35,59 +22,9 @@ export interface BuildHudInput {
   plannedStall?: 'energy' | 'metal' | null;
 }
 
-/** A unit's display name from the snapshot (warns once when the snapshot does not have it). */
-function unitLabel(registry: Registry, unitId: string): string {
-  const unit = registry.get(unitId);
-  if (unit?.name) return unit.name;
-  if (!warnedMissingUnits.has(unitId)) {
-    warnedMissingUnits.add(unitId);
-    console.warn(`[display] Unit '${unitId}' not found in registry`);
-  }
-  return 'Unknown unit';
-}
-
-/** "in m:ss" until the step should start or finish, "+m:ss" once it is late. */
-function timeSuffix(step: CoachStep, clock: number): string {
-  if (clock < step.plannedStart) return `in ${formatTimeMinutesSeconds(step.plannedStart - clock)}`;
-  if (clock <= step.plannedFinish) return `in ${formatTimeMinutesSeconds(step.plannedFinish - clock)}`;
-  return `+${formatTimeMinutesSeconds(clock - step.plannedFinish)}`;
-}
-
-/** prefix + description (shortened to fit) + right-aligned suffix, at most 36 characters. */
-function paddedLine(prefix: string, desc: string, suffix: string): string {
-  const spaceAvailable = 36 - prefix.length - 1 - suffix.length;
-  let fitted = desc;
-  if (spaceAvailable > 0 && desc.length > spaceAvailable) {
-    fitted = `${desc.slice(0, spaceAvailable - 1)}…`;
-  }
-  const padding = Math.max(1, 36 - prefix.length - fitted.length - suffix.length);
-  return truncateTo36(`${prefix}${fitted}${' '.repeat(padding)}${suffix}`);
-}
-
 /**
- * The factory box (owner request, T09.3): the first factory with pending builds and its next builds
- * (`nextFactoryRun`, the same run the LOAD FACTORY QUEUE assist queues), so the player can queue them
- * while the commander works on NEXT. The first line carries its timing and turns warn/danger when late.
- */
-export function buildFactoryBox(plan: BuildPlan, steps: readonly CoachStep[], registry: Registry, clock: number): CoachHudBox | null {
-  const run = nextFactoryRun(plan, steps);
-  if (!run || run.items.length === 0) return null;
-
-  const factory = unitLabel(registry, run.actor.unitId).toUpperCase();
-  const title = truncateTo36(`FACTORY // ${factory}${run.actor.index > 1 ? ` ${run.actor.index}` : ''}`);
-  const lines: CoachHudLine[] = run.items.slice(0, 4).map((item, i) => {
-    const desc = `${item.count}× ${unitLabel(registry, item.unitId)}`;
-    const coachStep = i === 0 ? steps.find((s) => s.stepId === item.stepId) : undefined;
-    if (!coachStep) return { text: truncateTo36(desc), tone: 'info' };
-    const late = clock - coachStep.plannedFinish;
-    const tone: CoachHudLine['tone'] = late > 15 ? 'danger' : late > 0 ? 'warn' : 'info';
-    return { text: paddedLine('', desc, timeSuffix(coachStep, clock)), tone, big: true };
-  });
-  return { title, lines };
-}
-
-/**
- * Builds the Coach HUD display model with at most 4 lines, each <= 36 chars, plus the factory box.
+ * Builds the Coach HUD display model: the boxes widget 3.0.5+ draws (BUILDINGS, FACTORY, alerts; see
+ * hud-boxes.ts) and, for older widgets, the single panel of at most 4 lines of <= 36 chars.
  */
 export function buildCoachHud(input: BuildHudInput): CoachHud {
   const {
@@ -194,6 +131,8 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     title,
     lines,
     progress,
-    factory: plan ? buildFactoryBox(plan, steps, registry, clock) : null
+    build: plan ? buildBuildBox({ plan, steps, currentStepIndex, aheadBehindSec, registry, clock }) : null,
+    factory: plan ? buildFactoryBox(plan, steps, registry, clock) : null,
+    alerts: buildHudAlerts(activeAlerts, plannedStall)
   };
 }

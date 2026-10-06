@@ -15,6 +15,16 @@ function pendingSteps(plan: BuildPlan, steps: readonly CoachStep[]): BuildStep[]
   return plan.steps.filter((s) => status.get(s.id) === 'current' || status.get(s.id) === 'upcoming');
 }
 
+/** Pending steps for the commander and constructors (anything but factory steps), in plan order. */
+export function pendingBuilderSteps(plan: BuildPlan, steps: readonly CoachStep[]): BuildStep[] {
+  return pendingSteps(plan, steps).filter((s) => s.actor.kind !== 'factory');
+}
+
+/** Pending factory builds of every factory, in plan order. */
+export function pendingFactoryBuilds(plan: BuildPlan, steps: readonly CoachStep[]): BuildStep[] {
+  return pendingSteps(plan, steps).filter((s) => s.actor.kind === 'factory' && s.action === 'build' && !!s.unitId);
+}
+
 /**
  * The next pending step for the commander or a constructor. Factory steps are left out: they run in
  * parallel and have their own queue (`nextFactoryRun`), so the player can work both at once.

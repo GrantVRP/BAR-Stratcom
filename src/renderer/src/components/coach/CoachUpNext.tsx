@@ -1,7 +1,8 @@
 import React from 'react';
 import type { CoachStep } from '../../../../core/schemas/coach';
-import type { BuildPlan, Actor } from '../../../../core/schemas/plans';
+import type { BuildPlan } from '../../../../core/schemas/plans';
 import { Tag } from '../ui/Tag';
+import { actorTag } from '../../../../core/coach/hud-boxes';
 
 export interface CoachUpNextProps {
   plan: BuildPlan | null;
@@ -18,11 +19,6 @@ function formatTime(sec: number): string {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-function getActorLabel(actor: Actor): string {
-  if (actor.kind === 'commander') return 'CDR';
-  if (actor.kind === 'factory') return actor.index > 1 ? `FAC#${actor.index}` : 'FAC';
-  return actor.index > 1 ? `CON#${actor.index}` : 'CON';
-}
 
 export function CoachUpNext({
   plan,
@@ -76,7 +72,7 @@ export function CoachUpNext({
               >
                 <div className="flex items-center gap-2 truncate">
                   <span className="font-mono text-[11px] text-[#38bdf8] w-10">{formatTime(plannedTime)}</span>
-                  <Tag variant="default">{getActorLabel(planStep.actor)}</Tag>
+                  <Tag variant="default">{actorTag(planStep.actor)}</Tag>
                   <span className="truncate text-[#e4e4e7]">
                     {countPrefix}
                     {targetLabel}

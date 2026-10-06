@@ -7,6 +7,7 @@ import { buildCoachHud } from '../../../../core/coach/display';
 
 import { useSnapshot } from '../../stores';
 import { getClientRegistry } from '../../lib/registry';
+import { HudBoxesPreview } from './HudBoxesPreview';
 
 export interface HudPreviewProps {
   hud?: CoachHud | null;
@@ -62,6 +63,15 @@ export function HudPreview({
     return null;
   }, [directHud, coachState, plan, activeRegistry]);
 
+  if (hud && (hud.build || hud.factory)) {
+    return (
+      <div data-testid="hud-preview" className={`rounded border border-[#27272a] bg-[#07090e]/95 p-3 shadow-lg ${className}`}>
+        <div className="mb-2 text-[10px] uppercase tracking-wider text-[#71717a]">WIDGET DISPLAY</div>
+        <HudBoxesPreview hud={hud} factionId={plan?.factionId ?? null} />
+      </div>
+    );
+  }
+
   return (
     <div
       data-testid="hud-preview"
@@ -106,23 +116,6 @@ export function HudPreview({
           ))
         )}
       </div>
-
-      {hud?.factory && (
-        <div data-testid="hud-factory" className="mt-3 border-t border-[#1f2430] pt-2">
-          <div className="mb-1.5 font-['Press_Start_2P'] text-[10px] text-[#e4e4e7]">{hud.factory.title}</div>
-          <div className="space-y-1">
-            {hud.factory.lines.map((line, idx) => (
-              <div
-                key={idx}
-                data-testid={`hud-factory-line-${idx}`}
-                className={`truncate font-mono tracking-wide ${line.big ? 'text-sm font-bold' : 'text-xs'} ${toneColorClass(line.tone)}`}
-              >
-                {line.text}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

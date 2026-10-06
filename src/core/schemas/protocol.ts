@@ -159,11 +159,19 @@ export const RawWindLookupSchema = z
 
 export type RawWindLookup = z.infer<typeof RawWindLookupSchema>;
 
+export const CoachHudToneSchema = z.enum(['info', 'good', 'warn', 'danger']);
+
 export const CoachHudLineSchema = z
   .object({
     text: z.string().max(36),
-    tone: z.enum(['info', 'good', 'warn', 'danger']),
-    big: z.boolean().optional()
+    tone: CoachHudToneSchema,
+    big: z.boolean().optional(),
+    /** Right-aligned column (from widget 3.0.5): the timing, e.g. 'in 0:08' or '+0:05'. */
+    right: z.string().max(9).optional(),
+    /** Who builds it (from widget 3.0.5): 'COM', 'CB1', 'BL'; shown when it changes from the row above. */
+    tag: z.string().max(6).optional(),
+    /** The unit (from widget 3.0.5): a big row shows its build picture, drawn by the engine. */
+    unitId: z.string().optional()
   })
   .strict();
 
@@ -178,24 +186,52 @@ export const CoachHudProgressSchema = z
 
 export type CoachHudProgress = z.infer<typeof CoachHudProgressSchema>;
 
-/** A second HUD panel under the main one (owner request: the factory's next builds, T09.3). */
+/** A small right-aligned item in a box header (progress, pace). */
+export const CoachHudMetaSchema = z
+  .object({
+    text: z.string().max(12),
+    tone: CoachHudToneSchema
+  })
+  .strict();
+
+export type CoachHudMeta = z.infer<typeof CoachHudMetaSchema>;
+
+/**
+ * A HUD box (owner requests, T09.3/T09.4): a header (title + meta) and 1–4 rows, the first big (the
+ * entry point), the rest the queue behind it.
+ */
 export const CoachHudBoxSchema = z
   .object({
     title: z.string().max(36),
+    meta: z.array(CoachHudMetaSchema).max(3).optional(),
     lines: z.array(CoachHudLineSchema).min(1).max(4)
   })
   .strict();
 
 export type CoachHudBox = z.infer<typeof CoachHudBoxSchema>;
 
+export const CoachHudAlertSchema = z
+  .object({
+    text: z.string().max(36),
+    tone: CoachHudToneSchema
+  })
+  .strict();
+
+export type CoachHudAlert = z.infer<typeof CoachHudAlertSchema>;
+
 export const CoachHudSchema = z
   .object({
     visible: z.boolean(),
+    /** title, lines and progress: the single-panel HUD that widgets before 3.0.5 draw. */
     title: z.string(),
     lines: z.array(CoachHudLineSchema).max(4),
     progress: CoachHudProgressSchema.nullable(),
-    /** The first factory with pending builds; null when no factory step is pending (from 3.0.4). */
-    factory: CoachHudBoxSchema.nullable().optional()
+    /** The commander's and constructors' next steps (from 3.0.5); null without a plan. */
+    build: CoachHudBoxSchema.nullable().optional(),
+    /** The factories' next builds (from 3.0.4); null when no factory build is pending. */
+    factory: CoachHudBoxSchema.nullable().optional(),
+    /** Up to two active alerts (from 3.0.5), drawn under the boxes. */
+    alerts: z.array(CoachHudAlertSchema).max(2).optional()
   })
   .strict();
 

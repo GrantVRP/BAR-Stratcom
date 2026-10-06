@@ -1,8 +1,9 @@
 import React from 'react';
 import type { CoachStep } from '../../../../core/schemas/coach';
-import type { BuildPlan, BuildStep, Actor } from '../../../../core/schemas/plans';
+import type { BuildPlan, BuildStep } from '../../../../core/schemas/plans';
 import { Button } from '../ui/Button';
 import { Tag } from '../ui/Tag';
+import { actorTag } from '../../../../core/coach/hud-boxes';
 
 export interface CoachNextCardProps {
   currentStep: CoachStep | null;
@@ -47,11 +48,6 @@ function formatCountdown(
   }
 }
 
-function getActorLabel(actor: Actor): string {
-  if (actor.kind === 'commander') return 'CDR';
-  if (actor.kind === 'factory') return actor.index > 1 ? `FAC#${actor.index}` : 'FAC';
-  return actor.index > 1 ? `CON#${actor.index}` : 'CON';
-}
 
 export function CoachNextCard({
   currentStep,
@@ -119,7 +115,7 @@ export function CoachNextCard({
       <div className="flex items-center justify-between border-b border-[#1e293b] pb-2">
         <div className="flex items-center gap-2">
           <span className="font-['Press_Start_2P'] text-[11px] text-[#38bdf8]">▸ NEXT</span>
-          <Tag variant="default">{getActorLabel(planStep.actor)}</Tag>
+          <Tag variant="default">{actorTag(planStep.actor)}</Tag>
         </div>
         <div className={`rounded border px-2 py-0.5 text-xs font-bold ${paceColor}`}>{paceLabel}</div>
       </div>

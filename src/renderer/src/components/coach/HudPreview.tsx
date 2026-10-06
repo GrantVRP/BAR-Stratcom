@@ -106,6 +106,23 @@ export function HudPreview({
           ))
         )}
       </div>
+
+      {hud?.factory && (
+        <div data-testid="hud-factory" className="mt-3 border-t border-[#1f2430] pt-2">
+          <div className="mb-1.5 font-['Press_Start_2P'] text-[10px] text-[#e4e4e7]">{hud.factory.title}</div>
+          <div className="space-y-1">
+            {hud.factory.lines.map((line, idx) => (
+              <div
+                key={idx}
+                data-testid={`hud-factory-line-${idx}`}
+                className={`truncate font-mono tracking-wide ${line.big ? 'text-sm font-bold' : 'text-xs'} ${toneColorClass(line.tone)}`}
+              >
+                {line.text}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

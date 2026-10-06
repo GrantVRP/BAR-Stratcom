@@ -57,7 +57,7 @@ local spGetSelectedUnits = Spring.GetSelectedUnits
 
 -- Constants & State
 local PROTOCOL = 1
-local WIDGET_VERSION = "3.0.3"
+local WIDGET_VERSION = "3.0.4"
 local DIR = "stratcom/"
 
 local jsonNull = (type(Json) == "table" and Json.null) or nil
@@ -1085,6 +1085,72 @@ local function assistLoadQueue()
   return issued > 0
 end
 
+-- HUD lines from coach.json (at most 4) as draw items
+local function hudItems(rawLines)
+  local items = {}
+  if not isTable(rawLines) then
+    return items
+  end
+  for i = 1, math.min(4, #rawLines) do
+    local l = rawLines[i]
+    if isTable(l) then
+      table.insert(items, { text = tostring(l.text or ""), tone = l.tone or "info", big = (l.big == true) })
+    end
+  end
+  return items
+end
+
+local function itemsHeight(items, scale)
+  local h = 0
+  for _, item in ipairs(items) do
+    h = h + (item.big and (24 * scale) or (20 * scale))
+  end
+  if h == 0 then
+    h = 20 * scale
+  end
+  return h
+end
+
+-- One HUD panel: background, faction border, title bar (title + optional tag), lines
+local function drawPanel(x, top, width, height, title, tag, items, scale, border)
+  local paddingX = 12 * scale
+  local paddingY = 8 * scale
+  local titleHeight = 24 * scale
+
+  -- Background: #0a0c14 at 85% opacity
+  gl.Color(10 / 255, 12 / 255, 20 / 255, 0.85)
+  gl.Rect(x, top - height, x + width, top)
+
+  -- Faction accent border (2 px)
+  local bw = 2 * scale
+  gl.Color(border[1], border[2], border[3], 1.0)
+  gl.Rect(x, top - bw, x + width, top)
+  gl.Rect(x, top - height, x + width, top - height + bw)
+  gl.Rect(x, top - height, x + bw, top)
+  gl.Rect(x + width - bw, top - height, x + width, top)
+
+  -- Divider between title and content
+  gl.Color(border[1], border[2], border[3], 0.4)
+  gl.Rect(x, top - titleHeight, x + width, top - titleHeight + bw)
+
+  local titleY = top - titleHeight + (6 * scale)
+  gl.Color(228 / 255, 228 / 255, 231 / 255, 1.0)
+  gl.Text(title, x + paddingX, titleY, 14 * scale, "o")
+  if tag ~= "" then
+    gl.Color(74 / 255, 222 / 255, 128 / 255, 1.0)
+    gl.Text(tag, x + width - paddingX - (70 * scale), titleY, 11 * scale, "o")
+  end
+
+  local curY = top - titleHeight - paddingY
+  for _, item in ipairs(items) do
+    local fontSize = item.big and (20 * scale) or (16 * scale)
+    curY = curY - (item.big and (24 * scale) or (20 * scale))
+    local col = TONE_COLORS[item.tone] or TONE_COLORS.info
+    gl.Color(col[1], col[2], col[3], col[4])
+    gl.Text(item.text, x + paddingX, curY + (3 * scale), fontSize, "o")
+  end
+end
+
 local function drawHud()
   local t0 = spGetTimer and spGetTimer()
 
@@ -1130,7 +1196,6 @@ local function drawHud()
     scale = 0.5
   end
 
-  local paddingX = 12 * scale
   local paddingY = 8 * scale
   local titleHeight = 24 * scale
   local panelWidth = 320 * scale
@@ -1142,63 +1207,41 @@ local function drawHud()
     local nTeams = getCapturedTeamCount()
     table.insert(itemsToDraw, { text = "REC \226\151\143 capturing " .. nTeams .. " teams", tone = "danger", big = false })
   else
-    local rawLines = (currentCoachDoc.hud and currentCoachDoc.hud.lines) or {}
-    local maxLines = math.min(4, #rawLines)
-    for i = 1, maxLines do
-      local l = rawLines[i]
-      if type(l) == "table" or type(l) == "userdata" then
-        table.insert(itemsToDraw, {
-          text = tostring(l.text or ""),
-          tone = l.tone or "info",
-          big = (l.big == true)
-        })
-      end
-    end
+    itemsToDraw = hudItems(currentCoachDoc.hud and currentCoachDoc.hud.lines)
     if assistMessage then
       table.insert(itemsToDraw, { text = assistMessage.text, tone = assistMessage.tone, big = false })
     end
   end
 
-  local contentHeight = 0
-  for _, item in ipairs(itemsToDraw) do
-    contentHeight = contentHeight + (item.big and (24 * scale) or (20 * scale))
-  end
-  if contentHeight == 0 then
-    contentHeight = 20 * scale
+  -- Factory box under the main panel: the factory's next builds (owner request, T09.3)
+  local factoryItems, factoryTitle = {}, nil
+  local fbox = currentCoachDoc.hud and currentCoachDoc.hud.factory
+  if not isStale and not isSpec and isTable(fbox) and type(fbox.title) == "string" then
+    factoryItems = hudItems(fbox.lines)
+    if #factoryItems > 0 then
+      factoryTitle = string.upper(fbox.title)
+    end
   end
 
-  local panelHeight = titleHeight + contentHeight + paddingY * 2
+  local gap = 6 * scale
+  local panelHeight = titleHeight + itemsHeight(itemsToDraw, scale) + paddingY * 2
+  local factoryHeight = titleHeight + itemsHeight(factoryItems, scale) + paddingY * 2
+  local totalHeight = panelHeight + (factoryTitle and (gap + factoryHeight) or 0)
 
   local defaultX = vsx * 0.65
   local defaultY = vsy - (60 * scale)
   local hudX = math.max(0, math.min(vsx - panelWidth, config.hudX or defaultX))
-  local hudY = math.max(panelHeight, math.min(vsy, config.hudY or defaultY))
+  local hudY = math.max(totalHeight, math.min(vsy, config.hudY or defaultY))
 
   if gl then
-    -- Background: #0a0c14 at 85% opacity
-    gl.Color(10 / 255, 12 / 255, 20 / 255, 0.85)
-    gl.Rect(hudX, hudY - panelHeight, hudX + panelWidth, hudY)
-
-    -- Faction accent border (2 px)
     local myTeam = (spGetMyTeamID and spGetMyTeamID()) or 0
     local myFaction = resolveFaction(myTeam)
-    local borderR, borderG, borderB = 68 / 255, 155 / 255, 237 / 255 -- Armada default
+    local border = { 68 / 255, 155 / 255, 237 / 255 } -- Armada default
     if myFaction == "cortex" then
-      borderR, borderG, borderB = 255 / 255, 34 / 255, 68 / 255
+      border = { 255 / 255, 34 / 255, 68 / 255 }
     elseif myFaction == "legion" then
-      borderR, borderG, borderB = 46 / 255, 196 / 255, 182 / 255
+      border = { 46 / 255, 196 / 255, 182 / 255 }
     end
-
-    local bw = 2 * scale
-    gl.Color(borderR, borderG, borderB, 1.0)
-    gl.Rect(hudX, hudY - bw, hudX + panelWidth, hudY)
-    gl.Rect(hudX, hudY - panelHeight, hudX + panelWidth, hudY - panelHeight + bw)
-    gl.Rect(hudX, hudY - panelHeight, hudX + bw, hudY)
-    gl.Rect(hudX + panelWidth - bw, hudY - panelHeight, hudX + panelWidth, hudY)
-
-    -- Divider between title and content
-    gl.Color(borderR, borderG, borderB, 0.4)
-    gl.Rect(hudX, hudY - titleHeight, hudX + panelWidth, hudY - titleHeight + bw)
 
     -- Title
     local titleText = "STRATCOM"
@@ -1220,26 +1263,9 @@ local function drawHud()
       end
     end
 
-    local titleY = hudY - titleHeight + (6 * scale)
-    gl.Color(228 / 255, 228 / 255, 231 / 255, 1.0)
-    gl.Text(titleText, hudX + paddingX, titleY, 14 * scale, "o")
-
-    if assistTag ~= "" then
-      gl.Color(74 / 255, 222 / 255, 128 / 255, 1.0)
-      gl.Text(assistTag, hudX + panelWidth - paddingX - (70 * scale), titleY, 11 * scale, "o")
-    end
-
-    -- Lines
-    local curY = hudY - titleHeight - paddingY
-    for _, item in ipairs(itemsToDraw) do
-      local isBig = item.big
-      local fontSize = isBig and (20 * scale) or (16 * scale)
-      local stepY = isBig and (24 * scale) or (20 * scale)
-      curY = curY - stepY
-
-      local col = TONE_COLORS[item.tone] or TONE_COLORS.info
-      gl.Color(col[1], col[2], col[3], col[4])
-      gl.Text(item.text, hudX + paddingX, curY + (3 * scale), fontSize, "o")
+    drawPanel(hudX, hudY, panelWidth, panelHeight, titleText, assistTag, itemsToDraw, scale, border)
+    if factoryTitle then
+      drawPanel(hudX, hudY - panelHeight - gap, panelWidth, factoryHeight, factoryTitle, "", factoryItems, scale, border)
     end
   end
 

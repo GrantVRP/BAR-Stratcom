@@ -59,21 +59,23 @@ describe('coach assist payloads (T09.2, 03 §7.6)', () => {
   ]);
 
   it('disabled (the default): no payloads, both switches off', () => {
-    const assist = buildCoachAssist({ plan: opening, steps: tracked(opening, 0), currentStepIndex: 0, enabled: { armNext: false, factoryQueue: false } });
+    const assist = buildCoachAssist({ plan: opening, steps: tracked(opening, 0), enabled: { armNext: false, factoryQueue: false } });
     expect(assist).toEqual(ASSIST_OFF);
   });
 
-  it('arm next: the current step when it is a build by the commander or a builder', () => {
-    const at = (i: number) => buildCoachAssist({ plan: opening, steps: tracked(opening, i), currentStepIndex: i, enabled: { armNext: true, factoryQueue: false } });
+  it("arm next: the HUD's NEXT step (commander or builder, factory steps skipped) when it is a build", () => {
+    const at = (i: number) => buildCoachAssist({ plan: opening, steps: tracked(opening, i), enabled: { armNext: true, factoryQueue: false } });
     expect(at(0)).toEqual({ armNext: { unitId: 'armmex', stepId: 's1' }, factoryQueue: null, enabled: { armNext: true, factoryQueue: false } });
     expect(at(6).armNext).toEqual({ unitId: 'armmex', stepId: 's7' }); // builder step
-    expect(at(2).armNext).toBeNull(); // factory step: that is the queue's job
-    expect(at(8).armNext).toBeNull(); // a note
+    expect(at(2).armNext).toEqual({ unitId: 'armwin', stepId: 's4' }); // s3 is the factory's; the commander builds s4 meanwhile
+    expect(at(7).armNext).toBeNull(); // only factory steps left
     expect(at(10).armNext).toBeNull(); // plan finished
+    const withNote = plan([step('n1', COM, undefined, 1, 'note'), step('n2', COM, 'armmex')]);
+    expect(buildCoachAssist({ plan: withNote, steps: tracked(withNote, 0), enabled: ON }).armNext).toBeNull(); // a note
   });
 
   it('factory queue: the first pending factory and its consecutive builds, merged per unit, until a non-build step', () => {
-    const assist = buildCoachAssist({ plan: opening, steps: tracked(opening, 3), currentStepIndex: 3, enabled: ON });
+    const assist = buildCoachAssist({ plan: opening, steps: tracked(opening, 3), enabled: ON });
     // s3 is done; s5 + s6 merge, s8 follows, the note s9 ends the run (s10 is not included)
     expect(assist.factoryQueue).toEqual({
       factoryUnitId: 'armlab',
@@ -86,15 +88,15 @@ describe('coach assist payloads (T09.2, 03 §7.6)', () => {
   });
 
   it('factory queue: skipped and done steps are left out; no pending factory step → null', () => {
-    const skipped = buildCoachAssist({ plan: opening, steps: tracked(opening, 3, { s5: 'skipped' }), currentStepIndex: 3, enabled: ON });
+    const skipped = buildCoachAssist({ plan: opening, steps: tracked(opening, 3, { s5: 'skipped' }), enabled: ON });
     expect(skipped.factoryQueue!.items[0]).toEqual({ unitId: 'armpw', count: 2 });
-    const later = buildCoachAssist({ plan: opening, steps: tracked(opening, 9, { s10: 'done' }), currentStepIndex: 9, enabled: ON });
+    const later = buildCoachAssist({ plan: opening, steps: tracked(opening, 9, { s10: 'done' }), enabled: ON });
     expect(later.factoryQueue).toBeNull();
   });
 
   it('factory queue: at most 20 units, cut inside the step that crosses the limit', () => {
     const big = plan([step('a', LAB, 'armpw', 12), step('b', LAB, 'armrock', 12), step('c', LAB, 'armck', 5)]);
-    const assist = buildCoachAssist({ plan: big, steps: tracked(big, 0), currentStepIndex: 0, enabled: ON });
+    const assist = buildCoachAssist({ plan: big, steps: tracked(big, 0), enabled: ON });
     expect(assist.factoryQueue).toEqual({
       factoryUnitId: 'armlab',
       items: [
@@ -106,7 +108,7 @@ describe('coach assist payloads (T09.2, 03 §7.6)', () => {
 
   it('factory queue: only the first factory; another factory’s steps in between are skipped, not merged', () => {
     const two = plan([step('a', VP, 'armflash', 2), step('b', LAB, 'armpw', 2), step('c', VP, 'armflash', 1)]);
-    const assist = buildCoachAssist({ plan: two, steps: tracked(two, 0), currentStepIndex: 0, enabled: ON });
+    const assist = buildCoachAssist({ plan: two, steps: tracked(two, 0), enabled: ON });
     expect(assist.factoryQueue).toEqual({ factoryUnitId: 'armvp', items: [{ unitId: 'armflash', count: 3 }] });
   });
 });

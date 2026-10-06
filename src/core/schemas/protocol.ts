@@ -178,12 +178,24 @@ export const CoachHudProgressSchema = z
 
 export type CoachHudProgress = z.infer<typeof CoachHudProgressSchema>;
 
+/** A second HUD panel under the main one (owner request: the factory's next builds, T09.3). */
+export const CoachHudBoxSchema = z
+  .object({
+    title: z.string().max(36),
+    lines: z.array(CoachHudLineSchema).min(1).max(4)
+  })
+  .strict();
+
+export type CoachHudBox = z.infer<typeof CoachHudBoxSchema>;
+
 export const CoachHudSchema = z
   .object({
     visible: z.boolean(),
     title: z.string(),
     lines: z.array(CoachHudLineSchema).max(4),
-    progress: CoachHudProgressSchema.nullable()
+    progress: CoachHudProgressSchema.nullable(),
+    /** The first factory with pending builds; null when no factory step is pending (from 3.0.4). */
+    factory: CoachHudBoxSchema.nullable().optional()
   })
   .strict();
 

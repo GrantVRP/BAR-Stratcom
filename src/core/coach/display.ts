@@ -1,7 +1,8 @@
-import type { CoachHud, CoachHudLine } from '../schemas/protocol';
+import type { CoachHud, CoachHudBox, CoachHudLine } from '../schemas/protocol';
 import type { CoachStep, Alert } from '../schemas/coach';
 import type { BuildPlan } from '../schemas/plans';
 import type { Registry } from '../registry';
+import { nextBuilderStep, nextFactoryRun } from './queues';
 
 export function formatTimeMinutesSeconds(seconds: number): string {
   const total = Math.max(0, Math.floor(seconds));
@@ -34,8 +35,59 @@ export interface BuildHudInput {
   plannedStall?: 'energy' | 'metal' | null;
 }
 
+/** A unit's display name from the snapshot (warns once when the snapshot does not have it). */
+function unitLabel(registry: Registry, unitId: string): string {
+  const unit = registry.get(unitId);
+  if (unit?.name) return unit.name;
+  if (!warnedMissingUnits.has(unitId)) {
+    warnedMissingUnits.add(unitId);
+    console.warn(`[display] Unit '${unitId}' not found in registry`);
+  }
+  return 'Unknown unit';
+}
+
+/** "in m:ss" until the step should start or finish, "+m:ss" once it is late. */
+function timeSuffix(step: CoachStep, clock: number): string {
+  if (clock < step.plannedStart) return `in ${formatTimeMinutesSeconds(step.plannedStart - clock)}`;
+  if (clock <= step.plannedFinish) return `in ${formatTimeMinutesSeconds(step.plannedFinish - clock)}`;
+  return `+${formatTimeMinutesSeconds(clock - step.plannedFinish)}`;
+}
+
+/** prefix + description (shortened to fit) + right-aligned suffix, at most 36 characters. */
+function paddedLine(prefix: string, desc: string, suffix: string): string {
+  const spaceAvailable = 36 - prefix.length - 1 - suffix.length;
+  let fitted = desc;
+  if (spaceAvailable > 0 && desc.length > spaceAvailable) {
+    fitted = `${desc.slice(0, spaceAvailable - 1)}…`;
+  }
+  const padding = Math.max(1, 36 - prefix.length - fitted.length - suffix.length);
+  return truncateTo36(`${prefix}${fitted}${' '.repeat(padding)}${suffix}`);
+}
+
 /**
- * Builds the Coach HUD display model with at most 4 lines, each <= 36 chars.
+ * The factory box (owner request, T09.3): the first factory with pending builds and its next builds
+ * (`nextFactoryRun`, the same run the LOAD FACTORY QUEUE assist queues), so the player can queue them
+ * while the commander works on NEXT. The first line carries its timing and turns warn/danger when late.
+ */
+export function buildFactoryBox(plan: BuildPlan, steps: readonly CoachStep[], registry: Registry, clock: number): CoachHudBox | null {
+  const run = nextFactoryRun(plan, steps);
+  if (!run || run.items.length === 0) return null;
+
+  const factory = unitLabel(registry, run.actor.unitId).toUpperCase();
+  const title = truncateTo36(`FACTORY // ${factory}${run.actor.index > 1 ? ` ${run.actor.index}` : ''}`);
+  const lines: CoachHudLine[] = run.items.slice(0, 4).map((item, i) => {
+    const desc = `${item.count}× ${unitLabel(registry, item.unitId)}`;
+    const coachStep = i === 0 ? steps.find((s) => s.stepId === item.stepId) : undefined;
+    if (!coachStep) return { text: truncateTo36(desc), tone: 'info' };
+    const late = clock - coachStep.plannedFinish;
+    const tone: CoachHudLine['tone'] = late > 15 ? 'danger' : late > 0 ? 'warn' : 'info';
+    return { text: paddedLine('', desc, timeSuffix(coachStep, clock)), tone, big: true };
+  });
+  return { title, lines };
+}
+
+/**
+ * Builds the Coach HUD display model with at most 4 lines, each <= 36 chars, plus the factory box.
  */
 export function buildCoachHud(input: BuildHudInput): CoachHud {
   const {
@@ -53,53 +105,13 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
 
   const lines: CoachHudLine[] = [];
 
-  // Line 1: Next step (big line)
-  const currentStep = currentStepIndex < steps.length ? steps[currentStepIndex] : null;
-  const planStep = plan && currentStepIndex < plan.steps.length ? plan.steps[currentStepIndex] : null;
+  // Line 1 (big): the commander's or a constructor's next step; factory builds go to the factory box
+  const builderStep = plan ? nextBuilderStep(plan, steps) : null;
+  const builderCoachStep = builderStep ? steps.find((s) => s.stepId === builderStep.id) : undefined;
 
-  if (currentStep && planStep) {
-    let targetLabel: string;
-    if (planStep.unitId) {
-      const unit = registry.get(planStep.unitId);
-      if (unit?.name) {
-        targetLabel = unit.name;
-      } else {
-        targetLabel = 'Unknown unit';
-        if (!warnedMissingUnits.has(planStep.unitId)) {
-          warnedMissingUnits.add(planStep.unitId);
-          console.warn(`[display] Unit '${planStep.unitId}' not found in registry`);
-        }
-      }
-    } else {
-      targetLabel = planStep.text ?? planStep.action;
-    }
-
-    const countStr = planStep.action === 'build' ? `${planStep.count}× ` : '';
-    const desc = `${countStr}${targetLabel}`;
-
-    let timeSuffix = '';
-    if (clock < currentStep.plannedStart) {
-      const wait = currentStep.plannedStart - clock;
-      timeSuffix = `in ${formatTimeMinutesSeconds(wait)}`;
-    } else if (clock <= currentStep.plannedFinish) {
-      const remaining = currentStep.plannedFinish - clock;
-      timeSuffix = `in ${formatTimeMinutesSeconds(remaining)}`;
-    } else {
-      const late = clock - currentStep.plannedFinish;
-      timeSuffix = `+${formatTimeMinutesSeconds(late)}`;
-    }
-
-    // Format line: 'NEXT ' + desc + ' ' + timeSuffix
-    // Must fit <= 36 chars
-    const prefix = 'NEXT ';
-    const spaceAvailable = 36 - prefix.length - 1 - timeSuffix.length;
-    let truncatedDesc = desc;
-    if (spaceAvailable > 0 && desc.length > spaceAvailable) {
-      truncatedDesc = `${desc.slice(0, spaceAvailable - 1)}…`;
-    }
-
-    const padding = Math.max(1, 36 - prefix.length - truncatedDesc.length - timeSuffix.length);
-    const lineText = truncateTo36(`${prefix}${truncatedDesc}${' '.repeat(padding)}${timeSuffix}`);
+  if (builderStep && builderCoachStep) {
+    const target = builderStep.unitId ? unitLabel(registry, builderStep.unitId) : (builderStep.text ?? builderStep.action);
+    const countStr = builderStep.action === 'build' ? `${builderStep.count}× ` : '';
 
     let tone: CoachHudLine['tone'] = 'info';
     if (aheadBehindSec !== null) {
@@ -109,7 +121,7 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     }
 
     lines.push({
-      text: lineText,
+      text: paddedLine('NEXT ', `${countStr}${target}`, timeSuffix(builderCoachStep, clock)),
       tone,
       big: true
     });
@@ -181,6 +193,7 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     visible,
     title,
     lines,
-    progress
+    progress,
+    factory: plan ? buildFactoryBox(plan, steps, registry, clock) : null
   };
 }

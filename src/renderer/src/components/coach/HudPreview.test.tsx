@@ -49,6 +49,24 @@ describe('HudPreview', () => {
     expect(container.textContent).toContain('PLAN  +3s AHEAD');
     expect(container.textContent).toContain('⚠ ENERGY EMPTY IN 6s');
     expect(container.textContent).toContain('⚠ FACTORY IDLE');
+    expect(container.querySelector('[data-testid="hud-factory"]')).toBeNull();
+  });
+
+  it('shows the factory box under the lines (T09.3)', () => {
+    const hud: CoachHud = {
+      visible: true,
+      title: 'ARMADA // TEST PLAN',
+      progress: null,
+      lines: [{ text: 'NEXT 2× Wind Turbine         in 0:08', tone: 'info', big: true }],
+      factory: { title: 'FACTORY // BOT LAB', lines: [{ text: '5× Pawn', tone: 'warn', big: true }, { text: '1× Rocketeer', tone: 'info' }] }
+    };
+    act(() => {
+      root.render(<HudPreview hud={hud} />);
+    });
+    const box = container.querySelector('[data-testid="hud-factory"]');
+    expect(box?.textContent).toContain('FACTORY // BOT LAB');
+    expect(container.querySelector('[data-testid="hud-factory-line-0"]')?.textContent).toBe('5× Pawn');
+    expect(container.querySelector('[data-testid="hud-factory-line-1"]')?.textContent).toBe('1× Rocketeer');
   });
 
   it('renders waiting state when no hud or state is provided', () => {

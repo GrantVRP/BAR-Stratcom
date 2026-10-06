@@ -246,7 +246,6 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
   const assist: CoachAssist = buildCoachAssist({
     plan,
     steps: trackerResult.steps,
-    currentStepIndex: trackerResult.currentStepIndex,
     enabled: assistSettings
   });
 

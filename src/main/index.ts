@@ -18,6 +18,7 @@ import { registerAiHandlers } from './ai/handlers';
 import { loadBenchmarkForTeams } from './benchmarks/loader';
 import { registerIntelHandlers } from './intel/handlers';
 import { registerMapHandlers } from './maps/handlers';
+import { registerUpdateHandlers } from './updates/handlers';
 import { defaultCoachRunner } from './coach/runner';
 import { loadRegistry, loadRegistryMeta, loadSnapshot } from './registry/loader';
 import { type DemoSource, listDemos } from './demo/demo-source';
@@ -345,6 +346,7 @@ if (!gotTheLock) {
     registerAiHandlers();
     registerIntelHandlers();
     registerMapHandlers();
+    registerUpdateHandlers();
 
     createWindow();
     registerAppGlobalShortcut();

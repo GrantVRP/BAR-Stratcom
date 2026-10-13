@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { ipcClient } from '../../lib/ipc-client';
 
 export function AboutSettingsSection(): React.JSX.Element {
+  const [version, setVersion] = useState<string | null>(null);
+  useEffect(() => {
+    void ipcClient.invoke('app:getInfo').then((res) => {
+      if (res.ok) setVersion(res.data.version);
+    });
+  }, []);
+
   return (
     <div data-testid="settings-section-about" className="space-y-6 font-mono text-xs">
       {/* App Header & Version */}
@@ -13,12 +21,16 @@ export function AboutSettingsSection(): React.JSX.Element {
             data-testid="app-version-badge"
             className="rounded bg-[#1e293b] px-2 py-0.5 text-[10px] text-[#38bdf8] font-bold"
           >
-            v3.0.0-dev.0
+            {version ? `v${version}` : '…'}
           </span>
         </div>
 
         <p className="text-xs text-[#e4e4e7]">
           Live tactical coaching, build order execution, and match intelligence for Beyond All Reason.
+        </p>
+        <p data-testid="about-version-check" className="text-[11px] text-[#a1a1aa]">
+          Version check (Settings → App, on by default): at start the packaged app asks GitHub for the latest release
+          and shows a banner when it is newer. Nothing about you or your games is sent.
         </p>
 
         {/* Unofficial Community Tool Disclaimer */}

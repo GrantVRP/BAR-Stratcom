@@ -85,7 +85,7 @@ export function AppSettingsSection(): React.JSX.Element {
             <div>
               <div className="font-bold text-[#e4e4e7] text-xs">CHECK FOR UPDATES ON LAUNCH</div>
               <div className="text-[10px] text-[#71717a]">
-                Check GitHub for new versions on start.
+                Ask GitHub for the latest release at start.
               </div>
             </div>
             <Toggle
@@ -95,7 +95,8 @@ export function AppSettingsSection(): React.JSX.Element {
             />
           </div>
           <div className="text-[10px] text-[#94a3b8] border-t border-[#1f2430] pt-2">
-            Only GitHub is contacted. No tracking.
+            The packaged app asks api.github.com for the latest BAR StratCom release and shows a banner when it is
+            newer. Nothing about you or your games is sent (GitHub sees the request, like any web page visit).
           </div>
         </div>
 

@@ -57,6 +57,8 @@ export interface FilterOptions {
   minDurationMs?: number;
   maxAgeDays?: number;
   versionFamily?: string;
+  /** The clock the age is measured from (the fetch's `now`; defaults to the current time). */
+  now?: Date;
 }
 
 export interface PickMixResult {
@@ -128,7 +130,7 @@ export function filterReplayCandidate(detail: RawReplayDetail, options: FilterOp
   if (hasAIs) return false;
 
   const startTime = new Date(detail.startTime).getTime();
-  const cutoff = Date.now() - maxAgeDays * 24 * 60 * 60 * 1000;
+  const cutoff = (options.now ?? new Date()).getTime() - maxAgeDays * 24 * 60 * 60 * 1000;
   if (Number.isNaN(startTime) || startTime < cutoff) return false;
 
   if (versionFamily && !detail.gameVersion?.includes(versionFamily)) return false;

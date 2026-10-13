@@ -1,5 +1,5 @@
 -- License: GPL-2.0-or-later
--- STRATCOM_WIDGET_VERSION 3.0.3
+-- STRATCOM_WIDGET_VERSION 3.0.7
 -- STRATCOM_PROTOCOL 1
 
 function widget:GetInfo()

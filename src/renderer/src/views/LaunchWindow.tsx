@@ -45,7 +45,7 @@ function playArcadeStartChime(): void {
 
 export function LaunchWindow({
   onStart,
-  version = '3.0.0-dev.0',
+  version = '',
   defaultFaction = 'armada'
 }: LaunchWindowProps): React.JSX.Element {
   const [faction, setFaction] = useState<'armada' | 'cortex'>(defaultFaction);

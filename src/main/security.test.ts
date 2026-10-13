@@ -94,8 +94,12 @@ describe('security checklist (08 §6, T11.2)', () => {
     expect(platform.match(/timeout: 3000/g)).toHaveLength(2);
   });
 
-  it('no shell.openExternal anywhere (the 02 §6 allow-list is unused), only openPath for the app’s own data folder', () => {
-    expect(filesMatching(SRC, /openExternal/)).toEqual([]);
+  it('shell.openExternal only behind the 02 §6 allow-list (T11.4), openPath only for the app’s own data folder', () => {
+    expect(filesMatching(MAIN, /shell\.openExternal\(/)).toEqual(['src/main/shell/open-external.ts']);
+    const opener = read(path.join(ROOT, 'src/main/shell/open-external.ts'));
+    expect(opener).toMatch(/if \(!isAllowedExternalUrl\(url\)\) throw[^\n]*\n\s*await shell\.openExternal\(url\);/);
+    // the renderer can only ask main (no shell access of its own)
+    expect(filesMatching(SRC.filter((f) => rel(f).startsWith('src/renderer/')), /\bshell\.|openExternal\(/)).toEqual([]);
     expect(filesMatching(MAIN, /shell\.openPath\(/)).toEqual(['src/main/data/handlers.ts']);
     expect(read(path.join(ROOT, 'src/main/data/handlers.ts'))).toMatch(/const userPath = app\.getPath\('userData'\);\s*await shell\.openPath\(userPath\)/);
   });

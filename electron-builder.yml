@@ -1,0 +1,42 @@
+# T11.4 (D-17, 02 §7): a portable Windows zip — no installer, no auto-updater.
+#   npm run package  →  release/BAR StratCom-<version>-win-x64.zip
+appId: com.grantvrp.barstratcom
+productName: BAR StratCom
+copyright: Copyright © 2026 Grant
+directories:
+  output: release
+  buildResources: build
+# the app itself: the electron-vite build (production node_modules are added by electron-builder)
+files:
+  - out/**/*
+  - package.json
+# beside the app (process.resourcesPath): the widget the installer copies into BAR, the game data
+# (registry, plans, maps, wind, demo fixtures; not the raw captures), and the licences
+extraResources:
+  - from: widget/gui_stratcom.lua
+    to: widget/gui_stratcom.lua
+  - from: data
+    to: data
+    filter:
+      - '**/*'
+      - '!raw/**'
+      - '!_candidates/**'
+  - from: LICENSE
+    to: LICENSE
+  - from: node_modules/@fontsource/press-start-2p/LICENSE
+    to: licenses/press-start-2p-OFL.txt
+  - from: node_modules/@fontsource/vt323/LICENSE
+    to: licenses/vt323-OFL.txt
+  - from: node_modules/@fontsource/jetbrains-mono/LICENSE
+    to: licenses/jetbrains-mono-OFL.txt
+artifactName: ${productName}-${version}-${os}-${arch}.${ext}
+electronLanguages:
+  - en-US
+# no native modules to rebuild
+npmRebuild: false
+win:
+  target:
+    - target: zip
+      arch:
+        - x64
+  icon: build/icon.ico

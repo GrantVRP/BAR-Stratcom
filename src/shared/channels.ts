@@ -48,7 +48,9 @@ export const IPC_CHANNELS = [
   'intel:leaderboard',
   'intel:replays',
   'intel:replay',
-  'intel:balance'
+  'intel:balance',
+  'updates:check',
+  'shell:openExternal'
 ] as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[number];

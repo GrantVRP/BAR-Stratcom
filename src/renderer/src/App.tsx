@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TopBar } from './components/layout/TopBar';
+import { UpdateBanner } from './components/layout/UpdateBanner';
 import { LeftRail } from './components/layout/LeftRail';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import {
@@ -35,7 +36,7 @@ const ALT_ROUTES: Record<string, string> = {
 };
 
 export function App(): React.JSX.Element {
-  const [version, setVersion] = useState<string>('3.0.0-dev.0');
+  const [version, setVersion] = useState<string>(''); // app:getInfo (package version)
   const [currentHash, setCurrentHash] = useState<string>(
     typeof window !== 'undefined' && window.location.hash ? window.location.hash : '#/home'
   );
@@ -205,6 +206,7 @@ export function App(): React.JSX.Element {
           <LeftRail currentRoute={currentHash} version={version} />
           <div className="flex flex-1 flex-col overflow-hidden">
             <TopBar />
+            <UpdateBanner />
             <main className="flex-1 overflow-y-auto bg-[#0a0c14]">
               {renderView()}
             </main>

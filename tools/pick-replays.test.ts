@@ -100,6 +100,10 @@ describe('pick-replays (T08.1)', () => {
 
     it('accepts valid candidates', () => {
       expect(filterReplayCandidate(makeValid())).toBe(true);
+      // the age is measured from the given clock, not the real time (regression, T11.4)
+      const old = { ...makeValid(), startTime: '2026-10-03T20:00:00.000Z' };
+      expect(filterReplayCandidate(old, { maxAgeDays: 4, now: new Date('2026-10-04T03:00:00Z') })).toBe(true);
+      expect(filterReplayCandidate(old, { maxAgeDays: 4, now: new Date('2026-10-13T03:00:00Z') })).toBe(false);
     });
 
     it('rejects games not ended normally', () => {

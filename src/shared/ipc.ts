@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { IpcChannel, IpcEventChannel } from './channels';
 import { aiIpcContract, aiIpcEvents } from './ipc-ai';
 import { mapsIpcContract } from './ipc-maps';
+import { appIpcContract } from './ipc-app';
 import {
   BarSourceSchema,
   BenchmarkFileSchema,
@@ -336,6 +337,7 @@ export const ipcContract = {
   },
   ...aiIpcContract,
   ...mapsIpcContract,
+  ...appIpcContract,
   'benchmarks:get': {
     request: z.object({ factionId: z.string().regex(/^[a-z]+$/), mode: BenchmarkModeSchema }).strict(),
     response: BenchmarkFileSchema.nullable()

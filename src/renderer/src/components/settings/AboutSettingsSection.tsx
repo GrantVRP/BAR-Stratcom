@@ -78,10 +78,13 @@ export function AboutSettingsSection(): React.JSX.Element {
 
           <div className="flex items-start justify-between rounded bg-[#0a0c14] p-2.5 border border-[#1f2430]">
             <div>
-              <div className="font-bold text-[#e4e4e7]">Third-Party Dependencies</div>
-              <div className="text-[10px] text-[#71717a]">Electron, React, Zustand, TailwindCSS, Zod, fflate, Lucide</div>
+              <div className="font-bold text-[#e4e4e7]">Third-Party Packages</div>
+              <div className="text-[10px] text-[#71717a]">
+                Electron, React, three.js, Zustand, Tailwind CSS, Zod, fflate, Lucide, the AI provider SDKs and what
+                they use. Full list and licence texts: resources\THIRD_PARTY_NOTICES.md in the app folder.
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-[#94a3b8]">MIT / Apache-2.0</span>
+            <span className="text-[10px] font-bold text-[#94a3b8]">SEE NOTICES</span>
           </div>
         </div>
       </div>

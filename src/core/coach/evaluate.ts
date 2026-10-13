@@ -3,7 +3,7 @@ import type { SimResult } from '../sim/types';
 import type { LiveSnapshot } from '../schemas/live';
 import type { Registry } from '../registry';
 import type { BenchmarkFile } from '../schemas/benchmark';
-import type { CoachState, Cue, CoachProjections } from '../schemas/coach';
+import type { AlertId, CoachState, Cue, CoachProjections } from '../schemas/coach';
 import type { CoachHud, CoachEcho, CoachAssist } from '../schemas/protocol';
 import type { AssistSettings } from '../schemas/settings';
 import type { FinishedLedger } from './ledger';
@@ -144,11 +144,13 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
   }
 
   // 3. State machine update (sustain, 2s deactivation hysteresis, sound cooldown)
-  const { activeAlerts, updatedAlertMemory, soundCandidateAlerts } = updateAlertRules(
-    detectedCandidates,
-    clock,
-    memory
-  );
+  const rules = updateAlertRules(detectedCandidates, clock, memory);
+  const { updatedAlertMemory } = rules;
+  // an alert switched off in Settings leaves at once, not after the anti-flicker hold (T11.5); manual
+  // mode keeps the plan's own dips (04 §3.7)
+  const shown = (a: { id: AlertId }): boolean => mode === 'manual' || profile.enabledAlerts.has(a.id);
+  const activeAlerts = rules.activeAlerts.filter(shown);
+  const soundCandidateAlerts = rules.soundCandidateAlerts.filter(shown);
 
   // 4. Audio cue limiting (8s global audio limit, priority: danger > warn > info > step)
   const { emittedCues, newLastGlobalAudioAt, soundedAlertIds } = resolveAudioCues(

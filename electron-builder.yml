@@ -23,6 +23,10 @@ extraResources:
       - '!_candidates/**'
   - from: LICENSE
     to: LICENSE
+  - from: THIRD_PARTY_NOTICES.md
+    to: THIRD_PARTY_NOTICES.md
+  - from: widget/LICENSE
+    to: licenses/gui_stratcom-GPL-2.0.txt
   - from: node_modules/@fontsource/press-start-2p/LICENSE
     to: licenses/press-start-2p-OFL.txt
   - from: node_modules/@fontsource/vt323/LICENSE

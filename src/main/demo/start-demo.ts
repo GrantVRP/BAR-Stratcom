@@ -4,7 +4,7 @@ import type { BuildPlan } from '../../core/schemas/plans';
 import type { StateDoc } from '../../core/schemas';
 import type { Profile } from '../../core/schemas/common';
 import { loadBenchmarkForTeams } from '../benchmarks/loader';
-import { defaultCoachRunner } from '../coach/runner';
+import { defaultCoachRunner, type CoachSettings } from '../coach/runner';
 import { simMapFor } from '../maps/sim-map';
 import { findDataDir } from '../registry/loader';
 import { handleDemoCompletion } from './demo-analyzer';
@@ -17,6 +17,8 @@ export interface StartDemoOptions {
   plan?: BuildPlan;
   registry: Registry;
   profile: Profile;
+  /** Settings → Coach, read every tick like live coaching (T11.5 fix). */
+  coachSettings?: () => CoachSettings;
   /** Forwards each demo state to the renderer (live:state). */
   onState: (state: StateDoc) => void;
 }
@@ -37,6 +39,7 @@ export async function startDemoCoaching(options: StartDemoOptions): Promise<Demo
     source: demoSource,
     registry,
     stratcomDir: null,
+    coachSettings: options.coachSettings,
     benchmarkLoader: loadBenchmarkForTeams,
     resolveMap: (scriptName) => simMapFor(scriptName)
   });

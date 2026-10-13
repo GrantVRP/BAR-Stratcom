@@ -236,12 +236,13 @@ if (!gotTheLock) {
       }
 
       await defaultRadarRunner.stop();
+      const coachSettings = () => defaultSettingsStore.getSettings();
       if (req.mode === 'demo') {
         if (!req.demoId) {
           throw new Error('Coach start in demo mode requires a demoId');
         }
         const profile = currentSettings.profile ?? 'intermediate';
-        activeDemoSource = await startDemoCoaching({ demoId: req.demoId, speed: req.speed, plan: req.plan, registry, profile, onState: broadcastLiveState });
+        activeDemoSource = await startDemoCoaching({ demoId: req.demoId, speed: req.speed, plan: req.plan, registry, profile, coachSettings, onState: broadcastLiveState });
         return { ok: true };
       }
 
@@ -268,6 +269,7 @@ if (!gotTheLock) {
         stratcomDir,
         assistSettings: () => defaultSettingsStore.getSettings().assist,
         hudSettings,
+        coachSettings,
         benchmarkLoader: loadBenchmarkForTeams,
         resolveMap: (scriptName) => simMapFor(scriptName)
       });

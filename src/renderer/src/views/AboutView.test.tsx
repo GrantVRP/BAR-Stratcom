@@ -14,6 +14,8 @@ describe('AboutView (T06.16)', () => {
     expect(container.querySelector('[data-testid="app-version-badge"]')).not.toBeNull();
     expect(container.textContent).toContain('UNOFFICIAL COMMUNITY TOOL');
     expect(container.textContent).toContain('LICENSES & OPEN SOURCE');
+    // T11.5: the shipped notices hold the full package list (the old row named seven packages, two licences)
+    expect(container.textContent).toContain('THIRD_PARTY_NOTICES.md');
     expect(container.querySelector('[data-testid="about-credits"]')).not.toBeNull();
     // T09.2: the assist behaviour, with both action names
     expect(container.querySelector('[data-testid="about-assist"]')?.textContent).toContain('stratcom_arm_next');

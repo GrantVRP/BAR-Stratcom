@@ -8,7 +8,7 @@ import type { CoachDoc, SessionFileDoc } from '../../core/schemas/protocol';
 import type { CoachState, Cue } from '../../core/schemas/coach';
 import type { Registry } from '../../core/registry';
 import type { BenchmarkFile } from '../../core/schemas/benchmark';
-import type { AssistSettings } from '../../core/schemas/settings';
+import type { AssistSettings, Settings } from '../../core/schemas/settings';
 import { validatePlan } from '../../core/plans/validate';
 import { simulate } from '../../core/sim/simulate';
 import {
@@ -19,6 +19,7 @@ import {
   createFinishedLedger,
   createInitialCoachMemory,
   DEFAULT_PROFILES,
+  coachProfile,
   applyEventsToLedger,
   ASSIST_OFF
 } from '../../core/coach';
@@ -38,6 +39,8 @@ export interface CoachRunnerMapOptions {
   mexYield?: number;
   mexYieldProvenance?: 'measured' | 'estimated';
 }
+
+export type CoachSettings = Pick<Settings, 'profile' | 'alerts' | 'chatEcho'>;
 
 export interface CoachRunnerStartOptions {
   plan: BuildPlan;
@@ -62,6 +65,8 @@ export interface CoachRunnerStartOptions {
   assistSettings?: () => AssistSettings;
   /** Settings → hud (display on/off, which boxes), read every tick (T09.6). */
   hudSettings?: () => HudSettings;
+  /** Settings → Coach (skill profile, alert switches, chat echo), read every tick; replaces `profile` (T11.5 fix). */
+  coachSettings?: () => CoachSettings;
   onUpdate?: (state: CoachState) => void;
   onCue?: (cue: Cue) => void;
 }
@@ -92,6 +97,7 @@ export class CoachRunner {
   private onCue?: (cue: Cue) => void;
   private assistSettings?: () => AssistSettings;
   private hudSettings?: () => HudSettings;
+  private coachSettings?: () => CoachSettings;
   private readonly tickStats = new TickStats();
   private resolveMap?: (scriptName: string) => SimInput['map'];
   private simStart?: CoachRunnerStartOptions['start'];
@@ -167,6 +173,7 @@ export class CoachRunner {
     this.onCue = options.onCue;
     this.assistSettings = options.assistSettings;
     this.hudSettings = options.hudSettings;
+    this.coachSettings = options.coachSettings;
 
     this.running = true;
     this.seq = 1;
@@ -298,6 +305,7 @@ export class CoachRunner {
       this.mode === 'manual'
         ? noTelemetrySnapshot(this.manualClock.getClock())
         : (this.latestState ?? noTelemetrySnapshot(0));
+    const coach = this.coachSettings?.();
 
     const evalResult = evaluate({
       plan: this.plan,
@@ -307,10 +315,10 @@ export class CoachRunner {
       history: this.history,
       finished: this.finishedLedger,
       benchmark: this.benchmark,
-      profile: this.profile,
+      profile: coach ? coachProfile(coach.profile, coach.alerts) : this.profile,
       memory: this.memory,
       mode: this.mode,
-      chatEchoEnabled: true,
+      chatEchoEnabled: coach ? coach.chatEcho : true,
       manualDoneStepIds: this.manualDoneStepIds,
       assistSettings: this.assistSettings?.()
     });

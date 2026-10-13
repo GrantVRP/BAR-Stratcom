@@ -241,7 +241,7 @@ export function GameSettingsSection(): React.JSX.Element {
           </div>
           <div className="rounded bg-[#0a0c14] p-2 border border-[#1f2430]">
             <span className="text-[10px] text-[#71717a] uppercase">Bundled Version</span>
-            <div className="text-xs font-bold text-[#e4e4e7]">{widgetStatus?.bundledVersion ?? '3.0.1'}</div>
+            <div className="text-xs font-bold text-[#e4e4e7]">{widgetStatus?.bundledVersion ?? '—'}</div>
           </div>
         </div>
       </div>

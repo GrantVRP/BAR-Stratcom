@@ -7,6 +7,7 @@ import { testSound } from '../../audio/sounds';
 import type { Profile } from '../../../../core/schemas/common';
 import type { AlertId } from '../../../../core/schemas/coach';
 import type { SoundId } from '../../audio/sounds';
+import { DEFAULT_PROFILES, profileCanRunAlert } from '../../../../core/coach/profiles';
 
 const PROFILES: Array<{ id: Profile; label: string; desc: string }> = [
   {
@@ -192,8 +193,8 @@ export function CoachSettingsSection(): React.JSX.Element {
 
           <div className="flex items-center justify-between border-t border-[#1f2430] pt-2">
             <div>
-              <span className="font-bold text-xs text-[#e4e4e7]">Team Chat Echo</span>
-              <p className="text-[11px] text-[#71717a]">Post urgent alerts to team chat</p>
+              <span className="font-bold text-xs text-[#e4e4e7]">Chat Echo</span>
+              <p className="text-[11px] text-[#71717a]">Print urgent alerts in your game chat. Only you see them.</p>
             </div>
             <Toggle
               checked={chatEcho}
@@ -211,12 +212,19 @@ export function CoachSettingsSection(): React.JSX.Element {
         </span>
         <div className="space-y-2 pt-1 divide-y divide-[#1f2430]">
           {(Object.keys(ALERT_LABELS) as AlertId[]).map((id) => {
-            const isAlertEnabled = settings?.alerts?.[id]?.enabled ?? true;
+            // the switch shows what the coach runs: the profile's default unless switched (T11.5 fix)
+            const profileConfig = DEFAULT_PROFILES[currentProfile];
+            const canRun = profileCanRunAlert(profileConfig, id);
+            const isAlertEnabled = canRun && (settings?.alerts?.[id]?.enabled ?? profileConfig.enabledAlerts.has(id));
             return (
               <div key={id} className="flex items-center justify-between pt-2">
-                <span className="text-xs text-[#d4d4d8]">{ALERT_LABELS[id]}</span>
+                <span className="text-xs text-[#d4d4d8]">
+                  {ALERT_LABELS[id]}
+                  {!canRun && <span className="ml-2 text-[11px] text-[#71717a]">Not in this profile</span>}
+                </span>
                 <Toggle
                   checked={isAlertEnabled}
+                  disabled={!canRun}
                   onChange={(checked) => void handleAlertToggle(id, checked)}
                   data-testid={`alert-toggle-${id}`}
                 />

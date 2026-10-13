@@ -83,7 +83,9 @@ export function StepInstallWidget({ onBack, onNext }: StepInstallWidgetProps): R
             <span className="font-bold text-[#e4e4e7] text-xs">WIDGET STATUS</span>
             <div className="text-[11px] text-[#71717a]">
               {isInstalled
-                ? `Version ${widgetStatus?.installedVersion ?? '3.0.1'} is installed and ready.`
+                ? widgetStatus?.installedVersion
+                  ? `Version ${widgetStatus.installedVersion} is installed and ready.`
+                  : 'The widget is installed and ready.'
                 : 'Widget is not yet installed in your BAR folder.'}
             </div>
           </div>

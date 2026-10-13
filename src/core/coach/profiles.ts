@@ -1,5 +1,6 @@
 import type { Profile } from '../schemas/common';
 import type { AlertId } from '../schemas/coach';
+import type { AlertSettingOverrides } from '../schemas/settings';
 import { ALL_ALERT_IDS } from './constants';
 
 export interface AlertThresholds {
@@ -128,4 +129,25 @@ export function getProfileConfig(profile: Profile, overrides?: Partial<ProfileCo
     enabledAlerts: overrides.enabledAlerts ? new Set(overrides.enabledAlerts) : new Set(base.enabledAlerts),
     wording: overrides.wording ?? base.wording
   };
+}
+
+/** False when the profile has no threshold for the alert, so switching it on could never fire it. */
+export function profileCanRunAlert(config: ProfileConfig, id: AlertId): boolean {
+  if (id === 'M_STALL_SOON') return config.thresholds.mStallSoonHorizonSec !== null;
+  if (id === 'E_FLOAT') return config.thresholds.eFloatSustainSec !== null;
+  return true;
+}
+
+/**
+ * The profile the coach runs (fix found in T11.5: the coach always ran Intermediate): Settings → Coach
+ * skill profile, with the per-alert switches there turning its alerts on or off.
+ */
+export function coachProfile(profile: Profile, alerts: AlertSettingOverrides = {}): ProfileConfig {
+  const config = getProfileConfig(profile);
+  for (const id of ALL_ALERT_IDS) {
+    const enabled = alerts[id]?.enabled;
+    if (enabled === false) config.enabledAlerts.delete(id);
+    else if (enabled === true && profileCanRunAlert(config, id)) config.enabledAlerts.add(id);
+  }
+  return config;
 }

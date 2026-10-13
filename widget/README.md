@@ -1,6 +1,6 @@
 # BAR StratCom Lua Widget (`gui_stratcom.lua`)
 
-**Version:** 3.0.0  
+**Version:** the `STRATCOM_WIDGET_VERSION` line at the top of `gui_stratcom.lua`  
 **Protocol:** 1  
 **License:** GPL-2.0-or-later  
 
@@ -12,7 +12,7 @@ The in-game companion widget for **BAR StratCom**, a tactical live coach and rep
 
 - **Telemetry Sensor:** Measures economy (metal & energy stored, income, pull), active & idle builders, active & idle factories, commander status, visible identified enemy units, and wind speed.
 - **Match Recorder:** Records game events (`created`, `finished`, `destroyed`, `given`, `taken`, `gamestart`, `gameover`) to append-only NDJSON event logs for post-match analysis and build plan extraction.
-- **Mini-HUD Display:** Shows a tactical heads-up display overlay in-game with real-time build step tracking, adherence warnings, energy/metal stall alerts, and local chat echo cues.
+- **Mini-HUD Display:** Draws the coach's panel in game: **BUILDINGS** (the commander's and constructors' next steps, plan progress, ahead/behind), **FACTORY** (what the factories should produce next), **RADAR** (a scope around the commander with the enemies the team sees or has on radar, and the latest contacts) and up to two alerts. The app decides which parts show; the player drags the panel by its top strip. Urgent alerts can be echoed to the player's own chat.
 - **Spec / Replay Mode:** Records multi-team matches and replay captures for pro opening library building and benchmarking.
 - **Safe Architecture:** Pure local file-based IPC. No background network servers, no external telemetry or tracking SDKs, no keystroke injection.
 
@@ -100,7 +100,7 @@ This table documents engine API availability across BAR engine releases, verifie
 | `Spring.GetUnitCurrentBuildPower` | `function` | 2026.07.04 | Available; measures active build power utilization |
 | `Spring.GetUnitCommandCount` | `function` | 2026.07.04 | Available; identifies idle builders and commanders |
 | `Spring.GetFactoryCommands` | `function` | 2026.07.04 | Available; inspects factory queue (returns number for count or table) |
-| `Spring.GetVisibleUnits` | `function` | 2026.07.04 | Available; identifies LOS-visible enemy units |
+| `Spring.GetVisibleUnits` | `function` | 2026.07.04 | Available, but limited to the camera view; the sensor and radar use `GetAllUnits` with `GetUnitLosState` instead (`test/engine-facts.md`) |
 | `Spring.SetActiveCommand` | `function` | 2026.07.04 | Available; arms next build command |
 | `Spring.GetActiveCmdDescs` | `function` | 2026.07.04 | Available; inspects builder command descriptions |
 | `widgetHandler.actionHandler:AddAction` | `function` | 2026.07.04 | Available; registers `/bind` actions (requires `(widget, cmd, func)` or `widgetHandler:AddAction`) |
@@ -110,4 +110,4 @@ This table documents engine API availability across BAR engine releases, verifie
 
 ## 7. License
 
-This widget is free software released under the **GNU General Public License v2.0 or later** ([GPL-2.0-or-later](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)).
+This widget is free software released under the **GNU General Public License v2.0 or later** ([GPL-2.0-or-later](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)). The licence text is in [LICENSE](LICENSE).

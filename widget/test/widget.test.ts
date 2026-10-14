@@ -4,7 +4,7 @@ import { createWidgetHarness } from './harness';
 import { createScenario } from './scenario';
 
 describe('Widget v2 Skeleton & Protocol', () => {
-  it('Initialize writes probe.json and widget.json atomically with no.tmp left behind', async () => {
+  it('Initialize writes probe.json and widget.json atomically with no .tmp left behind', async () => {
     const harness = await createWidgetHarness();
     try {
       harness.callin('Initialize');

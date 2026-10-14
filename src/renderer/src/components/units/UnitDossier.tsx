@@ -90,7 +90,7 @@ export function UnitDossier({ unit, registry, plans, gameVersion, onOpenUnit }: 
           <FactionTag factionId={unit.factionId} className="mt-1" />
           <div className="mt-1 font-['Press_Start_2P'] text-[10px] text-zinc-400">
             {CLASS_LABELS[classifyUnit(unit)]}
-            {unit.techLevel !== null ? ` // T${unit.techLevel}`: ''}
+            {unit.techLevel !== null ? ` // T${unit.techLevel}` : ''}
           </div>
         </div>
       </div>

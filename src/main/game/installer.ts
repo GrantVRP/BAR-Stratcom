@@ -146,7 +146,7 @@ export class WidgetInstaller {
 
   /**
    * Installs the bundled widget into BAR's LuaUI/Widgets directory.
-   * Creates directories, backs up existing file to.bak, and verifies header.
+   * Creates directories, backs up existing file to .bak, and verifies header.
    */
   install(customDataDir?: string): InstallResult {
     const dataDir = this.getDataDir(customDataDir);

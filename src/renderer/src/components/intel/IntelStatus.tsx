@@ -32,7 +32,7 @@ export function IntelStatus({ fetchedAt, stale, error, loading, hasData, onRetry
   return (
     <div data-testid="intel-status" className="flex items-center gap-2 font-mono text-xs text-zinc-400">
       {stale ? (
-        <span className="text-[#fbbf24]">OFFLINE // data from {fetchedAt ? time(fetchedAt): 'unknown'}</span>
+        <span className="text-[#fbbf24]">OFFLINE // data from {fetchedAt ? time(fetchedAt) : 'unknown'}</span>
       ) : (
         <span data-num="true">UPDATED {fetchedAt ? time(fetchedAt) : 'unknown'}</span>
       )}

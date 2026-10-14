@@ -6,7 +6,7 @@ import zlib from 'node:zlib';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { findPackage, readPackageFile, readPackageIndex } from './rapid';
 
-/** Builds a tiny rapid install (versions.gz, one.sdp, pool files) in the shape BAR's launcher writes. */
+/** Builds a tiny rapid install (versions.gz, one .sdp, pool files) in the shape BAR's launcher writes. */
 function install(dir: string, files: Record<string, string>): string {
   const index: Buffer[] = [];
   for (const [name, text] of Object.entries(files)) {

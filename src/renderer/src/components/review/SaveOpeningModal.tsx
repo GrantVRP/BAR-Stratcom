@@ -137,7 +137,7 @@ export function SaveOpeningModal({ session, isOpen, onClose, onSaved }: SaveOpen
               >
                 {players.map((p) => (
                   <option key={p.teamId} value={p.teamId} disabled={!p.capturable}>
-                    {p.name} ({p.faction ?? 'unknown'}){p.reason ? ` // ${p.reason}`: ''}
+                    {p.name} ({p.faction ?? 'unknown'}){p.reason ? ` // ${p.reason}` : ''}
                   </option>
                 ))}
               </select>

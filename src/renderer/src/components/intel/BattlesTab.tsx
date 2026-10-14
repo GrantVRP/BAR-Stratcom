@@ -71,7 +71,7 @@ export function BattlesTab(): React.JSX.Element {
                     <div className="mt-1 flex items-center justify-between gap-2 font-mono text-xs text-zinc-400">
                       <span className="truncate">{b.map}</span>
                       <span data-num="true" className="shrink-0">
-                        {playing(b).length}/{b.maxPlayers} PLAYING{b.spectators ? ` // ${b.spectators} SPEC`: ''}
+                        {playing(b).length}/{b.maxPlayers} PLAYING{b.spectators ? ` // ${b.spectators} SPEC` : ''}
                       </span>
                     </div>
                   </button>

@@ -14,7 +14,7 @@ const hex = (h: string): Color => [parseInt(h.slice(1, 3), 16), parseInt(h.slice
 
 export const ICON_COLORS = { ground: '#0a0c14', frame: '#2b3245', b: '#ffffff' };
 
-/** Sizes in the Windows.ico (electron-builder needs 256). */
+/** Sizes in the Windows .ico (electron-builder needs 256). */
 export const ICO_SIZES = [16, 24, 32, 48, 64, 128, 256];
 
 export interface IconLayout {

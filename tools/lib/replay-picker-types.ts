@@ -87,7 +87,7 @@ export function formatDuration(durationMs: number): string {
   return `${min}m ${sec.toString().padStart(2, '0')}s`;
 }
 
-/** Direct CDN download URL for replay.sdfz file. */
+/** Direct CDN download URL for replay .sdfz file. */
 export function getDirectDownloadUrl(fileName: string | undefined): string {
   const enc = encodeURIComponent(fileName || '');
   return `https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR/demos/${enc}`;

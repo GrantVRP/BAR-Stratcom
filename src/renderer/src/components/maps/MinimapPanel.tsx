@@ -55,7 +55,7 @@ export function MinimapPanel({ map }: { map: MapRecord }): React.JSX.Element {
       </div>
       <figcaption data-testid="map-minimap-credit" className="font-mono text-[11px] text-zinc-400">
         {minimap
-          ? `Minimap: maps-metadata.beyondallreason.dev${minimap.author ? ` // map by ${minimap.author}`: ''}`
+          ? `Minimap: maps-metadata.beyondallreason.dev${minimap.author ? ` // map by ${minimap.author}` : ''}`
           : current?.failed
             ? 'Minimap unavailable (offline)'
             : current

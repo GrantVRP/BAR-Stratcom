@@ -1,7 +1,7 @@
 /**
  * Reads Lua table constructors from BAR data files (effects/*.lua) into plain JS values. Only data is
  * supported: tables, strings ("", '', [[ ]]), numbers, booleans, nil, `[key] = value`, `name = value`,
- * and string keys built with `..` from known variables (genericunitexplosion.lua uses `root.. "-tiny"`).
+ * and string keys built with `..` from known variables (genericunitexplosion.lua uses `root .. "-tiny"`).
  */
 export type LuaValue = string | number | boolean | null | LuaTable;
 export interface LuaTable {
@@ -60,7 +60,7 @@ class Reader {
     return m[0];
   }
 
-  /** A string expression: "a".. var.. "b" */
+  /** A string expression: "a" .. var .. "b" */
   stringExpr(): string {
     let out = '';
     for (;;) {

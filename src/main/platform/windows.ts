@@ -39,7 +39,7 @@ export function parseDisplayIconFromRegOutput(output: string): string | null {
   }
 
   let raw = match[1].trim();
-  // Strip trailing comma and index (e.g.,0)
+  // Strip trailing comma and index (e.g. ,0)
   raw = raw.replace(/,\s*\d+$/, '').trim();
 
   // Strip enclosing quotes if present

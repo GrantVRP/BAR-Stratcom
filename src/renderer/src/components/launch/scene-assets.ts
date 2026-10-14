@@ -14,7 +14,7 @@ export type SceneFaction = 'armada' | 'cortex';
 
 export const RUNNER_UNIT: Record<SceneFaction, string> = LAUNCH_RUNNER;
 
-/** URL of a scene sprite by file name (without.png); throws if the asset build is missing it. */
+/** URL of a scene sprite by file name (without .png); throws if the asset build is missing it. */
 export function sceneAsset(name: string): string {
   const url = byName.get(name);
   if (!url) throw new Error(`Launch scene asset missing: ${name}.png (run npx tsx tools/build-launch-scene.ts)`);

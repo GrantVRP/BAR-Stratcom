@@ -24,7 +24,7 @@ export function AiDraftResult({ result, map }: AiDraftResultProps): React.JSX.El
         <Provenance kind="AI DRAFT" />
         {plan && <span className="font-pixel-heading text-[10px] text-zinc-100">{plan.title}</span>}
         <span className="text-zinc-400">
-          {result.provider} // {result.model} // {repairs === 0 ? 'first try': `${repairs} ${repairs === 1 ? 'repair': 'repairs'}`}
+          {result.provider} // {result.model} // {repairs === 0 ? 'first try' : `${repairs} ${repairs === 1 ? 'repair' : 'repairs'}`}
         </span>
       </div>
 

@@ -28,6 +28,7 @@ import { defaultPlanStore } from './plans/store';
 import { getMap, loadMaps } from './maps/loader';
 import { simMapFor } from './maps/sim-map';
 import { isAllowedGlobalShortcut } from './shortcuts/accelerator';
+import { currentWindowIcon, setWindowFaction } from './windows/window-icon';
 import { devRendererUrl } from './windows/dev-url';
 import {
   isCoachWindowOpen,
@@ -46,6 +47,7 @@ let mainWindow: BrowserWindow | null = null;
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     title: 'BAR StratCom',
+    icon: currentWindowIcon(),
     width: 1280,
     height: 800,
     minWidth: 960,
@@ -108,6 +110,11 @@ if (!gotTheLock) {
           barData: settings.bar.dataDir
         }
       };
+    });
+
+    handle('app:setWindowFaction', (req) => {
+      setWindowFaction(req.faction);
+      return { ok: true };
     });
 
     handle('settings:get', () => {

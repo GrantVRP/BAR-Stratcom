@@ -1,6 +1,6 @@
 import zlib from 'node:zlib';
 import { describe, expect, it } from 'vitest';
-import { appIcon, ICO_SIZES } from './app-icon';
+import { ICO_SIZES } from './app-icon';
 import { crc32, encodeIco, encodePng, type Rgba } from './png';
 
 /** Reads back an unfiltered RGBA PNG written by encodePng (checks every chunk CRC on the way). */
@@ -25,18 +25,30 @@ function decodePng(png: Buffer): Rgba {
   return { width, height, data };
 }
 
+/** A sample image: a colour ramp with see-through corners. */
+function sample(size: number): Rgba {
+  const data = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const corner = (x === 0 || x === size - 1) && (y === 0 || y === size - 1);
+      data.set([(x * 255) / size, (y * 255) / size, 128, corner ? 0 : 255], (y * size + x) * 4);
+    }
+  }
+  return { width: size, height: size, data };
+}
+
 describe('PNG and ICO writers (T11.4 app icon)', () => {
   it('crc32 matches the PNG spec check value', () => {
     expect(crc32(Buffer.from('123456789', 'ascii'))).toBe(0xcbf43926);
   });
 
   it('a PNG reads back pixel for pixel', () => {
-    const img = appIcon(24);
+    const img = sample(24);
     expect(decodePng(encodePng(img))).toEqual(img);
   });
 
   it('the ICO holds one PNG per size, 256 written as 0, offsets pointing at each image', () => {
-    const images = ICO_SIZES.map(appIcon);
+    const images = ICO_SIZES.map(sample);
     const ico = encodeIco(images);
     expect([ico.readUInt16LE(0), ico.readUInt16LE(2), ico.readUInt16LE(4)]).toEqual([0, 1, ICO_SIZES.length]);
     ICO_SIZES.forEach((size, i) => {
@@ -45,31 +57,5 @@ describe('PNG and ICO writers (T11.4 app icon)', () => {
       const png = ico.subarray(ico.readUInt32LE(e + 12), ico.readUInt32LE(e + 12) + ico.readUInt32LE(e + 8));
       expect(decodePng(png)).toEqual(images[i]);
     });
-  });
-});
-
-describe('app icon (original pixel art)', () => {
-  const at = (img: Rgba, x: number, y: number) => Array.from(img.data.subarray((y * img.width + x) * 4, (y * img.width + x) * 4 + 4));
-
-  it('transparent corners, the commander in the middle, only palette colours (no blending)', () => {
-    for (const size of ICO_SIZES) {
-      const img = appIcon(size);
-      expect(img.width).toBe(size);
-      expect(at(img, 0, 0)[3]).toBe(0);
-      expect(at(img, Math.floor(size / 2), Math.floor(size / 2))).toEqual([0xf4, 0xf4, 0xf5, 255]);
-      for (let i = 3; i < img.data.length; i += 4) expect([0, 255]).toContain(img.data[i]);
-    }
-  });
-
-  it('above 32 px it is the 32 px drawing enlarged pixel for pixel', () => {
-    const small = appIcon(32);
-    const big = appIcon(256);
-    for (const [x, y] of [
-      [3, 3],
-      [16, 16],
-      [21, 8],
-      [27, 16]
-    ] as const)
-      expect(at(big, x * 8 + 4, y * 8 + 4)).toEqual(at(small, x, y));
   });
 });

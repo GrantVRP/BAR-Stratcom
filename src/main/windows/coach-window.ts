@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { devRendererUrl } from './dev-url';
 import { defaultSettingsStore } from '../settings/store';
 import type { CoachWindowBounds } from '../../core/schemas';
+import { currentWindowIcon } from './window-icon';
 
 let coachWindowInstance: BrowserWindow | null = null;
 let currentMode: 'second-monitor' | 'overlay' = 'second-monitor';
@@ -62,6 +63,7 @@ export function openCoachWindow(modeOverride?: 'second-monitor' | 'overlay'): Br
 
   const win = new BrowserWindow({
     title: 'BAR StratCom Coach',
+    icon: currentWindowIcon(),
     width: bounds?.width ?? 420,
     height: bounds?.height ?? 720,
     minWidth: 360,

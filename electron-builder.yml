@@ -11,10 +11,13 @@ files:
   - out/**/*
   - package.json
 # beside the app (process.resourcesPath): the widget the installer copies into BAR, the game data
-# (registry, plans, maps, wind, demo fixtures; not the raw captures), and the licences
+# (registry, plans, maps, wind, demo fixtures; not the raw captures), the window icons per faction,
+# and the licences
 extraResources:
   - from: widget/gui_stratcom.lua
     to: widget/gui_stratcom.lua
+  - from: build/icons
+    to: icons
   - from: data
     to: data
     filter:

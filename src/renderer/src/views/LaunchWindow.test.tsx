@@ -3,6 +3,7 @@ import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { LaunchWindow } from './LaunchWindow';
+import { setIpcClientOverride, type IpcClientInterface } from '../lib/ipc-client';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -101,5 +102,22 @@ describe('LaunchWindow (06 §4.1, T06.3)', () => {
     });
 
     expect(onStart).not.toHaveBeenCalled();
+  });
+  it('the faction switch also switches the window icon (owner request 2026-10-13)', async () => {
+    const invoke = vi.fn().mockResolvedValue({ ok: true, data: { ok: true } });
+    setIpcClientOverride({ invoke, on: () => () => undefined, isAvailable: () => true } as unknown as IpcClientInterface);
+    try {
+      await act(async () => {
+        root.render(<LaunchWindow onStart={vi.fn()} version="3.0.0" defaultFaction="armada" />);
+      });
+      expect(invoke).toHaveBeenLastCalledWith('app:setWindowFaction', { faction: 'armada' });
+      await act(async () => {
+        (container.querySelector('[data-testid="launcher-faction-toggle"]') as HTMLElement).click();
+      });
+      expect(invoke).toHaveBeenLastCalledWith('app:setWindowFaction', { faction: 'cortex' });
+      expect(invoke.mock.calls.filter(([c]) => c === 'app:setWindowFaction')).toHaveLength(2);
+    } finally {
+      setIpcClientOverride(null);
+    }
   });
 });

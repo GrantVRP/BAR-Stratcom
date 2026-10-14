@@ -124,6 +124,11 @@ export const AppInfoSchema = z
 
 export type AppInfo = z.infer<typeof AppInfoSchema>;
 
+/** Factions with their own window icon: "BS" with the S in the faction's colour (build/icons). */
+export const WINDOW_FACTIONS = ['armada', 'cortex', 'legion'] as const;
+export const WindowFactionSchema = z.enum(WINDOW_FACTIONS);
+export type WindowFaction = z.infer<typeof WindowFactionSchema>;
+
 export type IpcSuccess<T> = { ok: true; data: T };
 export type IpcFailure = { ok: false; code: string; message: string };
 export type IpcResponse<T> = IpcSuccess<T> | IpcFailure;
@@ -132,6 +137,10 @@ export const ipcContract = {
   'app:getInfo': {
     request: z.void().optional(),
     response: AppInfoSchema
+  },
+  'app:setWindowFaction': {
+    request: z.object({ faction: WindowFactionSchema }).strict(),
+    response: z.object({ ok: z.boolean() }).strict()
   },
   'settings:get': {
     request: z.void().optional(),

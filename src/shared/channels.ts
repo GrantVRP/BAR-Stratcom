@@ -1,5 +1,6 @@
 export const IPC_CHANNELS = [
   'app:getInfo',
+  'app:setWindowFaction',
   'settings:get',
   'settings:set',
   'game:locate',

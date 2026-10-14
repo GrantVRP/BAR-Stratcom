@@ -19,6 +19,7 @@ import {
   UnitsView
 } from './views';
 import { ipcClient } from './lib/ipc-client';
+import { useWindowIconFaction } from './lib/window-icon';
 import { useCoach, useLive, usePlans, useSessions, useSettings, useSnapshot } from './stores';
 import { setupAudioCueListener } from './audio/sounds';
 import { ReportReadyToast } from './components/review/ReportReadyToast';
@@ -137,6 +138,10 @@ export function App(): React.JSX.Element {
           currentHash === '#/home' ||
           currentHash === '#/onboarding') &&
         settings?.launcher?.showOnStart !== false));
+
+  // the window icon's S follows the active plan's faction once past the launcher (which sets its own)
+  const activePlanFaction = usePlans((s) => s.getActivePlan()?.factionId);
+  useWindowIconFaction(shouldShowLauncher ? null : activePlanFaction);
 
   function handleLauncherStart(): void {
     setLauncherDismissed(true);

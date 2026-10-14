@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
 import { LaunchScene3D } from '../components/launch3d/LaunchScene3D';
 import { factionAccent } from '../lib/faction-style';
+import { useWindowIconFaction } from '../lib/window-icon';
 
 export interface LaunchWindowProps {
   onStart: () => void;
@@ -49,6 +50,7 @@ export function LaunchWindow({
   defaultFaction = 'armada'
 }: LaunchWindowProps): React.JSX.Element {
   const [faction, setFaction] = useState<'armada' | 'cortex'>(defaultFaction);
+  useWindowIconFaction(faction);
   const [reducedMotion, setReducedMotion] = useState<boolean>(() =>
     typeof window !== 'undefined'
       ? window.matchMedia('(prefers-reduced-motion: reduce)').matches

@@ -383,10 +383,10 @@ export function generateCalibrationMarkdown(reports: CalibrationFixtureReport[])
   return lines.join('\n') + '\n';
 }
 
-export function writeCalibrationReport(projectRoot = process.cwd()): string {
+export function writeCalibrationReport(projectRoot = process.cwd(), reportPath = path.join(projectRoot, 'docs/plan/reports/calibration.md')): string {
   const reports = runCalibration(projectRoot);
   const markdown = generateCalibrationMarkdown(reports);
-  const reportPath = path.join(projectRoot, 'docs/plan/reports/calibration.md');
+  fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, markdown, 'utf-8');
   return reportPath;
 }

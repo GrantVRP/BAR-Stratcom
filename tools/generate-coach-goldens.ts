@@ -258,6 +258,7 @@ async function main() {
   reportSections.push('');
 
   const reportPath = path.resolve(rootDir, 'docs/plan/reports/coach-goldens.md');
+  fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, reportSections.join('\n') + '\n', 'utf8');
 }
 

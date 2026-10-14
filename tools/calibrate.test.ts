@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PLAYER_FIXTURES, runCalibration, writeCalibrationReport } from './calibrate';
 
@@ -43,12 +45,17 @@ describe('Simulator Calibration against Real Player Games', () => {
     });
   }
 
-  it('generates calibration report file without error', () => {
-    const reportPath = writeCalibrationReport();
-    expect(fs.existsSync(reportPath)).toBe(true);
-    const content = fs.readFileSync(reportPath, 'utf-8');
-    expect(content).toContain('# Calibration Report — BAR StratCom v3');
-    expect(content).toContain('Threshold Summary');
-    expect(content).toContain('**PASS**');
+  it('generates calibration report file without error, creating its folder (a fresh clone has none)', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'stratcom-calibration-'));
+    try {
+      const reportPath = writeCalibrationReport(process.cwd(), path.join(dir, 'reports', 'calibration.md'));
+      expect(fs.existsSync(reportPath)).toBe(true);
+      const content = fs.readFileSync(reportPath, 'utf-8');
+      expect(content).toContain('# Calibration Report — BAR StratCom v3');
+      expect(content).toContain('Threshold Summary');
+      expect(content).toContain('**PASS**');
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

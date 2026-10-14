@@ -228,9 +228,12 @@ describe('FileBridge (T05.3)', () => {
     fs.writeFileSync(scriptPath, 'game start 1', 'utf-8');
     bridgeWithTimer.poll();
 
-    // Trigger script modification
+    // Trigger script modification. BAR rewrites the file at the next game start, so its mtime moves on;
+    // two writes this close can share one mtime tick (they did on GitHub's runner), so set it explicitly.
     fakeNow += 1000;
     fs.writeFileSync(scriptPath, 'game start 2', 'utf-8');
+    const nextStart = new Date(fs.statSync(scriptPath).mtimeMs + 60_000);
+    fs.utimesSync(scriptPath, nextStart, nextStart);
     bridgeWithTimer.poll();
 
     // Advance 21 seconds (> 20 s)

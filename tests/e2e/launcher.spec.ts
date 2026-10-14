@@ -87,18 +87,17 @@ test('launcher: clicking the walking unit destroys it, and a new one runs in lat
     test.skip((await scene.getAttribute('data-status')) !== 'ready', 'no WebGL on this machine: the 2D fallback has no units to click');
 
     const canvas = page.getByTestId('launch-scene-canvas');
-    // wait until the unit is well inside the window, then click where the scene says it is
-    let at = '';
-    await expect
-      .poll(async () => {
-        at = (await canvas.getAttribute('data-runner')) ?? '';
-        const [x, y] = at.split(',').map(Number);
-        return at !== '' && x! > 0.15 && x! < 0.85 && y! > 0.2 && y! < 0.85;
-      }, { timeout: 20000 })
-      .toBe(true);
     const box = (await canvas.boundingBox())!;
-    const [fx, fy] = at.split(',').map(Number);
-    await page.mouse.click(box.x + fx! * box.width, box.y + fy! * box.height);
+    // click where the scene says the unit is, once it is well inside the window. With software GL (CI)
+    // the unit can move on between reading its place and the click, so a missed click is tried again;
+    // only a click that hits it destroys it.
+    await expect(async () => {
+      const at = (await canvas.getAttribute('data-runner')) ?? '';
+      const [x, y] = at.split(',').map(Number);
+      expect(at !== '' && x! > 0.15 && x! < 0.85 && y! > 0.2 && y! < 0.85).toBe(true);
+      await page.mouse.click(box.x + x! * box.width, box.y + y! * box.height);
+      await expect(canvas).toHaveAttribute('data-runner', '', { timeout: 1000 });
+    }).toPass({ timeout: 30000 });
 
     // destroyed: no walking unit, and the launcher is still open (only LAUNCH enters the app)
     await expect(canvas).toHaveAttribute('data-runner', '');

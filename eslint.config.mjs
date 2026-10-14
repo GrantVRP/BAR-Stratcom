@@ -34,7 +34,6 @@ const nodeBuiltins = [
 export default tseslint.config(
   {
     ignores: [
-      'legacy/**',
       'out/**',
       'dist/**',
       'release/**',
@@ -42,11 +41,7 @@ export default tseslint.config(
       'node_modules/**',
       '.agent/**',
       '**/.agent/**',
-      '.agents/**',
-      '**/.agents/**',
-      '**/.*/**',
-      '.next/**',
-      '**/.next/**'
+      '**/.*/**'
     ]
   },
   // Base configuration for all TypeScript / JavaScript files
@@ -104,7 +99,7 @@ export default tseslint.config(
               message: 'src/core is pure and may not import Node built-ins (02 §3).'
             },
             {
-              group: ['react', 'react/**', 'react-dom', 'react-dom/**', 'react-router', 'framer-motion', 'lucide-react'],
+              group: ['react', 'react/**', 'react-dom', 'react-dom/**', 'lucide-react'],
               message: 'src/core may not import React or DOM libraries (02 §3).'
             },
             {

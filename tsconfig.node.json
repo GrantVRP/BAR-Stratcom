@@ -29,5 +29,5 @@
     "vitest.config.ts",
     "playwright.config.ts"
   ],
-  "exclude": ["node_modules", "out", "dist", "legacy"]
+  "exclude": ["node_modules", "out", "dist"]
 }

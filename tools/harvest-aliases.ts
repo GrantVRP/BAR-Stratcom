@@ -1,3 +1,9 @@
+/**
+ * data/aliases.json and data/aliases.report.md from the v2 units database (T01.4, T01.7, T03.4).
+ * The v2 code left the tree in T11.6; take its database from the baseline tag:
+ *   git show v2-legacy-baseline:data/bar_units_database.json > scratch/bar_units_database.json
+ *   npx tsx tools/harvest-aliases.ts scratch/bar_units_database.json
+ */
 import fs from 'node:fs';
 import path from 'node:path';
 import {
@@ -8,7 +14,7 @@ import {
   type UnitSnapshot
 } from '../src/core/schemas';
 
-// Copied directly from legacy/scripts/enrich-aliases.js (do not import/require that script)
+// Copied directly from the v2 scripts/enrich-aliases.js (tag v2-legacy-baseline; do not import that script)
 const ALIASES_MAP: Record<string, string[]> = {
   // Armada Bots
   armpw: ['Paw', 'Pawn', 'armpw'],
@@ -166,13 +172,12 @@ function factionOf(unitId: string): string {
   return 'unknown';
 }
 
-export function harvestAliases(snapshotPath?: string): {
+export function harvestAliases(dbPath: string, snapshotPath?: string): {
   aliases: AliasEntry[];
   keptCrossFaction: Array<{ alias: string; units: Array<{ faction: string; slug: string }> }>;
   droppedSameFactionMulti: Array<{ alias: string; faction: string; slugs: string[] }>;
   droppedNameConflict: Array<{ alias: string; slug: string; conflictingUnits: string[] }>;
 } {
-  const dbPath = path.resolve(process.cwd(), 'legacy/data/bar_units_database.json');
   const rawDb = fs.readFileSync(dbPath, 'utf8');
   const units: LegacyUnit[] = JSON.parse(rawDb);
 
@@ -320,7 +325,9 @@ export function harvestAliases(snapshotPath?: string): {
 }
 
 function run(): void {
-  const result = harvestAliases();
+  const dbPath = process.argv[2];
+  if (!dbPath) throw new Error('Usage: npx tsx tools/harvest-aliases.ts <bar_units_database.json> (see the header)');
+  const result = harvestAliases(path.resolve(dbPath));
 
   const fileData = {
     schemaVersion: 1,

@@ -1,6 +1,6 @@
 {
   "name": "bar-stratcom",
-  "version": "3.0.0-dev.0",
+  "version": "3.0.0",
   "description": "BAR StratCom v3 — Live coaching desktop app for Beyond All Reason",
   "main": "out/main/index.js",
   "private": true,

@@ -2,7 +2,7 @@
 
 All notable changes to BAR StratCom. Versions follow [semantic versioning](https://semver.org/).
 
-## 3.0.0 (unreleased)
+## 3.0.0 (2026-10-13)
 
 A rebuild. Version 2 was a web console for planning; version 3 is a Windows desktop app with an in-game
 widget that coaches you while you play. Version 2's plans and settings are not imported; the setup

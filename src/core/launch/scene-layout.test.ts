@@ -11,8 +11,8 @@ import {
   shadowSize
 } from './scene-layout';
 
-describe('launcher scene layout (T06.14)', () => {
-  it('runs from below the bottom-left to above the top-right, as in the owner draft', () => {
+describe('launcher scene layout', () => {
+  it('runs from below the bottom-left to above the top-right, as in the design draft', () => {
     const start = pathPoint(0);
     const end = pathPoint(1);
     expect(start).toEqual(RUN_WAYPOINTS[0]);

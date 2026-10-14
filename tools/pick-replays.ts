@@ -1,11 +1,11 @@
 /**
- * BAR StratCom — Pro Replay Picker Tool (T08.1, re-pick rules T08.1b)
+ * BAR StratCom — Pro Replay Picker Tool
  *
  * Queries the Beyond All Reason replays API (https://api.bar-rts.com/replays) to select
- * high-level pro replays for checkpoint H2 (spectator capture, curated library, benchmarks).
+ * high-level pro replays for spectator capture, the curated library and benchmarks.
  *
  * Usage: npx tsx tools/pick-replays.ts
- * Writes docs/plan/reports/h2-replay-list.md and .json. API responses are cached in
+ * Writes docs/plan/reports/h2-replay-list.md and.json. API responses are cached in
  * scratch/replay-cache/ (git-ignored); delete that folder to fetch fresh data.
  *
  * =========================================================================================

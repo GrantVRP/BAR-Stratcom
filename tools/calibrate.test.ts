@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { PLAYER_FIXTURES, runCalibration, writeCalibrationReport } from './calibrate';
 
-describe('Simulator Calibration against Real Player Games (T04.5)', () => {
+describe('Simulator Calibration against Real Player Games', () => {
   const reports = runCalibration();
 
   it('runs calibration on all 4 player fixtures', () => {

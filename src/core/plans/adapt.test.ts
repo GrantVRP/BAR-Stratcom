@@ -77,7 +77,7 @@ function ok(result: ReturnType<typeof adaptPlan>): Exclude<ReturnType<typeof ada
   return result;
 }
 
-describe('plan adapter (04 §5.2, T08.5)', () => {
+describe('plan adapter', () => {
   it('classifies wind: high ≥ 10, low < 6, unknown without data', () => {
     expect([windClass(12), windClass(10), windClass(8), windClass(5.9), windClass(null)]).toEqual(['high', 'high', 'mid', 'low', 'unknown']);
     expect(energyOutput(registry.get('armsolar')!)).toBe(20);

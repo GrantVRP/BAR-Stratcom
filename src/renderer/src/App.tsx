@@ -24,7 +24,7 @@ import { useCoach, useLive, usePlans, useSessions, useSettings, useSnapshot } fr
 import { setupAudioCueListener } from './audio/sounds';
 import { ReportReadyToast } from './components/review/ReportReadyToast';
 
-// Alt+1…8 follow the left menu (06 §2)
+// Alt+1…8 follow the left menu
 const ALT_ROUTES: Record<string, string> = {
   '1': '#/home',
   '2': '#/library',
@@ -100,7 +100,7 @@ export function App(): React.JSX.Element {
     };
   }, []);
 
-  // Alt+1..8 keyboard navigation shortcuts (06 §2)
+  // Alt+1..8 keyboard navigation shortcuts
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent): void {
       if (e.altKey && !e.ctrlKey && !e.metaKey) {

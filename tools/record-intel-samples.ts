@@ -1,5 +1,5 @@
 /**
- * Records trimmed real responses of the BAR public APIs as test fixtures for src/main/intel (T10.1).
+ * Records trimmed real responses of the BAR public APIs as test fixtures for src/main/intel.
  * Usage: npx tsx tools/record-intel-samples.ts
  * Trimming keeps the real shapes (including fields the app ignores) but only a few entries each;
  * lobby host IPs/ports are removed.

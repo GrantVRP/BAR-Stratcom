@@ -13,7 +13,7 @@ import {
   processReplayDetail
 } from './pick-replays';
 
-describe('pick-replays (T08.1)', () => {
+describe('pick-replays', () => {
   describe('parseSkill', () => {
     it('parses bracketed skill strings', () => {
       expect(parseSkill('[33.65]')).toBe(33.65);
@@ -100,7 +100,7 @@ describe('pick-replays (T08.1)', () => {
 
     it('accepts valid candidates', () => {
       expect(filterReplayCandidate(makeValid())).toBe(true);
-      // the age is measured from the given clock, not the real time (regression, T11.4)
+      // the age is measured from the given clock, not the real time (regression)
       const old = { ...makeValid(), startTime: '2026-10-03T20:00:00.000Z' };
       expect(filterReplayCandidate(old, { maxAgeDays: 4, now: new Date('2026-10-04T03:00:00Z') })).toBe(true);
       expect(filterReplayCandidate(old, { maxAgeDays: 4, now: new Date('2026-10-13T03:00:00Z') })).toBe(false);
@@ -122,7 +122,7 @@ describe('pick-replays (T08.1)', () => {
       expect(filterReplayCandidate(r2)).toBe(false);
     });
 
-    it('rejects games under 11 minutes, which cannot give a 10:30 recording (T08.1b)', () => {
+    it('rejects games under 11 minutes, which cannot give a 10:30 recording', () => {
       const r = makeValid();
       r.durationMs = 10 * 60 * 1000 + 59 * 1000;
       expect(filterReplayCandidate(r)).toBe(false);
@@ -215,13 +215,13 @@ describe('pick-replays (T08.1)', () => {
       };
 
       const md = generateReportMarkdown(result, '2026-10-04T00:00:00.000Z');
-      expect(md).toContain('# H2 Pro Replay List');
+      expect(md).toContain('# Pro Replay List');
       expect(md).toContain('Target Mix Status');
       expect(md).toContain('Download & Spectator Instructions');
       expect(md).toContain('| [ ] | 1 | `1234567890ab...` |');
       expect(md).toContain('https://bar-rts.com/replays/1234567890abcdef');
       expect(md).toContain('until the in-game clock shows at least');
-      expect(md).toContain('Selection rules (T08.1b)');
+      expect(md).toContain('Selection rules');
 
       const json = generateReportJson(result, '2026-10-04T00:00:00.000Z');
       expect(json.replays[0]).toMatchObject({

@@ -10,7 +10,7 @@ import type {
 } from '../../core/schemas/protocol';
 import { FileBridge } from './file-bridge';
 
-describe('FileBridge (T05.3)', () => {
+describe('FileBridge', () => {
   let tempBaseDir: string;
   let stratcomDir: string;
   let bridge: FileBridge;

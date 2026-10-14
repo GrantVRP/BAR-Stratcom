@@ -19,7 +19,7 @@ export interface ImportOptions {
   ownerName: string;
   slugOverride?: string;
   sessionFilter?: string;
-  /** Pro import (T08.3): only spectator/replay sessions that match this list are imported. */
+  /** Pro import: only spectator/replay sessions that match this list are imported. */
   proList?: readonly ProListReplay[];
   /** Filled with the spectator/replay sessions that matched no list replay (pro import only). */
   unmatched?: UnmatchedSession[];
@@ -145,7 +145,7 @@ export async function importFixtures(opts: ImportOptions): Promise<string[]> {
     const lastDoc = stateDocs[stateDocs.length - 1];
     const duration = Math.max(lastDoc?.gameSeconds ?? 0, eventSec);
 
-    // Minimum length filter (T03.2 §5)
+    // Minimum length filter
     if (rawSession.mode === 'player' && duration < 360) {
       console.log(`[import-fixtures] Skipping player session ${rawSessionId}: duration ${duration.toFixed(1)}s < 360s`);
       continue;

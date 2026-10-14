@@ -14,13 +14,13 @@ const builds = path.join(root, 'data/builds');
 const readPlan = (file: string): BuildPlan => BuildPlanSchema.parse(JSON.parse(fs.readFileSync(file, 'utf-8')));
 const registryFor = registryLoader();
 
-describe('published curated library (T08.9)', () => {
+describe('published curated library', () => {
   const curated = fs.readdirSync(builds).filter((f) => f.endsWith('.json')).map((f) => readPlan(path.join(builds, f)));
   const beginner = fs.readdirSync(path.join(builds, 'beginner')).map((f) => readPlan(path.join(builds, 'beginner', f)));
   const log = fs.readFileSync(path.join(builds, 'REVIEW-LOG.md'), 'utf-8');
   const decisions = parseReviewDecisions(log);
 
-  it('holds exactly the H3 approvals (at least 12), each credited and with 0 validation errors', () => {
+  it('holds exactly the approved candidates (at least 12), each credited and with 0 validation errors', () => {
     const approved = decisions.filter((d) => d.decision === 'approve').map((d) => d.id).sort();
     expect(approved.length).toBeGreaterThanOrEqual(MIN_APPROVED);
     expect(curated.map((p) => p.id).sort()).toEqual(approved);

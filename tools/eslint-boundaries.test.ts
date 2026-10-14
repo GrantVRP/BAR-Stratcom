@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ESLint } from 'eslint';
 
-describe('ESLint architectural boundaries (02 §3)', () => {
+describe('ESLint architectural boundaries', () => {
   const eslint = new ESLint();
 
   async function lintCode(code: string, filePath: string) {

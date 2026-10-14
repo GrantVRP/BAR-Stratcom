@@ -10,11 +10,11 @@ test('launcher: shows title screen on startup and only LAUNCH reaches Home', asy
     const launcher = page.getByTestId('launch-window');
     await expect(launcher).toBeVisible();
 
-    // Title; the unofficial notice lives on the About page (owner request, T06.16)
+    // Title; the unofficial notice lives on the About page
     await expect(launcher).toContainText('BAR STRATCOM');
     await expect(launcher).not.toContainText('NOT AFFILIATED');
 
-    // Only the LAUNCH button enters the app: a key press keeps the launcher open (T06.16)
+    // Only the LAUNCH button enters the app: a key press keeps the launcher open
     await expect(launcher).not.toContainText('PRESS ANY KEY');
     await page.keyboard.press('Space');
     await expect(launcher).toBeVisible();
@@ -77,7 +77,7 @@ test('routing: unknown route displays 404 panel with link back to Home', async (
 });
 
 
-test('launcher: clicking the walking unit destroys it, and a new one runs in later (owner request)', async () => {
+test('launcher: clicking the walking unit destroys it, and a new one runs in later', async () => {
   test.setTimeout(60000);
   const { app, close } = await launchApp();
   try {

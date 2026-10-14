@@ -8,7 +8,7 @@ export interface ViewPlaceholderProps {
   children?: React.ReactNode;
 }
 
-/** A page that is not built yet: just its title and a tag (no filler copy, T06.16). */
+/** A page that is not built yet: just its title and a tag (no filler copy). */
 export function ViewPlaceholder({ title, badge = 'COMING SOON', children }: ViewPlaceholderProps): React.JSX.Element {
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">

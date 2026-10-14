@@ -23,7 +23,7 @@ import {
   EnergyIcon
 } from './index';
 
-describe('UI Primitives (06 §3, T06.1)', () => {
+describe('UI Primitives', () => {
   let container: HTMLDivElement;
   let root: Root;
 

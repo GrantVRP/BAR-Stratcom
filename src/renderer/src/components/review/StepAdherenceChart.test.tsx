@@ -13,7 +13,7 @@ const sampleSteps: SessionReportStep[] = [
   { stepId: 'step-3', plannedFinish: 90, actualFinish: null, deltaSec: null }
 ];
 
-describe('StepAdherenceChart (06 §4.6, T07.4)', () => {
+describe('StepAdherenceChart', () => {
   let container: HTMLDivElement | null = null;
   let root: Root | null = null;
 

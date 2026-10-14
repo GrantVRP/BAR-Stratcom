@@ -57,7 +57,7 @@ const mockDetail: SessionDetail = {
   hasEvents: true
 };
 
-describe('ProfileSuggestionBanner (04 §4.4, T07.3)', () => {
+describe('ProfileSuggestionBanner', () => {
   let container: HTMLDivElement;
   let root: Root;
 

@@ -20,7 +20,7 @@ export interface AiHandlerDeps {
   keys?: KeyStore;
   settings?: SettingsStore;
   clients?: ClientFactories;
-  /** Drafting inputs (T08.7); the defaults read data/ and the plan library. */
+  /** Drafting inputs; the defaults read data/ and the plan library. */
   registry?: () => Registry;
   library?: () => readonly BuildPlan[];
   map?: (fileName: string) => MapRecord | null;
@@ -53,7 +53,7 @@ export async function listModelsFor(provider: ProviderId, baseUrl: string | unde
 }
 
 /**
- * The model to draft with: the one chosen in Settings, else the provider's default (04 §6.2):
+ * The model to draft with: the one chosen in Settings, else the provider's default:
  * Claude Opus 5.5, the newest Gemini flash, or a local server's first model. OpenAI and OpenRouter
  * have too many models to guess, so the player picks one.
  */
@@ -68,7 +68,7 @@ export async function resolveModel(provider: AiProvider, chosen: string | null, 
   return model;
 }
 
-/** One AI draft for the player's intent with the provider and model from Settings (T08.7). */
+/** One AI draft for the player's intent with the provider and model from Settings. */
 export async function runDraft(req: IpcRequest<'ai:draft'>, signal: AbortSignal, deps: AiHandlerDeps = {}): Promise<DraftResult> {
   const settings = (deps.settings ?? defaultSettingsStore).getSettings();
   const id = settings.ai.provider;
@@ -100,7 +100,7 @@ export async function runDraft(req: IpcRequest<'ai:draft'>, signal: AbortSignal,
   });
 }
 
-/** AI IPC (T08.6, T08.7). The renderer never receives a key, only whether one is stored. */
+/** AI IPC. The renderer never receives a key, only whether one is stored. */
 export function registerAiHandlers(deps: AiHandlerDeps = {}): void {
   const keys = (): KeyStore => deps.keys ?? defaultKeyStore;
   // one draft at a time; a new one replaces (cancels) the running one

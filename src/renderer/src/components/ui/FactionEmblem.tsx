@@ -4,7 +4,7 @@ import armada32 from '../../assets/factions-32/armada-32.png';
 import cortex64 from '../../assets/factions-32/cortex-64.png';
 import cortex32 from '../../assets/factions-32/cortex-32.png';
 
-/** 32-bit versions of the BAR faction icons (sidepics), used with permission (T10.6). */
+/** 32-bit versions of the BAR faction icons (sidepics), used with permission. */
 const EMBLEMS: Record<string, { 32: string; 64: string; label: string }> = {
   armada: { 32: armada32, 64: armada64, label: 'Armada' },
   cortex: { 32: cortex32, 64: cortex64, label: 'Cortex' }

@@ -4,7 +4,7 @@ import { IntelCache } from './cache';
 import { fakeIntelEnabled, fixtureFetch } from './fake';
 import { IntelService } from './service';
 
-describe('fake intel for e2e (T10.2)', () => {
+describe('fake intel for e2e', () => {
   it('is off unless the flag is set, and off outside an unpackaged Electron app', () => {
     expect(fakeIntelEnabled({})).toBe(false);
     expect(fakeIntelEnabled({ STRATCOM_FAKE_INTEL: '1' })).toBe(false); // vitest: no Electron app object

@@ -13,7 +13,7 @@ import {
   WidgetInstaller
 } from './installer';
 
-describe('WidgetInstaller (T05.2)', () => {
+describe('WidgetInstaller', () => {
   let tempBaseDir: string;
   let dataDir: string;
   let bundledWidgetPath: string;
@@ -134,7 +134,7 @@ end
       expect(fs.existsSync(backupFile)).toBe(false);
     });
 
-    it('updates from older version and creates .bak backup', () => {
+    it('updates from older version and creates.bak backup', () => {
       const widgetsDir = path.join(dataDir, 'LuaUI', 'Widgets');
       fs.mkdirSync(widgetsDir, { recursive: true });
 

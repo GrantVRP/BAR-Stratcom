@@ -15,7 +15,7 @@ export interface PublishOptions {
   registryFor: (gameVersion: string) => Registry;
   maps: MapRecord[];
   windTable: Record<string, Record<string, number>> | null;
-  /** Reviewer handle as given in STATUS (H3). */
+  /** Reviewer handle as given in STATUS. */
   reviewer: string;
   /** YYYY-MM-DD of the review. */
   reviewedAt: string;
@@ -35,7 +35,7 @@ const write = (file: string, plan: BuildPlan): void => {
 };
 
 /**
- * T08.9: publishes the candidates approved at H3. Approved → data/builds/<id>.json with the reviewer
+ * Publishes the approved candidates. Approved → data/builds/<id>.json with the reviewer
  * credited; a beginner variant of each → data/builds/beginner/<id>-beginner.json; the candidates folder
  * is removed and the review sheet is kept as REVIEW-LOG.md. Refuses while any decision is open, below
  * 12 approvals, or when a published plan would have validation errors (nothing is written then).
@@ -43,7 +43,7 @@ const write = (file: string, plan: BuildPlan): void => {
 export function publishCurated(opts: PublishOptions): PublishResult {
   const reviewPath = path.join(opts.buildsDir, '_review.md');
   const candidatesDir = path.join(opts.buildsDir, '_candidates');
-  if (!opts.reviewer.trim()) throw new Error('A reviewer handle is required (STATUS → H3)');
+  if (!opts.reviewer.trim()) throw new Error('A reviewer handle is required');
   const review = fs.readFileSync(reviewPath, 'utf-8');
   const decisions = parseReviewDecisions(review);
   const open = decisions.filter((d) => d.decision === 'pending');
@@ -72,7 +72,7 @@ export function publishCurated(opts: PublishOptions): PublishResult {
 
   for (const o of outputs) write(o.file, o.plan);
   fs.rmSync(candidatesDir, { recursive: true, force: true });
-  const header = `<!-- Published in T08.9 on ${opts.reviewedAt}: ${approved.length} approved plans are data/builds/<id>.json (reviewer: ${opts.reviewer.trim()}), each with a beginner variant in data/builds/beginner/. -->\n\n`;
+  const header = `<!-- Published on ${opts.reviewedAt}: ${approved.length} approved plans are data/builds/<id>.json (reviewer: ${opts.reviewer.trim()}), each with a beginner variant in data/builds/beginner/. -->\n\n`;
   fs.writeFileSync(path.join(opts.buildsDir, 'REVIEW-LOG.md'), header + review, 'utf-8');
   fs.rmSync(reviewPath);
 

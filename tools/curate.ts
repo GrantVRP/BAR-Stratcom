@@ -1,12 +1,12 @@
 /**
- * T08.3: curated plan candidates from the H2 pro games.
+ * Curated plan candidates from the recorded pro games.
  *
  *   npx tsx tools/curate.ts [--force]
  *
  * For every human Armada/Cortex team of every pro fixture (folder name contains `-pro-`), builds the
  * first 10 minutes as a plan (eventsToPlan), validates and simulates it, selects the candidates
- * (tools/lib/curate-select.ts) and writes data/builds/_candidates/*.json plus the H3 review sheet
- * data/builds/_review.md. Refuses to overwrite a review sheet that already holds owner decisions
+ * (tools/lib/curate-select.ts) and writes data/builds/_candidates/*.json plus the review sheet
+ * data/builds/_review.md. Refuses to overwrite a review sheet that already holds review decisions
  * unless --force.
  */
 import fs from 'node:fs';
@@ -59,7 +59,7 @@ function main(): void {
   const candidatesDir = path.join(buildsDir, '_candidates');
   const reviewPath = path.join(buildsDir, '_review.md');
   if (!force && fs.existsSync(reviewPath) && hasOwnerDecisions(fs.readFileSync(reviewPath, 'utf-8'))) {
-    throw new Error(`${reviewPath} already holds owner decisions; rerun with --force to overwrite them`);
+    throw new Error(`${reviewPath} already holds review decisions; rerun with --force to overwrite them`);
   }
 
   const listFile = readJson(path.join(ROOT, 'docs/plan/reports/h2-replay-list.json')) as { generatedAt: string; replays: ProListReplay[] };
@@ -75,7 +75,7 @@ function main(): void {
     const meta = SessionMetaSchema.parse(readJson(path.join(fixturesDir, dir, 'meta.json')));
     const replay = listFile.replays.find((r) => r.id === meta.replay?.replayId);
     if (!replay) {
-      console.warn(`[curate] ${dir}: no replay id in the H2 list, skipped`);
+      console.warn(`[curate] ${dir}: no replay id in the pro replay list, skipped`);
       continue;
     }
     const events = fs

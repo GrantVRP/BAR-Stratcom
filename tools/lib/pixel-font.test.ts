@@ -9,7 +9,7 @@ function rows(bm: TextBitmap): string[] {
   );
 }
 
-describe('pixel font reader (window icon, owner request 2026-10-13)', () => {
+describe('pixel font reader (window icon)', () => {
   it('fills by non-zero winding: a square ring is solid, its hole is empty', () => {
     const outer = { x: [0, 3, 3, 0], y: [0, 0, 3, 3] }; // counter-clockwise
     const hole = { x: [1, 1, 2, 2], y: [1, 2, 2, 1] }; // clockwise

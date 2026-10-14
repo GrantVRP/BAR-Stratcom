@@ -20,7 +20,7 @@ export interface SessionRecorderOptions {
  * SessionRecorder records live player and spectator sessions into
  * userData/sessions/<id>/, maintaining state.ndjson, events.ndjson, and meta.json.
  * On gameover or heartbeat loss (> 15s after game start), it finalises and cleans up
- * imported files in stratcomDir (02 §4.1, 03 §7.6, §8).
+ * imported files in stratcomDir.
  */
 export class SessionRecorder {
   private sessionsDir: string;
@@ -216,7 +216,7 @@ export class SessionRecorder {
   }
 
   private startSession(sessionId: string): void {
-    // the id names a folder under userData/sessions: a plain name only (path guard, T11.2)
+    // the id names a folder under userData/sessions: a plain name only (path guard)
     if (!isSafeName(sessionId)) return;
     this.activeSessionId = sessionId;
     this.sessionDoc = null;
@@ -274,7 +274,7 @@ export class SessionRecorder {
     await fs.promises.writeFile(tmpFile, JSON.stringify(validated, null, 2), 'utf8');
     await fs.promises.rename(tmpFile, metaFile);
 
-    // Generate and persist post-match report (04 §4, T07.2)
+    // Generate and persist post-match report
     await generateReportForSession({ sessionDir, meta: validated });
 
     // Broadcast review ready

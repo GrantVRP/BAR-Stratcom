@@ -4,7 +4,7 @@ import factionsJson from '../../../../data/factions.json';
 import aliasesJson from '../../../../data/aliases.json';
 
 // Boot/test fallback until `registry:getMeta` answers: the same data/factions.json and aliases.json
-// the main process serves (bundled at build time), never a hand-typed copy (T11.1)
+// the main process serves (bundled at build time), never a hand-typed copy
 const defaultFactions: FactionsFile = FactionsFileSchema.parse(factionsJson);
 const defaultAliases: AliasesFile = AliasesFileSchema.parse(aliasesJson);
 

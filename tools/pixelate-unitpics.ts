@@ -1,6 +1,6 @@
 /**
  * Turns the BAR unit pictures (by IceXuick and Floris, used with permission) into
- * 32-bit style pixel sprites for the app (T10.5).
+ * 32-bit style pixel sprites for the app.
  *
  * Pipeline per unit: drop the soft ground shadow → crop to the unit → a little more saturation and
  * contrast → downscale to the sprite size → hard alpha → limited palette without dithering (clean

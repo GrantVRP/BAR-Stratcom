@@ -30,7 +30,7 @@ const userPlan = base('mine', { skill: 'beginner', source: { kind: 'manual', cre
 const strayVariant = base('stray', { skill: 'beginner', source: { kind: 'adapted', fromPlanId: 'own', transforms: [], createdAt: '' } });
 const library = [sample, userPlan, strayVariant, armBot, armBotTeam, armVeh, corBot, corAir, variant(armBot), variant(corBot), variant(armVeh)];
 
-describe('onboarding plan suggestions (T08.9)', () => {
+describe('onboarding plan suggestions', () => {
   it('draws only from curated plans and the variants that cite them', () => {
     expect(curatedLibrary(library).map((p) => p.id)).toEqual(['arm-bot', 'arm-bot-team', 'arm-veh', 'cor-bot', 'cor-air', 'arm-bot-beginner', 'cor-bot-beginner', 'arm-veh-beginner']);
   });

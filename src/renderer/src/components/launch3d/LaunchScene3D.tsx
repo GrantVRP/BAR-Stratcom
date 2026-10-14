@@ -15,7 +15,7 @@ export function pixelSizeFor(width: number): number {
 }
 
 /**
- * The launcher's 3D scene in 32-bit pixel style (T06.15): Greenest Fields with its Aleppo pines, the
+ * The launcher's 3D scene in 32-bit pixel style: Greenest Fields with its Aleppo pines, the
  * faction's wind turbine spinning, and the Sprinter / Fiend walking up the track with its in-game
  * walk animation. Falls back to the 2D pixel scene when WebGL is unavailable.
  */
@@ -101,7 +101,7 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
       observer?.disconnect();
       world?.dispose();
       pass?.dispose();
-      // dispose() alone keeps the WebGL context (and its GPU memory) until garbage collection (T11.3)
+      // dispose() alone keeps the WebGL context (and its GPU memory) until garbage collection
       renderer?.forceContextLoss();
       renderer?.dispose();
     };
@@ -119,7 +119,7 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
 
   return (
     <div ref={hostRef} data-testid="launch-scene-3d" data-status={status} className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* the 2D pixel scene only stands in when WebGL is unavailable; while 3D loads the page stays dark (owner request) */}
+      {/* the 2D pixel scene only stands in when WebGL is unavailable; while 3D loads the page stays dark */}
       {status === 'failed' && <LaunchScene faction={faction} reducedMotion={reducedMotion} />}
       <canvas
         ref={canvasRef}
@@ -130,7 +130,7 @@ export function LaunchScene3D({ faction, reducedMotion }: LaunchScene3DProps): R
           e.currentTarget.style.cursor = onUnit(e) ? 'pointer' : 'default';
         }}
         onPointerDown={(e) => {
-          // owner request: clicking the Sprinter / Fiend destroys it with its BAR death; a new one runs in 3 s later
+          // clicking the Sprinter / Fiend destroys it with its BAR death; a new one runs in 3 s later
           if (onUnit(e)) worldRef.current?.kill(factionRef.current, Math.max(0, performance.now() - shownAt.current));
         }}
         role="img"

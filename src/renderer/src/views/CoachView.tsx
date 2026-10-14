@@ -59,7 +59,7 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
       ? activePlan.steps[coachState.currentStepIndex]
       : null;
 
-  // Space key toggles manual clock (06 §4.5)
+  // Space key toggles manual clock
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent): void {
       if (e.code === 'Space' && mode === 'manual') {
@@ -90,7 +90,7 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
         isOverlay ? 'bg-black/85 p-3' : 'bg-[#0a0c14] p-4 lg:p-6'
       }`}
     >
-      {/* Top Bar (06 §4.5) */}
+      {/* Top Bar */}
       <div className="flex items-center justify-between border-b border-[#27272a] pb-3 mb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 rounded bg-[#18181b] px-2 py-1 text-xs">
@@ -205,7 +205,7 @@ export function CoachView({ standalone = false }: CoachViewProps): React.JSX.Ele
           </div>
         )}
 
-        {/* Which widget boxes show in game (T09.6), then the demo's preview of them */}
+        {/* Which widget boxes show in game, then the demo's preview of them */}
         {!isOverlay && mode !== 'manual' && <HudBoxSwitches />}
         {mode === 'demo' && !isOverlay && <HudPreview coachState={coachState} plan={activePlan} />}
       </div>

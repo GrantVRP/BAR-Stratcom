@@ -4,7 +4,7 @@ Total valid aliases preserved: **107**
 
 ## Kept Cross-Faction Aliases (Resolved by Faction)
 
-These aliases appear in multiple factions and are resolved in-game by the player’s active faction (03 §3).
+These aliases appear in multiple factions and are resolved in-game by the player’s active faction.
 
 | Alias | Matched Units |
 |-------|---------------|

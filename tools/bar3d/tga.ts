@@ -1,4 +1,4 @@
-/** TGA reader (types 2 and 10: 24/32-bit truecolour, raw or RLE) for map feature textures (T06.15). */
+/** TGA reader (types 2 and 10: 24/32-bit truecolour, raw or RLE) for map feature textures. */
 import type { RgbaImage } from './dds';
 
 export function decodeTga(buf: Buffer): RgbaImage {

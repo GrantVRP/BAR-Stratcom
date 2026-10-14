@@ -1,5 +1,5 @@
 /**
- * T11.5: Markdown link checks. Relative links must name an existing file, and a `#fragment` must name
+ * Markdown link checks. Relative links must name an existing file, and a `#fragment` must name
  * a heading there (GitHub's heading ids). External links are listed; the runner fetches them on demand.
  */
 import fs from 'node:fs';

@@ -1,6 +1,6 @@
 import type { PlanOpening } from '../../src/core/schemas/plans';
 
-/** The matrix the curated library should cover (T08.3): faction × opening × mode group. */
+/** The matrix the curated library should cover: faction × opening × mode group. */
 export const CURATE_FACTIONS = ['armada', 'cortex'] as const;
 export const CURATE_OPENINGS = ['bot', 'vehicle', 'air'] as const;
 export const CURATE_MODES = ['1v1', 'team'] as const;

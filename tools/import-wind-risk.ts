@@ -1,5 +1,5 @@
 /**
- * Q-06: add BAR's wind-risk table to data/wind/avg-wind.json, read from the player's installed game.
+ * Adds BAR's wind-risk table to data/wind/avg-wind.json, read from the player's installed game.
  *
  *   npx tsx tools/import-wind-risk.ts --bar-data D:/BAR/Beyond-All-Reason/data
  *

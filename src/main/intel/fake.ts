@@ -3,7 +3,7 @@ import path from 'node:path';
 import { app } from 'electron';
 import type { FetchFn } from './client';
 
-/** STRATCOM_FAKE_INTEL=1 answers intel requests from the recorded fixtures, in non-packaged builds only (T10.2 e2e). */
+/** STRATCOM_FAKE_INTEL=1 answers intel requests from the recorded fixtures, in non-packaged builds only (e2e tests). */
 export function fakeIntelEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   if (env.STRATCOM_FAKE_INTEL !== '1') return false;
   try {
@@ -13,7 +13,7 @@ export function fakeIntelEnabled(env: NodeJS.ProcessEnv = process.env): boolean 
   }
 }
 
-/** URL fragment → recorded response (T10.1 fixtures, real API answers trimmed by tools/record-intel-samples.ts). */
+/** URL fragment → recorded response (recorded fixtures: real API answers trimmed by tools/record-intel-samples.ts). */
 const ROUTES: ReadonlyArray<{ match: string; status: number; file: string }> = [
   { match: '/battles', status: 200, file: 'battles.json' },
   { match: 'leaderboard?season=4', status: 400, file: 'leaderboard-season-4.json' },

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { LiveSnapshotSchema } from '../../core/schemas/live';
 import { TickStats, noTelemetrySnapshot } from './tick-support';
 
-describe('coach tick support (T11.3)', () => {
+describe('coach tick support', () => {
   it('summarises tick durations as p50 / p95 / max over the last ticks', () => {
     const stats = new TickStats(100);
     expect(stats.summary()).toEqual({ count: 0, p50: 0, p95: 0, max: 0 });

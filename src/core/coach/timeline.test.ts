@@ -9,7 +9,7 @@ import { simulate } from '../sim/simulate';
 import { computeScenarioTimeline, makeBehindPlan, type CoachTimeline } from './timeline';
 import { BEGINNER_PROFILE } from './profiles';
 
-describe('timeline (04 §3, T05.9)', () => {
+describe('timeline', () => {
   const snapshot = UnitSnapshotSchema.parse(syntheticSnapshotData);
   const factions = {
     schemaVersion: 1 as const,
@@ -177,7 +177,7 @@ describe('timeline (04 §3, T05.9)', () => {
     expect(Array.isArray(result.cues)).toBe(true);
   });
 
-  it('golden timelines meet T05.10 acceptance criteria across all 4 player fixtures', async () => {
+  it('golden timelines meet the tuning criteria across all 4 player fixtures', async () => {
     const fs = await import('node:fs');
     const path = await import('node:path');
     const goldenDir = path.resolve(__dirname, '__golden__');

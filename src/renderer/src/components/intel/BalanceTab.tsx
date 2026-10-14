@@ -79,7 +79,7 @@ function ChangeEntry({ change, open }: { change: IntelBalanceChange; open: boole
   );
 }
 
-/** Balance changes from BAR's API, unit names linked to the catalog (06 §4.7). */
+/** Balance changes from BAR's API, unit names linked to the catalog. */
 export function BalanceTab(): React.JSX.Element {
   const [page, setPage] = useState(1);
   const query = useIntel('intel:balance', { page });

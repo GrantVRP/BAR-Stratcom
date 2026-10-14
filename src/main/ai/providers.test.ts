@@ -28,7 +28,7 @@ function fakeAnthropic(reply: () => Promise<{ stop_reason: string | null; conten
 }
 const ok = (text: string) => async () => ({ stop_reason: 'end_turn', content: [{ type: 'text', text }] });
 
-describe('Anthropic adapter (04 §6.2)', () => {
+describe('Anthropic adapter', () => {
   it('sends structured output with effort high and the server-side fallback, and nothing else', async () => {
     const { client, create } = fakeAnthropic(ok(JSON.stringify(plan)));
     const ai = createProvider('anthropic', { apiKey: 'sk-ant-x', anthropicFallbacks: true, clients: { anthropic: () => client } });
@@ -95,7 +95,7 @@ describe('Anthropic adapter (04 §6.2)', () => {
   });
 });
 
-describe('Gemini adapter (04 §6.2)', () => {
+describe('Gemini adapter', () => {
   function fakeGemini(reply: { text?: string; promptFeedback?: { blockReason?: string } }) {
     const generateContent = vi.fn<GeminiClientLike['models']['generateContent']>(async () => reply);
     const client: GeminiClientLike = {
@@ -133,7 +133,7 @@ describe('Gemini adapter (04 §6.2)', () => {
   });
 });
 
-describe('OpenAI-compatible adapters (04 §6.2)', () => {
+describe('OpenAI-compatible adapters', () => {
   function fakeOpenAi(reply: (params: Record<string, unknown>) => Promise<{ choices: Array<{ message: { content: string | null; refusal?: string | null } }> }>) {
     const create = vi.fn<OpenAiClientLike['chat']['completions']['create']>((params) => reply(params));
     const made: Array<{ apiKey: string; baseURL?: string; timeout: number }> = [];

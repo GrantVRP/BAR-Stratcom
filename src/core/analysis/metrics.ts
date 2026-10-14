@@ -56,7 +56,7 @@ function getOwnTeamUnits(snap: StateDoc | LiveSnapshot) {
 }
 
 /**
- * Computes post-match summary metrics from session states and events (04 §4.1, T07.2).
+ * Computes post-match summary metrics from session states and events.
  * Capped at 900 s unless noted.
  */
 export function computeMetrics(options: ComputeMetricsOptions): SessionReportMetrics {

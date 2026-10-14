@@ -8,7 +8,7 @@ import { SettingsStore } from '../../settings/store';
 import { runDraft } from '../handlers';
 import { createFakeProvider, FAKE_AI_MODEL, fakeAiEnabled } from './fake';
 
-describe('fake AI provider for e2e (T08.8)', () => {
+describe('fake AI provider for e2e', () => {
   it('is off unless the flag is set, and off outside an unpackaged Electron app', () => {
     expect(fakeAiEnabled({})).toBe(false);
     // vitest runs outside Electron (no app object): treated as packaged, so still off

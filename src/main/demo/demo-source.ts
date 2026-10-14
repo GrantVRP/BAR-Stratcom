@@ -64,7 +64,7 @@ export function readStateLines(fixtureDir: string): string[] {
 }
 
 /**
- * Returns player fixtures bundled with the app (02 §4.2, T05.7).
+ * Returns player fixtures bundled with the app.
  */
 export function listDemos(baseDir?: string): DemoInfo[] {
   const dataDir = baseDir ?? findDataDir();
@@ -120,7 +120,7 @@ export interface DemoSourceOptions {
 
 /**
  * DemoSource replays a recorded match fixture (meta + state + events)
- * on a scaled timer, implementing BridgeSource (02 §4.2).
+ * on a scaled timer, implementing BridgeSource.
  */
 export class DemoSource extends EventEmitter implements BridgeSource {
   private fixtureDir: string;
@@ -147,7 +147,7 @@ export class DemoSource extends EventEmitter implements BridgeSource {
     const metaPath = path.join(this.fixtureDir, 'meta.json');
     const rawMeta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
     this.meta = SessionMetaSchema.parse(rawMeta);
-    // the fixture's real map (data/maps + BAR's wind table), not made-up wind values (T11.1)
+    // the fixture's real map (data/maps + BAR's wind table), not made-up wind values
     this.simMap = simMapFor(this.meta.mapScriptName);
 
     const stateLines = readStateLines(this.fixtureDir);

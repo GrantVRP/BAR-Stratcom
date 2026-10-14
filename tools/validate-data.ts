@@ -94,7 +94,7 @@ for (const file of jsonFiles) {
   }
 }
 
-// Fixture sessions validation (T03.2, T03.3)
+// Fixture sessions validation
 const mapsFileContent = fs.readFileSync(path.resolve(dataDir, 'maps', 'maps.json'), 'utf-8');
 const mapsData: MapsFile = JSON.parse(mapsFileContent);
 
@@ -105,7 +105,7 @@ if (fs.existsSync(fixturesDir)) {
     const fixturePath = path.join(fixturesDir, sessionDir.name);
     const relFixturePath = path.relative(process.cwd(), fixturePath);
 
-    // 0. meta.json & map resolution check (T03.3)
+    // 0. meta.json & map resolution check
     const metaPath = path.join(fixturePath, 'meta.json');
     if (!fs.existsSync(metaPath)) {
       console.error(`validate:data: ERROR missing meta.json in ${relFixturePath}`);

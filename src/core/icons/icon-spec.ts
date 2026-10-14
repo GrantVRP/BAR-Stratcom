@@ -1,7 +1,7 @@
 import type { UnitDefRecord } from '../schemas';
 import { classifyUnit, type Registry } from '../registry';
 
-/** Body sprite of an icon (original pixel art, A-11). */
+/** Body sprite of an icon (original pixel art). */
 export type IconBase =
   | 'commander'
   | 'bot'

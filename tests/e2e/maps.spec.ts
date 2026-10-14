@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
 // STRATCOM_FAKE_INTEL=1 answers the minimap lookup from the recorded map-list fixture
-test('maps: list by popularity, search, map facts with BAR wind table, minimap credit, adapt a plan (T10.4)', async () => {
+test('maps: list by popularity, search, map facts with BAR wind table, minimap credit, adapt a plan', async () => {
   const { app, close } = await launchApp([], undefined, { env: { STRATCOM_FAKE_INTEL: '1' } });
   try {
     const page = await app.firstWindow();

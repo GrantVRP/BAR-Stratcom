@@ -12,7 +12,7 @@ export interface RadarContactsProps {
 }
 
 /**
- * Radar mode's panel (owner request T09.6): every identified enemy in sight, in the widget's order
+ * Radar mode's panel: every identified enemy in sight, in the widget's order
  * (biggest group first), NEW for 15 s, then how long it has been in sight. The scope itself is drawn
  * in game, where the unit positions are.
  */

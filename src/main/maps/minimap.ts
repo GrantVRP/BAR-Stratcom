@@ -3,7 +3,7 @@ import type { Cached } from '../../core/schemas/intel';
 import { getJson, type FetchFn } from '../intel/client';
 import type { IntelCache } from '../intel/cache';
 
-/** BAR's map metadata service (T10.4); the renderer loads the images from it (CSP img-src). */
+/** BAR's map metadata service; the renderer loads the images from it (CSP img-src). */
 export const MAPS_METADATA = 'https://maps-metadata.beyondallreason.dev';
 export const MAP_LIST_URL = `${MAPS_METADATA}/latest/map_list.validated.json`;
 /** The service's resize proxy in front of the map photos, as BAR's site uses it. */

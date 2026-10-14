@@ -312,7 +312,6 @@ export function generateCalibrationMarkdown(reports: CalibrationFixtureReport[])
   lines.push('# Calibration Report — BAR StratCom v3');
   lines.push('');
   lines.push('Deterministic economy simulator calibration against real player game recordings (0–360 s).');
-  lines.push('Authority: `04-domain-engines.md` §2.6 and task card `T04.5`.');
   lines.push('');
   lines.push('## Threshold Summary');
   lines.push('');
@@ -332,7 +331,7 @@ export function generateCalibrationMarkdown(reports: CalibrationFixtureReport[])
   lines.push('- **Change:** Updated `BarR 1.1` `mexYield` in `data/maps/maps.json` from 1.04 to 1.43 M/s.');
   lines.push('  - **Evidence:** BarR 1.1 starting base contains 4 metal spots: two 1.82 M/s spots and two 1.04 M/s spots. The standard opening builds all 4 spots (average yield = (1.82 + 1.04) / 2 = 1.43 M/s). An initial median over the first 5 spots selected 1.04 M/s, causing a ~16% metal income underestimation.');
   lines.push('  - **Effect:** Metal MAPE on `2026-10-01-cortex-1v1-vs-ai-barr` dropped from 16.03% to 6.53%; on `2026-10-01-cortex-1v1-vs-ai-barr-499s` dropped from 15.89% to 7.70%.');
-  lines.push('- **Change:** Derived `baseMexExtractsMetal` dynamically from the faction snapshot (T1 extractor `eco-metal`) per owner review item 4.');
+  lines.push('- **Change:** Derived `baseMexExtractsMetal` dynamically from the faction snapshot (T1 extractor `eco-metal`).');
   lines.push('  - **Evidence:** Snapshot unitdefs confirm `cormex`/`armmex` have `extractsMetal: 0.001`.');
   lines.push('  - **Effect:** Verified faction-independent extractor scaling without relying on hardcoded constants.');
   lines.push('');

@@ -3,7 +3,7 @@ import mapsData from '../../data/maps/maps.json';
 import { avgWindFor, findMapByScriptName, stripMapVersionSuffix, windRiskFor } from './maps';
 import { type MapRecord, MapsFileSchema } from './schemas';
 
-describe('src/core/maps logic (03 §4, T01.5)', () => {
+describe('src/core/maps logic', () => {
   const sampleMaps: MapRecord[] = [
     {
       fileName: 'supreme_isthmus_v2.1',
@@ -94,7 +94,7 @@ describe('src/core/maps logic (03 §4, T01.5)', () => {
     });
   });
 
-  describe('windRiskFor (Q-06)', () => {
+  describe('windRiskFor', () => {
     it('reads BAR’s risk table by [min][max] and is null when it has no entry', () => {
       const risk = { '2': { '20': 6.6 } };
       expect(windRiskFor(sampleMaps[0]!, risk)).toBe(6.6);

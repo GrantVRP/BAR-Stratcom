@@ -4,7 +4,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { collectSessionFiles, isSessionFileMatch, parseCliArgs } from './collect-session-files';
 
-describe('collect-session-files (T02.7)', () => {
+describe('collect-session-files', () => {
   let tempDir: string;
 
   beforeEach(() => {

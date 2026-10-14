@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
-test('radar mode: Home RADAR (NO PLAN) starts coaching without a plan; STOP ends it (T09.6)', async () => {
+test('radar mode: Home RADAR (NO PLAN) starts coaching without a plan; STOP ends it', async () => {
   const { app, close } = await launchApp();
   try {
     const page = await app.firstWindow();

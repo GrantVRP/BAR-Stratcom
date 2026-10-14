@@ -4,7 +4,7 @@ import { createWidgetHarness } from '../../widget/test/harness';
 import { createScenario } from '../../widget/test/scenario';
 import type { UnitDefRecord } from '../../src/core/schemas';
 
-describe('Widget Exporters Wall-Clock Performance Benchmark (T02.3, T04.6)', () => {
+describe('Widget Exporters Wall-Clock Performance Benchmark', () => {
   it('exports a 500-unit synthetic list in well under 50 ms', async () => {
     const scenario = createScenario();
 

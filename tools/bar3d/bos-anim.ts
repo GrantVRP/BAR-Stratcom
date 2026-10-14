@@ -1,9 +1,9 @@
 /**
- * Extracts a baked walk animation from a BAR unit script (T06.15). The Sprinter and Fiend walks were
+ * Extracts a baked walk animation from a BAR unit script. The Sprinter and Fiend walks were
  * made by Beherith in Blender and exported as keyframe blocks ("Skeletor_S3O"):
  *
- *   Walk() { if (isMoving) { //Frame:3  turn lthigh to x-axis <10.7> speed <...>; move pelvis to y-axis [-3.0] ... }
- *            sleep (...);   while(isMoving) { if (isMoving) { //Frame:5 ... } sleep (...); ... } }
+ *   Walk() { if (isMoving) { //Frame:3  turn lthigh to x-axis <10.7> speed <...>; move pelvis to y-axis [-3.0]... }
+ *            sleep (...);   while(isMoving) { if (isMoving) { //Frame:5... } sleep (...);... } }
  *
  * We keep only the keyframe targets (piece, axis, degrees / elmos). The first block is the step into
  * the walk; the blocks inside while(isMoving) are the loop.
@@ -115,7 +115,7 @@ export interface KilledBranch {
   explodes: ExplodeCommand[];
 }
 
-/** Killed(severity, corpsetype): one branch per `if( severity <= N )`, then the default. */
+/** Killed(severity, corpsetype): one branch per `if(severity <= N)`, then the default. */
 export function parseKilled(bos: string): KilledBranch[] {
   const text = body(bos, /\nKilled\(severity, corpsetype\)\s*\{/);
   if (!text) throw new Error('No Killed() in script');

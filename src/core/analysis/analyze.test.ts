@@ -8,7 +8,7 @@ import type { BenchmarkFile } from '../schemas/benchmark';
 import type { SimResult } from '../sim/types';
 import { SessionReportSchema } from '../schemas/report';
 
-describe('analyze (04 §4, T07.2)', () => {
+describe('analyze', () => {
   const baseMeta: SessionMeta = {
     schemaVersion: 1,
     sessionId: 'test-pure-session',
@@ -185,7 +185,7 @@ describe('analyze (04 §4, T07.2)', () => {
     expect(report.steps[0]?.actualFinish).toBeNull();
   });
 
-  describe('interpolatePercentile (04 §4.1)', () => {
+  describe('interpolatePercentile', () => {
     const percentiles = { p25: 10, p50: 20, p75: 35 };
 
     it('interpolates known percentile checkpoints exactly', () => {

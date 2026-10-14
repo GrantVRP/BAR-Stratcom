@@ -17,7 +17,7 @@ function loadFixture(name: string): { meta: ReturnType<typeof SessionMetaSchema.
   return { meta, events };
 }
 
-describe('replay capture on the recorded fixtures (T08.2)', () => {
+describe('replay capture on the recorded fixtures', () => {
   const replayFixtures = readdirSync(fixturesDir, { withFileTypes: true })
     .filter((d) => d.isDirectory())
     .map((d) => d.name)
@@ -49,8 +49,8 @@ describe('replay capture on the recorded fixtures (T08.2)', () => {
         captured += 1;
       }
     }
-    // owner replays: onyx 2 + dworld 18 + mediterraneum 16 + ptaq 9 (ptaq's 7 Legion teams blocked);
-    // 24 H2 pro games (T08.3): 134 teams, 5 of them Legion
+    // recorded replays: onyx 2 + dworld 18 + mediterraneum 16 + ptaq 9 (ptaq's 7 Legion teams blocked);
+    // 24 pro games: 134 teams, 5 of them Legion
     expect(captured).toBe(45 + 129);
     expect(blocked).toBe(7 + 5);
   });

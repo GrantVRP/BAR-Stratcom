@@ -3,7 +3,7 @@ import { BuildPlanSchema, PlanModeSchema, PlanOpeningSchema, PlanRoleSchema, Pla
 import { AiProviderSchema } from '../core/schemas/settings';
 import { PlanIssueSchema } from '../core/schemas/validation';
 
-/** AI providers without "none" (T08.6). */
+/** AI providers without "none". */
 const AiProviderIdSchema = AiProviderSchema.exclude(['none']);
 /** Local server endpoints: http(s) only. */
 const AiBaseUrlSchema = z
@@ -21,7 +21,7 @@ const AiProviderInfoSchema = z
   })
   .strict();
 
-/** The player's intent for a draft (04 §6.1); the provider and model come from Settings. */
+/** The player's intent for a draft; the provider and model come from Settings. */
 export const AiDraftRequestSchema = z
   .object({
     factionId: z.string().regex(/^[a-z]+$/),
@@ -34,7 +34,7 @@ export const AiDraftRequestSchema = z
   })
   .strict();
 
-/** DraftResult (04 §6.1): a plan with errors is shown but cannot be activated or saved. */
+/** DraftResult: a plan with errors is shown but cannot be activated or saved. */
 export const AiDraftResultSchema = z
   .object({
     plan: BuildPlanSchema.nullable(),
@@ -51,7 +51,7 @@ export const AiDraftResultSchema = z
   })
   .strict();
 
-/** AI channels (T08.6, T08.7); keys go in, never out: the renderer only learns `hasKey`. */
+/** AI channels; keys go in, never out: the renderer only learns `hasKey`. */
 export const aiIpcContract = {
   'ai:listProviders': {
     request: z.void().optional(),

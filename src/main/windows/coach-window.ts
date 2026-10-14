@@ -86,7 +86,7 @@ export function openCoachWindow(modeOverride?: 'second-monitor' | 'overlay'): Br
 
   coachWindowInstance = win;
 
-  // Set always-on-top once (no periodic re-assertion, D-00 / 06 §1)
+  // Set always-on-top once (no periodic re-assertion)
   if (isOverlay) {
     win.setAlwaysOnTop(true, 'screen-saver');
     if (settings.coachWindow.clickThrough) {

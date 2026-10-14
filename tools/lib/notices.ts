@@ -1,5 +1,5 @@
 /**
- * T11.5: what ships in the release, read from the code and package-lock.json (never typed by hand).
+ * What ships in the release, read from the code and package-lock.json (never typed by hand).
  * The renderer and main are bundled from `src/`; every bare runtime import there names a package, and
  * package-lock.json gives the packages those pull in. Type-only imports and tests ship nothing.
  */

@@ -16,7 +16,7 @@ class FakeSource extends EventEmitter {
 
 const registry = { get: (id: string) => (id === 'armpw' ? { id, name: 'Pawn' } : undefined) } as unknown as Registry;
 
-describe('RadarRunner (radar mode without a plan, T09.6)', () => {
+describe('RadarRunner (radar mode without a plan)', () => {
   let dir: string;
   let source: FakeSource;
   let runner: RadarRunner;

@@ -19,7 +19,7 @@ export interface IntelQuery<C extends IntelChannel> {
 }
 
 /**
- * Loads one intel channel (06 §4.7). With `refreshMs` it reloads on that interval, but only while the
+ * Loads one intel channel. With `refreshMs` it reloads on that interval, but only while the
  * window is visible; the caller mounts it only while its tab is shown.
  */
 export function useIntel<C extends IntelChannel>(channel: C, req?: IpcRequest<C>, refreshMs?: number): IntelQuery<C> {

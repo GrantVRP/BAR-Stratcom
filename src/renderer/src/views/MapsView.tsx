@@ -32,7 +32,7 @@ const mapFromHash = (): string | null => {
   return m ? decodeURIComponent(m[1]!) : null;
 };
 
-/** Maps (06 §4.9, T10.4): searchable list by popularity, detail with the map's facts. */
+/** Maps: searchable list by popularity, detail with the map's facts. */
 export function MapsView(): React.JSX.Element {
   const loadPlans = usePlans((s) => s.loadPlans);
   const [maps, setMaps] = useState<MapRecord[] | null>(null);

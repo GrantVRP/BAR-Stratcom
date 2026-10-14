@@ -116,7 +116,7 @@ function Alerts({ alerts }: { alerts: readonly CoachHudAlert[] }): React.JSX.Ele
 
 /**
  * The widget's HUD from 3.0.5 shown in the app (demo preview): the same boxes, levels and columns
- * (05 §8.1, T09.4), with the app's own unit icons where the game draws its build pictures; 400 px wide
+ *, with the app's own unit icons where the game draws its build pictures; 400 px wide
  * because the app's monospace font is wider than the game's.
  */
 export function HudBoxesPreview({ hud, factionId, inSight = null }: { hud: CoachHud; factionId?: string | null; inSight?: number | null }): React.JSX.Element {

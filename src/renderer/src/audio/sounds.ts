@@ -46,7 +46,7 @@ export function playSound(soundId: SoundId, volumeOverride?: number): void {
   try {
     switch (soundId) {
       case 'step_due': {
-        // Single soft tick (06 §5)
+        // Single soft tick
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
@@ -61,7 +61,7 @@ export function playSound(soundId: SoundId, volumeOverride?: number): void {
       }
 
       case 'step_done': {
-        // Two-note rising blip (06 §5)
+        // Two-note rising blip
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
@@ -77,7 +77,7 @@ export function playSound(soundId: SoundId, volumeOverride?: number): void {
       }
 
       case 'info': {
-        // Single triangle tone (06 §5)
+        // Single triangle tone
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
@@ -93,7 +93,7 @@ export function playSound(soundId: SoundId, volumeOverride?: number): void {
       }
 
       case 'warn': {
-        // Two short square beeps (06 §5)
+        // Two short square beeps
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'square';
@@ -110,7 +110,7 @@ export function playSound(soundId: SoundId, volumeOverride?: number): void {
       }
 
       case 'danger': {
-        // Descending triple square beeps (06 §5)
+        // Descending triple square beeps
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'square';

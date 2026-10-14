@@ -97,7 +97,7 @@ describe('HomeView', () => {
     expect(container.querySelector('[data-testid="home-start-demo-btn"]')).not.toBeNull();
   });
 
-  it('colours the active plan card by faction: Cortex red, Armada blue (T10.7)', async () => {
+  it('colours the active plan card by faction: Cortex red, Armada blue', async () => {
     const card = (): HTMLElement => container.querySelector('[data-testid="home-active-plan-card"]')!;
     const heading = (): HTMLElement => container.querySelector('[data-testid="home-active-plan-heading"]')!;
     await act(async () => root.render(<HomeView />));

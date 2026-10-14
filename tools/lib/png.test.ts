@@ -37,7 +37,7 @@ function sample(size: number): Rgba {
   return { width: size, height: size, data };
 }
 
-describe('PNG and ICO writers (T11.4 app icon)', () => {
+describe('PNG and ICO writers', () => {
   it('crc32 matches the PNG spec check value', () => {
     expect(crc32(Buffer.from('123456789', 'ascii'))).toBe(0xcbf43926);
   });

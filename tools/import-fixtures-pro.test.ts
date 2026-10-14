@@ -6,7 +6,7 @@ import { SessionMetaSchema } from '../src/core/schemas/session';
 import { importFixtures, type UnmatchedSession } from './import-fixtures';
 import type { ProListReplay } from './lib/pro-match';
 
-// Raw files shaped like the H2 recordings in data/raw/h2 (replay mode: me/res null, per-team res).
+// Raw files shaped like the pro replay recordings in data/raw/h2 (replay mode: me/res null, per-team res).
 function teamState(teamId: number, allyTeamId: number, playerName: string, factionId: string): object {
   const pool = { share: 0.99, current: 1000, storage: 1000, received: 0, pull: 0, expense: 0, sent: 0, income: 0 };
   return { bp: { active: 0, total: 300 }, factionId, playerName, allyTeamId, res: { energy: pool, metal: pool }, counts: {}, teamId };
@@ -51,7 +51,7 @@ const LISTED: ProListReplay = {
   ]
 };
 
-describe('importFixtures pro list (T08.3)', () => {
+describe('importFixtures pro list', () => {
   let from: string;
   let to: string;
   beforeEach(() => {

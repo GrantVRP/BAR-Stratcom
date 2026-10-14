@@ -16,7 +16,7 @@ test('health-chip: displays NO BAR when no BAR instance or data dir is configure
     const healthChip = page.getByTestId('health-chip');
     await expect(healthChip).toBeVisible();
 
-    // Assert that status is NO BAR (05 §9, 06 §2, T06.2)
+    // Assert that status is NO BAR
     await expect(healthChip).toContainText('NO BAR');
   } finally {
     await close();

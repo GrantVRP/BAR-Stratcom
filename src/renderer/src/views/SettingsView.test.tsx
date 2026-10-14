@@ -141,7 +141,7 @@ describe('SettingsView', () => {
     expect(container.querySelector('[data-testid="settings-section-data"]')).not.toBeNull();
     expect(container.textContent).toContain('BACKUP BUILD ORDERS');
 
-    // About lives on the About page only (T06.16: no duplicate tab)
+    // About lives on the About page only (no duplicate tab)
     expect(tabs.some((t) => t.textContent?.includes('ABOUT'))).toBe(false);
   });
 });

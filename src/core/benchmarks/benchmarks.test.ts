@@ -31,7 +31,7 @@ const bench: BenchmarkFile = {
   ]
 };
 
-describe('benchmark maths (04 §7, T08.4)', () => {
+describe('benchmark maths', () => {
   it('computes p25/p50/p75 with linear interpolation between ranks', () => {
     expect(percentiles([10])).toEqual(P(10, 10, 10));
     expect(percentiles([4, 1, 3, 2])).toEqual(P(1.75, 2.5, 3.25));
@@ -65,7 +65,7 @@ describe('benchmark maths (04 §7, T08.4)', () => {
   });
 });
 
-describe('benchmark key and metrics (04 §7, T08.4)', () => {
+describe('benchmark key and metrics', () => {
   it('uses my faction and the team layout', () => {
     const duel = [
       { teamId: 0, allyTeamId: 0, factionId: 'cortex', isMe: true },

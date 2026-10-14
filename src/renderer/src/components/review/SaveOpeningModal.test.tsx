@@ -84,7 +84,7 @@ function mockIpc(players: unknown[], toPlan: (arg: ToPlanArg) => unknown): Retur
   return invoke;
 }
 
-describe('SaveOpeningModal (06 §4.6, T07.4, T08.2)', () => {
+describe('SaveOpeningModal', () => {
   let container: HTMLDivElement;
   let root: Root;
 

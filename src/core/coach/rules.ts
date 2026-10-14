@@ -28,7 +28,7 @@ export interface CoachMemory {
   dueStepIds: Set<string>;
   doneStepIds: Set<string>;
   skippedStepIds: Set<string>;
-  /** Game second each enemy type currently in sight was first seen (radar contacts, T09.5). */
+  /** Game second each enemy type currently in sight was first seen (radar contacts). */
   enemySeenAt?: Readonly<Record<string, number>>;
 }
 
@@ -85,7 +85,7 @@ export function updateAlertRules(
         active = true;
         since = prev.since;
       } else {
-        // Reactivating within 15s of clearing extends previous interval without re-cueing sound (T05.10 item 5)
+        // Reactivating within 15s of clearing extends previous interval without re-cueing sound
         if (prev && clock - lastClearedAt <= ALERT_REACTIVATION_WINDOW_SEC) {
           active = true;
           since = prev.since;
@@ -98,7 +98,7 @@ export function updateAlertRules(
     } else {
       lastFalseAt = clock;
       if (prev && prev.active) {
-        // No flicker: remain active until visible for >= 5s AND false for >= 2s (T05.10 item 5)
+        // No flicker: remain active until visible for >= 5s AND false for >= 2s
         const visibleElapsed = clock - prev.since;
         const falseElapsed = clock - lastTrueAt;
         if (visibleElapsed < ALERT_MIN_VISIBLE_SEC || falseElapsed < ALERT_DEACTIVATION_HYSTERESIS_SEC) {
@@ -136,7 +136,7 @@ export function updateAlertRules(
       };
       activeAlerts.push(alertObj);
 
-      // Check 20s sound cooldown. Extended activations do NOT re-cue sound (T05.10 item 5)
+      // Check 20s sound cooldown. Extended activations do NOT re-cue sound
       if (!isExtended && clock - lastSoundAt >= ALERT_SOUND_COOLDOWN_SEC) {
         soundCandidateAlerts.push(alertObj);
       }

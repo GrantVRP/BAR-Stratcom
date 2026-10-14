@@ -9,7 +9,7 @@ import { AssistSettingsSection } from './AssistSettingsSection';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('AssistSettingsSection (T09.2)', () => {
+describe('AssistSettingsSection', () => {
   let container: HTMLDivElement;
   let root: Root;
   let saved: Settings;

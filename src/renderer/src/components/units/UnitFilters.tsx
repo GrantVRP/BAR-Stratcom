@@ -25,7 +25,7 @@ function chip(active: boolean): string {
 
 const ALL_CLASSES = Object.keys(CLASS_LABELS) as UnitClass[];
 
-/** Units view filters: faction (enabled only), search, class chips and tech chips (06 §4.8). */
+/** Units view filters: faction (enabled only), search, class chips and tech chips. */
 export function UnitFilters(props: UnitFiltersProps): React.JSX.Element {
   const { factions, factionId, onFaction, unitClass, onClass, techLevels, tech, onTech, query, onQuery } = props;
   return (

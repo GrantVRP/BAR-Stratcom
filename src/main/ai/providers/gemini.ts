@@ -24,7 +24,7 @@ function sdkClient(apiKey: string): GeminiClientLike {
   return new GoogleGenAI({ apiKey, httpOptions: { timeout: CLOUD_TIMEOUT_MS } }) as unknown as GeminiClientLike;
 }
 
-/** The default Gemini model: the newest "flash" that is not a preview or experiment (a rule, 04 §6.2). */
+/** The default Gemini model: the newest "flash" that is not a preview or experiment. */
 export function defaultGeminiModel(models: readonly AiModel[]): string | null {
   const version = (id: string): number => Number(/(\d+(?:\.\d+)?)/.exec(id)?.[1] ?? 0);
   const flash = models.map((m) => m.id).filter((id) => id.includes('flash') && !/preview|exp/.test(id));
@@ -32,7 +32,7 @@ export function defaultGeminiModel(models: readonly AiModel[]): string | null {
   return flash[0] ?? null;
 }
 
-/** Gemini (04 §6.2): JSON response-schema mode; the pipeline validates with zod anyway. */
+/** Gemini: JSON response-schema mode; the pipeline validates with zod anyway. */
 export function createGeminiProvider(opts: GeminiProviderOptions): AiProvider {
   const client = (opts.client ?? sdkClient)(opts.apiKey);
   return {

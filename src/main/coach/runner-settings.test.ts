@@ -79,7 +79,7 @@ function idleStalling(gameSeconds: number): StateDoc {
   };
 }
 
-// regression (T11.5): the coach ignored Settings → Coach (always Intermediate, every default alert, echo on)
+// regression: the coach ignored Settings → Coach (always Intermediate, every default alert, echo on)
 describe('CoachRunner reads Settings → Coach every tick', () => {
   let tmpDir: string;
   beforeEach(() => {

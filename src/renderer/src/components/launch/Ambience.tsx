@@ -22,7 +22,7 @@ const GUSTS: Array<{ y: number; len: number; dur: number; delay: number; o: numb
   { y: 170, len: 14, dur: 2.4, delay: 1.2, o: 0.26 }
 ];
 
-/** Drifting cloud shadows and wind gusts over the Greenest Fields scene (T06.14). */
+/** Drifting cloud shadows and wind gusts over the Greenest Fields scene. */
 export function Ambience({ k }: AmbienceProps): React.JSX.Element {
   return (
     <div className="pointer-events-none absolute inset-0" style={{ zIndex: 40 }} aria-hidden="true">

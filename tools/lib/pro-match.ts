@@ -35,7 +35,7 @@ function factionsPerAllyTeam(teams: Array<{ ally: number; faction: string | null
 }
 
 /**
- * Finds the H2 list replay a captured session was recorded from (T08.3): same map scriptName and the
+ * Finds the pro list replay a captured session was recorded from: same map scriptName and the
  * same player names; otherwise the only list replay on that map with the same factions per ally team.
  */
 export function matchProReplay(session: SessionForMatch, list: readonly ProListReplay[]): ProMatch | null {

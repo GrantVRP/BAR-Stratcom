@@ -3,7 +3,7 @@ const STRONG_MODIFIERS = new Set(['ctrl', 'control', 'alt', 'option', 'altgr', '
 const ALL_MODIFIERS = new Set([...STRONG_MODIFIERS, 'shift']);
 
 /**
- * The single configurable global shortcut (A-15, 08 §6) must never be a single key: it needs Ctrl,
+ * The single configurable global shortcut must never be a single key: it needs Ctrl,
  * Alt or the Windows/Cmd key, plus exactly one other key.
  */
 export function isAllowedGlobalShortcut(accelerator: string): boolean {

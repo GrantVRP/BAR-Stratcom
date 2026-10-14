@@ -1,5 +1,5 @@
 /**
- * Pro benchmarks (04 §7, 03 §10): percentile bands of pro games per faction + mode, and lookups.
+ * Pro benchmarks: percentile bands of pro games per faction + mode, and lookups.
  * Pure: the files are built by tools/build-benchmarks.ts and loaded by main.
  */
 import type { Registry } from '../registry';
@@ -9,10 +9,10 @@ import { deriveModes } from '../plans/events-to-plan';
 export type BenchmarkMetric = 'metalIncome' | 'energyIncome' | 'buildPower' | 'armyMetal';
 export const BENCHMARK_METRICS: readonly BenchmarkMetric[] = ['metalIncome', 'energyIncome', 'buildPower', 'armyMetal'];
 
-/** Series spacing and length (03 §10: every 30 s from 0 to 900). */
+/** Series spacing and length (every 30 s from 0 to 900). */
 export const BENCHMARK_STEP_SEC = 30;
 export const BENCHMARK_HORIZON_SEC = 900;
-/** Below this many samples the UI labels a benchmark "early data" (03 §10). */
+/** Below this many samples the UI labels a benchmark "early data". */
 export const EARLY_DATA_SAMPLE_COUNT = 5;
 
 export interface BenchmarkKey {
@@ -28,7 +28,7 @@ export function benchmarkFileName(key: BenchmarkKey): string {
   return `${key.factionId}-${key.mode}.json`;
 }
 
-/** The benchmark for the player's own team: their faction + the mode of the team layout (04 §7). */
+/** The benchmark for the player's own team: their faction + the mode of the team layout. */
 export function benchmarkKeyFor(
   teams: ReadonlyArray<{ teamId: number; allyTeamId: number; factionId: string | null; isMe: boolean }>
 ): BenchmarkKey | null {
@@ -52,7 +52,7 @@ export function percentiles(values: readonly number[]): Percentiles {
 
 /**
  * Piecewise-linear percentile through (0→0, p25→25, p50→50, p75→75, max→100), where max = p75 plus
- * the p50–p75 gap (at least 1) (04 §4.1). Returns 0–100.
+ * the p50–p75 gap (at least 1). Returns 0–100.
  */
 export function interpolatePercentile(p: Percentiles, value: number): number {
   if (value <= 0) return 0;
@@ -92,7 +92,7 @@ export function percentileAt(benchmark: BenchmarkFile, metric: BenchmarkMetric, 
   return band ? interpolatePercentile(band, value) : null;
 }
 
-/** One team's benchmark metrics from a state doc (04 §7): incomes, total build power, army metal. */
+/** One team's benchmark metrics from a state doc: incomes, total build power, army metal. */
 export function teamMetrics(
   team: {
     res: { metal: { income: number }; energy: { income: number } };

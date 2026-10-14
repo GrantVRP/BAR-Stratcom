@@ -9,7 +9,7 @@ export interface ReportCandidate {
 
 /**
  * Evaluates recent session reports played on the current profile and determines
- * if an auto-suggested profile adjustment is appropriate (04 §4.4, D-14).
+ * if an auto-suggested profile adjustment is appropriate.
  *
  * Rules:
  * - Look at the last 3 reports played on the current profile.

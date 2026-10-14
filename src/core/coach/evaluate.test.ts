@@ -116,7 +116,7 @@ describe('Coach Engine: evaluate()', () => {
     expect(result.display.hud.visible).toBe(true);
   });
 
-  it('remembers when each enemy type was first seen and gives the radar its contacts (T09.5)', () => {
+  it('remembers when each enemy type was first seen and gives the radar its contacts', () => {
     const tick = (gameSeconds: number, enemies: Record<string, number>, memory = createInitialCoachMemory()) =>
       evaluate({
         plan,

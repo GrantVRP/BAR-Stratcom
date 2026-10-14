@@ -11,7 +11,7 @@ function parseEventsNdjson(content: string): WidgetEvent[] {
     .map((line) => WidgetEventSchema.parse(JSON.parse(line)));
 }
 
-describe('Widget Recorder session & events (05 §7, 03 §7.3, §7.7, T02.5)', () => {
+describe('Widget Recorder session & events', () => {
   it('records a scripted game with commander, lab, units, destroyed unit and gameover in chronological order', async () => {
     const scenario = createScenario();
     const com = createScenarioUnit('armcom', scenario, { id: 100, teamId: 0 });

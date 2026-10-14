@@ -1,9 +1,9 @@
 /**
- * T11.4 acceptance smoke test of the packaged app (not part of verify; run after `npm run package`):
+ * Smoke test of the packaged app (not part of verify; run after `npm run package`):
  *   npm run smoke:package
  *
  * Unzips release/BAR StratCom-<version>-win-x64.zip into a fresh temporary folder, starts the exe
- * there with its own profile and --no-bar (never the owner's game folder), and checks: the launcher
+ * there with its own profile and --no-bar (never a real game folder), and checks: the launcher
  * shows, Home opens, the bundled data and widget are found, and the demo coaches without BAR.
  */
 import fs from 'node:fs';

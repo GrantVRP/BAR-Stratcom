@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { suggestProfile, type ReportCandidate } from './suggest';
 
-describe('suggestProfile (04 §4.4, D-14)', () => {
+describe('suggestProfile', () => {
   describe('insufficient reports (< 3)', () => {
     it('returns null for empty report list', () => {
       expect(suggestProfile([], 'intermediate')).toBeNull();

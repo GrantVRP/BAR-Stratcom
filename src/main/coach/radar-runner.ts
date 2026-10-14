@@ -24,7 +24,7 @@ export interface RadarRunnerStartOptions {
 }
 
 /**
- * Radar mode (owner request T09.6): coaching without a plan. Twice a second it writes a coach.json
+ * Radar mode: coaching without a plan. Twice a second it writes a coach.json
  * whose HUD is only the radar box (the widget draws the scope from the game; the app lists the enemy
  * contacts from state.json) and sends the Coach view a plan-less state with the sightings.
  */

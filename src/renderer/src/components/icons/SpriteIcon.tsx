@@ -18,7 +18,7 @@ export interface SpriteIconProps {
   className?: string;
 }
 
-/** One original pixel-art icon: body sprite, corner badge and tech pips (T10.3). */
+/** One original pixel-art icon: body sprite, corner badge and tech pips. */
 export function SpriteIcon({
   base,
   badge = null,

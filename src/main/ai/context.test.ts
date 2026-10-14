@@ -38,7 +38,7 @@ function withTech3(factionId: string): BuildPlan {
   };
 }
 
-describe('AI draft context (T08.7, 04 §6.1)', () => {
+describe('AI draft context', () => {
   it('keeps the system prompt constant (cacheable) with the contract and hard rules', () => {
     const intent: DraftIntent = { factionId: 'armada', mode: '1v1', role: 'any', opening: 'bot', skill: 'beginner' };
     const a = buildContext({ registry, intent, map: null, avgWind: null, library: [] });
@@ -138,7 +138,7 @@ describe('AI draft context (T08.7, 04 §6.1)', () => {
 
   it('picks curated examples first, closest to the intent, cut before disallowed units', () => {
     const intent: DraftIntent = { factionId: 'cortex', mode: '1v1', role: 'any', opening: 'vehicle', skill: 'beginner' };
-    // the published library (T08.9): curated pro builds, closest first
+    // the published library: curated pro builds, closest first
     const fromLibrary = selectExamples(library, intent);
     expect(fromLibrary).toHaveLength(2);
     expect(fromLibrary.every((p) => p.factionId === 'cortex' && p.source.kind === 'curated')).toBe(true);

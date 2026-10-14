@@ -7,7 +7,7 @@ import { setIpcClientOverride, type IpcClientInterface } from '../lib/ipc-client
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('LaunchWindow (06 §4.1, T06.3)', () => {
+describe('LaunchWindow', () => {
   let container: HTMLDivElement;
   let root: Root;
 
@@ -33,9 +33,9 @@ describe('LaunchWindow (06 §4.1, T06.3)', () => {
     expect(container.querySelector('[data-testid="launch-window"]')).not.toBeNull();
     expect(container.textContent).toContain('BAR STRATCOM');
     expect(container.textContent).toContain('3.0.0-dev.0');
-    // owner request (T06.16): no disclaimer line on the launcher; it is on the top bar tag and About page
+    // no disclaimer line on the launcher; it is on the top bar tag and About page
     expect(container.textContent).not.toContain('NOT AFFILIATED');
-    // only the LAUNCH button enters the app, so there is no "press any key" hint (T06.16)
+    // only the LAUNCH button enters the app, so there is no "press any key" hint
     expect(container.textContent).not.toContain('PRESS ANY KEY');
   });
 
@@ -88,7 +88,7 @@ describe('LaunchWindow (06 §4.1, T06.3)', () => {
     expect(onStart).toHaveBeenCalledTimes(1);
   });
 
-  it('does not start on a key press or a click outside the LAUNCH button (owner request, T06.16)', async () => {
+  it('does not start on a key press or a click outside the LAUNCH button', async () => {
     const onStart = vi.fn();
     await act(async () => {
       root.render(<LaunchWindow onStart={onStart} />);
@@ -103,7 +103,7 @@ describe('LaunchWindow (06 §4.1, T06.3)', () => {
 
     expect(onStart).not.toHaveBeenCalled();
   });
-  it('the faction switch also switches the window icon (owner request 2026-10-13)', async () => {
+  it('the faction switch also switches the window icon', async () => {
     const invoke = vi.fn().mockResolvedValue({ ok: true, data: { ok: true } });
     setIpcClientOverride({ invoke, on: () => () => undefined, isAvailable: () => true } as unknown as IpcClientInterface);
     try {

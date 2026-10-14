@@ -9,7 +9,7 @@ import {
   runningEngineDataDir
 } from './windows';
 
-describe('Windows Platform Path Detection (T05.1)', () => {
+describe('Windows Platform Path Detection', () => {
   const sampleRealRegOutput = `
 HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\a5671b31-085d-5fba-830a-66a891c6a4a4
     DisplayName    REG_SZ    Beyond-All-Reason 1.2988.0
@@ -21,7 +21,7 @@ End of search: 4 match(es) found.
 `;
 
   describe('parseDisplayIconFromRegOutput', () => {
-    it('parses real captured registry output from owner machine', () => {
+    it('parses real captured registry output from a real PC', () => {
       const parsed = parseDisplayIconFromRegOutput(sampleRealRegOutput);
       expect(parsed).toBe(path.join('D:\\BAR\\Beyond-All-Reason', 'data'));
     });

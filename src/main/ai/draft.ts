@@ -1,5 +1,5 @@
 /**
- * AI drafting pipeline (04 §6.1): draft → parse → validate → repair (≤ 2 rounds) → simulate.
+ * AI drafting pipeline: draft → parse → validate → repair (≤ 2 rounds) → simulate.
  * The model only drafts; the registry validates and the simulator measures. A draft that still has
  * errors after the repairs is returned for display but cannot be activated or saved.
  */
@@ -128,7 +128,7 @@ function toBuildPlan(draft: AiPlanDraft, input: DraftInput, repairRounds: number
   };
 }
 
-/** The hard rules the schema does not express (04 §6.1): faction, 10–40 steps, targetTime ≤ 600. */
+/** The hard rules the schema does not express: faction, 10–40 steps, targetTime ≤ 600. */
 function contractIssues(draft: AiPlanDraft, intent: DraftIntent): PlanIssue[] {
   const issues: PlanIssue[] = [];
   if (draft.factionId !== intent.factionId) {
@@ -170,7 +170,7 @@ function check(answer: unknown, input: DraftInput, repairRounds: number): Checke
   return { plan, errors: [...contractIssues(parsed.data, input.intent), ...validation.errors], warnings: validation.warnings };
 }
 
-/** The repair round's message (04 §6.1): the request again, the previous answer, the problems. */
+/** The repair round's message: the request again, the previous answer, the problems. */
 export function repairPrompt(original: string, answer: unknown, errors: readonly PlanIssue[]): string {
   const previous = typeof answer === 'string' ? answer.slice(0, 20_000) : JSON.stringify(answer);
   const listed = errors.slice(0, MAX_LISTED_ISSUES).map((e) => `- ${e.stepId ? `step ${e.stepId} (steps[${Number(e.stepId.slice(1)) - 1}]) ` : ''}${e.code}: ${e.message}`);

@@ -1,4 +1,4 @@
-// Original 7 × 7 pixel badges (T10.3): a mobile unit's role, or what a factory builds.
+// Original 7 × 7 pixel badges: a mobile unit's role, or what a factory builds.
 
 export const BADGE_SIZE = 7;
 

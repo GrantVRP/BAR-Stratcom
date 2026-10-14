@@ -36,7 +36,7 @@ export function findMapByScriptName(maps: MapRecord[], scriptName: string): MapR
 /**
  * Looks up the measured average wind value for a map from a wind lookup table.
  * Returns null if the lookup table is missing or does not contain an entry for [min][max].
- * IMPORTANT: This NEVER computes a naive arithmetic mean (min + max) / 2 (04 §2.3).
+ * IMPORTANT: This NEVER computes a naive arithmetic mean (min + max) / 2.
  */
 export function avgWindFor(
   map: MapRecord,
@@ -59,7 +59,7 @@ export function avgWindFor(
 
 /**
  * BAR's wind risk for a map (percent of the time the wind is below 6), from the risk table imported with
- * the averages (Q-06). Null when the table or the [min][max] entry is missing; never estimated.
+ * the averages. Null when the table or the [min][max] entry is missing; never estimated.
  */
 export function windRiskFor(map: MapRecord, riskTable?: Record<string, Record<string, number>> | null): number | null {
   return avgWindFor(map, riskTable);

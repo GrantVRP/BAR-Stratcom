@@ -62,7 +62,7 @@ export const INTERMEDIATE_PROFILE: ProfileConfig = {
   thresholds: {
     eStallSoonHorizonSec: 6, // estimated: 6s horizon with deficit requirement catches real stalls without blip noise
     eStallingSustainSec: 2,
-    mStallSoonHorizonSec: null, // advanced-only (spending metal is good play in BAR; T05.10 item 4)
+    mStallSoonHorizonSec: null, // advanced-only (spending metal is good play in BAR)
     mStallingSustainSec: 8,
     mFloatSustainSec: 10,
     eFloatSustainSec: 20,
@@ -139,7 +139,7 @@ export function profileCanRunAlert(config: ProfileConfig, id: AlertId): boolean 
 }
 
 /**
- * The profile the coach runs (fix found in T11.5: the coach always ran Intermediate): Settings → Coach
+ * The profile the coach runs: Settings → Coach
  * skill profile, with the per-alert switches there turning its alerts on or off.
  */
 export function coachProfile(profile: Profile, alerts: AlertSettingOverrides = {}): ProfileConfig {

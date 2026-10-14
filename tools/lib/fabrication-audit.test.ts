@@ -5,7 +5,7 @@ const ctx = { unitNames: new Set(['Pawn', 'Construction Bot']), unitIds: new Set
 const rules = (src: string, opts = { ui: true, constants: false }, file = 'src/renderer/src/x.tsx'): string[] =>
   auditSource(file, src, ctx, opts).map((f) => `${f.line}:${f.rule}:${f.detail}`);
 
-describe('fabrication audit rules (T11.1, 08 §7)', () => {
+describe('fabrication audit rules', () => {
   it('flags game-stat names given number literals: properties, ??/|| fallbacks, defaults, assignments', () => {
     const src = [
       'const a = { windAvg: 12, metalCost: 54 };',

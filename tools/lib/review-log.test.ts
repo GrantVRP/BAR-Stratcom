@@ -23,7 +23,7 @@ DECISION: reject — reason: near-duplicate of #1
 DECISION: approve | reject — reason:
 `;
 
-describe('H3 review sheet (T08.9)', () => {
+describe('review sheet', () => {
   it('reads each section’s decision and reason; an untouched line is still open', () => {
     expect(parseReviewDecisions(sheet)).toEqual([
       { num: 1, id: 'plan-a', decision: 'approve', reason: '' },

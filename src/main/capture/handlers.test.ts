@@ -46,7 +46,7 @@ const mockSession: SessionDetail = {
   }
 };
 
-describe('capture IPC handlers (T08.2)', () => {
+describe('capture IPC handlers', () => {
   const registeredHandlers: Record<string, (event: unknown, rawReq: unknown) => Promise<unknown>> = {};
 
   beforeEach(() => {

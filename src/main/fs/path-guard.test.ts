@@ -6,7 +6,7 @@ import type { BuildPlan } from '../../core/schemas';
 import { PlanStore } from '../plans/store';
 import { insideRoot, isSafeName, namedFile, PathGuardError } from './path-guard';
 
-describe('path guard (02 §6, T11.2)', () => {
+describe('path guard', () => {
   it('accepts plain names only', () => {
     for (const ok of ['user-1abc', 'pro-armada-bot-isidis-crack-41f195-t1', '20261004-181322-eb04', 'a.json', 'Plan 1']) expect(isSafeName(ok), ok).toBe(true);
     for (const bad of ['', '.', '..', '../x', 'a/b', 'a\b', '.hidden', 'x..y', 'C:', `a${'b'.repeat(200)}`]) expect(isSafeName(bad), bad).toBe(false);
@@ -23,7 +23,7 @@ describe('path guard (02 §6, T11.2)', () => {
   });
 });
 
-describe('plan store refuses ids that would leave its folder (T11.2)', () => {
+describe('plan store refuses ids that would leave its folder', () => {
   let dir: string;
   let store: PlanStore;
   const plan = (id: string): BuildPlan => ({

@@ -70,7 +70,7 @@ export function loadAvgWindTable(customDataDir?: string): Record<string, Record<
 /** A map's file name as used in data/maps/notes/<fileName>.json: no path separators, no "..". */
 export const MAP_FILE_NAME = /^(?!.*\.\.)[\w.\- ]{1,120}$/;
 
-/** Curated notes for a map (03 §4, optional); null when there are none or the file is invalid. */
+/** Curated notes for a map (optional); null when there are none or the file is invalid. */
 export function loadMapNotes(fileName: string, customDataDir?: string): MapNotesFile | null {
   if (!MAP_FILE_NAME.test(fileName)) return null;
   const file = path.join(customDataDir ?? findDataDir(), 'maps', 'notes', `${fileName}.json`);

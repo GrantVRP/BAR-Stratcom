@@ -22,7 +22,7 @@ export function StepPlanOrDemo({ onBack, onNext, onTryDemo }: StepPlanOrDemoProp
     }
   }, [plans.length, loadPlans]);
 
-  // 3 suggestions from the curated library and its beginner variants (T08.9)
+  // 3 suggestions from the curated library and its beginner variants
   const currentProfile = settings?.profile ?? 'intermediate';
   const suggestedPlans: BuildPlan[] = suggestPlans(plans, currentProfile);
 

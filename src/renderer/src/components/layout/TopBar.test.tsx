@@ -25,7 +25,7 @@ function plan(id: string, factionId: string): BuildPlan {
   } as BuildPlan;
 }
 
-describe('TopBar PLAN chip (T10.7)', () => {
+describe('TopBar PLAN chip', () => {
   let container: HTMLDivElement;
   let root: Root;
   const chip = (): HTMLElement => container.querySelector('[data-testid="active-plan-chip"]')!;
@@ -57,7 +57,7 @@ describe('TopBar PLAN chip (T10.7)', () => {
     expect(title().style.color).toBe('#449bed');
   });
 
-  it('has no UNOFFICIAL tag (owner request, T06.16; the notice is on the About page)', async () => {
+  it('has no UNOFFICIAL tag (the notice is on the About page)', async () => {
     await act(async () => root.render(<TopBar />));
     expect(container.querySelector('[data-testid="unofficial-tag"]')).toBeNull();
     expect(container.textContent).not.toContain('UNOFFICIAL');

@@ -41,7 +41,7 @@ export const SoundSettingsSchema = z
 
 export type SoundSettings = z.infer<typeof SoundSettingsSchema>;
 
-/** Which boxes the widget shows while coaching a plan (owner request T09.6); missing = all shown. */
+/** Which boxes the widget shows while coaching a plan; missing = all shown. */
 export const HudBoxesSettingsSchema = z
   .object({
     build: z.boolean(),

@@ -98,7 +98,7 @@ describe('Registry', () => {
       }
     });
 
-    it('resolves cross-faction alias when narrowed by faction (03 §3, T01.7)', () => {
+    it('resolves cross-faction alias when narrowed by faction', () => {
       const resArm = registry.resolve('LLT', 'armada');
       expect(resArm.kind).toBe('unit');
       if (resArm.kind === 'unit') {
@@ -112,7 +112,7 @@ describe('Registry', () => {
       }
     });
 
-    it('returns ambiguous for cross-faction alias without faction (03 §3, T01.7)', () => {
+    it('returns ambiguous for cross-faction alias without faction', () => {
       const res = registry.resolve('LLT');
       expect(res.kind).toBe('ambiguous');
       if (res.kind === 'ambiguous') {
@@ -120,7 +120,7 @@ describe('Registry', () => {
       }
     });
 
-    it('returns none for dropped same-faction ambiguous alias (T01.7)', () => {
+    it('returns none for dropped same-faction ambiguous alias', () => {
       const res = registry.resolve('Raider', 'cortex');
       expect(res.kind).toBe('none');
     });

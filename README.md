@@ -120,9 +120,6 @@ npm run package     # release/BAR StratCom-<version>-win-x64.zip
 
 </details>
 
-The design is in [docs/plan/02-architecture.md](docs/plan/02-architecture.md); the whole plan starts
-at [docs/plan/README.md](docs/plan/README.md).
-
 ## Licences and credits
 
 BAR StratCom is released under the [MIT licence](LICENSE). The in-game widget is

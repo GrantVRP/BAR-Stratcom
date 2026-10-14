@@ -18,7 +18,7 @@ const MODULES: Record<keyof AssistSettings, { title: string; text: string; note?
   }
 };
 
-/** Settings → Assist (06 §4.10, T09.2): two opt-in helpers, off by default (D-06). */
+/** Settings → Assist: two opt-in helpers, off by default. */
 export function AssistSettingsSection(): React.JSX.Element {
   const assist = useSettings((s) => s.settings?.assist) ?? OFF;
   const update = useSettings((s) => s.update);

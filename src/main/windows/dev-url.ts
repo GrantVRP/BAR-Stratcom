@@ -10,7 +10,7 @@ const isPackaged = (): boolean => {
 
 /**
  * electron-vite's dev server URL, honoured only in a non-packaged build and only on this machine
- * (02 §6: windows never load remote content; a packaged app always loads its own files).
+ * (windows never load remote content, a packaged app always loads its own files).
  */
 export function devRendererUrl(env: NodeJS.ProcessEnv = process.env, packaged: boolean = isPackaged()): string | null {
   const url = env.ELECTRON_RENDERER_URL;

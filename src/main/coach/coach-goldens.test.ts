@@ -7,7 +7,7 @@ import { simulate } from '../../core/sim/simulate';
 import { StateDocSchema, WidgetEventSchema } from '../../core/schemas/protocol';
 import { computeScenarioTimeline, makeBehindPlan, type CoachTimeline } from '../../core/coach/timeline';
 
-describe('Coach Goldens on Real Fixtures (04 §3, T05.9)', () => {
+describe('Coach Goldens on Real Fixtures', () => {
   const dataDir = findDataDir();
   const sessionsDir = path.join(dataDir, 'fixtures', 'sessions');
   const goldenDir = path.resolve(process.cwd(), 'src/core/coach/__golden__');

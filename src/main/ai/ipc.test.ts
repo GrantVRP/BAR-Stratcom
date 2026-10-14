@@ -30,7 +30,7 @@ const storage: SafeStorageLike = {
 
 async function* none(): AsyncGenerator<never> {}
 
-describe('AI IPC handlers (T08.6, T08.7)', () => {
+describe('AI IPC handlers', () => {
   let dir: string;
   let release: () => void = () => undefined;
   let inFlight = false;

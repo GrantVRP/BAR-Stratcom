@@ -27,7 +27,7 @@ const invoke = vi.mocked(ipcClient.invoke);
 const names: Record<string, string> = { armpw: 'Pawn', armrock: 'Rocketeer' };
 const getUnitName = (id?: string): string => names[id ?? ''] ?? String(id);
 
-describe('radar mode and the IN-GAME HUD switches (owner request T09.6)', () => {
+describe('radar mode and the IN-GAME HUD switches', () => {
   let container: HTMLDivElement;
   let root: Root;
   const $ = (id: string): HTMLElement | null => container.querySelector(`[data-testid="${id}"]`);

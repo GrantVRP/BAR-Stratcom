@@ -57,7 +57,7 @@ async function choose(el: HTMLSelectElement, value: string): Promise<void> {
   });
 }
 
-describe('AiSettingsSection (T08.8)', () => {
+describe('AiSettingsSection', () => {
   let container: HTMLDivElement;
   let root: Root;
   beforeEach(() => {

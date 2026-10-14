@@ -2,7 +2,7 @@ import type { BuildPlan } from '../../../core/schemas/plans';
 import type { DemoInfo } from '../../../shared/ipc';
 
 /**
- * Finds a bundled demo fixture whose sessionId matches the active plan's source sessionId (06 §4.5, T06.12).
+ * Finds a bundled demo fixture whose sessionId matches the active plan's source sessionId.
  */
 export function findMatchingDemoFixture(
   plan: BuildPlan | null | undefined,

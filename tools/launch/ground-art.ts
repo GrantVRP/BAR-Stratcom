@@ -1,5 +1,5 @@
 /**
- * Launcher ground (T06.14): a region of the Greenest Fields map texture (by IceXuick) turned into
+ * Launcher ground: a region of the Greenest Fields map texture (by IceXuick) turned into
  * pixel art, with a wheel-rut dirt track along the runner's path and clusters of pixel conifers, the
  * three things that give the map its look.
  */

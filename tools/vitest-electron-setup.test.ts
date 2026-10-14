@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import config from '../vitest.config';
 import { ensureElectronBinary } from './vitest-electron-setup';
 
-describe('vitest Electron setup (T11.7: workers raced to download Electron on a fresh npm ci)', () => {
+describe('vitest Electron setup (workers raced to download Electron on a fresh npm ci)', () => {
   it('loads electron once and returns the binary it points to', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'stratcom-electron-'));
     const binary = path.join(dir, 'electron.exe');

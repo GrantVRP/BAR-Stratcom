@@ -13,7 +13,7 @@ export interface AiDraftResultProps {
   map: MapRecord | null;
 }
 
-/** An AI draft as returned by the pipeline (04 §6.1): report first, then the plan if there is one. */
+/** An AI draft as returned by the pipeline: report first, then the plan if there is one. */
 export function AiDraftResult({ result, map }: AiDraftResultProps): React.JSX.Element {
   const { plan, report } = result;
   const repairs = result.rounds - 1;
@@ -24,7 +24,7 @@ export function AiDraftResult({ result, map }: AiDraftResultProps): React.JSX.El
         <Provenance kind="AI DRAFT" />
         {plan && <span className="font-pixel-heading text-[10px] text-zinc-100">{plan.title}</span>}
         <span className="text-zinc-400">
-          {result.provider} // {result.model} // {repairs === 0 ? 'first try' : `${repairs} ${repairs === 1 ? 'repair' : 'repairs'}`}
+          {result.provider} // {result.model} // {repairs === 0 ? 'first try': `${repairs} ${repairs === 1 ? 'repair': 'repairs'}`}
         </span>
       </div>
 

@@ -3,7 +3,7 @@ import type { AiProvider, ProviderId } from '../types';
 
 export const FAKE_AI_MODEL = 'stratcom-fake';
 
-/** STRATCOM_FAKE_AI=1 swaps every provider for the fake one, in non-packaged builds only (T08.8 e2e). */
+/** STRATCOM_FAKE_AI=1 swaps every provider for the fake one, in non-packaged builds only (e2e tests). */
 export function fakeAiEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   if (env.STRATCOM_FAKE_AI !== '1') return false;
   try {
@@ -15,7 +15,7 @@ export function fakeAiEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
 
 /**
  * Test stand-in for a provider: it answers with the first example build of the context, which is a
- * real captured plan, so it never invents game content (S-10). Without an example it answers with
+ * real captured plan, so it never invents game content. Without an example it answers with
  * text, which the pipeline reports as not JSON.
  */
 export function createFakeProvider(id: ProviderId): AiProvider {

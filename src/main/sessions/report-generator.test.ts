@@ -6,7 +6,7 @@ import { generateReportForSession } from './report-generator';
 import type { SessionMeta } from '../../core/schemas/session';
 import { SessionReportSchema } from '../../core/schemas/report';
 
-describe('generateReportForSession (04 §4, T07.2)', () => {
+describe('generateReportForSession', () => {
   let tmpDir: string;
 
   beforeEach(() => {
@@ -78,7 +78,7 @@ describe('generateReportForSession (04 §4, T07.2)', () => {
     expect(onDisk.profileSuggestion).toBeNull();
   });
 
-  it('stores auto-suggested profile adjustment in report.json when 3 consecutive games qualify (04 §4.4, T07.3)', async () => {
+  it('stores auto-suggested profile adjustment in report.json when 3 consecutive games qualify', async () => {
     // Setup two prior sessions with Grade A and adherence >= 0.8 on intermediate
     for (const id of ['sess-prior-1', 'sess-prior-2']) {
       const priorDir = path.join(tmpDir, id);

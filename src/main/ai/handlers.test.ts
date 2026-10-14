@@ -23,7 +23,7 @@ async function* iterate<T>(items: T[]): AsyncGenerator<T> {
   for (const i of items) yield i;
 }
 
-describe('AI settings handlers (T08.6)', () => {
+describe('AI settings handlers', () => {
   let dir: string;
   let keys: KeyStore;
   let settings: SettingsStore;
@@ -76,7 +76,7 @@ describe('AI settings handlers (T08.6)', () => {
   });
 });
 
-describe('AI draft handler (T08.7)', () => {
+describe('AI draft handler', () => {
   let dir: string;
   let keys: KeyStore;
   let settings: SettingsStore;

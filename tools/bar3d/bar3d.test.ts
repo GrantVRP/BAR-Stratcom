@@ -57,7 +57,7 @@ function s3o(): Buffer {
   return buf.subarray(0, at);
 }
 
-describe('S3O reader (T06.15)', () => {
+describe('S3O reader', () => {
   it('reads header, piece tree, vertices and triangulates quads and strips', () => {
     const model = parseS3O(s3o());
     expect(model).toMatchObject({ radius: 19, height: 37, texture1: 'Arm_color.dds', texture2: 'Arm_other.dds' });
@@ -98,7 +98,7 @@ function dds(fourCC: string, w: number, h: number, data: number[]): Buffer {
   return Buffer.concat([head, Buffer.from(data)]);
 }
 
-describe('DDS decoder (T06.15)', () => {
+describe('DDS decoder', () => {
   it('decodes a DXT1 block (pure red and blue endpoints)', () => {
     // c0 = red (0xF800), c1 = blue (0x001F); all pixels index 0 except the first (index 1)
     const img = decodeDds(dds('DXT1', 4, 4, [0x00, 0xf8, 0x1f, 0x00, 0x01, 0, 0, 0]));
@@ -131,7 +131,7 @@ function tga(type: 2 | 10, topDown: boolean, payload: number[]): Buffer {
   return Buffer.concat([head, Buffer.from(payload)]);
 }
 
-describe('TGA decoder (T06.15)', () => {
+describe('TGA decoder', () => {
   it('flips bottom-up images and converts BGRA', () => {
     const px = (b: number, g: number, r: number, a: number): number[] => [b, g, r, a];
     const img = decodeTga(tga(2, false, [...px(1, 2, 3, 4), ...px(5, 6, 7, 8), ...px(9, 10, 11, 12), ...px(13, 14, 15, 16)]));
@@ -164,7 +164,7 @@ Walk() {// Created by Skeletor
 }
 `;
 
-describe('walk animation extraction (T06.15)', () => {
+describe('walk animation extraction', () => {
   it('keeps keyframe targets and where the loop starts', () => {
     const walk = parseWalk(SCRIPT);
     expect(walk.pieces).toEqual(['lthigh', 'pelvis']);
@@ -182,7 +182,7 @@ describe('walk animation extraction (T06.15)', () => {
 
 /* -------------------------------- textures -------------------------------- */
 
-describe('texture baking (T06.15)', () => {
+describe('texture baking', () => {
   it('mixes the faction colour into team-colour paint and keeps trees transparent', () => {
     const unit = { width: 1, height: 2, data: new Uint8ClampedArray([100, 100, 100, 0, 100, 100, 100, 255]) };
     const baked = bakeTeamColour(unit, [255, 0, 0]);

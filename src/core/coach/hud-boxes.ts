@@ -6,7 +6,7 @@ import { fitText, formatTimeMinutesSeconds, timeSuffix, unitLabel } from './hud-
 import { pendingBuilderSteps, pendingFactoryBuilds } from './queues';
 
 /**
- * The HUD boxes (owner requests T09.3/T09.4). Every box follows one pattern, so the player learns it
+ * The HUD boxes. Every box follows one pattern, so the player learns it
  * once: a quiet header, one big row (the entry point: what to do now), then up to three smaller rows
  * (what comes after), each with who builds it on the left and when on the right. Colour only carries
  * meaning: a row's timing turns warn when it is late and danger after 15 s.
@@ -144,7 +144,7 @@ export function trackEnemySightings(
 }
 
 /**
- * RADAR (T09.5): the widget draws the scope itself; these are the enemy contacts under it — the
+ * RADAR: the widget draws the scope itself; these are the enemy contacts under it — the
  * biggest groups of identified enemies in sight (newest first on ties), "NEW" (warn) for 15 s after
  * a type is first seen, then how long it has been in sight.
  */

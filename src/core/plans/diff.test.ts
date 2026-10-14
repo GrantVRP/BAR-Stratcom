@@ -11,7 +11,7 @@ const step = (id: string, unitId: string, count = 1, targetTime?: number): Build
   ...(targetTime === undefined ? {} : { targetTime })
 });
 
-describe('plan step diff (T08.5)', () => {
+describe('plan step diff', () => {
   it('lists added, removed and changed steps with what changed', () => {
     const before = [step('s1', 'armmex', 2, 4), step('s2', 'armwin', 5, 30), step('s3', 'armlab', 1, 90)];
     const after = [step('s1', 'armmex', 2, 4), step('fix1', 'armsolar', 1, 40), step('s2', 'armsolar', 1, 28), step('s3', 'armlab', 1, 95)];

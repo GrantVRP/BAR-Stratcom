@@ -14,7 +14,7 @@ export function classifyUnit(unit: UnitDefRecord): UnitClass {
   if (unit.economy.converter !== null) return 'converter';
   if (
     unit.isBuilding &&
-    // Solar collectors produce through negative upkeep (energyMake 0, energyUpkeep -20), 04 §2.3
+    // Solar collectors produce through negative upkeep (energyMake 0, energyUpkeep -20)
     (unit.economy.energyMake > 0 ||
       unit.economy.energyUpkeep < 0 ||
       unit.economy.windGenerator > 0 ||

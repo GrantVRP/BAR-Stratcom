@@ -1,5 +1,5 @@
 /**
- * Launcher scene layout (T06.14), in scene pixels. The scene is a 320 × 200 pixel-art canvas shown at
+ * Launcher scene layout, in scene pixels. The scene is a 320 × 200 pixel-art canvas shown at
  * a whole-number scale (4× in the default 1280 × 800 window). Shared by the renderer and by
  * tools/build-launch-scene.ts, which draws the dirt track along the same path the runner follows.
  */
@@ -12,7 +12,7 @@ export interface Point {
 }
 
 /**
- * The runner's route (the owner's draft): in from below the bottom-left, a gentle S-bend past the
+ * The runner's route: in from below the bottom-left, a gentle S-bend past the
  * front of the wind turbine, then up and off the top-right, like the winding tracks on Greenest
  * Fields. A Catmull-Rom spline through these waypoints.
  */

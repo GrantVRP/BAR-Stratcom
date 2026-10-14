@@ -94,7 +94,7 @@ export class PlanStore {
 
   get(id: string): BuildPlan | null {
     // Check user plans first
-    // ids name files: a plain name only (path guard, T11.2)
+    // ids name files: a plain name only (path guard)
     if (!isSafeName(id)) return null;
     const userFile = namedFile(this.userDataDir, id, '.json');
     if (fs.existsSync(userFile)) {

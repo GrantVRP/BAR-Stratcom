@@ -12,7 +12,7 @@ const BOXES: Array<{ key: keyof HudBoxesSettings; label: string }> = [
 ];
 
 /**
- * IN-GAME HUD (owner request T09.6): show or hide each widget box while coaching; the change reaches
+ * IN-GAME HUD: show or hide each widget box while coaching; the change reaches
  * the game within half a second and is kept for next time (Settings → hud.boxes). A quiet, secondary
  * panel: the coaching content above it stays the focus.
  */

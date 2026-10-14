@@ -9,7 +9,7 @@ function fakeWindow(destroyed = false): BrowserWindow {
   return { isDestroyed: () => destroyed, setIcon: vi.fn() } as unknown as BrowserWindow;
 }
 
-describe('window icon per faction (owner request 2026-10-13)', () => {
+describe('window icon per faction', () => {
   it('every faction has its icon file in build/icons (dev path; packaged: resources/icons)', () => {
     for (const faction of WINDOW_FACTIONS) {
       const file = windowIconPath(faction);

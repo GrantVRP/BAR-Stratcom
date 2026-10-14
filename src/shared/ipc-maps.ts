@@ -7,7 +7,7 @@ const MapFileNameSchema = z.string().regex(/^(?!.*\.\.)[\w.\- ]{1,120}$/);
 
 const MinimapInfoSchema = z.object({ url: z.string().url(), author: z.string().nullable() }).strict();
 
-/** Maps view channels (T10.4); the map list itself is `maps:list`. */
+/** Maps view channels; the map list itself is `maps:list`. */
 export const mapsIpcContract = {
   'maps:minimap': {
     request: z.object({ scriptName: z.string().min(1).max(160) }).strict(),

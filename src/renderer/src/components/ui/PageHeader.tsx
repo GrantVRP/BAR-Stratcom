@@ -10,7 +10,7 @@ export interface PageHeaderProps {
   testId?: string;
 }
 
-/** The one title of a page (level 1 of the visual hierarchy, T06.16). */
+/** The one title of a page (level 1 of the visual hierarchy). */
 export function PageHeader({ title, subtitle, badge, actions, testId }: PageHeaderProps): React.JSX.Element {
   return (
     <header data-testid={testId} className="flex flex-wrap items-end justify-between gap-4 pb-2">

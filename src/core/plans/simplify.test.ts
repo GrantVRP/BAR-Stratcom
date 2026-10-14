@@ -16,7 +16,7 @@ const COM = { kind: 'commander' } as const;
 const LAB = { kind: 'factory', unitId: 'armlab', index: 1 } as const;
 const step = (id: string, actor: BuildStep['actor'], unitId: string, count: number, targetTime: number): BuildStep => ({ id, actor, action: 'build', unitId, count, targetTime });
 
-describe('simplify transform (T08.9)', () => {
+describe('simplify transform', () => {
   it('merges consecutive builds of the same unit by the same actor, keeping the first time', () => {
     const steps = [step('a', COM, 'armmex', 1, 3), step('b', COM, 'armmex', 2, 10), step('c', COM, 'armwin', 1, 20), step('d', COM, 'armmex', 1, 30)];
     expect(simplifyPlanSteps(steps)).toEqual([step('a', COM, 'armmex', 3, 3), step('c', COM, 'armwin', 1, 20), step('d', COM, 'armmex', 1, 30)]);

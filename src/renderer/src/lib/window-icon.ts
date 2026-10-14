@@ -9,7 +9,7 @@ function windowFaction(factionId: string | null | undefined): WindowFaction | nu
 }
 
 /**
- * Keeps the window icon's S in this faction's colour (owner request, 2026-10-13). An unknown or missing
+ * Keeps the window icon's S in this faction's colour. An unknown or missing
  * faction leaves the icon as it is, so it keeps the last faction shown.
  */
 export function useWindowIconFaction(factionId: string | null | undefined): void {

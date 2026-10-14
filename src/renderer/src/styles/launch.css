@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
-   Launcher scene (T06.14). Every animation is stepped so sprites move in whole
+   Launcher scene. Every animation is stepped so sprites move in whole
    scene pixels (pixel-art motion, no sub-pixel smearing). Custom properties are
    set per element by the components in components/launch/.
    -------------------------------------------------------------------------- */

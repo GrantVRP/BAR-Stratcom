@@ -37,7 +37,7 @@ function playArcadeStartChime(): void {
       osc.start(now + idx * 0.07);
       osc.stop(now + idx * 0.07 + 0.18);
     });
-    // close the context after the chime, or Chromium's audio service stays up for nothing (T11.3)
+    // close the context after the chime, or Chromium's audio service stays up for nothing
     setTimeout(() => void ctx.close().catch(() => undefined), 1000);
   } catch {
     // Silent fallback if audio context fails
@@ -76,7 +76,7 @@ export function LaunchWindow({
     setFaction((prev) => (prev === 'armada' ? 'cortex' : 'armada'));
   }, []);
 
-  // Arrows switch faction. Only the LAUNCH button enters the app (owner request, T06.16).
+  // Arrows switch faction. Only the LAUNCH button enters the app.
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent): void {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
@@ -129,7 +129,7 @@ export function LaunchWindow({
         </button>
       </div>
 
-      {/* Footer (owner request: no disclaimer line here; the unofficial notice is on the top-bar tag and About page) */}
+      {/* Footer (no disclaimer line here; the unofficial notice is on the top-bar tag and About page) */}
       <footer className="absolute inset-x-0 bottom-0 z-[48] flex items-center justify-end gap-3 border-t-2 border-black bg-[#0a0c14]/90 px-6 py-3">
         {/* Faction switcher */}
         <div

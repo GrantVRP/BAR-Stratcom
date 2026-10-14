@@ -1,5 +1,5 @@
 /**
- * Launch-scene death assets from BAR's files (owner request after T06.16): for the Sprinter and the
+ * Launch-scene death assets from BAR's files: for the Sprinter and the
  * Fiend, the Killed() branch of a light hit (severity ≤ 25: what a unit usually leaves, a wreck), the
  * Sprinter's keyframed DeathAnim(), the death explosion named by the unit def (explodeas → weapon →
  * CEG) and the wreck model named by its corpse feature.

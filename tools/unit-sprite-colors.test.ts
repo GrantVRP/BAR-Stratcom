@@ -10,7 +10,7 @@ const units = JSON.parse(
 ) as { units: Array<{ id: string; factionId: string | null }> };
 const factionOf = new Map(units.units.map((u) => [u.id, u.factionId]));
 
-/** Checked by eye against the originals (2026-10-04): their accent colour is legitimately not the faction's. */
+/** Checked by eye against the originals: their accent colour is legitimately not the faction's. */
 const KNOWN_EXCEPTIONS: Record<string, string> = {
   corsolar: 'Cortex Solar Collector has blue solar panels in the original art',
   corfdrag: "Shark's Teeth are bare steel with a bluish sheen",
@@ -21,7 +21,7 @@ const KNOWN_EXCEPTIONS: Record<string, string> = {
   cormaw: "Dragon's Maw: no faction paint"
 };
 
-describe('unit sprite faction colours (T10.7)', () => {
+describe('unit sprite faction colours', () => {
   it('every sprite shows its own faction colour (Armada blue, Cortex red)', async () => {
     const wrong: string[] = [];
     let checked = 0;

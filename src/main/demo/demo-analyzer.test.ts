@@ -5,7 +5,7 @@ import { handleDemoCompletion } from './demo-analyzer';
 import { defaultSessionStore } from '../sessions/store';
 import { findDataDir, loadRegistry } from '../registry/loader';
 
-describe('handleDemoCompletion (02 §4.2, T07.4)', () => {
+describe('handleDemoCompletion', () => {
   beforeEach(() => {
     defaultSessionStore.setInMemoryDemo(null);
   });

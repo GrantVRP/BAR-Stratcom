@@ -12,7 +12,7 @@ import { createScenario } from './scenario';
 
 const factions = FactionsFileSchema.parse(factionsData);
 
-describe('Widget Exporters (05 §5, T02.3)', () => {
+describe('Widget Exporters', () => {
   it('exports unitdefs and wind-lookup validating against schemas and normalizing cleanly', async () => {
     const scenario = createScenario({
       gameVersion: '105.1.1-2550',

@@ -4,8 +4,8 @@ import { app, BrowserWindow } from 'electron';
 import type { WindowFaction } from '../../shared/ipc';
 
 /**
- * The window icon (owner request, 2026-10-13): "BS" in the logo's font with the S in the faction's
- * colour, one .ico per faction made by `npm run make:icon`. The renderer names the faction it shows
+ * The window icon: "BS" in the logo's font with the S in the faction's
+ * colour, one.ico per faction made by `npm run make:icon`. The renderer names the faction it shows
  * (the launcher's choice, then the active plan's); every open window follows.
  */
 let current: WindowFaction = 'armada';

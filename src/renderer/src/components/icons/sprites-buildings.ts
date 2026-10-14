@@ -1,4 +1,4 @@
-// Original pixel art (T10.3, A-11): generic building silhouettes drawn from scratch.
+// Original pixel art: generic building silhouettes drawn from scratch.
 // Palette: see palette.ts. f/d/l = faction main/dark/light.
 
 export const BUILDING_SPRITES = {

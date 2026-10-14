@@ -1,5 +1,5 @@
 /**
- * Downloads the Armada and Cortex unit pictures from beyondallreason.info (T10.5).
+ * Downloads the Armada and Cortex unit pictures from beyondallreason.info.
  *
  * The unit icons are by IceXuick and Floris (CC BY-NC-ND, /unitpics/ in the BAR repo), used with their
  * permission for 32-bit pixel versions in BAR StratCom.

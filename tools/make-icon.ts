@@ -1,5 +1,5 @@
 /**
- * Writes the app icons (owner request, 2026-10-13; tools/lib/app-icon.ts): "BS" in the logo's font,
+ * Writes the app icons (tools/lib/app-icon.ts): "BS" in the logo's font,
  * the S in the faction's colour.
  *   build/icons/stratcom-<faction>.ico  — the window icon per faction (the app switches it at run time)
  *   build/icon.ico                       — the packaged exe's icon: Armada, the launcher's first faction

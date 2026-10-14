@@ -1,5 +1,5 @@
 /**
- * DDS texture decoder for the launch-scene asset build (T06.15): DXT1, DXT3 and DXT5 (BC1–BC3) and
+ * DDS texture decoder for the launch-scene asset build: DXT1, DXT3 and DXT5 (BC1–BC3) and
  * uncompressed 32-bit RGBA, decoding a chosen mip level only.
  */
 

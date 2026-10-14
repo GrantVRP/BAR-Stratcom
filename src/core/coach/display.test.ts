@@ -104,7 +104,7 @@ describe('Coach Engine: HUD Display Model', () => {
     }
   });
 
-  it('builds HUD display matching 04 §3.4 format', () => {
+  it('builds the HUD display lines', () => {
     const plan: BuildPlan = {
       schemaVersion: 1,
       id: 'p1',

@@ -29,7 +29,7 @@ class MockAudioContext {
   resume = vi.fn().mockResolvedValue(undefined);
 }
 
-describe('procedural Web Audio sounds (06 §5)', () => {
+describe('procedural Web Audio sounds', () => {
   beforeEach(() => {
     (window as unknown as { AudioContext: typeof MockAudioContext }).AudioContext = MockAudioContext;
     useSettings.setState({

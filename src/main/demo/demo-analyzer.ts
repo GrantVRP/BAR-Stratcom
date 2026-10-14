@@ -19,7 +19,7 @@ export interface DemoCompletionOptions {
 }
 
 /**
- * Executes in-memory post-match analysis when a demo finishes (02 §4.2, T07.4).
+ * Executes in-memory post-match analysis when a demo finishes.
  * Retains the report in-memory without persisting to disk, assigns the 'fixture' source
  * (which renders as 'DEMO'), and broadcasts review:ready.
  */

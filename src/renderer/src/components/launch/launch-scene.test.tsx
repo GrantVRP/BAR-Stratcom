@@ -9,7 +9,7 @@ import { coverScale } from './useSceneScale';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('launch scene timing and scale (T06.14)', () => {
+describe('launch scene timing and scale', () => {
   const lut = samplePath(600);
 
   it('scales the 320 × 200 scene by whole pixels to cover the window', () => {
@@ -39,7 +39,7 @@ describe('launch scene timing and scale (T06.14)', () => {
   });
 });
 
-describe('LaunchScene (T06.14)', () => {
+describe('LaunchScene', () => {
   let container: HTMLDivElement;
   let root: Root;
   const q = (id: string): HTMLElement | null => container.querySelector(`[data-testid="${id}"]`);

@@ -1,7 +1,7 @@
 import type { AssistSettings } from '../../../core/schemas/settings';
 
 /**
- * In-game assist actions (05 §8.3) and the keys we suggest for them. The keys have no default
+ * In-game assist actions and the keys we suggest for them. The keys have no default
  * Ctrl+Shift or any-modifier binding in BAR (common/configs/keybind_defaults.json, checked 2026-10-05).
  */
 export const ASSIST_BINDS = [

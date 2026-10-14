@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
-test('AI draft: pick a provider, draft, save, find it in the library (T08.8, fake provider)', async () => {
+test('AI draft: pick a provider, draft, save, find it in the library (fake provider)', async () => {
   const { app, close } = await launchApp([], undefined, { env: { STRATCOM_FAKE_AI: '1' } });
   try {
     const page = await app.firstWindow();

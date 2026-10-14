@@ -100,7 +100,7 @@ const anim: DeathKeyframe[] = [
 ];
 
 describe('death animation playback', () => {
-  it('drops the idle lead-in so the death starts on the hit (owner request)', () => {
+  it('drops the idle lead-in so the death starts on the hit', () => {
     const trimmed = skipLeadingIdle(anim);
     expect(trimmed).toHaveLength(2);
     expect(trimmed[0]!.hide).toEqual(['lleg']);

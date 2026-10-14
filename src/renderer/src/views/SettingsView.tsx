@@ -10,7 +10,7 @@ import {
   DataSettingsSection
 } from '../components/settings';
 
-/** The About page (left menu) holds version, licences and credits; no About tab here (T06.16). */
+/** The About page (left menu) holds version, licences and credits; no About tab here. */
 export type SettingsTabId = 'game' | 'coach' | 'assist' | 'ai' | 'app' | 'data';
 
 interface TabItem {

@@ -6,7 +6,7 @@ import { validatePlan } from '../src/core/plans/validate';
 import { eventsToPlan } from '../src/core/plans/events-to-plan';
 import type { WidgetEvent } from '../src/core/schemas/protocol';
 
-describe('eventsToPlan real fixture validation (04 §5.3, T04.4)', () => {
+describe('eventsToPlan real fixture validation', () => {
   const snapshot = JSON.parse(
     readFileSync(join(process.cwd(), 'data/snapshots/test-31479-433a460/units.json'), 'utf-8')
   );
@@ -18,7 +18,7 @@ describe('eventsToPlan real fixture validation (04 §5.3, T04.4)', () => {
     const fixturesDir = join(process.cwd(), 'data/fixtures/sessions');
     const dirs = readdirSync(fixturesDir, { withFileTypes: true }).filter((d) => d.isDirectory());
 
-    // Only test player fixtures (skip spectator large team replays where the owner did not play a team)
+    // Only test player fixtures (skip spectator large team replays where the recording player did not play a team)
     const playerDirs = dirs.filter((d) => !d.name.includes('multi-large-team'));
 
     expect(playerDirs.length).toBeGreaterThanOrEqual(4);

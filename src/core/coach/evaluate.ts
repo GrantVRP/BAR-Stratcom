@@ -29,7 +29,7 @@ export interface EvaluateInput {
   mode: 'live' | 'manual' | 'demo';
   chatEchoEnabled?: boolean;
   manualDoneStepIds?: ReadonlySet<string>;
-  /** Settings → Assist (T09.2); both off when omitted. */
+  /** Settings → Assist; both off when omitted. */
   assistSettings?: AssistSettings;
 }
 
@@ -51,7 +51,7 @@ export interface EvaluateResult {
 }
 
 /**
- * Top-level pure evaluation loop for the coach engine (04 §3.1).
+ * Top-level pure evaluation loop for the coach engine.
  */
 export function evaluate(input: EvaluateInput): EvaluateResult {
   const {
@@ -111,7 +111,7 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
       }
     }
   } else if (mode === 'manual') {
-    // In manual mode, alerts are limited to planned risks from planSim (04 §3.7)
+    // In manual mode, alerts are limited to planned risks from planSim
     for (const interval of planSim.intervals.energyStall) {
       if (clock >= Math.max(0, interval.start - 30) && clock <= interval.end) {
         const m = Math.floor(interval.start / 60);
@@ -146,8 +146,8 @@ export function evaluate(input: EvaluateInput): EvaluateResult {
   // 3. State machine update (sustain, 2s deactivation hysteresis, sound cooldown)
   const rules = updateAlertRules(detectedCandidates, clock, memory);
   const { updatedAlertMemory } = rules;
-  // an alert switched off in Settings leaves at once, not after the anti-flicker hold (T11.5); manual
-  // mode keeps the plan's own dips (04 §3.7)
+  // an alert switched off in Settings leaves at once, not after the anti-flicker hold; manual
+  // mode keeps the plan's own dips
   const shown = (a: { id: AlertId }): boolean => mode === 'manual' || profile.enabledAlerts.has(a.id);
   const activeAlerts = rules.activeAlerts.filter(shown);
   const soundCandidateAlerts = rules.soundCandidateAlerts.filter(shown);

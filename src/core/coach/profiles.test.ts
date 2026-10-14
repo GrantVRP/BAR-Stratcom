@@ -49,7 +49,7 @@ describe('Coach Engine: Profiles', () => {
   });
 });
 
-// regression (T11.5): the chosen skill profile and the per-alert switches never reached the coach,
+// regression: the chosen skill profile and the per-alert switches never reached the coach,
 // which always ran Intermediate with every default alert
 describe('coachProfile (Settings → Coach)', () => {
   it('runs the chosen profile', () => {

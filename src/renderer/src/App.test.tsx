@@ -8,7 +8,7 @@ import { useSettings } from './stores';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
+describe('App Shell & Routing', () => {
   let container: HTMLDivElement;
   let root: Root;
 
@@ -80,7 +80,7 @@ describe('App Shell & Routing (06 §1–§2, T06.2, T06.3)', () => {
     expect(container.querySelector('[data-testid="launch-window"]')).toBeNull();
     expect(container.querySelector('[data-testid="health-chip"]')).not.toBeNull();
     expect(container.querySelector('[data-testid="active-plan-chip"]')).not.toBeNull();
-    // the coaching profile is set in Settings, not shown in the top bar (T06.16)
+    // the coaching profile is set in Settings, not shown in the top bar
     expect(container.querySelector('[data-testid="profile-chip"]')).toBeNull();
     expect(container.querySelector('[data-testid="view-home"]')).not.toBeNull();
   });

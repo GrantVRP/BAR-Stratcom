@@ -4,7 +4,7 @@ import { useSettings } from '../../stores';
 import { Button } from '../ui/Button';
 
 /**
- * Newer release banner (D-17, T11.4): asks main once at start while Settings → App "check for updates
+ * Newer release banner: asks main once at start while Settings → App "check for updates
  * on launch" is on (main asks GitHub only in the packaged app). Non-blocking: a thin info bar under the
  * top bar with the release page link and a dismiss for this session.
  */

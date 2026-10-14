@@ -1,6 +1,6 @@
 import type { PickMixResult, ProcessedReplay } from './replay-picker-types';
 
-/** Diversity caps for the H2 list (T08.1b). */
+/** Diversity caps for the pro replay list. */
 export interface PickCaps {
   /** A player may appear in at most this many 1v1 picks. */
   duelPlayerMax: number;
@@ -115,7 +115,7 @@ function pickTeams(
   return picked;
 }
 
-/** Picks the H2 target mix: 12 × 1v1, 8 × small team, 4 × large team, ranked by mean skill within the caps. */
+/** Picks the target mix: 12 × 1v1, 8 × small team, 4 × large team, ranked by mean skill within the caps. */
 export function pickTargetMix(candidates: ProcessedReplay[], caps: PickCaps = DEFAULT_CAPS): PickMixResult {
   const sorted = [...candidates].sort((a, b) => b.meanSkill - a.meanSkill || a.id.localeCompare(b.id));
   const shared: Shared = { caps, perDay: counter(), keys: new Set() };

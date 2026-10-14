@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { UNIT_ART_CREDIT, unitSpriteCount, unitSpriteUrl } from './unit-sprites';
 
-describe('32-bit unit sprites (T10.5)', () => {
+describe('32-bit unit sprites', () => {
   it('bundles a sprite for every scraped Armada and Cortex unit', () => {
     expect(unitSpriteCount()).toBe(377);
   });

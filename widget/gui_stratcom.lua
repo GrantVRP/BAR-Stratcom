@@ -15,7 +15,7 @@ function widget:GetInfo()
   }
 end
 
--- Localised API shortcuts (guarded per 05 §2)
+-- Localised API shortcuts (guarded)
 local spCreateDir = Spring.CreateDir
 local spGetGameFrame = Spring.GetGameFrame
 local spGetGameSeconds = Spring.GetGameSeconds
@@ -95,10 +95,10 @@ local TONE_COLORS = {
   dim = { 113 / 255, 113 / 255, 122 / 255, 1.0 }     -- #71717a
 }
 
--- HUD boxes (05 §8.1, T09.4): one look for every box. Size and brightness carry the levels: headers and
+-- HUD boxes: one look for every box. Size and brightness carry the levels: headers and
 -- tags quiet, the big row brightest, queue rows dimmer; colour is kept for meaning (late, pace, alerts).
 local HUD_WIDTH = 360 -- px at 1080p, before scaling
--- Radar scope (T09.5/T09.6): side edges `range` elmos from the centre, same scale both ways; a 2:1 strip
+-- Radar scope: side edges `range` elmos from the centre, same scale both ways; a 2:1 strip
 -- under the plan boxes, a square when the radar is the only box (radar mode, or the others switched off)
 local RADAR_SCOPE_H = 168 -- px at 1080p (the strip)
 local RADAR_MAX_OWN = 300
@@ -120,7 +120,7 @@ local config = {
   hudScale = 1.0
 }
 
--- Utility functions (05 §3)
+-- Utility functions
 local function atomicWrite(name, tbl)
   local path = DIR .. name
   local tmpPath = path .. ".tmp"
@@ -359,7 +359,7 @@ local function writeHeartbeat()
   atomicWrite("widget.json", heartbeatData)
 end
 
--- Recorder & Session (05 §7, 03 §7.3, §7.7)
+-- Recorder & Session
 local function recordEvent(evt)
   table.insert(eventBuffer, evt)
 end
@@ -697,10 +697,10 @@ local function writeSensorState()
     stateDoc.commander = { alive = commanderAlive, idle = commanderIdle }
     stateDoc.bp = { total = bpTotal, active = bpActive }
 
-    -- Gaia (neutral) units such as critters are not enemies (H1b: a Seagull raised "enemy air")
+    -- Gaia (neutral) units such as critters are not enemies (a Seagull once raised "enemy air")
     local enemies = {}
     local gaiaTeam = (spGetGaiaTeamID and spGetGaiaTeamID()) or -1
-    -- every identified enemy in LOS (03 §7.3); GetVisibleUnits would only see the camera view (engine-facts.md)
+    -- every identified enemy in LOS; GetVisibleUnits would only see the camera view (engine-facts.md)
     local knownUnits = (spGetAllUnits and spGetAllUnits()) or {}
     for _, u in ipairs(knownUnits) do
       local uAlly = spGetUnitAllyTeam and spGetUnitAllyTeam(u)
@@ -721,7 +721,7 @@ local function writeSensorState()
 
   atomicWrite("state.json", stateDoc)
 
-  -- Debug state recording switch (T02.7)
+  -- Debug state recording switch
   local flagFile = io.open(DIR .. "record_state.flag", "r")
   if flagFile then
     flagFile:close()
@@ -741,7 +741,7 @@ local function writeSensorState()
   end
 end
 
--- Exporters (05 §5)
+-- Exporters
 local TRACKED_RAW_FIELDS = {
   "name", "translatedHumanName", "translatedTooltip", "metalCost", "energyCost",
   "buildTime", "buildSpeed", "isBuilder", "isFactory", "isBuilding", "canFly", "canMove",
@@ -920,7 +920,7 @@ local function exportWindLookup()
   return atomicWrite("wind-lookup.json", doc)
 end
 
--- Coach & HUD (05 §8.1-§8.3)
+-- Coach & HUD
 local function readCoach()
   local f = io.open(DIR .. "coach.json", "r")
   if not f then
@@ -945,7 +945,7 @@ local function readCoach()
   lastCoachSeq = doc.seq
   currentCoachDoc = doc
 
-  -- Process echo entries (05 §8.2)
+  -- Process echo entries
   if (type(doc.echo) == "table" or type(doc.echo) == "userdata") and #doc.echo > 0 then
     for i = 1, #doc.echo do
       local item = doc.echo[i]
@@ -983,7 +983,7 @@ local function getCapturedTeamCount()
   return count
 end
 
--- Opt-in assist (05 §8.3, D-06). The functions below are the only place that may issue orders
+-- Opt-in assist. The functions below are the only place that may issue orders
 -- (lint:lua allows GiveOrder* only inside functions named assist*).
 local ASSIST_MAX_ORDERS = 20
 local ASSIST_MESSAGE_SEC = 2
@@ -1182,7 +1182,7 @@ local function drawPanel(x, top, width, height, title, tag, items, scale, border
   end
 end
 
--- Radar blips (05 §8.1, T09.5), refreshed every 15 frames: own units and every enemy the player has in
+-- Radar blips, refreshed every 15 frames: own units and every enemy the player has in
 -- LOS or radar (GetAllUnits), positions from the engine (radar error included), as elmos from the
 -- commander (else the start position); the scope scales them when it draws.
 local function updateRadar(range)
@@ -1653,7 +1653,7 @@ local function drawHud()
   end
 end
 
--- Actions the player binds in BAR, e.g. /bind Ctrl+Shift+N stratcom_arm_next (05 §8.3)
+-- Actions the player binds in BAR, e.g. /bind Ctrl+Shift+N stratcom_arm_next
 local function registerAction(name, fn)
   if not widgetHandler then
     return
@@ -1667,7 +1667,7 @@ local function registerAction(name, fn)
   end)
 end
 
--- Call-ins (05 §4)
+-- Call-ins
 function widget:Initialize()
   startRecorded = false
   eventBuffer = {}
@@ -1754,7 +1754,7 @@ function widget:GameFrame(n)
       spEcho("BAR StratCom radar error: " .. tostring(err))
     end
   end
-  -- per-frame cost (08 §5 budget): average over 30-frame windows (including the snapshot frame), smoothed
+  -- per-frame cost (frame budget): average over 30-frame windows (including the snapshot frame), smoothed
   if t0 and spDiffTimers and spGetTimer then
     frameTimeSum = frameTimeSum + spDiffTimers(spGetTimer(), t0, true)
     frameCount = frameCount + 1

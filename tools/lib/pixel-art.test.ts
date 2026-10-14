@@ -32,7 +32,7 @@ const alphaRows = (img: Rgba): string[] =>
     Array.from({ length: img.width }, (_, x) => (img.data[(y * img.width + x) * 4 + 3]! > 0 ? '#' : '.')).join('')
   );
 
-describe('pixel-art passes (T10.5)', () => {
+describe('pixel-art passes', () => {
   it('hardens soft alpha to 0 or 255', () => {
     const img: Rgba = { data: new Uint8ClampedArray([0, 0, 0, 90, 0, 0, 0, 200]), width: 2, height: 1 };
     hardenAlpha(img);

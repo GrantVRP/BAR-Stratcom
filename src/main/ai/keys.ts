@@ -15,7 +15,7 @@ export interface SafeStorageLike {
 const KeysFileSchema = z.partialRecord(z.enum(AI_PROVIDER_IDS), z.string());
 
 /**
- * API keys (02 §6): encrypted with the OS key store (safeStorage, DPAPI on Windows) and kept as
+ * API keys: encrypted with the OS key store (safeStorage, DPAPI on Windows) and kept as
  * base64 in userData/keys.json. Keys are only decrypted inside main/ai, never logged or sent to the
  * renderer (it only learns whether a key exists).
  */

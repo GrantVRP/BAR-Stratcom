@@ -50,7 +50,7 @@ export interface CoachRunnerStartOptions {
   stratcomDir?: string | null;
   profile?: ProfileConfig;
   benchmark?: BenchmarkFile | null;
-  /** Finds the pro benchmark for a session's teams (T08.4); used when no fixed `benchmark` is given. */
+  /** Finds the pro benchmark for a session's teams; used when no fixed `benchmark` is given. */
   benchmarkLoader?: (teams: SessionFileDoc['teams']) => BenchmarkFile | null;
   map?: CoachRunnerMapOptions;
   start?: {
@@ -59,13 +59,13 @@ export interface CoachRunnerStartOptions {
     metalStorage: number;
     energyStorage: number;
   };
-  /** The map a session is played on, as simulator input (used when `map` is not given; T11.1). */
+  /** The map a session is played on, as simulator input (used when `map` is not given). */
   resolveMap?: (scriptName: string) => SimInput['map'];
-  /** Settings → Assist, read every tick so a toggle applies at once (T09.2). */
+  /** Settings → Assist, read every tick so a toggle applies at once. */
   assistSettings?: () => AssistSettings;
-  /** Settings → hud (display on/off, which boxes), read every tick (T09.6). */
+  /** Settings → hud (display on/off, which boxes), read every tick. */
   hudSettings?: () => HudSettings;
-  /** Settings → Coach (skill profile, alert switches, chat echo), read every tick; replaces `profile` (T11.5 fix). */
+  /** Settings → Coach (skill profile, alert switches, chat echo), read every tick; replaces `profile`. */
   coachSettings?: () => CoachSettings;
   onUpdate?: (state: CoachState) => void;
   onCue?: (cue: Cue) => void;
@@ -73,7 +73,7 @@ export interface CoachRunnerStartOptions {
 
 /**
  * CoachRunner manages the 2 Hz evaluation loop, plan simulation,
- * HUD model atomic file writing, and IPC updates (02 §4.1, 04 §3.1).
+ * HUD model atomic file writing, and IPC updates.
  */
 export class CoachRunner {
   private running = false;
@@ -247,7 +247,7 @@ export class CoachRunner {
     }
   }
 
-  /** BENCHMARK_LOW compares with pros of the player's faction + mode (04 §7). */
+  /** BENCHMARK_LOW compares with pros of the player's faction + mode. */
   private useSessionBenchmark(session: SessionFileDoc): void {
     if (this.benchmarkLoader) this.benchmark = this.benchmarkLoader(session.teams);
     // the session names the map: simulate the plan on it (real wind from BAR's table)
@@ -356,7 +356,7 @@ export class CoachRunner {
     this.tickStats.record(performance.now() - tickStart);
   }
 
-  /** Tick duration (evaluate + write) over the last ticks: the 08 §5 budget is p95 ≤ 10 ms (T11.3). */
+  /** Tick duration (evaluate + write) over the last ticks: the budget is p95 ≤ 10 ms. */
   public getTickStats(): TickSummary {
     return this.tickStats.summary();
   }

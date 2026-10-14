@@ -22,7 +22,7 @@ const cand: ReviewCandidate = {
   sim: { energyStallSec: 12.4, metalStallSec: 0, flags: ['mexYieldEstimated'] }
 };
 
-describe('curation review sheet (T08.3)', () => {
+describe('curation review sheet', () => {
   const md = renderReview({
     generatedAt: '2026-10-04T21:00:00.000Z',
     games: 1,
@@ -48,11 +48,11 @@ describe('curation review sheet (T08.3)', () => {
 
   it('says when the raw recordings are not available', () => {
     expect(renderReview({ generatedAt: 'x', games: 0, teamsConsidered: 0, candidates: [], eligible: [], unmatched: null })).toContain(
-      'Raw H2 recordings are not on this machine'
+      'Raw pro recordings are not on this machine'
     );
   });
 
-  it('detects owner decisions so a rerun does not overwrite them', () => {
+  it('detects review decisions so a rerun does not overwrite them', () => {
     expect(hasOwnerDecisions(md)).toBe(false);
     // the template also appears inside the "How to review" text; only DECISION lines count
     expect(hasOwnerDecisions(md.replaceAll(DECISION_TEMPLATE, 'DECISION: approve'))).toBe(true);

@@ -67,7 +67,7 @@ export function MetricTiles({ metrics }: MetricTilesProps): React.JSX.Element {
     }
   ];
 
-  // one provenance label for the whole group; each tile leads with its number (T06.16)
+  // one provenance label for the whole group; each tile leads with its number
   return (
     <section className="space-y-2">
       <div className="flex items-center justify-between">

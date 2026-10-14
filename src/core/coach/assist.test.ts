@@ -44,7 +44,7 @@ function tracked(p: BuildPlan, current: number, overrides: Record<string, CoachS
 
 const ON = { armNext: true, factoryQueue: true };
 
-describe('coach assist payloads (T09.2, 03 §7.6)', () => {
+describe('coach assist payloads', () => {
   const opening = plan([
     step('s1', COM, 'armmex', 2),
     step('s2', COM, 'armlab'),

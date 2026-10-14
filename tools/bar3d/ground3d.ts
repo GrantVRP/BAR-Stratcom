@@ -1,7 +1,7 @@
 /**
- * Ground texture for the 3D launch scene (T06.15): a grassy part of the Greenest Fields diffuse map
+ * Ground texture for the 3D launch scene: a grassy part of the Greenest Fields diffuse map
  * (by IceXuick) with the walking track drawn along PATH3D as two wide, pale sandy ruts with darker
- * worn edges, like the tracks in the owner's in-game reference screenshot.
+ * worn edges, like the tracks in an in-game reference screenshot.
  */
 import sharp from 'sharp';
 import { mulberry32, samplePath3d } from '../../src/core/launch/scene3d';

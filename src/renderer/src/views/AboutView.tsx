@@ -6,7 +6,7 @@ import { SCENE_CREDIT } from '../components/launch/scene-assets';
 import { MODEL_CREDITS } from '../components/launch3d/assets3d';
 import { ASSIST_BINDS } from '../lib/assist';
 
-/** Everything "about" in one place (version, unofficial notice, licences, credits); T06.16 merged the Settings tab here. */
+/** Everything "about" in one place (version, unofficial notice, licences, credits). */
 export function AboutView(): React.JSX.Element {
   return (
     <div data-testid="view-about" className="mx-auto max-w-5xl space-y-6 p-6">

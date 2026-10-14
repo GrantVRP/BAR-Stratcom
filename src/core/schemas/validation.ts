@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-/** Plan validation issue codes (03 §5). `E_*` block coaching and saving; `W_*` are advisory. */
+/** Plan validation issue codes. `E_*` block coaching and saving; `W_*` are advisory. */
 export const IssueCodeSchema = z.enum([
   'E_FACTION_DISABLED',
   'E_UNKNOWN_UNIT',

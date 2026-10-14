@@ -65,7 +65,7 @@ function hudTexts(harness: WidgetHarness): string[] {
 
 const defIdOf = (scenario: Scenario, name: string): number => scenario.unitDefsByName.get(name)!.defId;
 
-describe('Widget assist actions (T09.1, 05 §8.3)', () => {
+describe('Widget assist actions', () => {
   it('registers both actions next to the HUD toggle', async () => {
     const { harness } = await setup(ARM_NEXT, ['com']);
     try {
@@ -201,7 +201,7 @@ describe('Widget assist actions (T09.1, 05 §8.3)', () => {
   });
 });
 
-describe('Carried-over H1b fixes (T09.1)', () => {
+describe('Carried-over fixes from real games', () => {
   it('wind risk: BAR returns a string, the heartbeat carries a number', async () => {
     const harness = await createWidgetHarness(createScenario({ windMin: 0, windMax: 1, windFunctions: { windRisk: '100' } }));
     try {

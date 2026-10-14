@@ -14,7 +14,7 @@ vi.mock('electron', () => ({
 
 type Handler = (event: unknown, req: unknown) => Promise<{ ok: boolean; code?: string; data?: unknown }>;
 
-describe('intel IPC handlers (T10.1)', () => {
+describe('intel IPC handlers', () => {
   it('registers the intel channels and validates their input', async () => {
     const handlers: Record<string, Handler> = {};
     vi.mocked(ipcMain.handle).mockImplementation(((channel: string, fn: Handler) => {

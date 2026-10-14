@@ -16,7 +16,7 @@ const index = buildUnitMentionIndex([
   unit('armcv', 'Construction Vehicle')
 ]);
 
-describe('unit mentions in balance-change text (T10.2)', () => {
+describe('unit mentions in balance-change text', () => {
   it('links unit ids and exact current names, keeping all other text', () => {
     const parts = linkUnitMentions("Paralyzer and armemp turn faster; Dragon's Claw range +10.", index);
     expect(parts).toEqual([

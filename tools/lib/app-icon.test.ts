@@ -13,7 +13,7 @@ const at = (img: Rgba, x: number, y: number): string => {
   return a === 0 ? 'clear' : `#${[r, g, b].map((v) => v!.toString(16).padStart(2, '0')).join('')}`;
 };
 
-describe('app icon: "BS" in the logo font, the S in the faction colour (owner request 2026-10-13)', () => {
+describe('app icon: "BS" in the logo font, the S in the faction colour', () => {
   it('small icons give the letters every pixel, larger ones keep a margin; the frame never touches them', () => {
     expect(iconLayout(text, 16)).toMatchObject({ scale: 1, frame: false });
     expect(iconLayout(text, 24)).toMatchObject({ scale: 1, frame: true });

@@ -67,7 +67,7 @@ function createWindow(): void {
     mainWindow?.show();
   });
 
-  // Deny window.open requests and in-app navigation (02 §6)
+  // Deny window.open requests and in-app navigation
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   mainWindow.webContents.on('will-navigate', (event) => event.preventDefault());
 

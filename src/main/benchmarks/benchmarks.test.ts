@@ -80,7 +80,7 @@ function stateAt(gameSeconds: number, metalIncome: number): StateDoc {
   };
 }
 
-describe('benchmark loading (T08.4)', () => {
+describe('benchmark loading', () => {
   it('loads the committed benchmark for a faction + mode', () => {
     const bench = loadBenchmark({ factionId: 'cortex', mode: '1v1' });
     expect(bench).not.toBeNull();
@@ -106,7 +106,7 @@ describe('benchmark loading (T08.4)', () => {
   });
 });
 
-describe('BENCHMARK_LOW with the real pro benchmark (T08.4)', () => {
+describe('BENCHMARK_LOW with the real pro benchmark', () => {
   const p25At300 = bandAt(loadBenchmark({ factionId: 'cortex', mode: '1v1' })!, 'metalIncome', 300)!.p25;
 
   afterEach(() => {

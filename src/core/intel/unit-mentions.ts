@@ -31,7 +31,7 @@ export function buildUnitMentionIndex(units: readonly UnitDefRecord[]): UnitMent
 
 /**
  * Splits text into parts, linking whole words that are a unitId (`armemp`) or an exact current name
- * (`Paralyzer`, `Dragon's Claw`; case-sensitive, longest name first). No substring matches (T10.2).
+ * (`Paralyzer`, `Dragon's Claw`; case-sensitive, longest name first). No substring matches.
  */
 export function linkUnitMentions(text: string, index: UnitMentionIndex): TextPart[] {
   const words = [...text.matchAll(WORD)].map((m) => ({ start: m.index, end: m.index + m[0].length, word: m[0] }));

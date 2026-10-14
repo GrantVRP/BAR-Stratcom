@@ -40,7 +40,7 @@ function fakeApi(byDay: Record<string, { version: string; ids: string[] }>): typ
   }) as unknown as typeof fetch;
 }
 
-describe('replay picker fetching (T08.1b)', () => {
+describe('replay picker fetching', () => {
   let cacheDir: string | null = null;
   afterEach(() => {
     if (cacheDir) fs.rmSync(cacheDir, { recursive: true, force: true });

@@ -6,7 +6,7 @@ import { openExternalUrl } from '../shell/open-external';
 import { fetchNewerRelease, updateCheckMode } from './version-check';
 
 /**
- * `updates:check` (D-17, T11.4): only while Settings → App "check for updates on launch" is on; the
+ * `updates:check`: only while Settings → App "check for updates on launch" is on; the
  * renderer asks once at start and shows a banner for a newer release. `shell:openExternal` opens the
  * banner's link (allow-listed sites only).
  */

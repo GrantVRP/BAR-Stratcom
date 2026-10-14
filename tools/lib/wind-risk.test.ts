@@ -18,7 +18,7 @@ local windRiskLookup = {
 local windFunctions = {}
 return windFunctions`;
 
-describe('wind risk import (Q-06)', () => {
+describe('wind risk import', () => {
   it('reads both BAR lookups as numbers', () => {
     expect(parseWindFunctions(lua)).toEqual({ average: { 0: { 1: 0.8, 2: 1.5 } }, risk: { 0: { 1: 100, 2: 97.5 } } });
   });

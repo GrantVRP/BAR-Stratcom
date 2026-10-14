@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 /**
- * Path guard (02 §6, T11.2): the app writes only inside userData, `<BAR data>/stratcom` and
+ * Path guard: the app writes only inside userData, `<BAR data>/stratcom` and
  * `<BAR data>/LuaUI/Widgets`. Names that reach a path from IPC or from files (plan ids, session ids)
  * must be single, plain names, and the joined path must stay inside its root.
  */

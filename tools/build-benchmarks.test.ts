@@ -11,7 +11,7 @@ const fixturesDir = path.join(process.cwd(), 'data/fixtures/sessions');
 const registryFor = registryLoader();
 const enabled = enabledFactions();
 
-describe('build-benchmarks (T08.4)', () => {
+describe('build-benchmarks', () => {
   it('builds the two-duel golden: one Armada and three Cortex samples, every 30 s', () => {
     const two = ['2026-08-31-multi-1v1-pro-isidis-crack-41f195', '2026-09-09-multi-1v1-pro-feast-of-hades-03e4a1'];
     const files = buildBenchmarks(two.flatMap((d) => samplesFromFixture(path.join(fixturesDir, d), registryFor, enabled)));
@@ -25,7 +25,7 @@ describe('build-benchmarks (T08.4)', () => {
     expect(cortex.sources.every((s) => /^[0-9a-f]{32}$/.test(s.replayId ?? ''))).toBe(true);
   });
 
-  it('uses pro games only and skips owner, AI and Legion teams', () => {
+  it('uses pro games only and skips our own games, AI and Legion teams', () => {
     expect(isProFixture('2026-09-09-multi-1v1-pro-feast-of-hades-03e4a1')).toBe(true);
     expect(isProFixture('2026-10-02-multi-large-team-owner-vs-ai-ptaq')).toBe(false);
     // 8v8 with Legion players: those teams are not samples

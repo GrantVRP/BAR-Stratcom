@@ -3,7 +3,7 @@ import { StateDocSchema, WidgetHeartbeatSchema } from '../../src/core/schemas/pr
 import { createWidgetHarness } from './harness';
 import { createScenario, createScenarioUnit } from './scenario';
 
-describe('Widget Sensor state.json (05 §6, 03 §7.2, T02.4)', () => {
+describe('Widget Sensor state.json', () => {
   it('measures exact counts, idle numbers, and BP for commander + lab building + 2 mex + idle con', async () => {
     const scenario = createScenario();
 
@@ -73,7 +73,7 @@ describe('Widget Sensor state.json (05 §6, 03 §7.2, T02.4)', () => {
     }
   });
 
-  it('derives faction from startUnit even when team side string says the other faction (A-20 / P-10)', async () => {
+  it('derives faction from startUnit even when team side string says the other faction', async () => {
     // Team side says "armada", but startUnit is "corcom" (Cortex)
     const scenario = createScenario({
       teams: [

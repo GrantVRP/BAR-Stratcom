@@ -4,7 +4,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { checkRelativeLinks, extractLinks, headingIds, markdownFiles, slugify } from './links';
 
-describe('markdown link check (T11.5)', () => {
+describe('markdown link check', () => {
   it('finds links, images, references, autolinks and HTML href/src, but not code', () => {
     const md = [
       'See [the guide](docs/user-guide.md#first-run) and ![shot](docs/images/home.png "Home").',

@@ -9,7 +9,7 @@ import { StateDocSchema } from '../../core/schemas/protocol';
 import { BuildPlanSchema } from '../../core/schemas/plans';
 import { SessionReportSchema, type SessionReport } from '../../core/schemas/report';
 
-describe('Analysis Goldens on Real Fixtures (04 §4, T07.2)', () => {
+describe('Analysis Goldens on Real Fixtures', () => {
   const dataDir = findDataDir();
   const sessionsDir = path.join(dataDir, 'fixtures', 'sessions');
   const samplesDir = path.join(dataDir, 'builds', 'samples');

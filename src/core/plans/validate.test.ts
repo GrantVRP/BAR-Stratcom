@@ -47,7 +47,7 @@ const validPlan: BuildPlan = {
   ]
 };
 
-describe('Plan validation (03 §5)', () => {
+describe('Plan validation', () => {
   it('passes a fully valid plan with 0 errors and 0 warnings', () => {
     const res = validatePlan(validPlan, registry);
     expect(res.errors).toHaveLength(0);

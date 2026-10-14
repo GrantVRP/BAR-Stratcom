@@ -6,7 +6,7 @@ import type { Platform } from '../platform/types';
 import { SettingsStore } from '../settings/store';
 import { isValidBarDataDir, locateGame } from './locator';
 
-describe('BAR Game Locator (T05.1)', () => {
+describe('BAR Game Locator', () => {
   let tempBaseDir: string;
   let settingsDir: string;
 

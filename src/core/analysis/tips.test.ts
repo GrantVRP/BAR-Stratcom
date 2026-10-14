@@ -33,7 +33,7 @@ function createMockContext(overrides: Partial<TipContext> = {}): TipContext {
   };
 }
 
-describe('evaluateTips (04 §4.2, T07.2)', () => {
+describe('evaluateTips', () => {
   it('returns empty array when performance is within all tolerances', () => {
     const ctx = createMockContext();
     const tips = evaluateTips(ctx);

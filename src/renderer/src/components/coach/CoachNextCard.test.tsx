@@ -8,7 +8,7 @@ import type { BuildPlan, BuildStep } from '../../../../core/schemas/plans';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('CoachNextCard (T06.12)', () => {
+describe('CoachNextCard', () => {
   let container: HTMLDivElement;
   let root: Root;
 

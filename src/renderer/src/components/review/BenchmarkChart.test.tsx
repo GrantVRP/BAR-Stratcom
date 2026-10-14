@@ -36,7 +36,7 @@ const states = Array.from({ length: 121 }, (_, i) => ({
   res: { metal: { income: i * 0.2 }, energy: { income: i * 2 } }
 }));
 
-describe('BenchmarkChart (T08.4)', () => {
+describe('BenchmarkChart', () => {
   let container: HTMLDivElement;
   let root: Root;
   beforeEach(() => {

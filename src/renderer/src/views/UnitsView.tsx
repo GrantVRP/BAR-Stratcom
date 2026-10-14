@@ -9,12 +9,12 @@ import { UnitDossier } from '../components/units/UnitDossier';
 import { Drawer } from '../components/ui/Drawer';
 import { Provenance } from '../components/ui/Provenance';
 
-/** `#/units/<unitId>` opens that unit's dossier (links from Intel → Balance, T10.2). */
+/** `#/units/<unitId>` opens that unit's dossier (links from Intel → Balance). */
 function unitFromHash(): string | null {
   return /^#\/units\/([a-z0-9_]+)$/.exec(window.location.hash)?.[1] ?? null;
 }
 
-/** Unit catalog with original class icons and a dossier drawer (06 §4.8, T10.3). */
+/** Unit catalog with original class icons and a dossier drawer. */
 export function UnitsView(): React.JSX.Element {
   const { snapshot, factions, load } = useSnapshot();
   const plans = usePlans((s) => s.plans);

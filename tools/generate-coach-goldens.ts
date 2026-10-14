@@ -42,9 +42,8 @@ async function main() {
   const reportSections: string[] = [
     '# Coach Goldens Report — BAR StratCom v3',
     '',
-    'Golden coach evaluation timelines on real player fixtures (04 §3, T05.9).',
+    'Golden coach evaluation timelines on real player fixtures.',
     'Evaluated with (a) nominal plan (`eventsToPlan`) and (b) behind plan (every `targetTime` 30 s earlier).',
-    'Sanity check target for owner checkpoint **H2**.',
     '',
     '## Summary Overview',
     '',
@@ -252,7 +251,7 @@ async function main() {
     reportSections.push('');
   }
 
-  reportSections.push('## Sanity-Check Checklist for Owner (H2)', '');
+  reportSections.push('## Sanity-Check Checklist', '');
   reportSections.push('- [ ] **Alert plausibility**: verify stall/float alerts match player recollection of economy stress.');
   reportSections.push('- [ ] **Behind plan reactivity**: verify BEHIND_PLAN triggers when construction falls behind the accelerated schedule.');
   reportSections.push('- [ ] **Audio rate limiting**: verify cues obey spacing without spamming.');

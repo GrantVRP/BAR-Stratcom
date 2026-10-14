@@ -22,7 +22,7 @@ const sampleMetrics: SessionReportMetrics = {
   incomeAt: { '180': null, '300': null, '480': null, '600': null }
 };
 
-describe('MetricTiles (06 §4.6, T07.4)', () => {
+describe('MetricTiles', () => {
   let container: HTMLDivElement | null = null;
   let root: Root | null = null;
 
@@ -54,7 +54,7 @@ describe('MetricTiles (06 §4.6, T07.4)', () => {
     expect(energyStall).not.toBeNull();
     expect(energyStall?.textContent).toContain('12.5s');
     expect(energyStall?.textContent).toContain('ENERGY STALL');
-    // one provenance badge for the group, not one per tile (T06.16)
+    // one provenance badge for the group, not one per tile
     expect(container?.querySelectorAll('[data-testid="provenance-MEASURED"]').length).toBe(1);
 
     const metalStall = container?.querySelector('[data-testid="metric-tile-metal-stall"]');

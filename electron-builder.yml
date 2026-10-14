@@ -1,4 +1,4 @@
-# T11.4 (D-17, 02 §7): a portable Windows zip — no installer, no auto-updater.
+# A portable Windows zip — no installer, no auto-updater.
 #   npm run package  →  release/BAR StratCom-<version>-win-x64.zip
 appId: com.grantvrp.barstratcom
 productName: BAR StratCom

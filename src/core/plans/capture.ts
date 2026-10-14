@@ -87,7 +87,7 @@ export function listCapturePlayers(
   });
 }
 
-/** Turns one team's recorded build events into a validated plan (capture:toPlan, 04 §5.3). */
+/** Turns one team's recorded build events into a validated plan (capture:toPlan). */
 export function capturePlan(input: CaptureInput): CaptureResult {
   const { registry, meta, events, teamId, capturedAt } = input;
   const horizonSec = input.horizonSec ?? CAPTURE_HORIZON_SEC;

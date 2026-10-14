@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
 // STRATCOM_FAKE_INTEL=1 answers the intel IPC from the recorded BAR API fixtures (src/main/intel/__fixtures__)
-test('intel: battles, leaderboard, replays with capture help, balance links to the catalog (T10.2)', async () => {
+test('intel: battles, leaderboard, replays with capture help, balance links to the catalog', async () => {
   const { app, close } = await launchApp([], undefined, { env: { STRATCOM_FAKE_INTEL: '1' } });
   try {
     const page = await app.firstWindow();

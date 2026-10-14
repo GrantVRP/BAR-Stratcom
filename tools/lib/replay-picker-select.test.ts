@@ -58,7 +58,7 @@ function duelPool(): ProcessedReplay[] {
   return pool;
 }
 
-describe('pickTargetMix caps (T08.1b)', () => {
+describe('pickTargetMix caps', () => {
   it('limits a player to 2 duels and a pairing to 1, and never picks a Legion duel', () => {
     const result = pickTargetMix(duelPool());
     expect(result.duels).toHaveLength(12);

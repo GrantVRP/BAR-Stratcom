@@ -44,7 +44,7 @@ function setup(): { scene: Scene; player: UnitDeathPlayer; unit: ReturnType<type
   return { scene, player: new UnitDeathPlayer(scene, unit, death, wreck, fx), unit, wreck };
 }
 
-describe('launch scene unit death (owner request)', () => {
+describe('launch scene unit death', () => {
   it('starts the collapse on the click (idle lead-in skipped), breaks the leg off, then explodes into the wreck', () => {
     const { scene, player, unit, wreck } = setup();
     expect(wreck.root.visible).toBe(false);

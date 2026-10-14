@@ -8,7 +8,7 @@ export type SimMap = SimInput['map'];
 
 /**
  * The simulator's map input when the map is unknown: no wind (flagged `windUnknown`), no tide, the
- * estimated fallback mex yield. Never a made-up "typical" wind (08 §7).
+ * estimated fallback mex yield. Never a made-up "typical" wind.
  */
 export const UNKNOWN_SIM_MAP: SimMap = {
   windAvg: null,

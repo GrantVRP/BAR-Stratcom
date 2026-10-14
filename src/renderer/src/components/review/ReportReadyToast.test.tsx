@@ -6,7 +6,7 @@ import { ReportReadyToast } from './ReportReadyToast';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('ReportReadyToast (06 §4.6, T07.4)', () => {
+describe('ReportReadyToast', () => {
   let container: HTMLDivElement | null = null;
   let root: Root | null = null;
 

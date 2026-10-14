@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const UpdateInfoSchema = z.object({ latest: z.string(), url: z.string().url() }).strict();
 
-/** Version check and links (D-17, 02 §5–§6, T11.4). */
+/** Version check and links. */
 export const appIpcContract = {
   'updates:check': {
     request: z.void().optional(),

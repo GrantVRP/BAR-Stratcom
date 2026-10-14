@@ -32,7 +32,7 @@ export interface GradeResult {
 }
 
 /**
- * Computes raw score (0..100) and letter grade (S, A, B, C, D) per 04 §4.3.
+ * Computes raw score (0..100) and letter grade (S, A, B, C, D).
  */
 export function computeGrade(
   metrics: SessionReportMetrics,

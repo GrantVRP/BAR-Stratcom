@@ -6,7 +6,7 @@ import { createRegistry } from '../../src/core/registry/registry';
 import { simulate } from '../../src/core/sim/simulate';
 import type { BuildPlan } from '../../src/core/schemas/plans';
 
-describe('Simulate Wall-Clock Performance Benchmark (T04.6)', () => {
+describe('Simulate Wall-Clock Performance Benchmark', () => {
   const root = process.cwd();
   const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'data/snapshots/test-31479-433a460/units.json'), 'utf-8'));
   const factions = JSON.parse(fs.readFileSync(path.join(root, 'data/factions.json'), 'utf-8'));

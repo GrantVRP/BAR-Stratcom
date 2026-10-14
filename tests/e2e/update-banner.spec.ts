@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
 // STRATCOM_FAKE_UPDATE answers the version check without going online (non-packaged builds only)
-test('version check: a newer release shows a dismissable banner; switched off in Settings it is not asked (T11.4)', async () => {
+test('version check: a newer release shows a dismissable banner; switched off in Settings it is not asked', async () => {
   const { app, close } = await launchApp([], undefined, { env: { STRATCOM_FAKE_UPDATE: '9.9.9' } });
   try {
     const page = await app.firstWindow();

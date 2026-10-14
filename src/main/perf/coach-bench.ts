@@ -1,5 +1,5 @@
 /**
- * T11.3 (08 §5): coach tick and simulator timings, measured on recorded data. Not part of verify.
+ * Coach tick and simulator timings, measured on recorded data. Not part of verify.
  *
  *   npm run perf:coach   (npx tsx src/main/perf/coach-bench.ts; never bundled: nothing imports it)
  *

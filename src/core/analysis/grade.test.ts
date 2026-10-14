@@ -20,7 +20,7 @@ function createMockMetrics(overrides: Partial<SessionReportMetrics> = {}): Sessi
   };
 }
 
-describe('computeGrade (04 §4.3, T07.2)', () => {
+describe('computeGrade', () => {
   it('gives S grade (100 score) for a flawless performance', () => {
     const result = computeGrade(createMockMetrics(), 1.0, true);
     expect(result.score).toBe(100);

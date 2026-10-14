@@ -26,7 +26,7 @@ const model: ModelJson = {
   ]
 };
 
-describe('launch 3D renderer helpers (T06.15)', () => {
+describe('launch 3D renderer helpers', () => {
   it('rebuilds a BAR model as a piece hierarchy with rest offsets', () => {
     const m = buildModel(model, new MeshBasicMaterial());
     expect([...m.pieces.keys()]).toEqual(['pelvis', 'lthigh']);

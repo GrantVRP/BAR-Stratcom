@@ -44,7 +44,7 @@ function CaptureSteps({ id }: { id: string }): React.JSX.Element {
   );
 }
 
-/** Recent replays, searchable by exact map name and player (06 §4.7). */
+/** Recent replays, searchable by exact map name and player. */
 export function ReplaysTab(): React.JSX.Element {
   const [map, setMap] = useState('');
   const [player, setPlayer] = useState('');

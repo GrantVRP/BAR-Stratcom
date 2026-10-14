@@ -174,7 +174,7 @@ export function PlanDetailView({
         onShare={() => setShareOpen(true)}
       />
 
-      {/* Map Selector, with ADAPT next to the map it adapts to (04 §5.2, T08.5) */}
+      {/* Map Selector, with ADAPT next to the map it adapts to */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <div className="font-pixel-heading text-[10px] text-zinc-400 uppercase tracking-wider">MAP</div>

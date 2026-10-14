@@ -40,7 +40,7 @@ function createSyntheticResult(
   };
 }
 
-describe('toChartSeries (04 §2.4, T04.6)', () => {
+describe('toChartSeries', () => {
   it('returns all points when sample count is less than or equal to maxPoints', () => {
     const result = createSyntheticResult(150);
     const series = toChartSeries(result, { maxPoints: 300 });

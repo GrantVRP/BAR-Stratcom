@@ -6,7 +6,7 @@ import { FactionEmblem } from './FactionEmblem';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('FactionEmblem (T10.6)', () => {
+describe('FactionEmblem', () => {
   let container: HTMLDivElement;
   let root: Root;
   beforeEach(() => {

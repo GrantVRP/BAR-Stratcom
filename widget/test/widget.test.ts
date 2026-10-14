@@ -3,8 +3,8 @@ import { WidgetHeartbeatSchema } from '../../src/core/schemas/protocol';
 import { createWidgetHarness } from './harness';
 import { createScenario } from './scenario';
 
-describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
-  it('Initialize writes probe.json and widget.json atomically with no .tmp left behind', async () => {
+describe('Widget v2 Skeleton & Protocol', () => {
+  it('Initialize writes probe.json and widget.json atomically with no.tmp left behind', async () => {
     const harness = await createWidgetHarness();
     try {
       harness.callin('Initialize');
@@ -116,7 +116,7 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
     }
   });
 
-  it('writes probe.json with the expected structure and verified API list (05 §2)', async () => {
+  it('writes probe.json with the expected structure and verified API list', async () => {
     const harness = await createWidgetHarness();
     try {
       harness.callin('Initialize');
@@ -139,7 +139,7 @@ describe('Widget v2 Skeleton & Protocol (05 §2-§4, T02.2)', () => {
       expect(probe!.canControlUnits).toBe(true);
       expect(probe!.windFunctions).toBe(true);
 
-      // Verify all required API names from 05 §2 are probed
+      // Verify all required API names are probed
       const requiredApis = [
         'Spring.GetTeamRulesParam',
         'Spring.GetTeamUnitsCounts',

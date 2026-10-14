@@ -1,5 +1,5 @@
 /**
- * 3D launch scene layout and animation maths (T06.15), shared by tools/build-launch-3d.ts and the
+ * 3D launch scene layout and animation maths, shared by tools/build-launch-3d.ts and the
  * renderer. World units are BAR elmos; x east, y up, z south (towards the camera). Pure: no DOM,
  * no WebGL.
  */
@@ -13,7 +13,7 @@ export interface P2 {
 export const GROUND_SIZE = 1600;
 
 /**
- * The walk (owner's draft): in from below the bottom-left, past the front of the turbine, then up and
+ * The walk: in from below the bottom-left, past the front of the turbine, then up and
  * off the top-right. Chosen by screen position through CAMERA (34° FOV, 16:10).
  */
 export const PATH3D: P2[] = [
@@ -34,7 +34,7 @@ export const PATH3D: P2[] = [
 export const TURBINE_POS: P2 = { x: -171, z: 102 };
 /** Rotor turned three-quarters to the camera. */
 export const TURBINE_YAW_DEG = 30;
-/** Extra turn of each faction's turbine head (owner request: the Armada turbine turned around). */
+/** Extra turn of each faction's turbine head (the Armada turbine turned around). */
 export const TURBINE_FLIP_DEG = { armada: 180, cortex: 0 } as const;
 /** Rotor speed (degrees per second). */
 export const ROTOR_SPEED_DEG = 150;

@@ -19,7 +19,7 @@ class FakeBridgeSource extends EventEmitter implements BridgeSource {
   }
 }
 
-describe('SessionRecorder (02 §4.1, 03 §7.6, §8)', () => {
+describe('SessionRecorder', () => {
   let tmpUserDir: string;
   let tmpStratcomDir: string;
 
@@ -265,7 +265,7 @@ describe('SessionRecorder (02 §4.1, 03 §7.6, §8)', () => {
     recorder.detach();
   });
 
-  it('ignores a session id that is not a plain name (path guard, T11.2)', () => {
+  it('ignores a session id that is not a plain name (path guard)', () => {
     const fakeSource = new FakeBridgeSource();
     const recorder = new SessionRecorder({ sessionsDir: tmpUserDir, stratcomDir: tmpStratcomDir });
     recorder.attach(fakeSource);

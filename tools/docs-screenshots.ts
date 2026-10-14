@@ -1,8 +1,8 @@
 /**
- * T11.5: the README screenshots (not part of verify; run after `npm run build`):
+ * The README screenshots (not part of verify; run after `npm run build`):
  *   npx tsx tools/docs-screenshots.ts
  *
- * Starts the built app through the e2e launcher (temporary profile, --no-bar: never the owner's game
+ * Starts the built app through the e2e launcher (temporary profile, --no-bar: never a real game
  * folder), so every picture shows a PC without BAR: the demo, the curated library and a recorded
  * real game's report. Writes docs/images/*.png.
  */

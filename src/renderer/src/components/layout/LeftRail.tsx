@@ -24,7 +24,7 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// Every view in 06 §2 has its page now; no "coming soon" entries.
+// Every view has its page now; no "coming soon" entries.
 const NAV_ITEMS: NavItem[] = [
   { id: 'home', hash: '#/home', label: 'HOME', icon: Home },
   { id: 'library', hash: '#/library', label: 'LIBRARY', icon: BookOpen },

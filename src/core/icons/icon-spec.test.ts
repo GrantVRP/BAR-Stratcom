@@ -16,7 +16,7 @@ function spec(unitId: string): Pick<IconSpec, 'base' | 'badge'> {
   return { base, badge };
 }
 
-describe('iconSpecFor on the real snapshot (T10.3)', () => {
+describe('iconSpecFor on the real snapshot', () => {
   it('maps every factory of both factions to its type', () => {
     const factories = snapshot.units.filter((u) => u.isFactory && (u.factionId === 'armada' || u.factionId === 'cortex'));
     expect(factories.length).toBeGreaterThan(30);

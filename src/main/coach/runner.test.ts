@@ -68,7 +68,7 @@ const validPlan: BuildPlan = {
   ]
 };
 
-describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
+describe('CoachRunner', () => {
   let tmpDir: string;
 
   beforeEach(() => {
@@ -126,7 +126,7 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
       const content1 = JSON.parse(fs.readFileSync(coachFile, 'utf8'));
       const parsed1 = CoachDocSchema.parse(content1);
       expect(parsed1.mode).toBe('live');
-      expect(parsed1.seq).toBeGreaterThanOrEqual(Date.now()); // never below the wall clock in ms (T09.6)
+      expect(parsed1.seq).toBeGreaterThanOrEqual(Date.now()); // never below the wall clock in ms
 
       // Advance tick
       await runner.tick();
@@ -145,7 +145,7 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
       expect(parsedStop.hud.visible).toBe(false);
       expect(parsedStop.seq).toBeGreaterThan(parsed2.seq);
 
-      // a restarted runner keeps counting up: the widget ignores a seq that is not higher (T09.6)
+      // a restarted runner keeps counting up: the widget ignores a seq that is not higher
       await runner.start({
         plan: validPlan,
         mode: 'live',
@@ -163,7 +163,7 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
     }
   });
 
-  it('fills the assist payloads from Settings → Assist, read every tick (T09.2)', async () => {
+  it('fills the assist payloads from Settings → Assist, read every tick', async () => {
     vi.useFakeTimers();
     try {
       const runner = new CoachRunner();
@@ -196,7 +196,7 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
     }
   });
 
-  it('simulates an unknown map without wind, then once on the map the session names (T11.1)', async () => {
+  it('simulates an unknown map without wind, then once on the map the session names', async () => {
     vi.useFakeTimers();
     try {
       const runner = new CoachRunner();
@@ -227,7 +227,7 @@ describe('CoachRunner (02 §4.1, 04 §3.1)', () => {
     }
   });
 
-  it('measures each tick (evaluate + write) for the 08 §5 budget (T11.3)', async () => {
+  it('measures each tick (evaluate + write) for the budget', async () => {
     // real timers: fake timers also freeze performance.now()
     const runner = new CoachRunner();
     await runner.start({ plan: validPlan, mode: 'live', source: new FakeBridgeSource(), registry, stratcomDir: tmpDir });

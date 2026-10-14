@@ -75,7 +75,7 @@ const opening = plan([
 const buildBox = (current: number, clock: number, aheadBehindSec: number | null = null) =>
   buildBuildBox({ plan: opening, steps: tracked(opening, current), currentStepIndex: current, aheadBehindSec, registry, clock });
 
-describe('HUD boxes (owner requests T09.3/T09.4)', () => {
+describe('HUD boxes', () => {
   it('queues: the builders skip factory steps; the factory run follows one factory, merging repeats', () => {
     expect(nextBuilderStep(opening, tracked(opening, 2))?.id).toBe('s4');
     expect(nextBuilderStep(opening, tracked(opening, 7))).toBeNull();
@@ -172,7 +172,7 @@ describe('HUD boxes (owner requests T09.3/T09.4)', () => {
   });
 });
 
-describe('radar contacts (owner request T09.5)', () => {
+describe('radar contacts', () => {
   it('sightings: the first time is kept while in sight, dropped when gone, restarted on return', () => {
     let seen = trackEnemySightings({}, { armpw: 2 }, 100);
     expect(seen).toEqual({ armpw: 100 });

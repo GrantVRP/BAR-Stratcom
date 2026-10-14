@@ -86,7 +86,7 @@ export function TopBar(): React.JSX.Element {
         </div>
       </div>
 
-      {/* No UNOFFICIAL tag here (owner request, T06.16); the notice is on the About page */}
+      {/* No UNOFFICIAL tag here; the notice is on the About page */}
     </header>
   );
 }

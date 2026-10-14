@@ -11,7 +11,7 @@ export function hudBoxes(settings: HudSettings | undefined): HudBoxesSettings {
 }
 
 /**
- * Applies the player's HUD choices to what the coach sends (T09.6): Widget HUD Display off hides the
+ * Applies the player's HUD choices to what the coach sends: Widget HUD Display off hides the
  * HUD; a box switched off is not sent, so the widget closes the gap (alerts stay).
  */
 export function applyHudSettings(hud: CoachHud, settings: HudSettings | undefined): CoachHud {
@@ -25,7 +25,7 @@ export function applyHudSettings(hud: CoachHud, settings: HudSettings | undefine
   };
 }
 
-/** Radar mode (owner request T09.6): no plan, the widget shows only the radar box. */
+/** Radar mode: no plan, the widget shows only the radar box. */
 export function buildRadarModeHud(
   enemies: Readonly<Record<string, number>>,
   seenAt: Readonly<Record<string, number>>,

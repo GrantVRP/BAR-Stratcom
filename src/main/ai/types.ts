@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import { AiProviderSchema } from '../../core/schemas/settings';
 
-/** AI providers (04 §6.2), as in Settings without "none"; the player brings their own key or local server (D-09). */
+/** AI providers, as in Settings without "none"; the player brings their own key or local server. */
 export const AiProviderIdSchema = AiProviderSchema.exclude(['none']);
 export const AI_PROVIDER_IDS = AiProviderIdSchema.options;
 export type ProviderId = (typeof AI_PROVIDER_IDS)[number];
@@ -62,7 +62,7 @@ export class AiError extends Error {
   }
 }
 
-/** 120 s for cloud providers, 300 s for local servers (04 §6.2). */
+/** 120 s for cloud providers, 300 s for local servers. */
 export const CLOUD_TIMEOUT_MS = 120_000;
 export const LOCAL_TIMEOUT_MS = 300_000;
 

@@ -89,7 +89,7 @@ export async function fetchLiveCandidates(options: FetchOptions = {}): Promise<P
   const log = options.log ?? (() => {});
   const now = options.now ?? new Date();
   const days = sampleDays(now, options.windowDays ?? 60, options.everyNthDay ?? 3);
-  // one clock for the sampled days and the age cutoff (the cutoff used the real time: T11.4 fix)
+  // one clock for the sampled days and the age cutoff (the cutoff used the real time before)
   const filter = { versionFamily, maxAgeDays: options.windowDays ?? 60, now };
   const candidates: ProcessedReplay[] = [];
 

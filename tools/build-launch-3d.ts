@@ -1,5 +1,5 @@
 /**
- * Builds the 3D launch-scene assets (T06.15) into src/renderer/src/assets/launch3d/:
+ * Builds the 3D launch-scene assets into src/renderer/src/assets/launch3d/:
  *   model-<name>.json   S3O models (armfast, corpyro, armwin, corwin, Aleppo pines): piece tree with
  *                       interleaved vertices (x y z nx ny nz u v) and triangle indices, base64
  *   walk-<unit>.json    baked walk keyframes from the unit scripts (made by Beherith)

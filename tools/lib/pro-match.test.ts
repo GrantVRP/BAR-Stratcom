@@ -33,7 +33,7 @@ const LIST = [A, B, C];
 
 const team = (playerName: string, factionId: string | null, allyTeamId: number) => ({ playerName, factionId, allyTeamId });
 
-describe('pro replay matching (T08.3)', () => {
+describe('pro replay matching', () => {
   it('matches by map and player names, ignoring order and case', () => {
     const m = matchProReplay({ mapScriptName: 'test map 1.0', teams: [team('bravo', 'armada', 1), team('ALPHA', 'cortex', 0)] }, LIST);
     expect(m).toEqual({ replay: A, by: 'players' });

@@ -1,5 +1,5 @@
 /**
- * Faction colour check for the 32-bit unit sprites (T10.7): how much of a sprite's saturated
+ * Faction colour check for the 32-bit unit sprites: how much of a sprite's saturated
  * "accent" paint is Armada blue versus Cortex red. Pure function over RGBA pixels.
  */
 export interface AccentShare {

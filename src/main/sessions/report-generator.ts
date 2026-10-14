@@ -24,7 +24,7 @@ export interface ReportGeneratorOptions {
 }
 
 /**
- * Generates and atomically persists report.json for a finalized session (03 §9, 04 §4, T07.2).
+ * Generates and atomically persists report.json for a finalized session.
  */
 export async function generateReportForSession(
   options: ReportGeneratorOptions

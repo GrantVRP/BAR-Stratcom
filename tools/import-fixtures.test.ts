@@ -37,7 +37,7 @@ describe('fixture-repair unit functions', () => {
     expect(commanders.has(2)).toBe(false);
   });
 
-  it('repairs AI teams named after owner before anonymising owner', () => {
+  it('repairs AI teams named after the player before anonymising the player', () => {
     const session: RawSessionFile = {
       protocol: 1,
       kind: 'session',
@@ -65,7 +65,7 @@ describe('fixture-repair unit functions', () => {
     expect(result.notes).toContain('repaired AI team playerName');
   });
 
-  it('identifies owner replay 1v1 game vs AI', () => {
+  it('identifies a recorded 1v1 game of our own vs AI', () => {
     const session: RawSessionFile = {
       protocol: 1,
       kind: 'session',
@@ -91,7 +91,7 @@ describe('fixture-repair unit functions', () => {
     expect(result.notes).toContain('owner game vs AI, not a pro reference');
     expect(result.notes).toContain('widget-3.0.0 replay team names may be unreliable');
 
-    // Also test large team where owner is in team
+    // Also test a large team game the recording player is in
     const largeSession: RawSessionFile = {
       ...session,
       teams: [
@@ -156,7 +156,7 @@ describe('fixture-repair unit functions', () => {
     expect(getMapSlug('Supreme Isthmus v1.7')).toBe('isthmus');
   });
 
-  it('never leaves a dash at either end of a map slug (H2: "Cape_Violet_V1", "Ditched_V1")', () => {
+  it('never leaves a dash at either end of a map slug (pro maps "Cape_Violet_V1", "Ditched_V1")', () => {
     expect(getMapSlug('Cape_Violet_V1')).toBe('cape-violet');
     expect(getMapSlug('Ditched_V1')).toBe('ditched');
     expect(getMapSlug('_Isidis crack 1.1')).toBe('isidis-crack');

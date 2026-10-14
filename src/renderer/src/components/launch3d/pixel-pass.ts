@@ -11,7 +11,7 @@ import {
 } from 'three';
 
 /**
- * 32-bit pixel-art look for a 3D scene (T06.15): the scene renders into a small target (one target
+ * 32-bit pixel-art look for a 3D scene: the scene renders into a small target (one target
  * pixel = `pixelSize` screen pixels), then a full-screen pass upscales it with nearest filtering,
  * draws 1-px dark outlines where depth jumps, and steps the colours with a light ordered dither.
  */

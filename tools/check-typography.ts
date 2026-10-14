@@ -40,7 +40,7 @@ export function checkArbitraryFontSizes(filePath: string, content: string): Typo
           file: filePath,
           line: lineIdx + 1,
           column: match.index + 1,
-          message: `Forbidden font size "${match[0]}": minimum font size is 10px (06 §3 / design rule).`
+          message: `Forbidden font size "${match[0]}": minimum font size is 10px.`
         });
       }
     }
@@ -68,7 +68,7 @@ export function checkArbitraryFontSizes(filePath: string, content: string): Typo
             file: filePath,
             line: lineIdx + 1,
             column: match.index + 1,
-            message: `Forbidden CSS font-size "${match[0]}": minimum font size is 10px (06 §3 / design rule).`
+            message: `Forbidden CSS font-size "${match[0]}": minimum font size is 10px.`
           });
         }
       }

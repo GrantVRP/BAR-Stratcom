@@ -1,5 +1,5 @@
 /**
- * Vitest global setup of the node project (T11.7). Electron 44 has no install script: it downloads its
+ * Vitest global setup of the node project. Electron 44 has no install script: it downloads its
  * binary on the first `require('electron')`. Main-process tests load it from several workers at once,
  * and on a fresh `npm ci` (CI, a new clone) those workers raced to unpack the same files and one failed
  * ("Cannot create a file when that file already exists"). Loading it here, once, before any worker

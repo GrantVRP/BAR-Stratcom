@@ -1,5 +1,5 @@
 /**
- * T11.1: fabrication audit, part of `npm run verify`.
+ * Fabrication audit, part of `npm run verify`.
  *
  *   npx tsx tools/audit-fabrication.ts
  *
@@ -52,7 +52,7 @@ for (const file of [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'wi
 
 for (const f of findings) console.error(`audit:fabrication: FAIL ${f.file}:${f.line} [${f.rule}] ${f.detail}`);
 if (findings.length > 0) {
-  console.error(`audit:fabrication: ${findings.length} finding(s); game facts must come from data/ (08 §7)`);
+  console.error(`audit:fabrication: ${findings.length} finding(s); game facts must come from data/`);
   process.exit(1);
 }
 console.log('audit:fabrication: OK (no stat literals, unit names in UI code, legacy assets or hot-linked website assets)');

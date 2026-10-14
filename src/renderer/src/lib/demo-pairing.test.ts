@@ -7,7 +7,7 @@ import {
   formatDemoHeader
 } from './demo-pairing';
 
-describe('demo-pairing helpers (T06.12)', () => {
+describe('demo-pairing helpers', () => {
   const sampleDemos: DemoInfo[] = [
     {
       id: '2026-10-01-cortex-1v1-vs-ai-barr',

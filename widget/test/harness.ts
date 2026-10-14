@@ -180,7 +180,7 @@ export async function createWidgetHarness(
 
   engine.doStringSync(LUA_SPRING_BOOTSTRAP);
 
-  // 4b. Selection, command panel and orders (T09.1)
+  // 4b. Selection, command panel and orders
   const orderRecorders = installOrderMocks(engine, scenario);
   installSensorMocks(engine, scenario);
 

@@ -35,7 +35,7 @@ function progressText(p: IpcEventData<'ai:progress'> | null): string {
   return 'SIMULATING…';
 }
 
-/** Library → DRAFT WITH AI (06 §4.3, T08.8): intent → progress → checked draft → save or discard. */
+/** Library → DRAFT WITH AI: intent → progress → checked draft → save or discard. */
 export function AiDraftDialog({ onClose, onSaved, initial }: AiDraftDialogProps): React.JSX.Element {
   const factions = useSnapshot((s) => s.factions).filter((f) => f.enabled);
   const savePlan = usePlans((s) => s.savePlan);

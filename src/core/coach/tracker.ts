@@ -143,7 +143,7 @@ export function trackSteps(input: StepTrackerInput): StepTrackerResult {
     }
   }
 
-  // 2.5 Auto-skip overdue steps (T05.10 item 6):
+  // 2.5 Auto-skip overdue steps:
   // "a step overdue by > 60 s while two or more later steps have completed becomes skipped"
   const autoSkippedIds = new Set<string>(skippedStepIds ?? []);
   for (let i = 0; i < working.length; i++) {

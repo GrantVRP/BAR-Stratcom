@@ -17,14 +17,14 @@ export interface StartDemoOptions {
   plan?: BuildPlan;
   registry: Registry;
   profile: Profile;
-  /** Settings → Coach, read every tick like live coaching (T11.5 fix). */
+  /** Settings → Coach, read every tick like live coaching. */
   coachSettings?: () => CoachSettings;
   /** Forwards each demo state to the renderer (live:state). */
   onState: (state: StateDoc) => void;
 }
 
 /**
- * Demo coaching (moved out of the coach:start handler, T09.6): plays a recorded game through the coach
+ * Demo coaching (moved out of the coach:start handler): plays a recorded game through the coach
  * runner (no coach.json is written) and turns its end into an in-memory review report.
  */
 export async function startDemoCoaching(options: StartDemoOptions): Promise<DemoSource> {

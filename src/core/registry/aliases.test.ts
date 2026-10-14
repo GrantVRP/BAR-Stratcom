@@ -5,7 +5,7 @@ import defaultSnapshotData from '../../../data/snapshots/test-31479-433a460/unit
 import { AliasesFileSchema, FactionsFileSchema, UnitSnapshotSchema } from '../schemas';
 import { normalizeLookupKey } from './registry';
 
-describe('data/aliases.json validation and invariants against real snapshot (03 §3, T01.4, T03.4)', () => {
+describe('data/aliases.json validation and invariants against real snapshot', () => {
   const aliasesFile = AliasesFileSchema.parse(aliasesData);
   const factionsFile = FactionsFileSchema.parse(factionsData);
   const snapshot = UnitSnapshotSchema.parse(defaultSnapshotData);

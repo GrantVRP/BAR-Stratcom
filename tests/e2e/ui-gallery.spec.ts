@@ -20,7 +20,7 @@ test('dev-ui: renders UI primitives gallery and matches screenshot', async () =>
     const gallery = page.getByTestId('dev-ui-gallery');
     await expect(gallery).toBeVisible();
 
-    // Assert visual stability via screenshot with threshold 0.2 (06 §3 / T06.1)
+    // Assert visual stability via screenshot with threshold 0.2
     await expect(page).toHaveScreenshot('dev-ui-gallery.png', {
       maxDiffPixelRatio: 0.2
     });

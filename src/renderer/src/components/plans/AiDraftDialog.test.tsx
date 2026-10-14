@@ -60,7 +60,7 @@ function fakeIpc(): Fake {
 
 const byTestId = <T extends HTMLElement>(container: HTMLElement, id: string): T | null => container.querySelector<T>(`[data-testid="${id}"]`);
 
-describe('AiDraftDialog (T08.8)', () => {
+describe('AiDraftDialog', () => {
   let container: HTMLDivElement;
   let root: Root;
 

@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import { AiError } from './types';
 
 /**
- * Maps SDK errors to typed AiErrors (04 §6.2): the Anthropic and OpenAI SDKs share a class layout,
+ * Maps SDK errors to typed AiErrors: the Anthropic and OpenAI SDKs share a class layout,
  * Gemini reports HTTP status codes.
  */
 export function toAiError(err: unknown, signal?: AbortSignal): AiError {

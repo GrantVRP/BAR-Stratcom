@@ -48,7 +48,7 @@ export interface ComputeScenarioOptions {
 }
 
 /**
- * Derives a "behind" plan with every targetTime shifted earlier by deltaSec (05 §T05.9).
+ * Derives a "behind" plan with every targetTime shifted earlier by deltaSec.
  * Steps with targetTime clamp to minimum 0.
  */
 export function makeBehindPlan(plan: BuildPlan, deltaSec = 30): BuildPlan {
@@ -136,7 +136,7 @@ export function computeScenarioTimeline(options: ComputeScenarioOptions): CoachS
       });
     }
 
-    // 5. Update alert intervals with 15s reactivation extension and 5s min duration (T05.10 item 5)
+    // 5. Update alert intervals with 15s reactivation extension and 5s min duration
     const activeIds = new Set<string>(evalResult.state.alerts.map((a) => a.id));
     const sec = Math.round(state.gameSeconds);
 

@@ -55,7 +55,7 @@ const events: WidgetEvent[] = [
   { tm: 2, bd: 'legcom', b: 2, e: 'created', d: 'legmex', u: 20, f: 200 }
 ];
 
-describe('listCapturePlayers (T08.2)', () => {
+describe('listCapturePlayers', () => {
   it('marks players without build events or with a disabled faction as not capturable', () => {
     const players = listCapturePlayers(registry, meta('replay'), events);
     expect(players.map((p) => [p.name, p.capturable, p.reason])).toEqual([
@@ -67,7 +67,7 @@ describe('listCapturePlayers (T08.2)', () => {
   });
 });
 
-describe('capturePlan (T08.2)', () => {
+describe('capturePlan', () => {
   it('captures a replay player as a replay-capture plan with 0 validation errors', () => {
     const result = capturePlan({
       registry,
@@ -131,7 +131,7 @@ describe('capturePlan (T08.2)', () => {
   });
 });
 
-describe('parseReplayIdOrUrl (T08.2)', () => {
+describe('parseReplayIdOrUrl', () => {
   it('accepts a bare id, a replay page link and a gameId query', () => {
     expect(parseReplayIdOrUrl(REPLAY_ID.toUpperCase())).toBe(REPLAY_ID);
     expect(parseReplayIdOrUrl(` https://bar-rts.com/replays/${REPLAY_ID} `)).toBe(REPLAY_ID);

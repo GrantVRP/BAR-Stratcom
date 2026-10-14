@@ -9,20 +9,20 @@ export interface CuratedGuardResult {
 }
 
 /**
- * Guard for curated build plans (T06.11).
+ * Guard for curated build plans.
  * Any plan in data/builds/** with source.kind === 'curated' must have:
  * 1. A replayId that is a real BAR replay id (32 lowercase hex characters).
- * 2. An 'approve' record in data/builds/REVIEW-LOG.md (written at H3/T08.9).
- * Before H3, no curated plans may exist.
+ * 2. An 'approve' record in data/builds/REVIEW-LOG.md (written when the review is published).
+ * Before the review, no curated plans may exist.
  */
-/** Candidate files written by tools/curate.ts (T08.3) and reviewed at H3. */
+/** Candidate files written by tools/curate.ts and reviewed by hand. */
 export function isCandidatePath(relPath: string): boolean {
   return relPath.replace(/\\/g, '/').includes('builds/_candidates/');
 }
 
 /**
- * Rule for data/builds/_candidates/*.json (T08.3): a curated source with a real BAR replay id, not yet
- * reviewed (reviewedBy / reviewedAt empty until H3). The app never lists these (PlanStore skips "_" folders).
+ * Rule for data/builds/_candidates/*.json: a curated source with a real BAR replay id, not yet
+ * reviewed (reviewedBy / reviewedAt empty until reviewed). The app never lists these (PlanStore skips "_" folders).
  */
 export function validateCandidatePlan(plan: BuildPlan): CuratedGuardResult {
   if (plan.source.kind !== 'curated') {
@@ -32,7 +32,7 @@ export function validateCandidatePlan(plan: BuildPlan): CuratedGuardResult {
     return { valid: false, reason: `Candidate "${plan.id}" has invalid replayId "${plan.source.replayId}"` };
   }
   if (plan.source.reviewedBy !== '' || plan.source.reviewedAt !== '') {
-    return { valid: false, reason: `Candidate "${plan.id}" is marked reviewed; publish it with T08.9 instead` };
+    return { valid: false, reason: `Candidate "${plan.id}" is marked reviewed; publish it with tools/publish-curated.ts instead` };
   }
   return { valid: true };
 }
@@ -58,7 +58,7 @@ export function validateCuratedPlanGuard(
   if (!fs.existsSync(reviewLogPath)) {
     return {
       valid: false,
-      reason: `Plan "${plan.id}" is marked curated but REVIEW-LOG.md does not exist (no curated plans allowed before H3)`
+      reason: `Plan "${plan.id}" is marked curated but REVIEW-LOG.md does not exist (no curated plans allowed before the review)`
     };
   }
 
@@ -70,7 +70,7 @@ export function validateCuratedPlanGuard(
     };
   }
 
-  // a published curated plan credits its reviewer (T08.9)
+  // a published curated plan credits its reviewer
   if (plan.source.reviewedBy.trim() === '' || plan.source.reviewedAt.trim() === '') {
     return { valid: false, reason: `Plan "${plan.id}" is published without reviewedBy / reviewedAt` };
   }

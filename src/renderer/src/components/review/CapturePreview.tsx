@@ -22,7 +22,7 @@ function tabClass(active: boolean): string {
 
 const tagClass = "border border-zinc-800 bg-[#12131a] px-2 py-0.5 font-['Press_Start_2P'] text-[10px]";
 
-/** Captured plan preview: summary tags, validation, then timeline or simulated economy (06 §4.6). */
+/** Captured plan preview: summary tags, validation, then timeline or simulated economy. */
 export function CapturePreview({ plan, issues, mapScriptName }: CapturePreviewProps): React.JSX.Element {
   const [tab, setTab] = useState<PreviewTab>('timeline');
   const [mapRecord, setMapRecord] = useState<MapRecord | null>(null);

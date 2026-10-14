@@ -1,5 +1,5 @@
 /**
- * Pixel-art finishing passes on raw RGBA buffers (T10.5): hard alpha, stray-pixel cleanup,
+ * Pixel-art finishing passes on raw RGBA buffers: hard alpha, stray-pixel cleanup,
  * selective coloured outline ("sel-out") and a top-left rim light, the hallmarks of 32-bit
  * hand-made sprites. Pure functions so they can be unit-tested without image files.
  */

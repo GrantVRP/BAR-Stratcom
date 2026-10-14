@@ -57,7 +57,7 @@ export function readEventsLines(sessionDir: string): string[] {
 
 /**
  * SessionStore manages persisted match sessions in userData/sessions/<id>/.
- * Provides listing with summary fields, lazy series loading, deletion, and retention (03 §8-§9).
+ * Provides listing with summary fields, lazy series loading, deletion, and retention.
  */
 export class SessionStore {
   private readonly sessionsDir: string;

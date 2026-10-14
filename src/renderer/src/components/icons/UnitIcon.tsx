@@ -14,8 +14,8 @@ export interface UnitIconProps {
 }
 
 /**
- * A unit's icon: its 32-bit pixel sprite (T10.5) when we have one, otherwise the original class
- * sprite chosen from the active snapshot (06 §4.8, T10.3).
+ * A unit's icon: its 32-bit pixel sprite when we have one, otherwise the original class
+ * sprite chosen from the active snapshot.
  */
 export function UnitIcon({ unitId, size = 24, className = '' }: UnitIconProps): React.JSX.Element {
   const snapshot = useSnapshot((s) => s.snapshot);

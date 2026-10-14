@@ -31,7 +31,7 @@ vi.mock('electron', () => {
   };
 });
 
-describe('global shortcut manager (A-15)', () => {
+describe('global shortcut manager', () => {
   beforeEach(() => {
     mockGlobalShortcut.registeredMap.clear();
     vi.clearAllMocks();

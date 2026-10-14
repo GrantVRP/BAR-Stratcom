@@ -35,7 +35,7 @@ export function runnerPose(faction: SceneFaction, elapsed: number, lut: Point[])
   return { p: { x: Math.round(p.x), y: Math.round(p.y) }, size: runnerSizeAt(p.y), bob: step % 2 === 1 ? -1 : 0, step };
 }
 
-/** The faction's bot running up the track: path, depth sizes, step bob, shadow and dust (T06.14). */
+/** The faction's bot running up the track: path, depth sizes, step bob, shadow and dust. */
 export function Runner({ faction, k, reducedMotion }: RunnerProps): React.JSX.Element {
   const lut = useMemo(() => samplePath(SAMPLES), []);
   const unit = RUNNER_UNIT[faction];

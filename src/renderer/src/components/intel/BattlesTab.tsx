@@ -4,7 +4,7 @@ import { useIntel } from '../../lib/use-intel';
 import { Input } from '../ui/Input';
 import { IntelStatus } from './IntelStatus';
 
-/** Battles refresh every 20 s while this tab is shown and the window is visible (06 §4.7). */
+/** Battles refresh every 20 s while this tab is shown and the window is visible. */
 export const BATTLES_REFRESH_MS = 20_000;
 
 const clock = (sec: number): string => `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, '0')}`;
@@ -71,7 +71,7 @@ export function BattlesTab(): React.JSX.Element {
                     <div className="mt-1 flex items-center justify-between gap-2 font-mono text-xs text-zinc-400">
                       <span className="truncate">{b.map}</span>
                       <span data-num="true" className="shrink-0">
-                        {playing(b).length}/{b.maxPlayers} PLAYING{b.spectators ? ` // ${b.spectators} SPEC` : ''}
+                        {playing(b).length}/{b.maxPlayers} PLAYING{b.spectators ? ` // ${b.spectators} SPEC`: ''}
                       </span>
                     </div>
                   </button>

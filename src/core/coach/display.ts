@@ -113,7 +113,7 @@ export function buildCoachHud(input: BuildHudInput): CoachHud {
     });
   }
 
-  // Quiet line for planned stall if active and line space permits (T05.10 item 3)
+  // Quiet line for planned stall if active and line space permits
   if (lines.length < 4 && plannedStall) {
     lines.push({
       text: truncateTo36('ℹ PLANNED STALL'),

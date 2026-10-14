@@ -1,7 +1,7 @@
 export const BAR_API = 'https://api.bar-rts.com';
 export const TEISERVER_API = 'https://server4.beyondallreason.info/teiserver/api/public';
 
-/** Per-request timeout (T10.1). */
+/** Per-request timeout. */
 export const REQUEST_TIMEOUT_MS = 8_000;
 
 /**

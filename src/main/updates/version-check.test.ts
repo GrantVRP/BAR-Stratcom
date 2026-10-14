@@ -17,7 +17,7 @@ function githubAnswering(status: number, body: unknown) {
   return { fetchImpl, calls };
 }
 
-describe('version check (D-17, T11.4)', () => {
+describe('version check', () => {
   it('asks only GitHub\'s latest-release endpoint, sending nothing but the headers GitHub asks for', async () => {
     const gh = githubAnswering(200, { tag_name: 'v3.0.1', html_url: 'https://github.com/GrantVRP/BAR-Stratcom/releases/tag/v3.0.1', body: 'notes' });
     expect(await fetchNewerRelease('3.0.0', gh.fetchImpl)).toEqual({ latest: '3.0.1', url: 'https://github.com/GrantVRP/BAR-Stratcom/releases/tag/v3.0.1' });
@@ -52,7 +52,7 @@ describe('version check (D-17, T11.4)', () => {
   });
 });
 
-describe('shell:openExternal allow-list (02 §6)', () => {
+describe('shell:openExternal allow-list', () => {
   it('https links to the listed sites and their subdomains only', () => {
     for (const ok of ['https://github.com/GrantVRP/BAR-Stratcom/releases', 'https://www.beyondallreason.info/', 'https://api.bar-rts.com/x', 'https://ollama.com'])
       expect(isAllowedExternalUrl(ok), ok).toBe(true);

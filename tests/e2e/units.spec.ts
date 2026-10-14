@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
-test('unit catalog: legacy name search, original icons and dossier (T10.3)', async () => {
+test('unit catalog: legacy name search, original icons and dossier', async () => {
   const { app, close } = await launchApp();
   try {
     const page = await app.firstWindow();
@@ -32,7 +32,7 @@ test('unit catalog: legacy name search, original icons and dossier (T10.3)', asy
     await dossier.getByRole('button', { name: /Bot Lab/ }).first().click();
     await expect(page.getByTestId('unit-dossier')).toContainText('armlab');
 
-    // The unit art credit lives on the About page (T06.16 keeps the catalog free of long copy)
+    // The unit art credit lives on the About page (the catalog stays free of long copy)
     await page.keyboard.press('Escape'); // close the dossier drawer first
     await expect(page.getByTestId('unit-dossier')).not.toBeVisible();
     await page.getByTestId('nav-about').click();

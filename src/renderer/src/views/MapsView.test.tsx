@@ -39,7 +39,7 @@ const plan: BuildPlan = {
   opening: 'bot', energyStyle: 'wind', source: { kind: 'manual', createdAt: '2026-10-05' }, steps: []
 };
 
-describe('MapsView (T10.4, 06 §4.9)', () => {
+describe('MapsView', () => {
   let container: HTMLDivElement;
   let root: Root;
   const invoke = vi.fn();

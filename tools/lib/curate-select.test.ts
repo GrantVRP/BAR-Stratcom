@@ -19,7 +19,7 @@ function cand(over: Partial<SelectableCandidate>): SelectableCandidate {
   };
 }
 
-describe('curated candidate selection (T08.3)', () => {
+describe('curated candidate selection', () => {
   it('requires 12 steps, a factory before 3:00 and 0 validation errors', () => {
     expect(isEligible(cand({}))).toBe(true);
     expect(isEligible(cand({ steps: 11 }))).toBe(false);

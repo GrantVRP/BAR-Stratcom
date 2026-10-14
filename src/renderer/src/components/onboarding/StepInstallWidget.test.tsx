@@ -10,7 +10,7 @@ import { StepInstallWidget } from './StepInstallWidget';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-// regression (T11.5): an unknown or not-yet-loaded widget version was shown as a made-up "3.0.1"
+// regression: an unknown or not-yet-loaded widget version was shown as a made-up "3.0.1"
 describe('widget version text', () => {
   let container: HTMLDivElement;
   let root: Root;

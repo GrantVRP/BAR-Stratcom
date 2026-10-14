@@ -25,7 +25,7 @@ function input(provider: AiProvider, extra: Partial<DraftInput> = {}): DraftInpu
   };
 }
 
-describe('AI drafting pipeline (T08.7, 04 §6.1)', () => {
+describe('AI drafting pipeline', () => {
   it('accepts a valid first answer: our step ids, ai-draft source, simulated', async () => {
     const map = loadMaps().find((m) => avgWindFor(m, loadAvgWindTable()) !== null)!;
     const provider = scripted([validDraft()]);

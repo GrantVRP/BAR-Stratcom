@@ -197,7 +197,7 @@ export const CoachHudMetaSchema = z
 export type CoachHudMeta = z.infer<typeof CoachHudMetaSchema>;
 
 /**
- * A HUD box (owner requests, T09.3/T09.4): a header (title + meta) and 1–4 rows, the first big (the
+ * A HUD box: a header (title + meta) and 1–4 rows, the first big (the
  * entry point), the rest the queue behind it.
  */
 export const CoachHudBoxSchema = z
@@ -219,7 +219,7 @@ export const CoachHudAlertSchema = z
 
 export type CoachHudAlert = z.infer<typeof CoachHudAlertSchema>;
 
-/** The radar box (from widget 3.0.6, T09.5): the widget draws the scope from the game; `lines` are the
+/** The radar box (from widget 3.0.6): the widget draws the scope from the game; `lines` are the
  *  enemy contacts the app lists under it (identified enemies in LOS). */
 export const CoachHudRadarSchema = z
   .object({
@@ -346,7 +346,7 @@ export const SessionFileDocSchema = z
     protocol: ProtocolVersionSchema,
     kind: z.literal('session'),
     sessionId: z.string(),
-    /** Widget that wrote the file (from 3.0.2, T09.1; older files have none). */
+    /** Widget that wrote the file (from 3.0.2, older files have none). */
     widgetVersion: z.string().optional(),
     mode: z.enum(['player', 'spectator', 'replay']),
     gameVersion: z.string(),

@@ -14,7 +14,7 @@ export interface UnitCardProps {
   onSelect: (unitId: string) => void;
 }
 
-/** Catalog card: original class icon, name, id, costs and build time (06 §4.8). */
+/** Catalog card: original class icon, name, id, costs and build time. */
 export function UnitCard({ unit, unitClass, selected, onSelect }: UnitCardProps): React.JSX.Element {
   return (
     <button

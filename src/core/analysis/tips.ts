@@ -113,7 +113,7 @@ export const TIP_RULES: TipRule[] = [
 
 /**
  * Evaluates all deterministic tip rules against the session metrics and context.
- * Sorts matching tips by impact descending and returns top 3 (04 §4.2).
+ * Sorts matching tips by impact descending and returns top 3.
  */
 export function evaluateTips(ctx: TipContext): SessionReportTip[] {
   const matching: Array<{ tip: SessionReportTip; impact: number }> = [];

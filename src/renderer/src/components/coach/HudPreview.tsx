@@ -51,7 +51,7 @@ export function HudPreview({
   const hud = React.useMemo<CoachHud | null>(() => {
     if (directHud) return directHud;
     if (coachState && plan && activeRegistry) {
-      // the same boxes the game shows: the IN-GAME HUD switches apply here too (T09.6)
+      // the same boxes the game shows: the IN-GAME HUD switches apply here too
       return applyHudSettings(buildCoachHud({
         plan,
         steps: coachState.steps,

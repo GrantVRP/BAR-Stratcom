@@ -1,5 +1,5 @@
 /**
- * Faction colours, one place for the whole app (06 §3): Armada blue, Cortex red, Legion teal. The
+ * Faction colours, one place for the whole app: Armada blue, Cortex red, Legion teal. The
  * renderer styles with them (lib/faction-style.ts) and `npm run make:icon` colours the window icons.
  */
 export const FACTION_ACCENTS: Readonly<Record<string, string>> = {

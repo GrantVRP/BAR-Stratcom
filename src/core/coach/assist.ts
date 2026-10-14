@@ -8,7 +8,7 @@ import { nextBuilderStep, nextFactoryRun } from './queues';
 export interface CoachAssistInput {
   plan: BuildPlan;
   steps: readonly CoachStep[];
-  /** Settings → Assist; both off by default (D-06). */
+  /** Settings → Assist; both off by default. */
   enabled: AssistSettings;
 }
 
@@ -38,7 +38,7 @@ function factoryQueuePayload(plan: BuildPlan, steps: readonly CoachStep[]): Coac
   return { factoryUnitId: run.actor.unitId, items };
 }
 
-/** coach.json `assist` (03 §7.6, T09.2): payloads only for the switches the player turned on. */
+/** coach.json `assist`: payloads only for the switches the player turned on. */
 export function buildCoachAssist(input: CoachAssistInput): CoachAssist {
   const { plan, steps, enabled } = input;
   return {

@@ -1,5 +1,5 @@
 /**
- * T08.4: pro benchmarks, data/benchmarks/<faction>-<mode>.json (03 §10, 04 §7).
+ * Pro benchmarks, data/benchmarks/<faction>-<mode>.json.
  *
  *   npx tsx tools/build-benchmarks.ts
  *

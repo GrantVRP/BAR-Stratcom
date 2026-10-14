@@ -69,7 +69,7 @@ export interface PickMixResult {
   notes: string[];
 }
 
-/** 11 minutes: the owner watches until 10:30 (T08.1b). */
+/** 11 minutes: each replay is watched until 10:30. */
 export const MIN_DURATION_MS = 11 * 60 * 1000;
 
 /** Parses a skill string like "[33.65]" into a numeric float. */
@@ -87,13 +87,13 @@ export function formatDuration(durationMs: number): string {
   return `${min}m ${sec.toString().padStart(2, '0')}s`;
 }
 
-/** Direct CDN download URL for replay .sdfz file. */
+/** Direct CDN download URL for replay.sdfz file. */
 export function getDirectDownloadUrl(fileName: string | undefined): string {
   const enc = encodeURIComponent(fileName || '');
   return `https://storage.uk.cloud.ovh.net/v1/AUTH_10286efc0d334efd917d476d7183232e/BAR/demos/${enc}`;
 }
 
-/** Classifies match mode per 04 §7: 1v1 -> '1v1', <=4 per ally team -> 'small-team', else 'large-team'. */
+/** Classifies match mode: 1v1 -> '1v1', <=4 per ally team -> 'small-team', else 'large-team'. */
 export function classifyMode(allyTeams: RawAllyTeam[]): '1v1' | 'small-team' | 'large-team' | 'other' {
   if (!allyTeams || allyTeams.length < 2) return 'other';
   const teamSizes = allyTeams.map((at) => (at.Players || []).length);
@@ -117,7 +117,7 @@ export function classifyMode(allyTeams: RawAllyTeam[]): '1v1' | 'small-team' | '
 
 /** Checks whether a replay meets filtering criteria. */
 export function filterReplayCandidate(detail: RawReplayDetail, options: FilterOptions = {}): boolean {
-  // H2 records 10:30 of each replay and the importer drops recordings under 10 minutes
+  // The capture records 10:30 of each replay and the importer drops recordings under 10 minutes
   const minDurationMs = options.minDurationMs ?? MIN_DURATION_MS;
   const maxAgeDays = options.maxAgeDays ?? 60;
   const versionFamily = options.versionFamily ?? 'test-31';

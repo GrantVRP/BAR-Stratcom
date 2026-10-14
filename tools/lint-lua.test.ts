@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { lintLua } from './lint-lua';
 
-describe('lintLua AST checks (05 §3, T02.1)', () => {
+describe('lintLua AST checks', () => {
   it('passes on valid local code and widget call-ins', () => {
     const code = `
       local spCreateDir = Spring.CreateDir

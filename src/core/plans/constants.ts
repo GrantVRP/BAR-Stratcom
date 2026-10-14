@@ -1,5 +1,5 @@
 /**
- * Adapter heuristics (04 §5.2). All values are estimated rules of thumb, not game facts, and the UI
+ * Adapter heuristics. All values are estimated rules of thumb, not game facts, and the UI
  * labels adapted plans as such.
  */
 

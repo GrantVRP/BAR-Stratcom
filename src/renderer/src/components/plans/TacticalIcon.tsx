@@ -84,7 +84,7 @@ export function TacticalIcon({
     );
   }
 
-  // 4. A unit: its original class icon from the active snapshot (T10.3)
+  // 4. A unit: its original class icon from the active snapshot
   if (unitId) {
     return <UnitIcon unitId={unitId} size={size} className={className} />;
   }

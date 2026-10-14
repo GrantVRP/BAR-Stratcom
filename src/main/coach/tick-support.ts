@@ -3,7 +3,7 @@ import type { LiveSnapshot } from '../../core/schemas/live';
 /**
  * The coach's input before the game sends data (and in manual-clock mode): nothing measured. No
  * player, no resources (every resource alert needs `res`), zero counts; never a made-up "typical"
- * wind or build power (T11.1/T11.3).
+ * wind or build power.
  */
 export function noTelemetrySnapshot(gameSeconds: number): LiveSnapshot {
   return {
@@ -28,7 +28,7 @@ export interface TickSummary {
   max: number;
 }
 
-/** Coach tick durations (evaluate + write) for the 08 §5 budget: the last `capacity` ticks. */
+/** Coach tick durations (evaluate + write) for the budget: the last `capacity` ticks. */
 export class TickStats {
   private readonly samples: number[] = [];
   constructor(private readonly capacity = 1200) {}

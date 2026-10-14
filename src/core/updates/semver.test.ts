@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { compareVersions, isNewerVersion, parseVersion } from './semver';
 
-describe('version compare for the release check (T11.4)', () => {
+describe('version compare for the release check', () => {
   it('parses release tags and package versions', () => {
     expect(parseVersion('v3.0.1')).toEqual({ major: 3, minor: 0, patch: 1, pre: [] });
     expect(parseVersion('3.0.0-dev.0')).toEqual({ major: 3, minor: 0, patch: 0, pre: ['dev', 0] });

@@ -16,7 +16,7 @@ const DEFAULT_TOOLTIPS: Record<ProvenanceKind, string> = {
   UNKNOWN: 'Origin or measurement source is unknown or unverified'
 };
 
-// Quiet labels (T06.16): thin outline, no fill or shadow, so they mark where a number comes from
+// Quiet labels: thin outline, no fill or shadow, so they mark where a number comes from
 // without competing with the number itself. Colour still tells the kinds apart.
 const KIND_STYLES: Record<ProvenanceKind, string> = {
   MEASURED: 'border border-[#4ade80]/50 text-[#4ade80]',

@@ -15,7 +15,7 @@ const INTEL_TABS = [
 
 type IntelTabId = (typeof INTEL_TABS)[number]['id'];
 
-/** Intel (06 §4.7, T10.2): public BAR data fetched by main. Only the shown tab is mounted (and refreshes). */
+/** Intel: public BAR data fetched by main. Only the shown tab is mounted (and refreshes). */
 export function IntelView(): React.JSX.Element {
   const [tab, setTab] = useState<IntelTabId>('battles');
 

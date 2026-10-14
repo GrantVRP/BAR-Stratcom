@@ -4,7 +4,7 @@ import { setIpcClientOverride } from '../lib/ipc-client';
 import type { BuildPlan, Settings } from '../../../core/schemas';
 import type { HealthState } from '../../../shared/ipc';
 
-describe('Zustand stores (06 §1–§2, T06.2)', () => {
+describe('Zustand stores', () => {
   beforeEach(() => {
     useSettings.getState().reset();
     useLive.getState().reset();

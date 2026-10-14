@@ -1,5 +1,5 @@
 /**
- * T11.3 (08 §5): app-level budgets on the built app, in its own temporary profile. Long-running, not
+ * App-level budgets on the built app, in its own temporary profile. Long-running, not
  * part of verify.
  *
  *   npm run build && npx tsx tools/perf/app-perf.ts [--minutes 30]
@@ -71,7 +71,7 @@ async function frameRate(page: Page, seconds: number): Promise<{ fps: number; lo
 async function main(): Promise<void> {
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'stratcom-perf-'));
   const t0 = Date.now();
-  const app = await electron.launch({ args: ['.', `--user-data-dir=${profile}`, '--no-bar'] }); // never the owner's game folder
+  const app = await electron.launch({ args: ['.', `--user-data-dir=${profile}`, '--no-bar'] }); // never a real game folder
   const page = await app.firstWindow();
   await page.getByTestId('launch-window').waitFor({ timeout: 30000 });
   const coldStartMs = Date.now() - t0;

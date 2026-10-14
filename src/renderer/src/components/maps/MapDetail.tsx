@@ -24,7 +24,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }):
   );
 }
 
-/** One map (06 §4.9): measured facts, wind from BAR's table, minimap + start positions, notes, adapt. */
+/** One map: measured facts, wind from BAR's table, minimap + start positions, notes, adapt. */
 export function MapDetail({ map, onAdapted }: { map: MapRecord; onAdapted: (plan: BuildPlan) => void }): React.JSX.Element {
   const { plans, activePlanId, savePlan } = usePlans();
   const [notes, setNotes] = useState<{ fileName: string; file: MapNotesFile | null } | null>(null);
@@ -56,7 +56,7 @@ export function MapDetail({ map, onAdapted }: { map: MapRecord; onAdapted: (plan
         <h2 className="font-['Press_Start_2P'] text-sm leading-relaxed text-white">{map.name}</h2>
         <p className="font-mono text-xs text-zinc-400">
           {map.scriptName}
-          {map.author ? ` // by ${map.author}` : ''}
+          {map.author ? ` // by ${map.author}`: ''}
         </p>
       </header>
 
@@ -90,7 +90,7 @@ export function MapDetail({ map, onAdapted }: { map: MapRecord; onAdapted: (plan
             </Row>
             <Row label="Water">{map.hasWater ? 'yes' : 'no'}</Row>
             <Row label="Start spots">{map.startPositions.length}</Row>
-            <Row label="Played">{map.popularity ? `#${map.popularity.rank} // ${map.popularity.replays30d} games in 30 days` : 'unknown'}</Row>
+            <Row label="Played">{map.popularity ? `#${map.popularity.rank} // ${map.popularity.replays30d} games in 30 days`: 'unknown'}</Row>
           </dl>
         </div>
       </div>

@@ -50,7 +50,7 @@ const calmMap: MapRecord = {
   mexYield: null
 };
 
-describe('AdaptPlanDialog (T08.5)', () => {
+describe('AdaptPlanDialog', () => {
   let container: HTMLDivElement;
   let root: Root;
   beforeEach(() => {

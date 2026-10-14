@@ -3,7 +3,7 @@ import { launchApp } from './launch';
 
 const FIXTURE = '2026-10-02-multi-large-team-owner-vs-ai-mediterraneum';
 
-test('captures a plan from a recorded replay session and saves it to the library (T08.2)', async () => {
+test('captures a plan from a recorded replay session and saves it to the library', async () => {
   const { app, close } = await launchApp([], undefined, { seedSessions: [FIXTURE] });
   try {
     const page = await app.firstWindow();

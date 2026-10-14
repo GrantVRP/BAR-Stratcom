@@ -26,7 +26,7 @@ export function parseWindFunctions(lua: string): { average: WindTable; risk: Win
 }
 
 /**
- * Adds BAR's wind-risk table (percent of time the wind is below 6) to data/wind/avg-wind.json (Q-06).
+ * Adds BAR's wind-risk table (percent of time the wind is below 6) to data/wind/avg-wind.json.
  * The file's averages must match the same game file's `averageWindLookup`, which proves the risk table
  * comes from the game version the averages were exported from.
  */

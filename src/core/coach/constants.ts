@@ -1,13 +1,13 @@
 import type { AlertId } from '../schemas/coach';
 
 /**
- * CustomParams.unitgroup values in snapshot that classify anti-air units (R-07).
+ * CustomParams.unitgroup values in snapshot that classify anti-air units.
  * Verified against test-31479-433a460: aa (34 units) and weaponaa (6 units).
  */
 export const ANTI_AIR_UNIT_GROUPS = new Set(['aa', 'weaponaa']);
 
 /**
- * Default audio timings in seconds (04 §3.3).
+ * Default audio timings in seconds.
  */
 export const ALERT_DEACTIVATION_HYSTERESIS_SEC = 2;
 export const ALERT_SOUND_COOLDOWN_SEC = 20;
@@ -16,32 +16,32 @@ export const CHAT_ECHO_COOLDOWN_SEC = 10;
 export const DEFAULT_DUE_LEAD_SEC = 10;
 
 /**
- * Minimum duration an alert must stay visible once activated (04 §3, T05.10 item 5).
+ * Minimum duration an alert must stay visible once activated.
  * // estimated: prevents HUD/audio flicker; human reaction and glance time requires at least 5s visible.
  */
 export const ALERT_MIN_VISIBLE_SEC = 5;
 
 /**
  * Window within which a cleared alert reactivating extends the previous interval instead of
- * creating a new activation, and suppresses sound re-cue (T05.10 item 5).
+ * creating a new activation, and suppresses sound re-cue.
  * // estimated: intermittent resource stalls or micro-idle states within 15s are a single continuous episode.
  */
 export const ALERT_REACTIVATION_WINDOW_SEC = 15;
 
 /**
- * Opening grace period before resource float alerts may trigger (T05.10 item 2).
+ * Opening grace period before resource float alerts may trigger.
  * // estimated: players start game with full resource storage (1000 M / 1000 E) to execute initial build orders.
  */
 export const FLOAT_OPENING_GRACE_SEC = 60;
 
 /**
- * Tolerance window around planned sim stalls to suppress live stall warnings (T05.10 item 3).
+ * Tolerance window around planned sim stalls to suppress live stall warnings.
  * // estimated: ±10s tolerance matches slight timing variance between planned sim and real game execution.
  */
 export const PLAN_EXPECTED_STALL_WINDOW_SEC = 10;
 
 /**
- * Delay threshold after planned finish before an overdue step with >= 2 later completed steps is marked skipped (T05.10 item 6).
+ * Delay threshold after planned finish before an overdue step with >= 2 later completed steps is marked skipped.
  * // estimated: steps overdue by >60s while multiple later steps finish indicate order divergence or abandoned build items.
  */
 export const STEP_OVERDUE_SKIP_SEC = 60;
@@ -74,7 +74,7 @@ export const ALL_ALERT_IDS: AlertId[] = [
 ];
 
 /**
- * Most units one "load factory queue" press may queue (05 §8.3, T09.1); the widget enforces the same
+ * Most units one "load factory queue" press may queue; the widget enforces the same
  * limit on its side.
  */
 export const ASSIST_QUEUE_MAX_UNITS = 20;

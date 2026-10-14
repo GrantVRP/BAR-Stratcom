@@ -50,7 +50,7 @@ function makeTeam(teamId: number, playerName: string, factionId: string, isAI = 
   };
 }
 
-describe('Mini-HUD, Coach reader & Echo (05 §8.1-§8.3, T02.6)', () => {
+describe('Mini-HUD, Coach reader & Echo', () => {
   it('valid coach doc renders HUD panel, faction accent border, title with progress, assist tag, and up to 4 lines with tones', async () => {
     const harness = await createWidgetHarness();
     try {

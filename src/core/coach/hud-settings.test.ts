@@ -15,7 +15,7 @@ const hud: CoachHud = {
   alerts: [{ text: 'ENERGY STALL', tone: 'danger' }]
 };
 
-describe('HUD settings (owner request T09.6)', () => {
+describe('HUD settings', () => {
   it('all boxes are shown until the player chooses', () => {
     expect(hudBoxes(undefined)).toEqual({ build: true, factory: true, radar: true });
     expect(hudBoxes({ enabled: true })).toEqual({ build: true, factory: true, radar: true });

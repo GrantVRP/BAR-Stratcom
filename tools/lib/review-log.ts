@@ -1,5 +1,5 @@
 /**
- * The H3 review sheet (data/builds/_review.md, kept after T08.9 as REVIEW-LOG.md): one "### n. Title"
+ * The review sheet (data/builds/_review.md, kept after publishing as REVIEW-LOG.md): one "### n. Title"
  * section per candidate with a `Plan: \`<id>\`` line and a `DECISION:` line.
  */
 export type ReviewOutcome = 'approve' | 'reject' | 'pending';

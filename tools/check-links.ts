@@ -1,5 +1,5 @@
 /**
- * T11.5: link check over the README, the other root documents, docs/ and the widget README.
+ * Link check over the README, the other root documents, docs/ and the widget README.
  *   npm run check:links             relative links and #headings (part of verify, offline)
  *   npx tsx tools/check-links.ts --online   also fetches every external link once
  */

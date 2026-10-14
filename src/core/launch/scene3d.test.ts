@@ -10,7 +10,7 @@ import {
   type WalkData
 } from './scene3d';
 
-describe('3D launch scene layout (T06.15)', () => {
+describe('3D launch scene layout', () => {
   it('walks from the near bottom-left to the far top-right', () => {
     expect(path3dPoint(0)).toEqual(PATH3D[0]);
     expect(path3dPoint(1)).toEqual(PATH3D[PATH3D.length - 1]);
@@ -43,7 +43,7 @@ describe('3D launch scene layout (T06.15)', () => {
   });
 });
 
-describe('walk playback (T06.15)', () => {
+describe('walk playback', () => {
   const walk: WalkData = {
     msPerKeyframe: 100,
     loopFrom: 1,

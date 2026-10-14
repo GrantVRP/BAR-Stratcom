@@ -12,7 +12,7 @@ export interface LaunchSceneProps {
 }
 
 /**
- * The launcher's animated pixel-art scene (T06.14): Greenest Fields ground, a spinning wind turbine
+ * The launcher's animated pixel-art scene: Greenest Fields ground, a spinning wind turbine
  * generating power, and the faction's bot (Sprinter / Fiend) running up the track off the top-right,
  * then coming back in from the bottom-left. 320 × 200 scene pixels at a whole-number scale, centred
  * and cropped to cover the window.

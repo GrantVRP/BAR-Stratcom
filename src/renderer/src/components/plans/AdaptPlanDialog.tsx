@@ -18,7 +18,7 @@ export interface AdaptPlanDialogProps {
   onSave: (adapted: BuildPlan) => Promise<void>;
 }
 
-/** Short labels for the adapter's transforms (04 §5.2). */
+/** Short labels for the adapter's transforms. */
 export function transformLabel(t: string, unitName: (id: string) => string): string | null {
   if (t === 'energy(wind→solar)') return 'Wind turbines → solar';
   if (t === 'energy(solar→wind)') return 'Solar → wind turbines';
@@ -28,7 +28,7 @@ export function transformLabel(t: string, unitName: (id: string) => string): str
   return null; // base(...) is the plan itself
 }
 
-/** Preview of a plan adapted to a map: what changes, the new economy, and save (T08.5, 06 §4.4). */
+/** Preview of a plan adapted to a map: what changes, the new economy, and save. */
 export function AdaptPlanDialog({ open, plan, map, onClose, onSave }: AdaptPlanDialogProps): React.JSX.Element {
   const snapshot = useSnapshot((s) => s.snapshot);
   const getUnitName = useSnapshot((s) => s.getUnitName);

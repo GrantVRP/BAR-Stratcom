@@ -32,7 +32,7 @@ vi.mock('node:fs', async (importOriginal) => {
   };
 });
 
-describe('data handlers (T06.8)', () => {
+describe('data handlers', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

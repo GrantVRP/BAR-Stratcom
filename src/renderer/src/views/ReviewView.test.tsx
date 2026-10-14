@@ -82,7 +82,7 @@ const mockSummary: SessionSummary = {
   hasReport: true
 };
 
-describe('ReviewView (06 §4.6, T07.4)', () => {
+describe('ReviewView', () => {
   let container: HTMLDivElement;
   let root: Root;
 

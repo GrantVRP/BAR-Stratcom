@@ -1,6 +1,6 @@
 /**
- * data/aliases.json and data/aliases.report.md from the v2 units database (T01.4, T01.7, T03.4).
- * The v2 code left the tree in T11.6; take its database from the baseline tag:
+ * data/aliases.json and data/aliases.report.md from the v2 units database.
+ * The v2 code is no longer in the tree; take its database from the baseline tag:
  *   git show v2-legacy-baseline:data/bar_units_database.json > scratch/bar_units_database.json
  *   npx tsx tools/harvest-aliases.ts scratch/bar_units_database.json
  */
@@ -181,7 +181,7 @@ export function harvestAliases(dbPath: string, snapshotPath?: string): {
   const rawDb = fs.readFileSync(dbPath, 'utf8');
   const units: LegacyUnit[] = JSON.parse(rawDb);
 
-  // Load real unit snapshot if available (T03.4)
+  // Load real unit snapshot if available
   let snapshot: UnitSnapshot | undefined;
   const snapshotIndexPath = path.resolve(process.cwd(), 'data/snapshots/index.json');
   if (snapshotPath && fs.existsSync(snapshotPath)) {
@@ -357,7 +357,7 @@ Total valid aliases preserved: **${result.aliases.length}**
 
 ## Kept Cross-Faction Aliases (Resolved by Faction)
 
-These aliases appear in multiple factions and are resolved in-game by the player’s active faction (03 §3).
+These aliases appear in multiple factions and are resolved in-game by the player’s active faction.
 
 | Alias | Matched Units |
 |-------|---------------|

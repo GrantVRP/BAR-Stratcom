@@ -77,7 +77,7 @@ export function HomeView(): React.JSX.Element {
       <ProfileSuggestionBanner />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Hero: the active plan and the one main action (06 §4.2) */}
+        {/* Hero: the active plan and the one main action */}
         <section
           data-testid="home-active-plan-card"
           data-faction={activePlan?.factionId ?? 'none'}
@@ -126,7 +126,7 @@ export function HomeView(): React.JSX.Element {
             >
               START COACHING (LIVE)
             </Button>
-            {/* Levels (T09.6): one primary; RADAR, the other way to play a real game, secondary beside it;
+            {/* Levels: one primary; RADAR, the other way to play a real game, secondary beside it;
                 the practice modes quiet, on their own row */}
             <Button
               variant="default"

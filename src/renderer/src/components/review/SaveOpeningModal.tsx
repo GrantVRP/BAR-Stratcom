@@ -25,7 +25,7 @@ function defaultTeam(players: CapturePlayer[]): number | null {
   return (capturable.find((p) => p.isMe) ?? capturable[0] ?? players[0])?.teamId ?? null;
 }
 
-/** "Save my opening as plan" (player sessions) and "Capture" (spectator/replay sessions), 06 §4.6. */
+/** "Save my opening as plan" (player sessions) and "Capture" (spectator/replay sessions). */
 export function SaveOpeningModal({ session, isOpen, onClose, onSaved }: SaveOpeningModalProps): React.JSX.Element | null {
   const { sessionId } = session.meta;
   const isPlayerMode = session.meta.mode === 'player';
@@ -137,7 +137,7 @@ export function SaveOpeningModal({ session, isOpen, onClose, onSaved }: SaveOpen
               >
                 {players.map((p) => (
                   <option key={p.teamId} value={p.teamId} disabled={!p.capturable}>
-                    {p.name} ({p.faction ?? 'unknown'}){p.reason ? ` // ${p.reason}` : ''}
+                    {p.name} ({p.faction ?? 'unknown'}){p.reason ? ` // ${p.reason}`: ''}
                   </option>
                 ))}
               </select>

@@ -9,8 +9,8 @@ import { CoachSettingsSection } from './CoachSettingsSection';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-// regression (T11.5): the alert switches showed every alert on whatever the profile ran, and chat
-// echo claimed to post to team chat (it is a local console line, 05 §8.2)
+// regression: the alert switches showed every alert on whatever the profile ran, and chat
+// echo claimed to post to team chat (it is a local console line)
 describe('CoachSettingsSection', () => {
   let container: HTMLDivElement;
   let root: Root;

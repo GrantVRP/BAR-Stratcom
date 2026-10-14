@@ -3,7 +3,7 @@ import { SessionFileDocSchema, StateDocSchema, WidgetHeartbeatSchema } from '../
 import { createWidgetHarness } from './harness';
 import { createScenario, createScenarioUnit } from './scenario';
 
-describe('Widget 3.0.1 Regression Tests (T02.8, S-7, S-8)', () => {
+describe('Widget 3.0.1 Regression Tests', () => {
   it('resolves numeric startUnit ID to faction "cortex" and startUnitId "corcom", validating against StateDoc', async () => {
     // Harness returns numeric unitDefID for startUnit, matching real Recoil engine
     const scenario = createScenario({
@@ -37,7 +37,7 @@ describe('Widget 3.0.1 Regression Tests (T02.8, S-7, S-8)', () => {
       const raw = harness.fs.readJson('stratcom/state.json');
       expect(raw).not.toBeNull();
 
-      // Must validate against StateDocSchema (S-7 acceptance criteria)
+      // Must validate against StateDocSchema
       const doc = StateDocSchema.parse(raw);
       expect(doc.me).not.toBeNull();
       expect(doc.me!.factionId).toBe('cortex');
@@ -76,7 +76,7 @@ describe('Widget 3.0.1 Regression Tests (T02.8, S-7, S-8)', () => {
       expect(raw!.protocol).toBe(1);
       expect(raw!.kind).toBe('wind-lookup');
 
-      // Regression S-8: values must be numbers, not strings or empty tables
+      // Regression: values must be numbers, not strings or empty tables
       expect(raw!.table['0']).toBeDefined();
       expect(raw!.table['0']!['1']).toBe(0.8);
       expect(typeof raw!.table['0']!['1']).toBe('number');

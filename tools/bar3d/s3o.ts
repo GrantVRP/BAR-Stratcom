@@ -1,5 +1,5 @@
 /**
- * Reader for Spring/Recoil S3O unit models (T06.15). Layout (little-endian):
+ * Reader for Spring/Recoil S3O unit models. Layout (little-endian):
  *   header (52 B): "Spring unit\0", version, radius, height, mid x/y/z, rootPiece, collisionData,
  *                  texture1, texture2 (offsets)
  *   piece  (52 B): name, numChildren, children, numVertices, vertices, vertexType, primitiveType,

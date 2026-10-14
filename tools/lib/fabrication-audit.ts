@@ -1,9 +1,9 @@
 import ts from 'typescript';
 
 /**
- * Fabrication audit rules (T11.1, 08 §7). Game facts come from the player's game (data/), never from
+ * Fabrication audit rules. Game facts come from the player's game (data/), never from
  * code: a game-stat name given a number literal outside constants.ts, a unit name or id written into
- * UI code, a legacy (non-original, Q-01) asset file name, or a hot-linked BAR website asset all fail.
+ * UI code, a legacy (non-original) asset file name, or a hot-linked BAR website asset all fail.
  */
 export interface Finding {
   file: string;
@@ -16,7 +16,7 @@ export interface Finding {
 export const STAT_NAME =
   /^(?:metal|energy)(?:Cost|Make|Upkeep|Storage|Income)$|^(?:buildTime|buildSpeed|buildPower|health|maxHealth|dps|damage|weaponRange|maxWeaponRange|sightDistance|radarDistance|windAvg|avgWind|windMin|windMax|windRisk|tidalStrength|mexYield|extractsMetal|windGenerator|tidalGenerator|techLevel)$/;
 
-/** Legacy files the owner did not confirm as original (STATUS Q-01); they must never ship. */
+/** Legacy files not confirmed as original art; they must never ship. */
 export const LEGACY_ASSETS = [
   'armada-air-plant.png', 'armada-aircraft-plant.png', 'armada-aircraftplant.png', 'armada-airplant.png', 'armada-bot-lab.png',
   'armada-botlab.png', 'armada-estorage.png', 'armada-fusion.png', 'armada-logo.png', 'armada-mex.png', 'armada-shipyard.png',

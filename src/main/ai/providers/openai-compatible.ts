@@ -5,7 +5,7 @@ import { AiError, CLOUD_TIMEOUT_MS, LOCAL_TIMEOUT_MS, jsonOrText, type AiProvide
 
 export type OpenAiCompatibleId = 'openai' | 'openrouter' | 'ollama' | 'lmstudio';
 
-/** One SDK, four endpoints (04 §6.2). */
+/** One SDK, four endpoints. */
 export const OPENAI_COMPATIBLE: Record<OpenAiCompatibleId, { baseUrl?: string; needsKey: boolean; local: boolean }> = {
   openai: { needsKey: true, local: false },
   openrouter: { baseUrl: 'https://openrouter.ai/api/v1', needsKey: true, local: false },

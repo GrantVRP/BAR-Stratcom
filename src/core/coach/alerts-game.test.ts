@@ -266,7 +266,7 @@ describe('Coach Alert Detectors: Game & Units', () => {
     });
     expect(airAlert?.text).toBe('ENEMY AIR // BUILD AA');
 
-    // Neutral Gaia units (critter_gull, factionId === null) are never enemies (T05.10 item 1)
+    // Neutral Gaia units (critter_gull, factionId === null) are never enemies
     const gullOnly = makeSnapshot({
       enemies: { critter_gull: 3 },
       counts: {}

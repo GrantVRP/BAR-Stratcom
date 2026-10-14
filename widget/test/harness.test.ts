@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createWidgetHarness, type WidgetHarness } from './harness';
 import { createScenario, createScenarioUnit } from './scenario';
 
-describe('Widget Test Harness (05 §11, T02.1)', () => {
+describe('Widget Test Harness', () => {
   let harness: WidgetHarness;
 
   beforeEach(async () => {
@@ -23,7 +23,7 @@ describe('Widget Test Harness (05 §11, T02.1)', () => {
     expect(info.enabled).toBe(true);
   });
 
-  it('Initialize creates stratcom/ directory (T02.1 first spec)', () => {
+  it('Initialize creates stratcom/ directory (first spec)', () => {
     expect(harness.fs.hasDir('stratcom')).toBe(false);
     harness.callin('Initialize');
     expect(harness.fs.hasDir('stratcom')).toBe(true);

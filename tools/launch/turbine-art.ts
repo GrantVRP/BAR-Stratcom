@@ -1,5 +1,5 @@
 /**
- * Pixel-art wind turbines for the launcher scene (T06.14): a static tower and a rotor rendered at
+ * Pixel-art wind turbines for the launcher scene: a static tower and a rotor rendered at
  * 24 angles (5° apart, one third of a turn) so the blades spin crisply instead of being rotated by
  * CSS. Shapes follow the in-game Armada (slim pole, blue claw feet) and Cortex (dark angular tower,
  * fin, red hex platform) wind turbines. Drawn as SVG with crisp edges, then pixel-finished.

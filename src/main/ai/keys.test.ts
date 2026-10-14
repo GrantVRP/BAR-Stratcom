@@ -18,7 +18,7 @@ function fakeStorage(available = true): SafeStorageLike {
   };
 }
 
-describe('API key store (T08.6, 02 §6)', () => {
+describe('API key store', () => {
   let dir: string;
   beforeEach(() => {
     dir = fs.mkdtempSync(path.join(os.tmpdir(), 'stratcom-keys-'));

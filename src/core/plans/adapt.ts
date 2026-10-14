@@ -1,5 +1,5 @@
 /**
- * Deterministic plan adapter ("generator", 04 §5.2, D-08): adapt a real build to a map, never invent
+ * Deterministic plan adapter ("generator"): adapt a real build to a map, never invent
  * one. select base → energy substitution → retime → stall fix (≤ 3) → validate.
  */
 import type { Registry } from '../registry';
@@ -98,7 +98,7 @@ function energyUnitFor(registry: Registry, options: readonly string[], kind: 'so
   return units[0] ?? null;
 }
 
-/** Step 2: wind ↔ solar by wind class, keeping the expected energy (04 §5.2). */
+/** Step 2: wind ↔ solar by wind class, keeping the expected energy. */
 function substituteEnergy(plan: BuildPlan, registry: Registry, avgWind: number, cls: WindClass): string | null {
   const toSolar = cls === 'low' && plan.energyStyle === 'wind';
   const toWind = cls === 'high' && plan.energyStyle === 'solar';

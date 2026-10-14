@@ -24,7 +24,7 @@ vi.mock('../../lib/ipc-client', () => ({
 
 const invoke = vi.mocked(ipcClient.invoke);
 
-describe('UpdateBanner (D-17, T11.4)', () => {
+describe('UpdateBanner', () => {
   let container: HTMLDivElement;
   let root: Root;
   const $ = (id: string): HTMLElement | null => container.querySelector(`[data-testid="${id}"]`);

@@ -154,7 +154,7 @@ export function CoachSettingsSection(): React.JSX.Element {
         </div>
 
         <div className="border-t border-[#1f2430] pt-3">
-          <span className="text-[10px] uppercase text-[#71717a]">Sound Test (06 §5)</span>
+          <span className="text-[10px] uppercase text-[#71717a]">Sound Test</span>
           <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
             {SOUND_TESTS.map((snd) => (
               <Button
@@ -212,7 +212,7 @@ export function CoachSettingsSection(): React.JSX.Element {
         </span>
         <div className="space-y-2 pt-1 divide-y divide-[#1f2430]">
           {(Object.keys(ALERT_LABELS) as AlertId[]).map((id) => {
-            // the switch shows what the coach runs: the profile's default unless switched (T11.5 fix)
+            // the switch shows what the coach runs: the profile's default unless switched
             const profileConfig = DEFAULT_PROFILES[currentProfile];
             const canRun = profileCanRunAlert(profileConfig, id);
             const isAlertEnabled = canRun && (settings?.alerts?.[id]?.enabled ?? profileConfig.enabledAlerts.has(id));

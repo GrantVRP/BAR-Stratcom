@@ -76,7 +76,7 @@ function texts(calls: DrawCall[]): Array<{ text: string; x: number; y: number; s
 const WARN = [251 / 255, 191 / 255, 36 / 255, 1];
 const GOOD = [74 / 255, 222 / 255, 128 / 255, 1];
 
-describe('HUD boxes (05 §8.1, widget 3.0.5, T09.4)', () => {
+describe('HUD boxes (widget 3.0.5)', () => {
   it('draws BUILDINGS, FACTORY and alerts top to bottom instead of the single panel', async () => {
     const t = texts(await draw(makeCoachDoc(BOXES)));
     const at = (text: string) => t.find((c) => c.text === text)!;

@@ -84,7 +84,7 @@ export function repairAndAnonymizeSessionTeams(
   let repairedFaction = false;
   let repairedAi = false;
 
-  // General rule (T03.2 §9): a spectator/replay fixture is an owner game if the owner name appears
+  // General rule: a spectator/replay fixture is the recording player's own game if their name appears
   // as any team, OR if more than half of its teams are AI.
   const aiTeamCount = session.teams.filter((t) => t.isAI).length;
   const hasOwnerTeam = session.teams.some((t) => t.playerName === ownerName);
@@ -116,7 +116,7 @@ export function repairAndAnonymizeSessionTeams(
       }
     }
 
-    // 3. Anonymise human owner to "Player"
+    // 3. Anonymise the recording player to "Player"
     if (playerName === ownerName || t.isMe) {
       playerName = 'Player';
       if (factionId) {

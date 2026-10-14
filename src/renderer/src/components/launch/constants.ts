@@ -1,5 +1,5 @@
 /**
- * The launch scene's cast (owner request, T06.14 / T06.15): which bundled models play in it. These are
+ * The launch scene's cast: which bundled models play in it. These are
  * asset keys (BAR unit ids, as the asset files are named), not names shown to the player; any name
  * shown comes from the snapshot.
  */

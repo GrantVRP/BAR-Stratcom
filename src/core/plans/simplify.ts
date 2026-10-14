@@ -1,5 +1,5 @@
 /**
- * Beginner variants of curated plans (T08.9): the deterministic adapter on the plan's own map, then
+ * Beginner variants of curated plans: the deterministic adapter on the plan's own map, then
  * "simplify": consecutive repeats of the same build merged into one step, cut to the first 12 steps.
  * Nothing is invented; every step comes from the curated (real) build.
  */

@@ -1,5 +1,5 @@
 /**
- * Builds the launcher scene assets (T06.14) into src/renderer/src/assets/launch/:
+ * Builds the launcher scene assets into src/renderer/src/assets/launch/:
  *   ground.png                 320 × 200 Greenest Fields ground with the dirt track and trees
  *   tower-<faction>.png        wind turbine tower
  *   rotor-<faction>.png        24-frame rotor sprite sheet

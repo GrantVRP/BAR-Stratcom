@@ -18,7 +18,7 @@ function defaultService(): MinimapService {
   return new MinimapService(new IntelCache({ dir }));
 }
 
-/** Maps view IPC (T10.4): the minimap of a map and its curated notes. */
+/** Maps view IPC: the minimap of a map and its curated notes. */
 export function registerMapHandlers(service: MinimapService = defaultService()): void {
   handle('maps:minimap', (req) => service.minimap(req.scriptName));
   handle('maps:notes', (req) => loadMapNotes(req.fileName));

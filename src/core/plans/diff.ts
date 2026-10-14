@@ -13,7 +13,7 @@ export interface PlanStepDiff {
   changed: StepChange[];
 }
 
-/** Steps of two plans matched by id (adapter preview, T08.5). */
+/** Steps of two plans matched by id (adapter preview). */
 export function diffPlanSteps(before: readonly BuildStep[], after: readonly BuildStep[]): PlanStepDiff {
   const old = new Map(before.map((s) => [s.id, s]));
   const next = new Map(after.map((s) => [s.id, s]));

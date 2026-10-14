@@ -42,16 +42,16 @@ export function walkLuaAst(
 
   function checkIdentifier(node: luaparse.Identifier): void {
     if (node.name === 'setfenv' || node.name === 'getfenv') {
-      addError(`Forbidden use of "${node.name}" (05 §3)`, node.loc);
+      addError(`Forbidden use of "${node.name}"`, node.loc);
     }
     if (node.name === 'goto') {
-      addError(`Forbidden use of "goto" (05 §3)`, node.loc);
+      addError(`Forbidden use of "goto"`, node.loc);
     }
     if (node.name.includes('GiveOrder')) {
       const fn = currentFunctionName();
       if (!fn || !fn.startsWith('assist')) {
         addError(
-          `Identifier "${node.name}" containing GiveOrder is only allowed inside functions starting with "assist" (05 §3, M09)`,
+          `Identifier "${node.name}" containing GiveOrder is only allowed inside functions starting with "assist"`,
           node.loc
         );
       }
@@ -63,10 +63,10 @@ export function walkLuaAst(
       const baseName = node.base.name;
       const propName = node.identifier.name;
       if (baseName === 'io' && propName === 'popen') {
-        addError(`Forbidden use of "io.popen" (05 §3)`, node.loc);
+        addError(`Forbidden use of "io.popen"`, node.loc);
       }
       if (baseName === 'os' && propName === 'execute') {
-        addError(`Forbidden use of "os.execute" (05 §3)`, node.loc);
+        addError(`Forbidden use of "os.execute"`, node.loc);
       }
     }
   }
@@ -100,7 +100,7 @@ export function walkLuaAst(
           if (target.type === 'Identifier') {
             if (target.name !== 'widget' && !isDeclaredLocal(target.name)) {
               addError(
-                `Assignment to undeclared global variable "${target.name}" is forbidden (05 §3)`,
+                `Assignment to undeclared global variable "${target.name}" is forbidden`,
                 target.loc
               );
             }
@@ -123,7 +123,7 @@ export function walkLuaAst(
           if (node.identifier.type === 'Identifier') {
             if (node.identifier.name !== 'widget' && !isDeclaredLocal(node.identifier.name)) {
               addError(
-                `Global function declaration "${node.identifier.name}" is forbidden; use local function (05 §3)`,
+                `Global function declaration "${node.identifier.name}" is forbidden; use local function`,
                 node.identifier.loc
               );
             }
@@ -314,7 +314,7 @@ export function walkLuaAst(
       }
 
       case 'GotoStatement': {
-        addError('Forbidden use of "goto" (05 §3)', node.loc);
+        addError('Forbidden use of "goto"', node.loc);
         break;
       }
 

@@ -19,7 +19,7 @@ export interface AnthropicClientLike {
 }
 
 export const ANTHROPIC_DEFAULT_MODEL = 'claude-opus-5-5';
-/** Server-side refusal fallback (A-18), sent with `fallbacks: 'default'` when enabled in Settings. */
+/** Server-side refusal fallback, sent with `fallbacks: 'default'` when enabled in Settings. */
 export const ANTHROPIC_FALLBACK_BETA = 'server-side-fallback-2026-07-01';
 
 export interface AnthropicProviderOptions {
@@ -36,7 +36,7 @@ function sdkClient(apiKey: string): AnthropicClientLike {
 let loggedFallbackDrop = false;
 
 /**
- * Anthropic (04 §6.2): structured output through `output_config.format` (zodOutputFormat) with
+ * Anthropic: structured output through `output_config.format` (zodOutputFormat) with
  * `effort: 'high'`; no thinking, temperature or budget_tokens. The request goes through `create` so
  * a reply that misses the schema stays readable for the repair round (`parse` would throw it away).
  */

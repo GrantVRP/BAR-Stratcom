@@ -6,7 +6,7 @@ import { CoachRunner } from '../coach/runner';
 import { loadRegistry } from '../registry/loader';
 import type { CoachState } from '../../core/schemas/coach';
 
-describe('DemoSource & listDemos (02 §4.2, T05.7)', () => {
+describe('DemoSource & listDemos', () => {
   const fixtureId = '2026-10-01-cortex-1v1-vs-ai-barr-499s';
   const fixtureDir = path.resolve(process.cwd(), 'data/fixtures/sessions', fixtureId);
   const registry = loadRegistry();

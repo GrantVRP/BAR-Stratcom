@@ -9,7 +9,7 @@ export interface OrderRecorders {
 }
 
 /**
- * Selection, command panel and orders (T09.1), shaped like the engine (verified in Recoil's
+ * Selection, command panel and orders, shaped like the engine (verified in Recoil's
  * LuaUnsyncedRead/LuaUnsyncedCtrl and BAR's barwidgets.lua): GetActiveCmdDescs is the selection's
  * command list keyed from 1 (CMD_INDEX_OFFSET), build commands have id = -unitDefID,
  * SetActiveCommand takes that key, and in BAR's sandbox every Spring.GiveOrder* raises

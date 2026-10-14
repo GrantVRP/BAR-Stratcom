@@ -41,7 +41,7 @@ const LIVE: Record<string, Route> = {
   '/balance-changes': { status: 200, body: balance }
 };
 
-describe('intel schemas on recorded responses (T10.1)', () => {
+describe('intel schemas on recorded responses', () => {
   it('parses battles and drops fields the app does not use', () => {
     const parsed = IntelBattlesSchema.parse(battles);
     expect(parsed.length).toBe(2);
@@ -61,7 +61,7 @@ describe('intel schemas on recorded responses (T10.1)', () => {
   });
 });
 
-describe('IntelCache (T10.1)', () => {
+describe('IntelCache', () => {
   let dir: string | null = null;
   afterEach(() => {
     if (dir) fs.rmSync(dir, { recursive: true, force: true });
@@ -105,7 +105,7 @@ describe('IntelCache (T10.1)', () => {
   });
 });
 
-describe('leaderboard season discovery (T10.1)', () => {
+describe('leaderboard season discovery', () => {
   it('walks down from the upper bound past "Invalid season" answers', async () => {
     expect(await discoverSeason(fakeFetch(LIVE), 4)).toBe(3);
   });
@@ -120,7 +120,7 @@ describe('leaderboard season discovery (T10.1)', () => {
   });
 });
 
-describe('IntelService (T10.1)', () => {
+describe('IntelService', () => {
   it('loads every intel feed from the recorded responses', async () => {
     const service = new IntelService(new IntelCache({ dir: null }), fakeFetch(LIVE));
     expect((await service.battles()).data).toHaveLength(2);

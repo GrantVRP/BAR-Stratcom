@@ -3,7 +3,7 @@ import { WidgetHeartbeatSchema } from '../../src/core/schemas/protocol';
 import { createWidgetHarness } from './harness';
 import { createScenario } from './scenario';
 
-describe('widget perf numbers are milliseconds (T11.3, 08 §5)', () => {
+describe('widget perf numbers are milliseconds', () => {
   it('reports frame, draw and snapshot cost in ms (DiffTimers asked for ms; the mock answers 1 ms)', async () => {
     const harness = await createWidgetHarness(createScenario());
     try {

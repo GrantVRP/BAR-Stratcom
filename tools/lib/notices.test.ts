@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { closure, packageOf, resolveInLock, runtimeImports, type LockPackages } from './notices';
 
-describe('third-party notices (T11.5)', () => {
+describe('third-party notices', () => {
   it('names the package of an import; relative, builtin and Electron imports ship nothing', () => {
     expect(packageOf('react-dom/client')).toBe('react-dom');
     expect(packageOf('@anthropic-ai/sdk/helpers/zod')).toBe('@anthropic-ai/sdk');

@@ -53,7 +53,7 @@ const testPlan: BuildPlan = {
   ]
 };
 
-describe('ManualClock (04 §3.7, T05.8)', () => {
+describe('ManualClock', () => {
   it('manages start, pause, reset, toggle, and 1s ticks with fake timers', async () => {
     vi.useFakeTimers();
     try {

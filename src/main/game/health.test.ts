@@ -12,7 +12,7 @@ import {
   type HealthDeriveInputs
 } from './health';
 
-describe('Health state machine (T05.3)', () => {
+describe('Health state machine', () => {
   const dummyHeartbeat = (overrides: Partial<WidgetHeartbeat> = {}): WidgetHeartbeat => ({
     protocol: 1,
     widgetVersion: '3.0.1',
@@ -70,7 +70,7 @@ describe('Health state machine (T05.3)', () => {
     });
   });
 
-  describe('deriveHealth pure table tests (05 §9)', () => {
+  describe('deriveHealth pure table tests', () => {
     const baseNow = 1000000000000;
 
     it('reaches no-bar when data directory is missing', () => {

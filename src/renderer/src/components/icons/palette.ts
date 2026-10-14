@@ -1,6 +1,6 @@
 /**
- * Pixel-sprite palette for the original icon system (T10.3, A-11). Sprites are 16 × 16 character
- * grids; each character is one pixel. Faction shades follow the design palette (06 §3).
+ * Pixel-sprite palette for the original icon system. Sprites are 16 × 16 character
+ * grids; each character is one pixel. Faction shades follow the design palette.
  */
 import { factionAccent } from '../../lib/faction-style';
 

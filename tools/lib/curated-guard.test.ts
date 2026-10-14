@@ -5,7 +5,7 @@ import os from 'node:os';
 import { isCandidatePath, validateCandidatePlan, validateCuratedPlanGuard } from './curated-guard';
 import type { BuildPlan } from '../../src/core/schemas';
 
-describe('validateCuratedPlanGuard (T06.11, S-10)', () => {
+describe('validateCuratedPlanGuard', () => {
   const samplePlan: BuildPlan = {
     schemaVersion: 1,
     id: 'test-sample',
@@ -154,7 +154,7 @@ describe('validateCuratedPlanGuard (T06.11, S-10)', () => {
       const res = validateCuratedPlanGuard(planWithValidReplayId, tmpBuilds);
       expect(res.valid).toBe(true);
 
-      // T08.9: a published curated plan must credit its reviewer
+      // a published curated plan must credit its reviewer
       const unreviewed: BuildPlan = { ...planWithValidReplayId, source: { ...planWithValidReplayId.source, reviewedBy: '' } as BuildPlan['source'] };
       expect(validateCuratedPlanGuard(unreviewed, tmpBuilds).reason).toContain('without reviewedBy');
 
@@ -170,7 +170,7 @@ describe('validateCuratedPlanGuard (T06.11, S-10)', () => {
   });
 });
 
-describe('curated candidates (T08.3)', () => {
+describe('curated candidates', () => {
   const candidate: BuildPlan = {
     schemaVersion: 1,
     id: 'pro-cortex-bot-test-map-0123ab-t0',

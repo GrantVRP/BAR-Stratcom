@@ -4,7 +4,7 @@ export interface ManualClockOptions {
 }
 
 /**
- * ManualClock manages the 1 s manual clock ticking, pause, resume, and reset (04 §3.7).
+ * ManualClock manages the 1 s manual clock ticking, pause, resume, and reset.
  */
 export class ManualClock {
   private clock = 0;

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { buildUnitMentionIndex, linkUnitMentions } from '../../../../core/intel/unit-mentions';
 import { useSnapshot } from '../../stores';
 
-/** `#/units/<unitId>` opens that unit's dossier in the catalog (T10.2). */
+/** `#/units/<unitId>` opens that unit's dossier in the catalog. */
 export const unitHref = (unitId: string): string => `#/units/${unitId}`;
 
 export function UnitLink({ unitId, children }: { unitId: string; children: React.ReactNode }): React.JSX.Element {

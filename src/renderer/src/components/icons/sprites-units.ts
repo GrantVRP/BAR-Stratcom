@@ -1,4 +1,4 @@
-// Original pixel art (T10.3, A-11): generic silhouettes drawn from scratch, not traced from BAR art.
+// Original pixel art: generic silhouettes drawn from scratch, not traced from BAR art.
 // Palette: see palette.ts. f/d/l = faction main/dark/light.
 
 export const UNIT_SPRITES = {

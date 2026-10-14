@@ -1,9 +1,9 @@
 /**
- * T08.9: publish the curated library from the H3 review.
+ * Publish the curated library from the review.
  *
  *   npx tsx tools/publish-curated.ts --reviewer <handle> --date YYYY-MM-DD
  *
- * The reviewer handle is the one recorded in docs/plan/STATUS.md → H3. See tools/lib/publish-curated.ts.
+ * The reviewer handle is given with --reviewer. See tools/lib/publish-curated.ts.
  */
 import fs from 'node:fs';
 import path from 'node:path';

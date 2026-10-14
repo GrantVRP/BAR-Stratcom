@@ -1,5 +1,5 @@
 /**
- * T11.5: writes THIRD_PARTY_NOTICES.md from the app's runtime imports and package-lock.json.
+ * Writes THIRD_PARTY_NOTICES.md from the app's runtime imports and package-lock.json.
  *   npx tsx tools/third-party-notices.ts           (write)
  *   npx tsx tools/third-party-notices.ts --check   (verify: fails when the file is out of date)
  */

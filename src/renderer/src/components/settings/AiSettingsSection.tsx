@@ -14,7 +14,7 @@ type AiSettings = Settings['ai'];
 
 const OFF: AiSettings = { provider: 'none', model: null, baseUrl: null, anthropicFallbacks: false };
 
-/** What "default model" means per provider (04 §6.2); OpenAI and OpenRouter need a pick. */
+/** What "default model" means per provider; OpenAI and OpenRouter need a pick. */
 const DEFAULT_MODEL: Partial<Record<ProviderId, string>> = {
   anthropic: 'Claude Opus 5.5',
   gemini: 'newest Flash',
@@ -24,7 +24,7 @@ const DEFAULT_MODEL: Partial<Record<ProviderId, string>> = {
 
 const isHttpUrl = (url: string): boolean => /^https?:\/\/\S+$/.test(url);
 
-/** Settings → AI (06 §4.10, T08.8): bring your own key or a local server. Keys only go in. */
+/** Settings → AI: bring your own key or a local server. Keys only go in. */
 export function AiSettingsSection(): React.JSX.Element {
   const settings = useSettings((s) => s.settings);
   const update = useSettings((s) => s.update);

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseCategoryPage } from './fetch-unitpics';
 
-// Trimmed from the real /units/armada-bots markup (2026-10-04): each unit's large picture sits right
+// Trimmed from the real /units/armada-bots markup: each unit's large picture sits right
 // after its /unit/<id> link; the small strategic icon that follows must be ignored.
 const HTML = `
 <a title="Click for more info" href="/unit/armpw" class="flex-unit-img w-inline-block"><img alt="" src="https://cdn.prod.website-files.com/5c69241780da2a1dfc6caa4e/69ca535d1247669f47c7ad38_armpw.webp" class="unit-img"/></a>
@@ -11,7 +11,7 @@ const HTML = `
 <a href="/unit/armrock"><img src="https://cdn.prod.website-files.com/x/def_someotherunit.webp"/></a>
 `;
 
-describe('fetch-unitpics page parsing (T10.5)', () => {
+describe('fetch-unitpics page parsing', () => {
   it('pairs each unit id with its own picture, once', () => {
     expect(parseCategoryPage(HTML)).toEqual([
       { unitId: 'armpw', url: 'https://cdn.prod.website-files.com/5c69241780da2a1dfc6caa4e/69ca535d1247669f47c7ad38_armpw.webp' },

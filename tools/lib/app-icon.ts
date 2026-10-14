@@ -2,7 +2,7 @@ import type { Rgba } from './png';
 import type { TextBitmap } from './pixel-font';
 
 /**
- * The app icon (owner request, 2026-10-13): "BS", the B of BAR and the S of StratCom, in the logo's font
+ * The app icon: "BS", the B of BAR and the S of StratCom, in the logo's font
  * (Press Start 2P, read from the font file by tools/lib/pixel-font.ts). The B is white like the logo; the
  * S takes the faction's colour, so there is one icon per faction. A dark rounded tile with the panels'
  * frame keeps the white B readable on light title bars. Each font pixel becomes k × k icon pixels, the
@@ -14,7 +14,7 @@ const hex = (h: string): Color => [parseInt(h.slice(1, 3), 16), parseInt(h.slice
 
 export const ICON_COLORS = { ground: '#0a0c14', frame: '#2b3245', b: '#ffffff' };
 
-/** Sizes in the Windows .ico (electron-builder needs 256). */
+/** Sizes in the Windows.ico (electron-builder needs 256). */
 export const ICO_SIZES = [16, 24, 32, 48, 64, 128, 256];
 
 export interface IconLayout {

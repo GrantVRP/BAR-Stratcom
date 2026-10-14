@@ -52,7 +52,7 @@ describe('HudPreview', () => {
     expect(container.querySelector('[data-testid="hud-boxes"]')).toBeNull();
   });
 
-  it('shows the 3.0.5 boxes when the coach sends them: levels, tags once per builder, timings (T09.4)', () => {
+  it('shows the 3.0.5 boxes when the coach sends them: levels, tags once per builder, timings', () => {
     const hud: CoachHud = {
       visible: true,
       title: 'ARMADA // TEST PLAN',
@@ -85,7 +85,7 @@ describe('HudPreview', () => {
     expect(container.textContent).not.toContain('ARMADA // TEST PLAN'); // the single panel is for older widgets
   });
 
-  it('shows the RADAR box: range, a frame that says the game draws the positions, the contact rows (T09.5)', () => {
+  it('shows the RADAR box: range, a frame that says the game draws the positions, the contact rows', () => {
     const hud: CoachHud = {
       visible: true,
       title: 'T',

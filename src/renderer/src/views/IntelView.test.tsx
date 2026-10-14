@@ -26,7 +26,7 @@ const battle = {
   players: [{ username: 'Alice', gameStatus: 'Playing', skill: '[30 ??]' }]
 };
 
-describe('IntelView (T10.2, 06 §4.7)', () => {
+describe('IntelView', () => {
   let container: HTMLDivElement;
   let root: Root;
   let invoke: ReturnType<typeof vi.fn>;

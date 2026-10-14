@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { isNewerVersion, parseVersion } from '../../core/updates/semver';
 import { isAllowedExternalUrl } from '../shell/open-external';
 
-/** D-17: the only request the version check makes (GitHub's "latest release": no drafts, no pre-releases). */
+/** The only request the version check makes (GitHub's "latest release": no drafts, no pre-releases). */
 export const RELEASES_LATEST_URL = 'https://api.github.com/repos/GrantVRP/BAR-Stratcom/releases/latest';
 export const RELEASES_PAGE = 'https://github.com/GrantVRP/BAR-Stratcom/releases';
 

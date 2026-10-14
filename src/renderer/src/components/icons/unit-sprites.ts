@@ -1,5 +1,5 @@
 /**
- * 32-bit pixel versions of the BAR unit icons (T10.5). Original unit icons by IceXuick and Floris
+ * 32-bit pixel versions of the BAR unit icons. Original unit icons by IceXuick and Floris
  * (Beyond All Reason), used with their permission; converted by
  * tools/pixelate-unitpics.ts. Units without a picture fall back to the original class sprites.
  */

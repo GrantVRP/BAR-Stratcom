@@ -3,7 +3,7 @@ import type { Scenario, ScenarioUnit } from './scenario';
 
 /**
  * The gl drawing mock (every call recorded in order) with the engine's return values
- * (engine-facts.md): Texture is true when bound ('#' .. a known unitDefID, or false to unbind);
+ * (engine-facts.md): Texture is true when bound ('#'.. a known unitDefID, or false to unbind);
  * GetTextWidth answers for size 1 (stand-in metric: 0.5 per character); CreateList runs its function
  * while "recording" and returns a list index (> 0); CallList and DeleteList only record.
  */

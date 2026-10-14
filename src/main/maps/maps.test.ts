@@ -10,7 +10,7 @@ import { MAP_LIST_URL, MinimapService, minimapIndex } from './minimap';
 
 const fixtures = path.join(__dirname, '../intel/__fixtures__');
 
-describe('minimaps from maps-metadata.beyondallreason.dev (T10.4)', () => {
+describe('minimaps from maps-metadata.beyondallreason.dev', () => {
   it('indexes the photo of each map by script name through the resize proxy, URL-encoded', () => {
     const index = minimapIndex({
       a: { springName: 'Isidis crack 1.1', author: 'Phalange', photo: [{ ref: 'maps/X/photo/abc-Isidis crack 1.0.jpg' }] },
@@ -47,7 +47,7 @@ describe('minimaps from maps-metadata.beyondallreason.dev (T10.4)', () => {
   });
 });
 
-describe('curated map notes (03 §4)', () => {
+describe('curated map notes', () => {
   let dir: string;
   beforeEach(() => {
     dir = fs.mkdtempSync(path.join(os.tmpdir(), 'map-notes-'));

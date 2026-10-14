@@ -13,7 +13,7 @@ const registry = createRegistry(
 );
 const base: CatalogFilter = { factionId: 'armada', unitClass: 'all', tech: 'all', query: '' };
 
-describe('unit catalog filtering (06 §4.8, T10.3)', () => {
+describe('unit catalog filtering', () => {
   it('lists one faction with tech levels in rising order (T1, T1.5, T2, T3)', () => {
     const all = filterCatalog(registry, base);
     expect(all.length).toBe(registry.byFaction('armada').length);
@@ -49,7 +49,7 @@ describe('unit catalog filtering (06 §4.8, T10.3)', () => {
   });
 });
 
-describe('buildable units (T10.3)', () => {
+describe('buildable units', () => {
   it('keeps the commander and its build tree, and drops game-mode variants', () => {
     const buildable = buildableFrom(registry, ['armcom']);
     expect(buildable.has('armcom')).toBe(true);

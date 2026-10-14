@@ -24,7 +24,7 @@ const ALL_BADGES: IconBadge[] = [
   'build', 'aa', 'sub', 'scout', 'nuke', 'emp', 'bot', 'vehicle', 'air', 'ship', 'hover', 'amphib', 'gantry'
 ];
 
-describe('pixel sprites (T10.3)', () => {
+describe('pixel sprites', () => {
   it('has a 16 × 16 sprite with valid palette characters for every icon base', () => {
     const sprites: Record<string, readonly string[]> = { ...UNIT_SPRITES, ...BUILDING_SPRITES };
     expect(Object.keys(sprites).sort()).toEqual([...ALL_BASES].sort());
@@ -54,7 +54,7 @@ describe('pixel sprites (T10.3)', () => {
   });
 });
 
-describe('icon components (T10.3)', () => {
+describe('icon components', () => {
   let container: HTMLDivElement;
   let root: Root;
 
@@ -70,7 +70,7 @@ describe('icon components (T10.3)', () => {
     container.remove();
   });
 
-  it('shows the 32-bit unit sprite with the display name and the artists in the tooltip (T10.5)', async () => {
+  it('shows the 32-bit unit sprite with the display name and the artists in the tooltip', async () => {
     await act(async () => root.render(<UnitIcon unitId="armlab" size={64} />));
     const img = container.querySelector('img')!;
     expect(img.getAttribute('data-unit-sprite')).toBe('armlab');

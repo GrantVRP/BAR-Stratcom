@@ -13,7 +13,7 @@ function doc(gameSeconds: number, metalIncome: number): Record<string, unknown> 
   };
 }
 
-describe('Review economy chart series (fix T07.4)', () => {
+describe('Review economy chart series', () => {
   it('reads income, storage and build power from res / bp of recorded state docs', () => {
     const series = statesToChartSeries([doc(0, 0), doc(60, 4.5), doc(120, 9)])!;
     expect(series.points.map((p) => [p.t, p.metal.income])).toEqual([

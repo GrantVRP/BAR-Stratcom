@@ -31,5 +31,5 @@ export function enabledFactions(dataDir = path.join(process.cwd(), 'data')): Set
   return new Set(file.factions.filter((f) => f.enabled).map((f) => f.id));
 }
 
-/** AI teams in fixtures are named "AI" or end in "(AI)" (T08.3, T08.4). */
+/** AI teams in fixtures are named "AI" or end in "(AI)". */
 export const isAiPlayerName = (name: string): boolean => name === 'AI' || name.endsWith('(AI)');

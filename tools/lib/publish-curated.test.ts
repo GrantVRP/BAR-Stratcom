@@ -42,7 +42,7 @@ function sheet(decisions: string[]): string {
   return ['# Curated candidates', ...decisions.map((d, i) => `### ${i + 1}. Test ${i}\n\n- Plan: \`${candidate(i).id}\` · Armada · 1v1\n\nDECISION: ${d}\n`)].join('\n\n');
 }
 
-describe('publish curated library (T08.9)', () => {
+describe('publish curated library', () => {
   let dir: string;
   let opts: PublishOptions;
   const setup = (decisions: string[]): void => {

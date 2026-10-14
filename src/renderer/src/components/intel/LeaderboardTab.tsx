@@ -3,7 +3,7 @@ import { useIntel } from '../../lib/use-intel';
 import { Tabs } from '../ui/Tabs';
 import { IntelStatus } from './IntelStatus';
 
-/** Ranked players per category; the season is discovered from the server, not hard-coded (06 §4.7). */
+/** Ranked players per category; the season is discovered from the server, not hard-coded. */
 export function LeaderboardTab(): React.JSX.Element {
   const query = useIntel('intel:leaderboard');
   const [category, setCategory] = useState<string | null>(null);

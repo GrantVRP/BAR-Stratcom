@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { defaultSettings } from '../../core/schemas/settings';
 import { SettingsStore } from './store';
 
-describe('SettingsStore (T05.1)', () => {
+describe('SettingsStore', () => {
   let tempDir: string;
 
   beforeEach(() => {

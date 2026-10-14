@@ -7,7 +7,7 @@ import { FactionTag } from '../components/ui/FactionTag';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-describe('faction colours (T10.7)', () => {
+describe('faction colours', () => {
   it('gives Armada blue, Cortex red and Legion teal, in any letter case', () => {
     expect(factionAccent('armada')).toBe('#449bed');
     expect(factionAccent('Cortex')).toBe('#ff2244');

@@ -86,7 +86,7 @@ export const AvgWindFileSchema = z
     schemaVersion: SchemaVersionSchema,
     gameVersion: z.string(),
     table: z.record(z.string(), z.record(z.string(), z.number())),
-    /** BAR's windRiskLookup: percent of the time the wind is below 6, same keys (Q-06; tools/import-wind-risk.ts). */
+    /** BAR's windRiskLookup: percent of the time the wind is below 6, same keys (tools/import-wind-risk.ts). */
     riskTable: z.record(z.string(), z.record(z.string(), z.number())).optional()
   })
   .strict();

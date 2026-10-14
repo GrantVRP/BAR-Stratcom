@@ -2,7 +2,7 @@ import type { WidgetEvent } from '../schemas/protocol';
 
 /**
  * FinishedLedger maps unitDef name (unitId) to a sorted list of game seconds when units finished.
- * Never decremented when units die (04 §3.2).
+ * Never decremented when units die.
  */
 export type FinishedLedger = Record<string, number[]>;
 

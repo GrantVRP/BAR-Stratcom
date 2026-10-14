@@ -12,7 +12,7 @@ import {
   type UnitSnapshot
 } from '../schemas';
 
-describe('Real-data tests for the registry (T03.4, 03 §2, 01 P-02)', () => {
+describe('Real-data tests for the registry', () => {
   const snapshot: UnitSnapshot = UnitSnapshotSchema.parse(defaultSnapshotData);
   const factions = FactionsFileSchema.parse(factionsData);
   const aliases = AliasesFileSchema.parse(aliasesData);
@@ -83,7 +83,7 @@ describe('Real-data tests for the registry (T03.4, 03 §2, 01 P-02)', () => {
     });
   });
 
-  describe('P-02 regression tests against snapshot truth', () => {
+  describe('old-name regression tests against snapshot truth', () => {
     const p02Keys = [
       'armflash',
       'armkam',
@@ -95,7 +95,7 @@ describe('Real-data tests for the registry (T03.4, 03 §2, 01 P-02)', () => {
     ] as const;
 
     for (const unitId of p02Keys) {
-      it(`asserts real name and faction for P-02 unit: ${unitId}`, () => {
+      it(`asserts real name and faction for audited unit: ${unitId}`, () => {
         const unit = registry.get(unitId);
         expect(unit, `Unit ${unitId} must exist in real snapshot`).toBeDefined();
 
@@ -107,7 +107,7 @@ describe('Real-data tests for the registry (T03.4, 03 §2, 01 P-02)', () => {
       });
     }
 
-    it('proves P-02 audit corrections against real snapshot', () => {
+    it('proves the old-name corrections against the real snapshot', () => {
       // Blitz is Armada (armflash), not Cortex
       const armflash = registry.get('armflash');
       expect(armflash?.name).toBe('Blitz');

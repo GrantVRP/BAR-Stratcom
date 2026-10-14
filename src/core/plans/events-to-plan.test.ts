@@ -20,7 +20,7 @@ import {
 } from '../schemas';
 import goldenSyntheticPlan from './__golden__/synthetic-plan.json';
 
-describe('eventsToPlan (04 §5.3, T04.4)', () => {
+describe('eventsToPlan', () => {
   const snapshot: UnitSnapshot = UnitSnapshotSchema.parse(defaultSnapshotData);
   const factions = FactionsFileSchema.parse(factionsData);
   const aliases = AliasesFileSchema.parse(aliasesData);
@@ -253,7 +253,7 @@ const captureMeta = (sessionId: string): Parameters<typeof eventsToPlan>[0]['met
     expect(validatePlan(plan, registry).errors).toEqual([]);
   });
 
-  it('keeps the commander faction when the team also gets a cosmetic hat (H2: Armada player with cor_hat_fightnight)', () => {
+  it('keeps the commander faction when the team also gets a cosmetic hat (a pro Armada player with cor_hat_fightnight)', () => {
     // Event order as recorded in pro replay 00b9a56a…: commander, then the trophy hat (no builder) at 3 s
     const events: WidgetEvent[] = [
       { tm: 0, e: 'created', d: 'armcom', u: 10478, f: 0 },

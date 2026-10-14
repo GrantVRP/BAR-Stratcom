@@ -12,7 +12,7 @@ import {
 import type { RawUnitdefsExport, UnitSnapshot } from '../src/core/schemas';
 import { SnapshotIndexSchema, UnitSnapshotSchema } from '../src/core/schemas';
 
-describe('import-unitdefs (T03.1)', () => {
+describe('import-unitdefs', () => {
   let tempDir: string;
 
   beforeEach(() => {

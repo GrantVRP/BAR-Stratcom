@@ -20,7 +20,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
   { id: 'lmstudio', label: 'LM Studio (local)', needsKey: false, defaultBaseUrl: OPENAI_COMPATIBLE.lmstudio.baseUrl, local: true }
 ];
 
-/** SDK client factories; tests inject fakes (04 §6.2 dependency injection). */
+/** SDK client factories; tests inject fakes. */
 export interface ClientFactories {
   anthropic?: (apiKey: string) => AnthropicClientLike;
   gemini?: (apiKey: string) => GeminiClientLike;

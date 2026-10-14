@@ -10,7 +10,7 @@ function blank(w = 320, h = 200): { data: Uint8ClampedArray; width: number; heig
   return { data, width: w, height: h };
 }
 
-describe('launch scene art (T06.14)', () => {
+describe('launch scene art', () => {
   it('is deterministic', () => {
     const a = mulberry32(7);
     const b = mulberry32(7);

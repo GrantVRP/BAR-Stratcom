@@ -10,7 +10,7 @@ type Minimap = IpcResponseData<'maps:minimap'>['data'];
 
 /**
  * The map's minimap from maps-metadata.beyondallreason.dev (fetched by main, attributed) with the
- * start positions plotted on top as numbered dots (06 §4.9). Without a minimap the dots stay on a grid.
+ * start positions plotted on top as numbered dots. Without a minimap the dots stay on a grid.
  */
 export function MinimapPanel({ map }: { map: MapRecord }): React.JSX.Element {
   const [answer, setAnswer] = useState<{ scriptName: string; minimap: Minimap; failed: boolean } | null>(null);
@@ -55,7 +55,7 @@ export function MinimapPanel({ map }: { map: MapRecord }): React.JSX.Element {
       </div>
       <figcaption data-testid="map-minimap-credit" className="font-mono text-[11px] text-zinc-400">
         {minimap
-          ? `Minimap: maps-metadata.beyondallreason.dev${minimap.author ? ` // map by ${minimap.author}` : ''}`
+          ? `Minimap: maps-metadata.beyondallreason.dev${minimap.author ? ` // map by ${minimap.author}`: ''}`
           : current?.failed
             ? 'Minimap unavailable (offline)'
             : current

@@ -1,6 +1,6 @@
 import { shell } from 'electron';
 
-/** 02 §6: the only sites a link may open (and their subdomains). */
+/** The only sites a link may open (and their subdomains). */
 export const EXTERNAL_HOSTS = [
   'beyondallreason.info',
   'bar-rts.com',
@@ -26,7 +26,7 @@ export function isAllowedExternalUrl(url: string): boolean {
   return EXTERNAL_HOSTS.some((allowed) => host === allowed || host.endsWith(`.${allowed}`));
 }
 
-/** `shell:openExternal` (02 §5): opens an allow-listed https link in the browser; anything else is refused. */
+/** `shell:openExternal`: opens an allow-listed https link in the browser; anything else is refused. */
 export async function openExternalUrl(url: string): Promise<{ ok: true }> {
   if (!isAllowedExternalUrl(url)) throw new Error('That link is not on the list of sites StratCom may open');
   await shell.openExternal(url);

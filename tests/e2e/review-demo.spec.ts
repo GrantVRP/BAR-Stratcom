@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { launchApp } from './launch';
 
-test('demo completion triggers in-memory review report with DEMO badge (T07.4)', async () => {
+test('demo completion triggers in-memory review report with DEMO badge', async () => {
   const { app, close } = await launchApp();
   try {
     const page = await app.firstWindow();

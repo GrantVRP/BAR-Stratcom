@@ -85,7 +85,7 @@ export interface LaunchWorld {
   runnerScreen(faction: Faction3D): { x: number; y: number } | null;
   /** Whether a point (normalised device coords) is on the walking unit. */
   hitRunner(faction: Faction3D, ndcX: number, ndcY: number): boolean;
-  /** Destroys the walking unit (owner request): its BAR death, then a new one 3 s later. */
+  /** Destroys the walking unit: its BAR death, then a new one 3 s later. */
   kill(faction: Faction3D, ms: number): boolean;
   /** Particle sizing for the low-resolution render target. */
   setTargetHeight(height: number): void;

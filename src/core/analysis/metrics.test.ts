@@ -3,7 +3,7 @@ import { computeMetrics } from './metrics';
 import type { SessionMeta } from '../schemas/session';
 import type { StateDoc, WidgetEvent } from '../schemas/protocol';
 
-describe('computeMetrics (04 §4.1, T07.2)', () => {
+describe('computeMetrics', () => {
   it('computes exact hand-calculated metrics on a synthetic session', () => {
     const meta: SessionMeta = {
       schemaVersion: 1,

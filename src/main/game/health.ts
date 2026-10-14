@@ -75,7 +75,7 @@ export function readInfologTail(filePath: string, maxLines = 400): string {
 }
 
 /**
- * Pure function deriving health status and message from inputs per 05 §9.
+ * Pure function deriving health status and message from inputs.
  */
 export function deriveHealth(inputs: HealthDeriveInputs, now: number): HealthState {
   if (!inputs.hasDataDir) {

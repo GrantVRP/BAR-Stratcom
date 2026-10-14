@@ -87,7 +87,7 @@ async function radarDraw(scenario: Scenario) {
   return harness;
 }
 
-describe('radar scope (05 §8.1, widget 3.0.6, T09.5)', () => {
+describe('radar scope (widget 3.0.6)', () => {
   it('a RADAR box under BUILDINGS: range, contacts in LOS or radar (hidden and Gaia left out), the app rows', async () => {
     const harness = await radarDraw(battlefield());
     try {

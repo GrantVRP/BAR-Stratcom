@@ -30,7 +30,7 @@ function isFactoryFallback(defId: string): boolean {
 }
 
 /**
- * Post-match analysis engine (04 §4, T07.2, T07.3).
+ * Post-match analysis engine.
  * Pure domain function computing metrics, adherence, tips, grade, benchmark percentiles, and profile suggestions.
  */
 export function analyze(

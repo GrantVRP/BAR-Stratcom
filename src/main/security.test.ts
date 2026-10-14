@@ -8,7 +8,7 @@ import { ipcContract, ipcEvents } from '../shared/ipc';
 import { isAllowedGlobalShortcut } from './shortcuts/accelerator';
 import { devRendererUrl } from './windows/dev-url';
 
-/** Security checklist (08 §6, T11.2), checked on the source so new code cannot slip past it. */
+/** Security checklist, checked on the source so new code cannot slip past it. */
 const ROOT = process.cwd();
 const walk = (dir: string): string[] =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
@@ -23,7 +23,7 @@ const RENDERER = SRC.filter((f) => rel(f).startsWith('src/renderer/'));
 const read = (f: string): string => fs.readFileSync(f, 'utf-8');
 const filesMatching = (files: string[], re: RegExp): string[] => files.filter((f) => re.test(read(f))).map(rel);
 
-describe('security checklist (08 §6, T11.2)', () => {
+describe('security checklist', () => {
   it('every BrowserWindow: contextIsolation, sandbox, no nodeIntegration, webSecurity; window.open denied and navigation blocked', () => {
     let windows = 0;
     for (const file of MAIN) {
@@ -63,7 +63,7 @@ describe('security checklist (08 §6, T11.2)', () => {
     expect(filesMatching(MAIN.filter((f) => !rel(f).endsWith('windows/dev-url.ts')), /process\.env\.ELECTRON_RENDERER_URL/)).toEqual([]);
   });
 
-  it('production CSP as in 02 §6, nothing remote in the page, and the renderer makes no network requests', () => {
+  it('production CSP as, nothing remote in the page, and the renderer makes no network requests', () => {
     const html = fs.readFileSync(path.join(ROOT, 'src/renderer/index.html'), 'utf-8');
     expect(html).toContain(
       `content="default-src 'self'; img-src 'self' data: https://maps-metadata.beyondallreason.dev; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; script-src 'self';"`
@@ -94,7 +94,7 @@ describe('security checklist (08 §6, T11.2)', () => {
     expect(platform.match(/timeout: 3000/g)).toHaveLength(2);
   });
 
-  it('shell.openExternal only behind the 02 §6 allow-list (T11.4), openPath only for the app’s own data folder', () => {
+  it('shell.openExternal only behind the allow-list, openPath only for the app’s own data folder', () => {
     expect(filesMatching(MAIN, /shell\.openExternal\(/)).toEqual(['src/main/shell/open-external.ts']);
     const opener = read(path.join(ROOT, 'src/main/shell/open-external.ts'));
     expect(opener).toMatch(/if \(!isAllowedExternalUrl\(url\)\) throw[^\n]*\n\s*await shell\.openExternal\(url\);/);

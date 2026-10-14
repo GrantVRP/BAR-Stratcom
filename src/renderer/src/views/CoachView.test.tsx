@@ -112,7 +112,7 @@ describe('CoachView', () => {
   });
 
 
-  it('shows ASSIST ON only while an in-game assist is switched on (T09.2)', () => {
+  it('shows ASSIST ON only while an in-game assist is switched on', () => {
     const settings = defaultSettings();
     useSettings.setState({ settings });
     act(() => {

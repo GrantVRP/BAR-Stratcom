@@ -4,7 +4,7 @@ import type { Registry } from '../registry';
 export type { IssueCode, PlanIssue, PlanValidationResult } from '../schemas/validation';
 
 /**
- * Validates a BuildPlan against the unit registry according to 03 §5.
+ * Validates a BuildPlan against the unit registry.
  * Returns errors (which block coaching/simulation) and warnings.
  */
 export function validatePlan(plan: BuildPlan, registry: Registry): PlanValidationResult {

@@ -42,7 +42,7 @@ export function DevUiGallery(): React.JSX.Element {
             UI PRIMITIVES GALLERY
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            BAR StratCom v3 tactical design system &middot; 06 &sect;3 specification
+            BAR StratCom tactical design system
           </p>
         </div>
         <div className="flex items-center gap-2">

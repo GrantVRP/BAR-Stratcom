@@ -1,6 +1,6 @@
 /* ==========================================================================
    BAR StratCom v3 — Pixel Art Theme & Arcade Styling
-   Inspired by Advance Wars, Metal Slug, and Dune II (06 §3)
+   Inspired by Advance Wars, Metal Slug, and Dune II
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -153,7 +153,7 @@
   box-shadow: 1px 1px 0px 0px #000000;
 }
 
-/* Visual hierarchy (owner request, T06.16): one filled PRIMARY action per screen, outlined
+/* Visual hierarchy: one filled PRIMARY action per screen, outlined
    secondary (.pixel-btn default), borderless tertiary (.pixel-btn-ghost). The fill comes from
    --btn-accent so a faction screen can tint its main action. */
 .pixel-btn-primary {
@@ -260,7 +260,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Local CRT Overlay (.crt) — only for launcher and home background (06 §3)
+   Local CRT Overlay (.crt) — only for launcher and home background
    -------------------------------------------------------------------------- */
 .crt {
   position: relative;

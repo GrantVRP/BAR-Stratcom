@@ -34,7 +34,7 @@ export function registerAppGlobalShortcut(): { shortcut: string | null; status: 
   const settings = defaultSettingsStore.getSettings();
   const shortcut = settings.globalShortcut;
 
-  // never a single key (08 §6): a stored shortcut without Ctrl/Alt/Win is not registered
+  // never a single key: a stored shortcut without Ctrl/Alt/Win is not registered
   if (!shortcut || shortcut.trim() === '' || !isAllowedGlobalShortcut(shortcut.trim())) {
     activeShortcut = null;
     currentStatus = 'disabled';
@@ -45,7 +45,6 @@ export function registerAppGlobalShortcut(): { shortcut: string | null; status: 
 
   try {
     const registered = globalShortcut.register(activeShortcut, () => {
-      // 04 §3.4 / A-15:
       // In manual mode: toggles start / pause on the manual clock.
       // Otherwise: toggles the coach window.
       if (defaultCoachRunner.isRunning() && defaultCoachRunner.getMode() === 'manual') {

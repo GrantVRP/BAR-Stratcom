@@ -5,20 +5,23 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { checkRelativeLinks, extractLinks, headingIds, markdownFiles, slugify } from './links';
 
 describe('markdown link check (T11.5)', () => {
-  it('finds links, images, references and autolinks, but not code', () => {
+  it('finds links, images, references, autolinks and HTML href/src, but not code', () => {
     const md = [
       'See [the guide](docs/user-guide.md#first-run) and ![shot](docs/images/home.png "Home").',
       '`[not](a-link.md)` and <https://github.com/GrantVRP/BAR-Stratcom>',
       '```md',
       '[inside](fence.md)',
       '```',
-      '[ref]: ./privacy.md'
+      '[ref]: ./privacy.md',
+      '<p align="center"><a href="docs/user-guide.md"><b>Guide</b></a> <img alt="x" src="docs/images/review.png" width="50%"></p>'
     ].join('\n');
     expect(extractLinks(md)).toEqual([
       { target: 'docs/user-guide.md#first-run', line: 1 },
       { target: 'docs/images/home.png', line: 1 },
       { target: 'https://github.com/GrantVRP/BAR-Stratcom', line: 2 },
-      { target: './privacy.md', line: 6 }
+      { target: './privacy.md', line: 6 },
+      { target: 'docs/user-guide.md', line: 7 },
+      { target: 'docs/images/review.png', line: 7 }
     ]);
   });
 

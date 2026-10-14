@@ -17,7 +17,8 @@ export interface LinkProblem {
   reason: string;
 }
 
-/** Links and images outside code: `[text](target)`, `![alt](target)`, `[ref]: target`, `<https://…>`. */
+/** Links and images outside code: `[text](target)`, `![alt](target)`, `[ref]: target`, `<https://…>`, and the
+ * `href`/`src` of HTML tags (GitHub renders `<a>`, `<img>`). */
 export function extractLinks(markdown: string): MdLink[] {
   const out: MdLink[] = [];
   let fence: string | null = null;
@@ -34,6 +35,7 @@ export function extractLinks(markdown: string): MdLink[] {
     const ref = /^\s{0,3}\[[^\]]+\]:\s*<?(\S+?)>?(?:\s+"[^"]*")?\s*$/.exec(line);
     if (ref) out.push({ target: ref[1]!, line: i + 1 });
     for (const m of line.matchAll(/<(https?:\/\/[^>\s]+)>/g)) out.push({ target: m[1]!, line: i + 1 });
+    for (const m of line.matchAll(/<[a-z][^>]*?\s(?:href|src)="([^"]+)"/gi)) out.push({ target: m[1]!, line: i + 1 });
   });
   return out;
 }

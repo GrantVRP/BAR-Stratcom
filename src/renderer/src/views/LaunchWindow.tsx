@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FactionEmblem } from '../components/ui/FactionEmblem';
+import { LaunchTitle } from '../components/launch/LaunchTitle';
 import { LaunchScene3D } from '../components/launch3d/LaunchScene3D';
 import { factionAccent } from '../lib/faction-style';
 import { useWindowIconFaction } from '../lib/window-icon';
@@ -89,8 +90,6 @@ export function LaunchWindow({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleFaction]);
 
-  const panel = 'border-2 border-black bg-[#0a0c14]/90 shadow-[4px_4px_0px_#000]';
-
   return (
     <div
       data-testid="launch-window"
@@ -98,23 +97,15 @@ export function LaunchWindow({
     >
       <LaunchScene3D faction={faction} reducedMotion={reducedMotion} />
 
-      {/* Title */}
-      <header className={`absolute left-1/2 top-6 z-[48] flex -translate-x-1/2 flex-col items-center gap-1 px-6 py-3 ${panel}`}>
-        <div className="flex items-center gap-3">
+      <LaunchTitle
+        colors={[factionColor]}
+        version={version}
+        emblem={
           <div className="flex h-11 w-11 items-center justify-center border-2 bg-black" style={{ borderColor: factionColor }}>
             <FactionEmblem faction={faction} size={32} />
           </div>
-          <h1 style={{ fontFamily: "'Press Start 2P', monospace" }} className="text-xl font-bold tracking-wider sm:text-2xl">
-            <span className="text-white drop-shadow-[2px_2px_0px_#000]">BAR </span>
-            <span style={{ color: factionColor }} className="drop-shadow-[2px_2px_0px_#000]">
-              STRATCOM
-            </span>
-          </h1>
-        </div>
-        <p style={{ fontFamily: "'JetBrains Mono', monospace" }} className="text-xs text-zinc-400">
-          {version}
-        </p>
-      </header>
+        }
+      />
 
       {/* Launch (bottom-right, clear of the runner's track) */}
       <div className="absolute left-[74%] top-[70%] z-[48] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-3">

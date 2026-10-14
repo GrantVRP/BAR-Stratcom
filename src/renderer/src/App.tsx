@@ -16,6 +16,7 @@ import {
   OnboardingView,
   ReviewView,
   SettingsView,
+  ShowcaseView,
   UnitsView
 } from './views';
 import { ipcClient } from './lib/ipc-client';
@@ -190,6 +191,15 @@ export function App(): React.JSX.Element {
     if (currentHash.startsWith('#/dev/ui')) return <DevUiGallery />;
     if (currentHash === '#/launcher') return <HomeView />;
     return <NotFoundView route={currentHash} />;
+  }
+
+  // the README's animated header, recorded by tools/readme-showcase.ts
+  if (currentHash.startsWith('#/dev/showcase')) {
+    return (
+      <ErrorBoundary>
+        <ShowcaseView version={version} />
+      </ErrorBoundary>
+    );
   }
 
   if (currentHash.startsWith('#/coach-window')) {

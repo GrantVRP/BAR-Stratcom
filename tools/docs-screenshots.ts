@@ -3,8 +3,8 @@
  *   npx tsx tools/docs-screenshots.ts
  *
  * Starts the built app through the e2e launcher (temporary profile, --no-bar: never a real game
- * folder), so every picture shows a PC without BAR: the demo, the curated library and a recorded
- * real game's report. Writes docs/images/*.png.
+ * folder), so every picture shows a PC without BAR: home, the curated library and a recorded
+ * real game's report. Writes docs/images/*.png (the animated header is tools/readme-showcase.ts).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -46,18 +46,9 @@ async function main(): Promise<void> {
     await page.waitForTimeout(1500); // the simulator graph
     await shot(page, 'plan-detail');
 
-    // coaching a recorded real game at 4×
-    await go(page, '#/home', 'view-home');
-    await page.getByTestId('home-start-demo-btn').click();
-    await page.getByTestId('demo-picker-start-btn').click();
-    await page.getByTestId('coach-telemetry').waitFor({ timeout: 20000 });
-    await page.waitForTimeout(9000); // a few steps in
-    await shot(page, 'coach-demo');
-
     // the report at the end of a demo (played fast through IPC, as the review e2e test does)
     await page.evaluate(async () => {
       const api = (globalThis as unknown as { stratcom: { invoke: (c: string, a?: unknown) => Promise<unknown> } }).stratcom;
-      await api.invoke('coach:stop');
       const demos = (await api.invoke('demo:list')) as { data: Array<{ id: string }> };
       await api.invoke('coach:start', { mode: 'demo', demoId: demos.data[0]!.id, speed: 500 });
     });

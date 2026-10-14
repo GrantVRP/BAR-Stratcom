@@ -33,6 +33,7 @@
     "check:notices": "tsx tools/third-party-notices.ts --check",
     "notices": "tsx tools/third-party-notices.ts",
     "docs:screenshots": "npm run build && tsx tools/docs-screenshots.ts",
+    "docs:showcase": "npm run build && tsx tools/readme-showcase.ts",
     "golden:update": "node -e \"console.log('No golden files to update.')\"",
     "verify": "npm run typecheck && npm run lint && npm run lint:lua && npm run audit:fabrication && npm run validate:data && npm run check:typography && npm run check:links && npm run check:notices && vitest run --coverage && npm run build && npm run test:e2e"
   },

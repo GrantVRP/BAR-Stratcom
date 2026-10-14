@@ -151,6 +151,41 @@ export function placeTrees(seed = 3): TreePlacement[] {
 }
 
 /* ---------------------------------------------------------------------------------------------- */
+/* Showcase: both factions at once (the README animation)                                         */
+/* ---------------------------------------------------------------------------------------------- */
+
+/**
+ * The Cortex turbine stands to the left of the Armada one, and a Sprinter chases a Fiend up the
+ * track, closing in as they go. One loop is seamless: the rotors turn a whole number of times
+ * (135°/s × 8 s = 3 turns), and each unit makes one pass and starts again off screen.
+ */
+export const SHOWCASE = {
+  turbines: { cortex: { x: -256, z: 102 }, armada: TURBINE_POS },
+  loopMs: 8000,
+  rotorDegPerS: 135,
+  startMs: { corpyro: 0, armfast: 2800 }
+} as const;
+
+export type ShowcaseUnit = keyof typeof SHOWCASE.startMs;
+
+/** Window event that draws one exact showcase frame (detail: ms into the loop) and stops live playback. */
+export const SHOWCASE_FRAME_EVENT = 'stratcom:showcase-frame';
+
+/** The launcher's pines, less the ones standing where the Cortex turbine goes. */
+export function showcaseTrees(): TreePlacement[] {
+  const spot = SHOWCASE.turbines.cortex;
+  return placeTrees().filter((t) => Math.hypot(t.x - spot.x, t.z - spot.z) >= 80);
+}
+
+/** How far up the track a unit is `ms` into the loop (0–1) and its walk time, or null between passes. */
+export function showcasePass(unit: ShowcaseUnit, ms: number, pathLength: number): { at: number; walkMs: number } | null {
+  const loop = SHOWCASE.loopMs;
+  const cycle = (((ms - SHOWCASE.startMs[unit]) % loop) + loop) % loop;
+  const passMs = (pathLength / (UNIT_SPEED[unit] * TIME_SCALE)) * 1000;
+  return cycle <= passMs ? { at: cycle / passMs, walkMs: cycle * TIME_SCALE } : null;
+}
+
+/* ---------------------------------------------------------------------------------------------- */
 /* Walk animation playback                                                                        */
 /* ---------------------------------------------------------------------------------------------- */
 

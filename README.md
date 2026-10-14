@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/coach-demo.png" alt="The coach following a recorded game at 4× speed" width="860">
+  <img src="docs/images/showcase.png" alt="An Armada Sprinter chasing a Cortex Fiend past the Cortex and Armada wind turbines" width="854">
 </p>
 
 > [!NOTE]

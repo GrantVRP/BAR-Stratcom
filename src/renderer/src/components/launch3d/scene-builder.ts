@@ -25,6 +25,7 @@ import {
   GROUND_SIZE,
   PASS_PAUSE_MS,
   ROTOR_SPEED_DEG,
+  SHOWCASE,
   SUN_DIR,
   TIME_SCALE,
   TREE_MODELS,
@@ -34,6 +35,8 @@ import {
   UNIT_SPEED,
   placeTrees,
   samplePath3d,
+  showcasePass,
+  showcaseTrees,
   walkPose,
   type WalkData
 } from '../../../../core/launch/scene3d';
@@ -45,6 +48,8 @@ import { FxPoints } from './fx-points';
 import { UnitDeathPlayer, applyPiecePose, type Placement } from './runner-death';
 
 export type Faction3D = 'armada' | 'cortex';
+/** The launcher shows one faction at a time; the showcase (README animation) shows both side by side. */
+export type LaunchLayout = 'launcher' | 'showcase';
 
 const DEG = Math.PI / 180;
 /** BAR script angle signs in three.js space (y and z turn the other way). */
@@ -87,6 +92,8 @@ export interface LaunchWorld {
   hitRunner(faction: Faction3D, ndcX: number, ndcY: number): boolean;
   /** Destroys the walking unit: its BAR death, then a new one 3 s later. */
   kill(faction: Faction3D, ms: number): boolean;
+  /** Both factions at once, `ms` into SHOWCASE's loop (build the world with the 'showcase' layout). */
+  showcase(ms: number): void;
   /** Particle sizing for the low-resolution render target. */
   setTargetHeight(height: number): void;
   dispose(): void;
@@ -96,7 +103,7 @@ function applyPose(model: Model3D, walk: WalkData, ms: number): void {
   applyPiecePose(model, walkPose(walk, ms));
 }
 
-export async function buildLaunchWorld(): Promise<LaunchWorld> {
+export async function buildLaunchWorld(layout: LaunchLayout = 'launcher'): Promise<LaunchWorld> {
   const ramp = toonRamp();
   const [armTex, corTex, treeTex, groundTex, armWreckTex, corWreckTex] = await Promise.all(
     ['tex-arm', 'tex-cor', 'tex-tree', 'tex-ground', 'tex-arm-wreck', 'tex-cor-wreck'].map((n) => loadTexture(n))
@@ -125,7 +132,7 @@ export async function buildLaunchWorld(): Promise<LaunchWorld> {
     });
     treeModels.set(name, m.root);
   }
-  for (const t of placeTrees()) {
+  for (const t of layout === 'showcase' ? showcaseTrees() : placeTrees()) {
     const tree = treeModels.get(t.model)!.clone(true);
     tree.position.set(t.x, 0, t.z);
     tree.rotation.y = t.rotation;
@@ -138,7 +145,8 @@ export async function buildLaunchWorld(): Promise<LaunchWorld> {
   for (const faction of ['armada', 'cortex'] as const) {
     const t = TURBINE[faction];
     const turbine = buildModel(await loadJson<ModelJson>(`model-${t.model}`), unitMaterial(t.tex));
-    turbine.root.position.set(TURBINE_POS.x, 0, TURBINE_POS.z);
+    const spot = layout === 'showcase' ? SHOWCASE.turbines[faction] : TURBINE_POS;
+    turbine.root.position.set(spot.x, 0, spot.z);
     turbine.pieces.get(t.yaw)!.rotation.y = (TURBINE_YAW_DEG + TURBINE_FLIP_DEG[faction]) * DEG;
     scene.add(turbine.root);
     turbines[faction] = turbine;
@@ -244,6 +252,21 @@ export async function buildLaunchWorld(): Promise<LaunchWorld> {
       if (!runner.place || runner.death.dying) return false;
       runner.death.kill(ms, runner.place, walkPose(runner.walk, runner.walkMs));
       return true;
+    },
+    showcase(ms) {
+      for (const f of ['armada', 'cortex'] as const) {
+        turbines[f].root.visible = true;
+        turbines[f].pieces.get(TURBINE[f].rotor)!.rotation.z = -((ms / 1000) * SHOWCASE.rotorDegPerS * DEG);
+        const runner = runners[f];
+        const pass = showcasePass(RUNNER[f], ms, lut.length);
+        runner.place = null;
+        runner.model.root.visible = pass !== null;
+        if (!pass) continue;
+        const p = lut.points[Math.min(lut.points.length - 1, Math.round(pass.at * (lut.points.length - 1)))]!;
+        runner.model.root.position.set(p.x, 0, p.z);
+        runner.model.root.rotation.y = p.heading;
+        applyPose(runner.model, runner.walk, pass.walkMs);
+      }
     },
     setTargetHeight(height) {
       fx.setPixelScale(height, camera.projectionMatrix.elements[5]!);

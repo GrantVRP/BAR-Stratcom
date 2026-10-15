@@ -1,8 +1,10 @@
 /**
  * Launcher scene sprites made by tools/build-launch-scene.ts. The ground is the Greenest
  * Fields map texture by IceXuick; the runners are the 32-bit Sprinter and Fiend (unit icons by
- * IceXuick and Floris), all used with permission.
+ * IceXuick and Floris).
  */
+import { LAUNCH_RUNNER } from './constants';
+
 const files = import.meta.glob('../../assets/launch/*.png', { eager: true, query: '?url', import: 'default' });
 
 const byName = new Map<string, string>();
@@ -21,5 +23,5 @@ export function sceneAsset(name: string): string {
   return url;
 }
 
-export const SCENE_CREDIT = 'Launch scene: the Greenest Fields map by IceXuick, used with permission.';import { LAUNCH_RUNNER } from './constants';
+export const SCENE_CREDIT = 'Launch scene: the Greenest Fields map by IceXuick.';
 

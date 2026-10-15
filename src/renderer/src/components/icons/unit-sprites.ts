@@ -1,16 +1,15 @@
 /**
  * 32-bit pixel versions of the BAR unit icons. Original unit icons by IceXuick and Floris
- * (Beyond All Reason), used with their permission; converted by
- * tools/pixelate-unitpics.ts. Units without a picture fall back to the original class sprites.
+ * (Beyond All Reason); converted by tools/pixelate-unitpics.ts. Units without a picture fall
+ * back to the original class sprites.
  */
 const sprites64 = import.meta.glob('../../assets/unitpics-32/64/*.png', { eager: true, query: '?url', import: 'default' });
 const sprites32 = import.meta.glob('../../assets/unitpics-32/32/*.png', { eager: true, query: '?url', import: 'default' });
 
 export const UNIT_ART_CREDIT =
-  'Unit art: 32-bit pixel versions of the Beyond All Reason unit icons by IceXuick and Floris, used with permission.';
+  'Unit art: 32-bit pixel versions of the Beyond All Reason unit icons by IceXuick and Floris.';
 
-export const FACTION_ART_CREDIT =
-  'Faction emblems: 32-bit versions of the Beyond All Reason faction icons, used with permission.';
+export const FACTION_ART_CREDIT = 'Faction emblems: 32-bit versions of the Beyond All Reason faction icons.';
 
 function byUnitId(files: Record<string, unknown>): Map<string, string> {
   const map = new Map<string, string>();

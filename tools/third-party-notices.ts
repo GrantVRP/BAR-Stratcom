@@ -11,13 +11,12 @@ const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'THIRD_PARTY_NOTICES.md');
 
 /** Art and data credits (same text as the README's Credits). */
-const BAR_CREDITS = `- **Unit art:** 32-bit pixel versions of the Beyond All Reason unit icons by **IceXuick and Floris**,
-  used with permission. The originals are © IceXuick and Floris
-  (CC BY-NC-ND, \`/unitpics/\` in the Beyond All Reason repository).
-- **Faction emblems:** 32-bit versions of the Beyond All Reason faction icons (\`sidepics/\`), used with
-  permission.
+const BAR_CREDITS = `- **Unit art:** 32-bit pixel versions of the Beyond All Reason unit icons by **IceXuick and Floris**.
+  The originals are © IceXuick and Floris (CC BY-NC-ND, \`/unitpics/\` in the Beyond All Reason
+  repository).
+- **Faction emblems:** 32-bit versions of the Beyond All Reason faction icons (\`sidepics/\`).
 - **Launch scene:** pixel art built from the Greenest Fields map by **IceXuick** (map texture from
-  beyondallreason.info), used with permission.
+  beyondallreason.info).
 - **Launch scene 3D:** Sprinter model by FireStorm and PtaQ; Fiend model by Beherith and PtaQ; the
   Armada and Cortex wind turbines and wrecks; Aleppo pines by Beherith and 0 A.D.; walk and death
   animations by Beherith; explosion effects from Beyond All Reason;

@@ -128,15 +128,14 @@ BAR StratCom is released under the [MIT licence](LICENSE). The in-game widget is
 
 ### Credits
 
-- **Unit art:** 32-bit pixel versions of the Beyond All Reason unit icons by **IceXuick and Floris**,
-  used with permission. The originals are © IceXuick and Floris
-  (CC BY-NC-ND, `/unitpics/` in the Beyond All Reason repository). The pixel versions are made by
-  `tools/pixelate-unitpics.ts` and live in `src/renderer/src/assets/unitpics-32/`.
-- **Faction emblems:** 32-bit versions of the Beyond All Reason faction icons (`sidepics/`), used with
-  permission. Made by `tools/pixelate-factions.ts`, in `src/renderer/src/assets/factions-32/`.
+- **Unit art:** 32-bit pixel versions of the Beyond All Reason unit icons by **IceXuick and Floris**.
+  The originals are © IceXuick and Floris (CC BY-NC-ND, `/unitpics/` in the Beyond All Reason
+  repository). The pixel versions are made by `tools/pixelate-unitpics.ts` and live in
+  `src/renderer/src/assets/unitpics-32/`.
+- **Faction emblems:** 32-bit versions of the Beyond All Reason faction icons (`sidepics/`). Made by
+  `tools/pixelate-factions.ts`, in `src/renderer/src/assets/factions-32/`.
 - **Launch scene:** pixel art built from the Greenest Fields map by **IceXuick** (map texture from
-  beyondallreason.info), used with permission. Made by `tools/build-launch-scene.ts`, in
-  `src/renderer/src/assets/launch/`.
+  beyondallreason.info). Made by `tools/build-launch-scene.ts`, in `src/renderer/src/assets/launch/`.
 - **Launch scene 3D:** Sprinter model by FireStorm and PtaQ; Fiend model by Beherith and PtaQ; the
   Armada and Cortex wind turbines and wrecks; Aleppo pines by Beherith and 0 A.D.; walk and death
   animations by Beherith; explosion effects from Beyond All Reason;

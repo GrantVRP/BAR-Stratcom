@@ -1,6 +1,6 @@
 /**
  * 32-bit style faction emblems from the BAR faction icons (sidepics/armada.png, sidepics/cortex.png
- * in the Beyond All Reason repository), used with permission.
+ * in the Beyond All Reason repository).
  *
  * The originals are flat 64 × 64 logos; the 32-bit look adds depth: bevelled edges lit from the
  * top-left, stepped top-to-bottom shading, a coloured outline and a small glint.

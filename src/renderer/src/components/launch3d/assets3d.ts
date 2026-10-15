@@ -31,4 +31,4 @@ export async function loadTexture(name: string): Promise<Texture> {
 }
 
 export const MODEL_CREDITS =
-  'Launch scene 3D models: Sprinter (FireStorm, PtaQ), Fiend (Beherith, PtaQ), wind turbines, wrecks, Aleppo pines (Beherith, 0 A.D.); walk and death animations by Beherith; explosion effects from Beyond All Reason; Armada textures by Cremuss (CC BY-SA); Greenest Fields by IceXuick. Beyond All Reason models, textures and animations used with permission.';
+  'Launch scene 3D models: Sprinter (FireStorm, PtaQ), Fiend (Beherith, PtaQ), wind turbines, wrecks, Aleppo pines (Beherith, 0 A.D.); walk and death animations by Beherith; explosion effects from Beyond All Reason; Armada textures by Cremuss (CC BY-SA); Greenest Fields by IceXuick.';
